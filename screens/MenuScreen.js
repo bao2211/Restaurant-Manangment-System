@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Alert, Image } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { apiService, getCategoryIcon, formatPrice } from '../services/apiService';
 
@@ -9,6 +9,7 @@ export default function MenuScreen({ navigation }) {
   const [foodItems, setFoodItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingItems, setLoadingItems] = useState(false);
+  const [imageErrors, setImageErrors] = useState({}); // Track failed image loads
 
   // Fetch categories on component mount
   useEffect(() => {
@@ -51,9 +52,19 @@ export default function MenuScreen({ navigation }) {
           icon: getCategoryIcon(category.cateName)
         }));
         
-        setCategories(transformedCategories);
-        if (transformedCategories.length > 0) {
-          setSelectedCategory(transformedCategories[0].id);
+        // Add "Tất cả" (All) category at the beginning
+        const allCategory = {
+          id: 'all',
+          name: 'Tất cả',
+          description: 'View all menu items',
+          icon: 'food-variant'
+        };
+        
+        const finalCategories = [allCategory, ...transformedCategories];
+        
+        setCategories(finalCategories);
+        if (finalCategories.length > 0) {
+          setSelectedCategory(finalCategories[0].id);
         }
         return;
       }
@@ -80,12 +91,22 @@ export default function MenuScreen({ navigation }) {
         icon: getCategoryIcon(category.cateName)
       }));
       
-      console.log('Transformed categories:', transformedCategories);
-      setCategories(transformedCategories);
+      // Add "Tất cả" (All) category at the beginning
+      const allCategory = {
+        id: 'all',
+        name: 'Tất cả',
+        description: 'View all menu items',
+        icon: 'food-variant'
+      };
       
-      if (transformedCategories.length > 0) {
-        console.log('Setting selected category to:', transformedCategories[0].id);
-        setSelectedCategory(transformedCategories[0].id);
+      const finalCategories = [allCategory, ...transformedCategories];
+      
+      console.log('Transformed categories:', finalCategories);
+      setCategories(finalCategories);
+      
+      if (finalCategories.length > 0) {
+        console.log('Setting selected category to:', finalCategories[0].id);
+        setSelectedCategory(finalCategories[0].id);
       }
       
     } catch (error) {
@@ -106,7 +127,34 @@ export default function MenuScreen({ navigation }) {
   const fetchFoodItemsByCategory = async (categoryId) => {
     try {
       setLoadingItems(true);
-      const foodData = await apiService.getFoodItemsByCategory(categoryId);
+      setImageErrors({}); // Reset image errors when fetching new category
+      
+      let foodData;
+      
+      if (categoryId === 'all') {
+        // Fetch all food items from all categories
+        console.log('Fetching all food items from all categories');
+        const allFoodItems = [];
+        
+        // Get all categories except 'all'
+        const realCategories = categories.filter(cat => cat.id !== 'all');
+        
+        for (const category of realCategories) {
+          try {
+            const categoryFoodData = await apiService.getFoodItemsByCategory(category.id);
+            allFoodItems.push(...categoryFoodData);
+          } catch (error) {
+            console.error(`Error fetching items for category ${category.name}:`, error);
+            // Continue with other categories even if one fails
+          }
+        }
+        
+        foodData = allFoodItems;
+      } else {
+        // Fetch specific category
+        foodData = await apiService.getFoodItemsByCategory(categoryId);
+      }
+      
       console.log('Food items fetched:', foodData);
       
       // Transform API data to match our component format
@@ -115,8 +163,8 @@ export default function MenuScreen({ navigation }) {
         name: food.foodName?.trim() || 'Unknown Dish',
         description: food.description || 'Delicious dish prepared with care',
         price: formatPrice(food.unitPrice || 0),
-        image: getEmojiFallback(food.foodName), // Generate emoji based on food name
-        imageUrl: food.foodImage, // Keep original image URL for future use
+        imageUrl: food.foodImage, // Use actual food image URL
+        emojiFallback: getEmojiFallback(food.foodName), // Keep emoji as fallback
         categoryId: food.cateId?.trim(),
         unitPrice: food.unitPrice || 0
       }));
@@ -173,26 +221,48 @@ export default function MenuScreen({ navigation }) {
     return '🍽️'; // Default food emoji
   };
 
-  const renderMenuItem = (item) => (
-    <TouchableOpacity key={item.id} style={styles.menuItem}>
-      <View style={styles.menuItemImage}>
-        <Text style={styles.emojiImage}>{item.image}</Text>
-      </View>
-      <View style={styles.menuItemContent}>
-        <Text style={styles.menuItemName}>{item.name}</Text>
-        <Text style={styles.menuItemDescription}>{item.description}</Text>
-        <View style={styles.menuItemFooter}>
-          <Text style={styles.menuItemPrice}>{item.price}</Text>
-          <TouchableOpacity 
-            style={styles.addButton}
-            onPress={() => handleAddToCart(item)}
-          >
-            <MaterialCommunityIcons name="plus" size={20} color="white" />
-          </TouchableOpacity>
+  const renderMenuItem = (item) => {
+    const hasImageError = imageErrors[item.id];
+    const shouldShowImage = item.imageUrl && !hasImageError;
+
+    return (
+      <TouchableOpacity key={item.id} style={styles.menuItem}>
+        <View style={styles.menuItemImage}>
+          {shouldShowImage ? (
+            <Image 
+              source={{ uri: item.imageUrl }}
+              style={styles.foodImage}
+              onError={() => {
+                console.log(`Failed to load image for ${item.name}: ${item.imageUrl}`);
+                setImageErrors(prev => ({ ...prev, [item.id]: true }));
+              }}
+              onLoad={() => {
+                // Reset error state if image loads successfully
+                setImageErrors(prev => ({ ...prev, [item.id]: false }));
+              }}
+            />
+          ) : (
+            <View style={styles.fallbackImageContainer}>
+              <Text style={styles.emojiImage}>{item.emojiFallback}</Text>
+            </View>
+          )}
         </View>
-      </View>
-    </TouchableOpacity>
-  );
+        <View style={styles.menuItemContent}>
+          <Text style={styles.menuItemName}>{item.name}</Text>
+          <Text style={styles.menuItemDescription}>{item.description}</Text>
+          <View style={styles.menuItemFooter}>
+            <Text style={styles.menuItemPrice}>{item.price}</Text>
+            <TouchableOpacity 
+              style={styles.addButton}
+              onPress={() => handleAddToCart(item)}
+            >
+              <MaterialCommunityIcons name="plus" size={20} color="white" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   const handleAddToCart = (item) => {
     Alert.alert(
@@ -240,8 +310,14 @@ export default function MenuScreen({ navigation }) {
   return (
     <View style={styles.container}>
       {/* Category Tabs */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryContainer}>
-        {categories.map((category) => (
+      <View style={styles.categoryContainer}>
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false} 
+          contentContainerStyle={styles.categoryContentContainer}
+          style={styles.categoryScrollView}
+        >
+          {categories.map((category) => (
           <TouchableOpacity
             key={category.id}
             style={[
@@ -252,7 +328,7 @@ export default function MenuScreen({ navigation }) {
           >
             <MaterialCommunityIcons 
               name={category.icon} 
-              size={24} 
+              size={18} 
               color={selectedCategory === category.id ? 'white' : '#FF6B35'} 
             />
             <Text style={[
@@ -263,12 +339,13 @@ export default function MenuScreen({ navigation }) {
             </Text>
           </TouchableOpacity>
         ))}
-      </ScrollView>
+        </ScrollView>
+      </View>
 
       {/* Menu Items */}
       <ScrollView style={styles.menuContainer}>
         <Text style={styles.categoryTitle}>
-          {categories.find(cat => cat.id === selectedCategory)?.name || 'Menu Items'}
+          {selectedCategory === 'all' ? 'Tất cả món ăn' : (categories.find(cat => cat.id === selectedCategory)?.name || 'Menu Items')}
         </Text>
         
         {loadingItems ? (
@@ -339,32 +416,41 @@ const styles = StyleSheet.create({
   },
   categoryContainer: {
     backgroundColor: 'white',
-    paddingVertical: 15,
+    paddingVertical: 0,
     paddingHorizontal: 10,
+    height: 40,
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
   },
+  categoryContentContainer: {
+    alignItems: 'center',
+    paddingVertical: 5,
+  },
+  categoryScrollView: {
+    flexGrow: 0,
+  },
   categoryTab: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 25,
-    marginHorizontal: 5,
+    paddingHorizontal: 16,
+    paddingVertical: 4,
+    borderRadius: 15,
+    marginHorizontal: 4,
     backgroundColor: '#F8F9FA',
     borderWidth: 1,
     borderColor: '#FF6B35',
+    height: 30,
   },
   activeCategoryTab: {
     backgroundColor: '#FF6B35',
     borderColor: '#FF6B35',
   },
   categoryText: {
-    marginLeft: 8,
-    fontSize: 14,
+    marginLeft: 6,
+    fontSize: 13,
     fontWeight: '600',
     color: '#FF6B35',
   },
@@ -373,13 +459,16 @@ const styles = StyleSheet.create({
   },
   menuContainer: {
     flex: 1,
-    padding: 15,
+    paddingHorizontal: 15,
+    paddingBottom: 15,
+    paddingTop: 0,
   },
   categoryTitle: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#2C3E50',
-    marginBottom: 20,
+    marginBottom: 10,
+    marginTop: 5,
   },
   itemsLoadingContainer: {
     flex: 1,
@@ -416,6 +505,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 15,
+    overflow: 'hidden', // Ensure images don't overflow the rounded corners
+  },
+  foodImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
+  },
+  fallbackImageContainer: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F8F9FA',
   },
   emojiImage: {
     fontSize: 40,

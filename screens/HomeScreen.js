@@ -14,12 +14,16 @@ export default function HomeScreen({ navigation }) {
     <ScrollView style={styles.container}>
       {/* Welcome Section */}
       <View style={styles.welcomeSection}>
-        <Text style={styles.welcomeTitle}>Welcome to</Text>
-        <Text style={styles.restaurantName}>Delicious Bites</Text>
-        <Text style={styles.welcomeSubtitle}>
-          Experience authentic flavors crafted with passion{"\n"}
-          Fresh ingredients, exceptional service
-        </Text>
+        <Image 
+          source={require('../assets/RMSIcon.png')} 
+          style={styles.logoImage}
+          resizeMode="contain"
+        />
+        <View style={styles.welcomeTextContainer}>
+          <Text style={styles.welcomeText}>
+            Power Your Restaurant{'\n'}With Confidence
+          </Text>
+        </View>
       </View>
 
       {/* Featured Image */}
@@ -69,23 +73,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#2C3E50',
     padding: 30,
     alignItems: 'center',
+    flexDirection: 'row',
   },
-  welcomeTitle: {
-    fontSize: 18,
-    color: '#BDC3C7',
-    marginBottom: 5,
+  logoImage: {
+    width: 80,
+    height: 80,
+    marginRight: 20,
   },
-  restaurantName: {
-    fontSize: 32,
+  welcomeTextContainer: {
+    flex: 1,
+  },
+  welcomeText: {
+    fontSize: 24,
+    fontFamily: 'Roboto',
     fontWeight: 'bold',
-    color: '#FF6B35',
-    marginBottom: 10,
-  },
-  welcomeSubtitle: {
-    fontSize: 16,
-    color: '#ECF0F1',
-    textAlign: 'center',
-    lineHeight: 22,
+    color: 'white',
+    textAlign: 'left',
+    lineHeight: 30,
   },
   featuredSection: {
     padding: 20,
