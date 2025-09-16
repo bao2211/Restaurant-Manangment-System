@@ -1,5 +1,6 @@
 # RMS API Server - Complete API Documentation
 
+//Khang: edit ở đây
 Base URL: `http://localhost:8080` (Docker) or `http://localhost:5181` (Local)
 Base URL (HTTPS): `https://localhost:8081` (Docker) or `https://localhost:7127` (Local)
 
