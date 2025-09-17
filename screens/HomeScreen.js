@@ -30,7 +30,7 @@ export default function HomeScreen({ navigation }) {
       <View style={styles.featuredSection}>
         <View style={styles.featuredImagePlaceholder}>
           <MaterialCommunityIcons name="silverware-fork-knife" size={60} color="#FF6B35" />
-          <Text style={styles.featuredText}>Today's Special</Text>
+          <Text style={styles.featuredText}>Today's Specialsss</Text>
         </View>
       </View>
 
