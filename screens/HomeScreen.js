@@ -7,13 +7,13 @@ export default function HomeScreen({ navigation }) {
     { id: 1, title: 'View Menu', icon: 'food', screen: 'Menu', color: '#FF6B35' },
     { id: 2, title: 'My Orders', icon: 'clipboard-list', screen: 'Orders', color: '#4CAF50' },
     { id: 3, title: 'Reservations', icon: 'calendar', screen: 'Reservations', color: '#2196F3' },
-    { id: 4, title: 'Contact Us', icon: 'phone', screen: 'Contact', color: '#FF5722' },
+    { id: 4, title: 'Table', icon: 'table', screen: 'Table', color: '#FF5722' },
   ];
 
   return (
     <ScrollView style={styles.container}>
       {/* Welcome Section */}
-      <View style={styles.welcomeSection}>
+      <View style={styles.welcomeSection}>  
         <Image 
           source={require('../assets/RMSIcon.png')} 
           style={styles.logoImage}

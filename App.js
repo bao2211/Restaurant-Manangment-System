@@ -8,6 +8,7 @@ import HomeScreen from './screens/HomeScreen';
 import MenuScreen from './screens/MenuScreen';
 import OrdersScreen from './screens/OrdersScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import TableScreen from './screens/TableScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -28,7 +29,10 @@ export default function App() {
               iconName = focused ? 'clipboard-list' : 'clipboard-list-outline';
             } else if (route.name === 'Profile') {
               iconName = focused ? 'account' : 'account-outline';
+            } else if (route.name === 'Table') {
+              iconName = focused ? 'table' : 'table-outline';
             }
+            
 
             return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
           },
@@ -71,6 +75,11 @@ export default function App() {
           name="Profile" 
           component={ProfileScreen} 
           options={{ headerTitle: 'Profile' }}
+        />
+        <Tab.Screen 
+          name="Table" 
+          component={TableScreen} 
+          options={{ headerTitle: 'Table' }}
         />
       </Tab.Navigator>
     </NavigationContainer>

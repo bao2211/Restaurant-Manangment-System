@@ -27,7 +27,7 @@ const extractApiData = (data) => {
       item && 
       typeof item === 'object' && 
       !item.$ref && 
-      (item.foodId || item.cateId || item.orderId || item.billId) // Check for any valid ID type
+      (item.foodId || item.cateId || item.orderId || item.billId || item.tableId || item.userId || item.ingreId) // Check for any valid ID type
     );
   }
   // Handle regular array responses
@@ -212,8 +212,13 @@ export const apiService = {
   // Tables
   getAllTables: async () => {
     try {
+      console.log('Fetching tables from API...');
       const response = await api.get('/api/Table');
-      return response.data;
+      console.log('Raw tables response:', response.data);
+      const extractedData = extractApiData(response.data);
+      console.log('Extracted tables data:', extractedData);
+      console.log('Number of tables:', extractedData?.length || 0);
+      return extractedData;
     } catch (error) {
       console.error('Error fetching tables:', error);
       throw error;
@@ -222,8 +227,12 @@ export const apiService = {
 
   getAvailableTables: async () => {
     try {
+      console.log('Fetching available tables from API...');
       const response = await api.get('/api/Table/available');
-      return response.data;
+      console.log('Raw available tables response:', response.data);
+      const extractedData = extractApiData(response.data);
+      console.log('Extracted available tables data:', extractedData);
+      return extractedData;
     } catch (error) {
       console.error('Error fetching available tables:', error);
       throw error;
