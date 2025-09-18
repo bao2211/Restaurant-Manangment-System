@@ -225,6 +225,54 @@ export const apiService = {
     }
   },
 
+  createTable: async (tableData) => {
+    try {
+      console.log('Creating new table with data:', tableData);
+      
+      // Test connection first
+      const connectionTest = await apiService.testConnection();
+      if (!connectionTest) {
+        throw new Error('Cannot connect to API server');
+      }
+      
+      const response = await api.post('/api/Table', tableData);
+      console.log('Create table response status:', response.status);
+      console.log('Create table response data:', response.data);
+      
+      // Return the created table data
+      return response.data;
+    } catch (error) {
+      console.error('Error creating table - Full error:', error);
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
+      
+      // Provide more specific error messages
+      if (error.response?.status === 400) {
+        throw new Error('Invalid table data. Please check all fields.');
+      } else if (error.response?.status === 409) {
+        throw new Error('Table ID already exists. Please use a different ID.');
+      } else if (error.response?.status === 500) {
+        throw new Error('Server error. Please try again later.');
+      } else if (error.message.includes('Network Error') || error.code === 'NETWORK_ERROR') {
+        throw new Error('Cannot connect to server. Please check your internet connection.');
+      } else {
+        throw new Error(error.response?.data?.detail || error.message || 'Failed to create table');
+      }
+    }
+  },
+
+  updateTable: async (tableId, tableData) => {
+    try {
+      console.log('Updating table:', tableId, tableData);
+      const response = await api.put(`/api/Table/${tableId}`, tableData);
+      console.log('Update table response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating table:', error);
+      throw error;
+    }
+  },
+
   getAvailableTables: async () => {
     try {
       console.log('Fetching available tables from API...');
