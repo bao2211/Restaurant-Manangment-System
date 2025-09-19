@@ -318,27 +318,27 @@ export default function MenuScreen({ navigation }) {
           style={styles.categoryScrollView}
         >
           {categories.map((category) => (
-          <TouchableOpacity
-            key={category.id}
-            style={[
-              styles.categoryTab,
-              selectedCategory === category.id && styles.activeCategoryTab
-            ]}
-            onPress={() => setSelectedCategory(category.id)}
-          >
-            <MaterialCommunityIcons 
-              name={category.icon} 
-              size={18} 
-              color={selectedCategory === category.id ? 'white' : '#FF6B35'} 
-            />
-            <Text style={[
-              styles.categoryText,
-              selectedCategory === category.id && styles.activeCategoryText
-            ]}>
-              {category.name}
-            </Text>
-          </TouchableOpacity>
-        ))}
+            <TouchableOpacity
+              key={category.id}
+              style={[
+                styles.categoryTab,
+                selectedCategory === category.id && styles.activeCategoryTab
+              ]}
+              onPress={() => setSelectedCategory(category.id)}
+            >
+              <MaterialCommunityIcons 
+                name={category.icon} 
+                size={18} 
+                color={selectedCategory === category.id ? 'white' : '#FF6B35'} 
+              />
+              <Text style={[
+                styles.categoryText,
+                selectedCategory === category.id && styles.activeCategoryText
+              ]}>
+                {category.name}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </ScrollView>
       </View>
 
@@ -347,7 +347,6 @@ export default function MenuScreen({ navigation }) {
         <Text style={styles.categoryTitle}>
           {selectedCategory === 'all' ? 'Tất cả món ăn' : (categories.find(cat => cat.id === selectedCategory)?.name || 'Menu Items')}
         </Text>
-        
         {loadingItems ? (
           <View style={styles.itemsLoadingContainer}>
             <ActivityIndicator size="large" color="#FF6B35" />

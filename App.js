@@ -72,14 +72,14 @@ export default function App() {
           options={{ headerTitle: 'My Orders' }}
         />
         <Tab.Screen 
-          name="Profile" 
-          component={ProfileScreen} 
-          options={{ headerTitle: 'Profile' }}
-        />
-        <Tab.Screen 
           name="Table" 
           component={TableScreen} 
           options={{ headerTitle: 'Table' }}
+        />
+          <Tab.Screen 
+          name="Profile" 
+          component={ProfileScreen} 
+          options={{ headerTitle: 'Profile' }}
         />
       </Tab.Navigator>
     </NavigationContainer>

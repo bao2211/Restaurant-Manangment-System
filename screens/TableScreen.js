@@ -18,7 +18,7 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { apiService } from '../services/apiService';
 
-export default function TableScreen() {
+export default function TableScreen({ navigation }) {
   const [tables, setTables] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -30,6 +30,7 @@ export default function TableScreen() {
     status: 'Available'
   });
   const [submitting, setSubmitting] = useState(false);
+  const [showFullTableModal, setShowFullTableModal] = useState(false);
 
   const handleAddTable = async () => {
     try {
@@ -286,14 +287,22 @@ export default function TableScreen() {
     }
   };
 
+  const handleCreateOrder = (table) => {
+    if (table.status?.toLowerCase() === 'đã chiếm giữ' || table.status?.toLowerCase() === 'occupied') {
+      setShowFullTableModal(true);
+      return;
+    }
+    navigation.navigate('Menu', { selectedTable: table });
+  };
+
   const renderTableItem = ({ item }) => (
-    <TouchableOpacity style={styles.tableCard}>
+    <View style={styles.tableCard}>
       <View style={styles.tableHeader}>
         <View style={styles.tableInfo}>
           <Text style={styles.tableName}>{item.tableName || `Table ${item.tableId}`}</Text>
           <Text style={styles.tableId}>ID: {item.tableId}</Text>
         </View>
-        <View style={[styles.statusBadge, { backgroundColor: getTableStatusColor(item.status) }]}>
+        <View style={[styles.statusBadge, { backgroundColor: getTableStatusColor(item.status) }]}> 
           <MaterialCommunityIcons 
             name={getTableStatusIcon(item.status)} 
             size={16} 
@@ -302,16 +311,23 @@ export default function TableScreen() {
           <Text style={styles.statusText}>{item.status || 'Unknown'}</Text>
         </View>
       </View>
-      
       <View style={styles.tableDetails}>
         <View style={styles.detailRow}>
           <MaterialCommunityIcons name="account-group" size={20} color="#666" />
           <Text style={styles.detailText}>
             Seats: {item.numOfSeats || item.capacity || 'N/A'} people
           </Text>
+          <View style={styles.detailRowSpacer} />
+          <TouchableOpacity
+            style={styles.createOrderButton}
+            onPress={() => handleCreateOrder(item)}
+          >
+            <MaterialCommunityIcons name="plus-box" size={28} color="#3498DB" />
+            <Text style={styles.createOrderText}>Chọn bàn</Text>
+          </TouchableOpacity>
         </View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 
   if (loading) {
@@ -330,6 +346,28 @@ export default function TableScreen() {
 
   return (
     <View style={styles.container}>
+      {/* Modal thông báo bàn đã đầy */}
+      <Modal
+        visible={showFullTableModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowFullTableModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.fullTableModalContent}>
+            <MaterialCommunityIcons name="alert-circle" size={48} color="#F44336" style={{ marginBottom: 10 }} />
+            <Text style={styles.fullTableModalTitle}>Bàn này đã đầy</Text>
+            <Text style={styles.fullTableModalText}>Vui lòng chọn bàn khác!</Text>
+            <TouchableOpacity
+              style={styles.fullTableModalButton}
+              onPress={() => setShowFullTableModal(false)}
+            >
+              <Text style={styles.fullTableModalButtonText}>Đóng</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       <Modal
         visible={isAddModalVisible}
         animationType="slide"
@@ -643,6 +681,66 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   retryButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  createOrderButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#EAF6FB',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginLeft: 'auto',
+    elevation: 2,
+  },
+  createOrderText: {
+    fontSize: 16,
+    color: '#3498DB',
+    fontWeight: 'bold',
+    marginLeft: 8,
+  },
+  detailRowSpacer: {
+    flex: 1,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fullTableModalContent: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 30,
+    alignItems: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    minWidth: 260,
+  },
+  fullTableModalTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#F44336',
+    marginBottom: 8,
+  },
+  fullTableModalText: {
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 18,
+    textAlign: 'center',
+  },
+  fullTableModalButton: {
+    backgroundColor: '#F44336',
+    paddingHorizontal: 28,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  fullTableModalButtonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
