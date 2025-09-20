@@ -10,8 +10,10 @@ builder.Services.AddDbContext<DBContext>(options =>
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-        options.JsonSerializerOptions.MaxDepth = 64;
+        // Remove reference handler to avoid $ref objects
+        options.JsonSerializerOptions.ReferenceHandler = null;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+        options.JsonSerializerOptions.MaxDepth = 32;
     });
 
 // Add CORS support

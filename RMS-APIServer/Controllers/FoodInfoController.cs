@@ -17,14 +17,28 @@ namespace RMS_APIServer.Controllers
 
         // GET: api/FoodInfo
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<FoodInfo>>> GetFoodInfos()
+        public async Task<ActionResult<IEnumerable<object>>> GetFoodInfos()
         {
-            return await _context.FoodInfos.Include(f => f.Cate).ToListAsync();
+            var foodInfos = await _context.FoodInfos.Include(f => f.Cate).ToListAsync();
+
+            // Return clean data without circular references
+            var result = foodInfos.Select(f => new
+            {
+                foodId = f.FoodId,
+                foodName = f.FoodName,
+                unitPrice = f.UnitPrice,
+                description = f.Description,
+                cateId = f.CateId,
+                foodImage = f.FoodImage,
+                categoryName = f.Cate?.CateName
+            }).ToList();
+
+            return Ok(result);
         }
 
         // GET: api/FoodInfo/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<FoodInfo>> GetFoodInfo(string id)
+        public async Task<ActionResult<object>> GetFoodInfo(string id)
         {
             var foodInfo = await _context.FoodInfos
                 .Include(f => f.Cate)
@@ -35,17 +49,43 @@ namespace RMS_APIServer.Controllers
                 return NotFound();
             }
 
-            return foodInfo;
+            // Return clean data without circular references
+            var result = new
+            {
+                foodId = foodInfo.FoodId,
+                foodName = foodInfo.FoodName,
+                unitPrice = foodInfo.UnitPrice,
+                description = foodInfo.Description,
+                cateId = foodInfo.CateId,
+                foodImage = foodInfo.FoodImage,
+                categoryName = foodInfo.Cate?.CateName
+            };
+
+            return Ok(result);
         }
 
         // GET: api/FoodInfo/category/5
         [HttpGet("category/{categoryId}")]
-        public async Task<ActionResult<IEnumerable<FoodInfo>>> GetFoodInfosByCategory(string categoryId)
+        public async Task<ActionResult<IEnumerable<object>>> GetFoodInfosByCategory(string categoryId)
         {
-            return await _context.FoodInfos
+            var foodInfos = await _context.FoodInfos
                 .Include(f => f.Cate)
                 .Where(f => f.CateId == categoryId)
                 .ToListAsync();
+
+            // Return clean data without circular references
+            var result = foodInfos.Select(f => new
+            {
+                foodId = f.FoodId,
+                foodName = f.FoodName,
+                unitPrice = f.UnitPrice,
+                description = f.Description,
+                cateId = f.CateId,
+                foodImage = f.FoodImage,
+                categoryName = f.Cate?.CateName
+            }).ToList();
+
+            return Ok(result);
         }
 
         // PUT: api/FoodInfo/5
