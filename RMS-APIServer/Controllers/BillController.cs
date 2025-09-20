@@ -17,17 +17,33 @@ namespace RMS_APIServer.Controllers
 
         // GET: api/Bill
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Bill>>> GetBills()
+        public async Task<ActionResult<IEnumerable<object>>> GetBills()
         {
-            return await _context.Bills
+            var bills = await _context.Bills
                 .Include(b => b.Order)
                 .Include(b => b.User)
                 .ToListAsync();
+
+            // Return clean data without circular references
+            var result = bills.Select(bill => new
+            {
+                billId = bill.BillId,
+                orderId = bill.OrderId,
+                userId = bill.UserId,
+                userName = bill.User?.UserName,
+                total = bill.Total,
+                discount = bill.Discount,
+                totalFinal = bill.TotalFinal,
+                payment = bill.Payment,
+                createdTime = bill.CreatedTime
+            }).ToList();
+
+            return Ok(result);
         }
 
         // GET: api/Bill/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Bill>> GetBill(string id)
+        public async Task<ActionResult<object>> GetBill(string id)
         {
             var bill = await _context.Bills
                 .Include(b => b.Order)
@@ -40,40 +56,109 @@ namespace RMS_APIServer.Controllers
                 return NotFound();
             }
 
-            return bill;
+            // Return clean data without circular references
+            var result = new
+            {
+                billId = bill.BillId,
+                orderId = bill.OrderId,
+                userId = bill.UserId,
+                userName = bill.User?.UserName,
+                total = bill.Total,
+                discount = bill.Discount,
+                totalFinal = bill.TotalFinal,
+                payment = bill.Payment,
+                createdTime = bill.CreatedTime,
+                billDetails = bill.BillDetails?.Select(bd => new
+                {
+                    billId = bd.BillId,
+                    orderId = bd.OrderId,
+                    quantity = bd.Quantity,
+                    unitPrice = bd.UnitPrice
+                }).ToList()
+            };
+
+            return Ok(result);
         }
 
         // GET: api/Bill/order/5
         [HttpGet("order/{orderId}")]
-        public async Task<ActionResult<IEnumerable<Bill>>> GetBillsByOrder(string orderId)
+        public async Task<ActionResult<IEnumerable<object>>> GetBillsByOrder(string orderId)
         {
-            return await _context.Bills
+            var bills = await _context.Bills
                 .Include(b => b.Order)
                 .Include(b => b.User)
                 .Where(b => b.OrderId == orderId)
                 .ToListAsync();
+
+            // Return clean data without circular references
+            var result = bills.Select(bill => new
+            {
+                billId = bill.BillId,
+                orderId = bill.OrderId,
+                userId = bill.UserId,
+                userName = bill.User?.UserName,
+                total = bill.Total,
+                discount = bill.Discount,
+                totalFinal = bill.TotalFinal,
+                payment = bill.Payment,
+                createdTime = bill.CreatedTime
+            }).ToList();
+
+            return Ok(result);
         }
 
         // GET: api/Bill/user/5
         [HttpGet("user/{userId}")]
-        public async Task<ActionResult<IEnumerable<Bill>>> GetBillsByUser(string userId)
+        public async Task<ActionResult<IEnumerable<object>>> GetBillsByUser(string userId)
         {
-            return await _context.Bills
+            var bills = await _context.Bills
                 .Include(b => b.Order)
                 .Include(b => b.User)
                 .Where(b => b.UserId == userId)
                 .ToListAsync();
+
+            // Return clean data without circular references
+            var result = bills.Select(bill => new
+            {
+                billId = bill.BillId,
+                orderId = bill.OrderId,
+                userId = bill.UserId,
+                userName = bill.User?.UserName,
+                total = bill.Total,
+                discount = bill.Discount,
+                totalFinal = bill.TotalFinal,
+                payment = bill.Payment,
+                createdTime = bill.CreatedTime
+            }).ToList();
+
+            return Ok(result);
         }
 
         // GET: api/Bill/date/2025-09-10
         [HttpGet("date/{date}")]
-        public async Task<ActionResult<IEnumerable<Bill>>> GetBillsByDate(DateTime date)
+        public async Task<ActionResult<IEnumerable<object>>> GetBillsByDate(DateTime date)
         {
-            return await _context.Bills
+            var bills = await _context.Bills
                 .Include(b => b.Order)
                 .Include(b => b.User)
                 .Where(b => b.CreatedTime.HasValue && b.CreatedTime.Value.Date == date.Date)
                 .ToListAsync();
+
+            // Return clean data without circular references
+            var result = bills.Select(bill => new
+            {
+                billId = bill.BillId,
+                orderId = bill.OrderId,
+                userId = bill.UserId,
+                userName = bill.User?.UserName,
+                total = bill.Total,
+                discount = bill.Discount,
+                totalFinal = bill.TotalFinal,
+                payment = bill.Payment,
+                createdTime = bill.CreatedTime
+            }).ToList();
+
+            return Ok(result);
         }
 
         // PUT: api/Bill/5

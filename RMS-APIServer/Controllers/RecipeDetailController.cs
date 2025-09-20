@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RMS_APIServer.Models;
 
@@ -17,28 +17,52 @@ namespace RMS_APIServer.Controllers
 
         // GET: api/RecipeDetail
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RecipeDetail>>> GetRecipeDetails()
+        public async Task<ActionResult<IEnumerable<object>>> GetRecipeDetails()
         {
-            return await _context.RecipeDetails
+            var recipeDetails = await _context.RecipeDetails
                 .Include(rd => rd.Recipe)
                 .Include(rd => rd.Ingre)
                 .ToListAsync();
+
+            // Return clean data without circular references
+            var result = recipeDetails.Select(rd => new
+            {
+                recipeId = rd.RecipeId,
+                ingredientId = rd.IngreId,
+                ingredientName = rd.Ingre?.IngreName,
+                quantity = rd.Quantity,
+                unitMeasurement = rd.UnitMeasurement
+            }).ToList();
+
+            return Ok(result);
         }
 
         // GET: api/RecipeDetail/recipe/5
         [HttpGet("recipe/{recipeId}")]
-        public async Task<ActionResult<IEnumerable<RecipeDetail>>> GetRecipeDetailsByRecipe(string recipeId)
+        public async Task<ActionResult<IEnumerable<object>>> GetRecipeDetailsByRecipe(string recipeId)
         {
-            return await _context.RecipeDetails
+            var recipeDetails = await _context.RecipeDetails
                 .Include(rd => rd.Recipe)
                 .Include(rd => rd.Ingre)
                 .Where(rd => rd.RecipeId == recipeId)
                 .ToListAsync();
+
+            // Return clean data without circular references
+            var result = recipeDetails.Select(rd => new
+            {
+                recipeId = rd.RecipeId,
+                ingredientId = rd.IngreId,
+                ingredientName = rd.Ingre?.IngreName,
+                quantity = rd.Quantity,
+                unitMeasurement = rd.UnitMeasurement
+            }).ToList();
+
+            return Ok(result);
         }
 
-        // GET: api/RecipeDetail/recipe/5/ingredient/10
-        [HttpGet("recipe/{recipeId}/ingredient/{ingredientId}")]
-        public async Task<ActionResult<RecipeDetail>> GetRecipeDetail(string recipeId, string ingredientId)
+        // GET: api/RecipeDetail/5/5
+        [HttpGet("{recipeId}/{ingredientId}")]
+        public async Task<ActionResult<object>> GetRecipeDetail(string recipeId, string ingredientId)
         {
             var recipeDetail = await _context.RecipeDetails
                 .Include(rd => rd.Recipe)
@@ -50,11 +74,21 @@ namespace RMS_APIServer.Controllers
                 return NotFound();
             }
 
-            return recipeDetail;
+            // Return clean data without circular references
+            var result = new
+            {
+                recipeId = recipeDetail.RecipeId,
+                ingredientId = recipeDetail.IngreId,
+                ingredientName = recipeDetail.Ingre?.IngreName,
+                quantity = recipeDetail.Quantity,
+                unitMeasurement = recipeDetail.UnitMeasurement
+            };
+
+            return Ok(result);
         }
 
-        // PUT: api/RecipeDetail/recipe/5/ingredient/10
-        [HttpPut("recipe/{recipeId}/ingredient/{ingredientId}")]
+        // PUT: api/RecipeDetail/5/5
+        [HttpPut("{recipeId}/{ingredientId}")]
         public async Task<IActionResult> PutRecipeDetail(string recipeId, string ingredientId, RecipeDetail recipeDetail)
         {
             if (recipeId != recipeDetail.RecipeId || ingredientId != recipeDetail.IngreId)
@@ -107,8 +141,8 @@ namespace RMS_APIServer.Controllers
             return CreatedAtAction("GetRecipeDetail", new { recipeId = recipeDetail.RecipeId, ingredientId = recipeDetail.IngreId }, recipeDetail);
         }
 
-        // DELETE: api/RecipeDetail/recipe/5/ingredient/10
-        [HttpDelete("recipe/{recipeId}/ingredient/{ingredientId}")]
+        // DELETE: api/RecipeDetail/5/5
+        [HttpDelete("{recipeId}/{ingredientId}")]
         public async Task<IActionResult> DeleteRecipeDetail(string recipeId, string ingredientId)
         {
             var recipeDetail = await _context.RecipeDetails.FindAsync(recipeId, ingredientId);

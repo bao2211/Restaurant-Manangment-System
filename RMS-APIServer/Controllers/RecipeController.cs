@@ -17,18 +17,36 @@ namespace RMS_APIServer.Controllers
 
         // GET: api/Recipe
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Recipe>>> GetRecipes()
+        public async Task<ActionResult<IEnumerable<object>>> GetRecipes()
         {
-            return await _context.Recipes
+            var recipes = await _context.Recipes
                 .Include(r => r.Food)
                 .Include(r => r.RecipeDetails)
                     .ThenInclude(rd => rd.Ingre)
                 .ToListAsync();
+
+            // Return clean data without circular references
+            var result = recipes.Select(recipe => new
+            {
+                recipeId = recipe.RecipeId,
+                foodId = recipe.FoodId,
+                foodName = recipe.Food?.FoodName,
+                recipeDescription = recipe.RecipeDescription,
+                recipeDetails = recipe.RecipeDetails?.Select(rd => new
+                {
+                    ingredientId = rd.IngreId,
+                    ingredientName = rd.Ingre?.IngreName,
+                    quantity = rd.Quantity,
+                    unitMeasurement = rd.UnitMeasurement
+                }).ToList()
+            }).ToList();
+
+            return Ok(result);
         }
 
         // GET: api/Recipe/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Recipe>> GetRecipe(string id)
+        public async Task<ActionResult<object>> GetRecipe(string id)
         {
             var recipe = await _context.Recipes
                 .Include(r => r.Food)
@@ -41,19 +59,53 @@ namespace RMS_APIServer.Controllers
                 return NotFound();
             }
 
-            return recipe;
+            // Return clean data without circular references
+            var result = new
+            {
+                recipeId = recipe.RecipeId,
+                foodId = recipe.FoodId,
+                foodName = recipe.Food?.FoodName,
+                recipeDescription = recipe.RecipeDescription,
+                recipeDetails = recipe.RecipeDetails?.Select(rd => new
+                {
+                    ingredientId = rd.IngreId,
+                    ingredientName = rd.Ingre?.IngreName,
+                    quantity = rd.Quantity,
+                    unitMeasurement = rd.UnitMeasurement
+                }).ToList()
+            };
+
+            return Ok(result);
         }
 
         // GET: api/Recipe/food/5
         [HttpGet("food/{foodId}")]
-        public async Task<ActionResult<IEnumerable<Recipe>>> GetRecipesByFood(string foodId)
+        public async Task<ActionResult<IEnumerable<object>>> GetRecipesByFood(string foodId)
         {
-            return await _context.Recipes
+            var recipes = await _context.Recipes
                 .Include(r => r.Food)
                 .Include(r => r.RecipeDetails)
                     .ThenInclude(rd => rd.Ingre)
                 .Where(r => r.FoodId == foodId)
                 .ToListAsync();
+
+            // Return clean data without circular references
+            var result = recipes.Select(recipe => new
+            {
+                recipeId = recipe.RecipeId,
+                foodId = recipe.FoodId,
+                foodName = recipe.Food?.FoodName,
+                recipeDescription = recipe.RecipeDescription,
+                recipeDetails = recipe.RecipeDetails?.Select(rd => new
+                {
+                    ingredientId = rd.IngreId,
+                    ingredientName = rd.Ingre?.IngreName,
+                    quantity = rd.Quantity,
+                    unitMeasurement = rd.UnitMeasurement
+                }).ToList()
+            }).ToList();
+
+            return Ok(result);
         }
 
         // PUT: api/Recipe/5

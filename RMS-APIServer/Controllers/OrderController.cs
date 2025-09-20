@@ -54,7 +54,7 @@ namespace RMS_APIServer.Controllers
 
         // GET: api/Order/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> GetOrder(string id)
+        public async Task<ActionResult<object>> GetOrder(string id)
         {
             var order = await _context.Orders
                 .Include(o => o.Table)
@@ -68,46 +68,128 @@ namespace RMS_APIServer.Controllers
                 return NotFound();
             }
 
-            return order;
+            // Return clean data without circular references
+            var result = new
+            {
+                orderId = order.OrderId,
+                tableId = order.TableId,
+                tableName = order.Table?.TableName,
+                userId = order.UserId,
+                userName = order.User?.UserName,
+                createdTime = order.CreatedTime,
+                status = order.Status,
+                orderDetails = order.OrderDetails?.Select(od => new
+                {
+                    foodId = od.FoodId,
+                    foodName = od.Food?.FoodName,
+                    quantity = od.Quantity,
+                    unitPrice = od.Food?.UnitPrice
+                }).ToList()
+            };
+
+            return Ok(result);
         }
 
         // GET: api/Order/table/5
         [HttpGet("table/{tableId}")]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrdersByTable(string tableId)
+        public async Task<ActionResult<IEnumerable<object>>> GetOrdersByTable(string tableId)
         {
-            return await _context.Orders
+            var orders = await _context.Orders
                 .Include(o => o.Table)
                 .Include(o => o.User)
                 .Include(o => o.OrderDetails)
                     .ThenInclude(od => od.Food)
                 .Where(o => o.TableId == tableId)
                 .ToListAsync();
+
+            // Return clean data without circular references
+            var result = orders.Select(order => new
+            {
+                orderId = order.OrderId,
+                tableId = order.TableId,
+                tableName = order.Table?.TableName,
+                userId = order.UserId,
+                userName = order.User?.UserName,
+                createdTime = order.CreatedTime,
+                status = order.Status,
+                orderDetails = order.OrderDetails?.Select(od => new
+                {
+                    foodId = od.FoodId,
+                    foodName = od.Food?.FoodName,
+                    quantity = od.Quantity,
+                    unitPrice = od.Food?.UnitPrice
+                }).ToList()
+            }).ToList();
+
+            return Ok(result);
         }
 
         // GET: api/Order/user/5
         [HttpGet("user/{userId}")]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrdersByUser(string userId)
+        public async Task<ActionResult<IEnumerable<object>>> GetOrdersByUser(string userId)
         {
-            return await _context.Orders
+            var orders = await _context.Orders
                 .Include(o => o.Table)
                 .Include(o => o.User)
                 .Include(o => o.OrderDetails)
                     .ThenInclude(od => od.Food)
                 .Where(o => o.UserId == userId)
                 .ToListAsync();
+
+            // Return clean data without circular references
+            var result = orders.Select(order => new
+            {
+                orderId = order.OrderId,
+                tableId = order.TableId,
+                tableName = order.Table?.TableName,
+                userId = order.UserId,
+                userName = order.User?.UserName,
+                createdTime = order.CreatedTime,
+                status = order.Status,
+                orderDetails = order.OrderDetails?.Select(od => new
+                {
+                    foodId = od.FoodId,
+                    foodName = od.Food?.FoodName,
+                    quantity = od.Quantity,
+                    unitPrice = od.Food?.UnitPrice
+                }).ToList()
+            }).ToList();
+
+            return Ok(result);
         }
 
         // GET: api/Order/status/pending
         [HttpGet("status/{status}")]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrdersByStatus(string status)
+        public async Task<ActionResult<IEnumerable<object>>> GetOrdersByStatus(string status)
         {
-            return await _context.Orders
+            var orders = await _context.Orders
                 .Include(o => o.Table)
                 .Include(o => o.User)
                 .Include(o => o.OrderDetails)
                     .ThenInclude(od => od.Food)
                 .Where(o => o.Status == status)
                 .ToListAsync();
+
+            // Return clean data without circular references
+            var result = orders.Select(order => new
+            {
+                orderId = order.OrderId,
+                tableId = order.TableId,
+                tableName = order.Table?.TableName,
+                userId = order.UserId,
+                userName = order.User?.UserName,
+                createdTime = order.CreatedTime,
+                status = order.Status,
+                orderDetails = order.OrderDetails?.Select(od => new
+                {
+                    foodId = od.FoodId,
+                    foodName = od.Food?.FoodName,
+                    quantity = od.Quantity,
+                    unitPrice = od.Food?.UnitPrice
+                }).ToList()
+            }).ToList();
+
+            return Ok(result);
         }
 
         // PUT: api/Order/5

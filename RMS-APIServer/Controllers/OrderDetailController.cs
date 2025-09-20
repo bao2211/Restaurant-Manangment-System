@@ -17,28 +17,52 @@ namespace RMS_APIServer.Controllers
 
         // GET: api/OrderDetail
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<OrderDetail>>> GetOrderDetails()
+        public async Task<ActionResult<IEnumerable<object>>> GetOrderDetails()
         {
-            return await _context.OrderDetails
+            var orderDetails = await _context.OrderDetails
                 .Include(od => od.Food)
                 .Include(od => od.Order)
                 .ToListAsync();
+
+            // Return clean data without circular references
+            var result = orderDetails.Select(od => new
+            {
+                foodId = od.FoodId,
+                foodName = od.Food?.FoodName,
+                orderId = od.OrderId,
+                quantity = od.Quantity,
+                unitPrice = od.Food?.UnitPrice
+            }).ToList();
+
+            return Ok(result);
         }
 
         // GET: api/OrderDetail/order/5
         [HttpGet("order/{orderId}")]
-        public async Task<ActionResult<IEnumerable<OrderDetail>>> GetOrderDetailsByOrder(string orderId)
+        public async Task<ActionResult<IEnumerable<object>>> GetOrderDetailsByOrder(string orderId)
         {
-            return await _context.OrderDetails
+            var orderDetails = await _context.OrderDetails
                 .Include(od => od.Food)
                 .Include(od => od.Order)
                 .Where(od => od.OrderId == orderId)
                 .ToListAsync();
+
+            // Return clean data without circular references
+            var result = orderDetails.Select(od => new
+            {
+                foodId = od.FoodId,
+                foodName = od.Food?.FoodName,
+                orderId = od.OrderId,
+                quantity = od.Quantity,
+                unitPrice = od.Food?.UnitPrice
+            }).ToList();
+
+            return Ok(result);
         }
 
         // GET: api/OrderDetail/food/5/order/10
         [HttpGet("food/{foodId}/order/{orderId}")]
-        public async Task<ActionResult<OrderDetail>> GetOrderDetail(string foodId, string orderId)
+        public async Task<ActionResult<object>> GetOrderDetail(string foodId, string orderId)
         {
             var orderDetail = await _context.OrderDetails
                 .Include(od => od.Food)
@@ -50,7 +74,17 @@ namespace RMS_APIServer.Controllers
                 return NotFound();
             }
 
-            return orderDetail;
+            // Return clean data without circular references
+            var result = new
+            {
+                foodId = orderDetail.FoodId,
+                foodName = orderDetail.Food?.FoodName,
+                orderId = orderDetail.OrderId,
+                quantity = orderDetail.Quantity,
+                unitPrice = orderDetail.Food?.UnitPrice
+            };
+
+            return Ok(result);
         }
 
         // PUT: api/OrderDetail/food/5/order/10
