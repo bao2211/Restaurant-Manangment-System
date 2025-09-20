@@ -3,6 +3,22 @@
 Base URL: `http://localhost:8080` (Docker) or `http://localhost:5181` (Local)
 Base URL (HTTPS): `https://localhost:8081` (Docker) or `https://localhost:7127` (Local)
 
+## ⚡ **API IMPROVEMENTS & CHANGES**
+
+### **✅ Recent Updates (September 2025)**
+
+- **Eliminated Circular References**: All API endpoints now return clean data without `$ref` objects
+- **DTO Pattern Implementation**: Controllers use Data Transfer Objects for cleaner responses
+- **JSON Serialization Optimization**: Removed `ReferenceHandler.Preserve` to prevent circular references
+- **Improved Performance**: Faster API responses with optimized data structures
+- **Better Mobile App Integration**: Consistent data format across all endpoints
+
+### **🔧 Breaking Changes**
+
+- API responses no longer contain `$ref` circular reference objects
+- All endpoints now return simplified, clean data structures
+- Category and related entity information is flattened for better consumption
+
 ## Authentication
 
 - **Login Endpoint**: `POST /api/User/login`
@@ -295,6 +311,7 @@ Content-Type: application/json
 
 - **Endpoint**: `GET /api/FoodInfo`
 - **Description**: Retrieve all food items with category information
+- **⚡ Updated**: Now returns clean data without circular references
 
 **Example Request:**
 
@@ -302,7 +319,7 @@ Content-Type: application/json
 GET /api/FoodInfo
 ```
 
-**Example Response:**
+**Example Response (Updated Format):**
 
 ```json
 [
@@ -313,13 +330,20 @@ GET /api/FoodInfo
     "unitPrice": 12.99,
     "description": "Fresh romaine lettuce with caesar dressing",
     "cateId": "C001",
-    "cate": {
-      "cateId": "C001",
-      "cateName": "Appetizers"
-    }
+    "categoryName": "Appetizers"
+  },
+  {
+    "foodId": "1",
+    "foodName": "Cơm gà xối mỡ",
+    "unitPrice": 56000.0,
+    "cateId": "1",
+    "foodImage": "https://barona.vn/storage/meo-vat/83/com-ga-xoi-mo.jpg",
+    "categoryName": "Cơm"
   }
 ]
 ```
+
+**⚠️ Breaking Change**: Previously returned nested `cate` object with potential circular references. Now returns flat structure with `categoryName` field.
 
 #### 2. Get Food Item by ID
 
@@ -377,6 +401,7 @@ Content-Type: application/json
 
 - **Endpoint**: `GET /api/Order`
 - **Description**: Retrieve all orders with details
+- **⚡ Updated**: Returns clean DTO format without circular references
 
 **Example Request:**
 
@@ -384,30 +409,40 @@ Content-Type: application/json
 GET /api/Order
 ```
 
-**Example Response (OrderDto format):**
+**Example Response (Updated DTO Format):**
 
 ```json
 [
   {
-    "id": 1,
-    "tableId": 1,
-    "userId": 1,
+    "orderId": "O001",
+    "tableId": "T001",
+    "userId": "U001",
+    "userName": "John Doe",
+    "tableName": "Table 1",
     "orderDate": "2025-09-12T14:30:00",
     "status": "Pending",
+    "total": 45.97,
+    "note": "Extra spicy",
+    "discount": 5.0,
     "orderDetails": [
       {
-        "foodId": 1,
-        "quantity": 2
+        "foodId": "F001",
+        "foodName": "Caesar Salad",
+        "quantity": 2,
+        "unitPrice": 12.99
       }
     ]
   }
 ]
 ```
 
+**⚠️ Breaking Change**: No longer returns nested objects with potential circular references. User and table information is flattened.
+
 ### 2. Get Order by ID
 
 - **Endpoint**: `GET /api/Order/{id}`
 - **Description**: Retrieve specific order with full details
+- **⚡ Updated**: Returns clean DTO format without circular references
 
 **Example Request:**
 
@@ -415,32 +450,32 @@ GET /api/Order
 GET /api/Order/O001
 ```
 
-**Example Response (Full Order object):**
+**Example Response (Updated Clean Format):**
 
 ```json
 {
   "orderId": "O001",
-  "createdTime": "2025-09-12T14:30:00",
+  "tableId": "T001",
+  "userId": "U001",
+  "userName": "John Doe",
+  "tableName": "Table 1",
+  "orderDate": "2025-09-12T14:30:00",
   "status": "Pending",
   "total": 45.97,
   "note": "Extra spicy",
   "discount": 5.0,
-  "tableId": "T001",
-  "userId": "U001",
   "orderDetails": [
     {
       "foodId": "F001",
-      "orderId": "O001",
+      "foodName": "Caesar Salad",
       "quantity": 2,
-      "food": {
-        "foodId": "F001",
-        "foodName": "Caesar Salad",
-        "unitPrice": 12.99
-      }
+      "unitPrice": 12.99
     }
   ]
 }
 ```
+
+**⚠️ Breaking Change**: Previously included full nested objects. Now returns flattened structure with essential information only.
 
 ### 3. Get Orders by Table
 
@@ -512,6 +547,7 @@ Content-Type: application/json
 ### 2. Get Order Details by Order
 
 - **Endpoint**: `GET /api/OrderDetail/order/{orderId}`
+- **⚡ Updated**: Returns clean format without circular references
 
 **Example Request:**
 
@@ -519,7 +555,7 @@ Content-Type: application/json
 GET /api/OrderDetail/order/O001
 ```
 
-**Example Response:**
+**Example Response (Updated Clean Format):**
 
 ```json
 [
@@ -527,14 +563,13 @@ GET /api/OrderDetail/order/O001
     "foodId": "F001",
     "orderId": "O001",
     "quantity": 2,
-    "food": {
-      "foodId": "F001",
-      "foodName": "Caesar Salad",
-      "unitPrice": 12.99
-    }
+    "foodName": "Caesar Salad",
+    "unitPrice": 12.99
   }
 ]
 ```
+
+**⚠️ Breaking Change**: No longer returns nested `food` object. Food information is flattened into the response.
 
 ### 3. Get Specific Order Detail
 
@@ -573,6 +608,7 @@ Content-Type: application/json
 
 - **Endpoint**: `GET /api/Bill`
 - **Description**: Retrieve all bills with order and user information
+- **⚡ Updated**: Returns clean format without circular references
 
 **Example Request:**
 
@@ -580,7 +616,7 @@ Content-Type: application/json
 GET /api/Bill
 ```
 
-**Example Response:**
+**Example Response (Updated Clean Format):**
 
 ```json
 [
@@ -592,10 +628,14 @@ GET /api/Bill
     "payment": "Cash",
     "createdTime": "2025-09-12T15:30:00",
     "orderId": "O001",
-    "userId": "U001"
+    "userId": "U001",
+    "userName": "John Doe",
+    "orderDate": "2025-09-12T14:30:00"
   }
 ]
 ```
+
+**⚠️ Breaking Change**: User and order information is now flattened instead of nested objects.
 
 ### 2. Get Bill by ID
 
@@ -785,6 +825,7 @@ Content-Type: application/json
 
 - **Endpoint**: `GET /api/Recipe`
 - **Description**: Retrieve all recipes with ingredients
+- **⚡ Updated**: Returns clean format without circular references
 
 **Example Request:**
 
@@ -792,32 +833,29 @@ Content-Type: application/json
 GET /api/Recipe
 ```
 
-**Example Response:**
+**Example Response (Updated Clean Format):**
 
 ```json
 [
   {
     "recipeId": "R001",
     "foodId": "F001",
-    "instruction": "Mix lettuce with dressing",
-    "food": {
-      "foodId": "F001",
-      "foodName": "Caesar Salad"
-    },
+    "foodName": "Caesar Salad",
+    "recipeDescription": "Mix lettuce with dressing",
     "recipeDetails": [
       {
         "recipeId": "R001",
-        "ingreId": "I001",
+        "ingredientId": "I001",
+        "ingredientName": "Lettuce",
         "quantity": 0.2,
-        "ingre": {
-          "ingreId": "I001",
-          "ingreName": "Lettuce"
-        }
+        "unitMeasurement": "kg"
       }
     ]
   }
 ]
 ```
+
+**⚠️ Breaking Change**: Recipe details no longer contain nested `ingre` objects. Ingredient information is flattened.
 
 ### 2. Get Recipe by ID
 
@@ -852,10 +890,26 @@ GET /api/Recipe/food/F001
 ### 1. Get All Recipe Details
 
 - **Endpoint**: `GET /api/RecipeDetail`
+- **⚡ Updated**: Returns clean format without circular references
+
+**Example Response (Updated Clean Format):**
+
+```json
+[
+  {
+    "recipeId": "R001",
+    "ingredientId": "I001",
+    "ingredientName": "Lettuce",
+    "quantity": 0.2,
+    "unitMeasurement": "kg"
+  }
+]
+```
 
 ### 2. Get Recipe Details by Recipe
 
 - **Endpoint**: `GET /api/RecipeDetail/recipe/{recipeId}`
+- **⚡ Updated**: Returns clean format without circular references
 
 **Example Request:**
 
@@ -863,9 +917,38 @@ GET /api/Recipe/food/F001
 GET /api/RecipeDetail/recipe/R001
 ```
 
+**Example Response (Updated Clean Format):**
+
+```json
+[
+  {
+    "recipeId": "R001",
+    "ingredientId": "I001",
+    "ingredientName": "Lettuce",
+    "quantity": 0.2,
+    "unitMeasurement": "kg"
+  }
+]
+```
+
+**⚠️ Breaking Change**: No longer returns nested recipe or ingredient objects. All information is flattened.
+
 ### 3. Get Specific Recipe Detail
 
-- **Endpoint**: `GET /api/RecipeDetail/recipe/{recipeId}/ingredient/{ingredientId}`
+- **Endpoint**: `GET /api/RecipeDetail/{recipeId}/{ingredientId}`
+- **⚡ Updated**: Returns clean format without circular references
+
+**Example Response (Updated Clean Format):**
+
+```json
+{
+  "recipeId": "R001",
+  "ingredientId": "I001",
+  "ingredientName": "Lettuce",
+  "quantity": 0.2,
+  "unitMeasurement": "kg"
+}
+```
 
 ### 4. Create Recipe Detail
 
@@ -1032,8 +1115,32 @@ fetch("http://localhost:8080/api/User/login", {
 - Database uses Entity Framework Core with SQL Server
 - All controllers support standard CRUD operations
 
+### **📊 API Performance Improvements**
+
+- **Eliminated $ref Objects**: No more circular reference handling needed in client apps
+- **DTO Pattern**: Clean, predictable data structures across all endpoints
+- **Reduced Payload Size**: Flattened responses mean smaller data transfers
+- **Better Caching**: Consistent data format enables better client-side caching
+
+### **🔄 Migration Guide for Existing Clients**
+
+If you're updating from the previous API version:
+
+1. **Remove $ref handling logic** from your client applications
+2. **Update data extraction** to expect direct arrays instead of `$values` wrapped arrays
+3. **Flatten nested object access** (e.g., `item.cate.cateName` → `item.categoryName`)
+4. **Update error handling** for cleaner, more consistent error responses
+
+### **🏗️ Architecture Changes**
+
+- **Program.cs**: Removed `ReferenceHandler.Preserve` from JSON serialization
+- **All Controllers**: Implemented DTO pattern for GET endpoints
+- **Entity Framework**: Modified Include() queries to return clean data structures
+- **JSON Responses**: Optimized for mobile app consumption
+
 ---
 
-**Generated on:** September 12, 2025  
-**API Version:** 1.0  
-**Framework:** ASP.NET Core 8.0
+**Generated on:** September 20, 2025  
+**API Version:** 2.0 (Breaking Changes)  
+**Framework:** ASP.NET Core 8.0  
+**Docker Hub:** `bao2211/rms-apiserver:latest`

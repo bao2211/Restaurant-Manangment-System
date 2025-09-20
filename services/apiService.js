@@ -22,12 +22,12 @@ const api = axios.create({
 const extractApiData = (data) => {
   console.log('extractApiData - Input data:', data);
   
-  // Handle cases where API returns data wrapped in $values
-  if (data && data.$values && Array.isArray(data.$values)) {
-    console.log('Found $values array with length:', data.$values.length);
+  // Handle regular array responses (new clean API format)
+  if (Array.isArray(data)) {
+    console.log('Found direct array with length:', data.length);
     
-    // Filter and clean the data
-    const processed = data.$values
+    // Clean and validate the data
+    const processed = data
       .filter(item => {
         const isValid = item && 
           typeof item === 'object' && 
@@ -56,7 +56,7 @@ const extractApiData = (data) => {
         if (cleanedItem.cateName) {
           cleanedItem.cateName = cleanedItem.cateName.trim();
         }
-        if (cleanedItem.description) {
+        if (cleanedItem.description && typeof cleanedItem.description === 'string') {
           cleanedItem.description = cleanedItem.description.trim();
         }
         if (cleanedItem.foodImage) {
@@ -76,21 +76,21 @@ const extractApiData = (data) => {
     return processed;
   }
   
-  // Handle regular array responses
-  if (Array.isArray(data)) {
-    console.log('Found direct array with length:', data.length);
-    const filtered = data.filter(item => 
-      item && 
-      typeof item === 'object' && 
-      !item.$ref
-    );
-    console.log('extractApiData - Filtered array items:', filtered.length);
-    return filtered;
+  // Handle legacy cases where API returns data wrapped in $values (fallback)
+  if (data && data.$values && Array.isArray(data.$values)) {
+    console.log('Found legacy $values array with length:', data.$values.length);
+    return extractApiData(data.$values); // Recursively process the $values array
   }
   
   // Handle single object responses
-  console.log('extractApiData - Single object response');
-  return data;
+  if (data && typeof data === 'object' && !data.$ref) {
+    console.log('extractApiData - Single object response');
+    return data;
+  }
+  
+  // Handle empty or invalid responses
+  console.log('extractApiData - Invalid or empty response');
+  return [];
 };
 
 // API service object containing all our API calls
@@ -188,8 +188,13 @@ export const apiService = {
   // Food Items
   getAllFoodItems: async () => {
     try {
+      console.log('Fetching all food items from API...');
       const response = await api.get('/api/FoodInfo');
-      return extractApiData(response.data);
+      console.log('Raw food items response:', response.data);
+      const extractedData = extractApiData(response.data);
+      console.log('Extracted food items:', extractedData);
+      console.log('Number of food items:', extractedData?.length || 0);
+      return extractedData;
     } catch (error) {
       console.error('Error fetching food items:', error);
       throw error;

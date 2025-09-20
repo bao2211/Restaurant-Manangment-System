@@ -9,10 +9,12 @@ import {
   Alert, 
   Modal, 
   RefreshControl,
-  ActivityIndicator
+  ActivityIndicator,
+  Image
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
+import * as ImagePicker from 'expo-image-picker';
 import { apiService, API_BASE_URL } from '../services/apiService';
 
 export default function MenuManagerScreen({ navigation }) {
@@ -42,6 +44,9 @@ export default function MenuManagerScreen({ navigation }) {
     cateId: '',
     foodImage: ''
   });
+
+  // Image picker state
+  const [selectedImage, setSelectedImage] = useState(null);
 
   // Category form states
   const [categoryFormData, setCategoryFormData] = useState({
@@ -82,65 +87,43 @@ export default function MenuManagerScreen({ navigation }) {
       let items = [];
       
       try {
-        // Direct fetch with minimal processing
-        const response = await fetch(`${API_BASE_URL}api/FoodInfo`);
-        if (response.ok) {
-          const data = await response.json();
-          console.log('Raw API response received');
-          console.log('Response structure:', Object.keys(data));
+        // Use the updated apiService which handles both old and new formats
+        items = await apiService.getAllFoodItems();
+        console.log('API service returned items:', items?.length || 0);
+        
+        if (Array.isArray(items) && items.length > 0) {
+          // Ensure all items have required properties
+          const processedItems = items.map(item => ({
+            foodId: String(item.foodId || '').trim(),
+            foodName: String(item.foodName || 'Unnamed Item').trim(),
+            unitPrice: parseFloat(item.unitPrice) || 0,
+            description: String(item.description || '').trim(),
+            cateId: String(item.cateId || '').trim(),
+            foodImage: String(item.foodImage || 'default-food.jpg').trim(),
+            categoryName: String(item.categoryName || 'Uncategorized').trim()
+          }));
           
-          setDebugInfo(`API Response OK. Keys: ${Object.keys(data).join(', ')}`);
-          
-          // Check if we have the $values array
-          if (data && data.$values && Array.isArray(data.$values)) {
-            console.log('Found $values array with', data.$values.length, 'items');
-            setDebugInfo(`Found $values array with ${data.$values.length} items`);
-            
-            // Process each item, filtering out reference objects
-            items = data.$values
-              .filter(item => item && typeof item === 'object' && !item.$ref)
-              .map(item => ({
-                foodId: String(item.foodId || '').trim(),
-                foodName: String(item.foodName || '').trim(),
-                unitPrice: parseFloat(item.unitPrice) || 0,
-                description: String(item.description || '').trim(),
-                cateId: String(item.cateId || '').trim(),
-                foodImage: String(item.foodImage || '').trim()
-              }));
-            
-            console.log('Processed items count:', items.length);
-            console.log('Sample processed items:', items.slice(0, 3));
-            setDebugInfo(`Processed: ${items.length} items from ${data.$values.length} raw items`);
-          } else {
-            setDebugInfo('ERROR: No $values array found in response');
-          }
+          console.log('Processed items count:', processedItems.length);
+          console.log('Sample processed item:', processedItems[0]);
+          setDebugInfo(`✅ Successfully loaded ${processedItems.length} món`);
+          setMenuItems(processedItems);
         } else {
-          console.log('API response not OK:', response.status);
-          setDebugInfo(`API Error: Status ${response.status}`);
+          console.log('No valid items received');
+          setDebugInfo('⚠️ No món found in API response');
+          setMenuItems([]);
         }
       } catch (fetchError) {
-        console.error('Fetch error:', fetchError);
-        setDebugInfo(`Fetch Error: ${fetchError.message}`);
+        console.error('API service error:', fetchError);
+        setDebugInfo(`❌ API Error: ${fetchError.message}`);
+        setMenuItems([]);
       }
-      
-      console.log('Final items array length:', items.length);
-      setMenuItems(items);
       
     } catch (error) {
       console.error('Error in loadMenuItems:', error);
-      
-      // Fallback data
-      const fallbackItems = [
-        {
-          foodId: 'FALLBACK001',
-          foodName: 'Fallback - Phở Bò',
-          unitPrice: 45000,
-          description: 'Fallback item',
-          cateId: '1',
-          foodImage: 'fallback.jpg'
-        }
-      ];
-      setMenuItems(fallbackItems);
+      setDebugInfo(`❌ Error loading món: ${error.message}`);
+      setMenuItems([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -243,6 +226,67 @@ export default function MenuManagerScreen({ navigation }) {
       cateId: '',
       foodImage: ''
     });
+    setSelectedImage(null);
+  };
+
+  // Image picker functions
+  const requestPermissions = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Lỗi', 'Cần cấp quyền truy cập thư viện ảnh để chọn hình ảnh!');
+      return false;
+    }
+    return true;
+  };
+
+  const pickImageFromGallery = async () => {
+    const hasPermission = await requestPermissions();
+    if (!hasPermission) return;
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.8,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      const imageUri = result.assets[0].uri;
+      setSelectedImage(imageUri);
+      setFormData({...formData, foodImage: imageUri});
+    }
+  };
+
+  const takePhoto = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Lỗi', 'Cần cấp quyền truy cập camera để chụp ảnh!');
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.8,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      const imageUri = result.assets[0].uri;
+      setSelectedImage(imageUri);
+      setFormData({...formData, foodImage: imageUri});
+    }
+  };
+
+  const showImageOptions = () => {
+    Alert.alert(
+      'Chọn Hình Ảnh',
+      'Bạn muốn chọn hình ảnh từ đâu?',
+      [
+        { text: 'Hủy', style: 'cancel' },
+        { text: 'Thư viện ảnh', onPress: pickImageFromGallery },
+        { text: 'Chụp ảnh', onPress: takePhoto },
+      ]
+    );
   };
 
   const generateFoodId = () => {
@@ -353,12 +397,34 @@ export default function MenuManagerScreen({ navigation }) {
           style: "destructive",
           onPress: async () => {
             try {
-              // For production, uncomment these API calls:
-              // await apiService.deleteFoodItem(item.foodId);
+              console.log('Deleting food item:', item.foodId);
               
-              // For now, remove from local state
-              setMenuItems(menuItems.filter(menuItem => menuItem.foodId !== item.foodId));
-              Alert.alert('Thành công', 'Đã xóa món ăn');
+              // Try to delete via API first
+              try {
+                const response = await fetch(`${API_BASE_URL}api/FoodInfo/${item.foodId}`, {
+                  method: 'DELETE',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  }
+                });
+                
+                if (response.ok) {
+                  console.log('Successfully deleted item via API');
+                  // Reload data from API to get updated list
+                  await loadMenuItems();
+                  Alert.alert('Thành công', 'Đã xóa món ăn');
+                } else {
+                  console.log('API delete failed, removing locally');
+                  // Remove from local state if API fails
+                  setMenuItems(menuItems.filter(menuItem => menuItem.foodId !== item.foodId));
+                  Alert.alert('Thành công', 'Đã xóa món ăn (local)');
+                }
+              } catch (apiError) {
+                console.log('API delete failed, removing locally:', apiError);
+                // Remove from local state if API fails
+                setMenuItems(menuItems.filter(menuItem => menuItem.foodId !== item.foodId));
+                Alert.alert('Thành công', 'Đã xóa món ăn (local)');
+              }
             } catch (error) {
               console.error('Error deleting item:', error);
               Alert.alert('Lỗi', 'Không thể xóa món ăn. Vui lòng thử lại.');
@@ -379,6 +445,12 @@ export default function MenuManagerScreen({ navigation }) {
       cateId: item.cateId,
       foodImage: item.foodImage || ''
     });
+    // Set selected image if item has an image
+    if (item.foodImage && item.foodImage !== 'default-food.jpg') {
+      setSelectedImage(item.foodImage);
+    } else {
+      setSelectedImage(null);
+    }
     setIsEditModalVisible(true);
   };
 
@@ -541,12 +613,34 @@ export default function MenuManagerScreen({ navigation }) {
           style: "destructive",
           onPress: async () => {
             try {
-              // For production, uncomment these API calls:
-              // await apiService.deleteCategory(category.cateId);
+              console.log('Deleting category:', category.cateId);
               
-              // For now, remove from local state
-              setCategories(categories.filter(cat => cat.cateId !== category.cateId));
-              Alert.alert('Thành công', 'Đã xóa danh mục');
+              // Try to delete via API first
+              try {
+                const response = await fetch(`${API_BASE_URL}api/Category/${category.cateId}`, {
+                  method: 'DELETE',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  }
+                });
+                
+                if (response.ok) {
+                  console.log('Successfully deleted category via API');
+                  // Reload data from API to get updated list
+                  await loadCategories();
+                  Alert.alert('Thành công', 'Đã xóa danh mục');
+                } else {
+                  console.log('API delete failed, removing locally');
+                  // Remove from local state if API fails
+                  setCategories(categories.filter(cat => cat.cateId !== category.cateId));
+                  Alert.alert('Thành công', 'Đã xóa danh mục (local)');
+                }
+              } catch (apiError) {
+                console.log('API delete failed, removing locally:', apiError);
+                // Remove from local state if API fails
+                setCategories(categories.filter(cat => cat.cateId !== category.cateId));
+                Alert.alert('Thành công', 'Đã xóa danh mục (local)');
+              }
             } catch (error) {
               console.error('Error deleting category:', error);
               Alert.alert('Lỗi', 'Không thể xóa danh mục. Vui lòng thử lại.');
@@ -768,11 +862,41 @@ export default function MenuManagerScreen({ navigation }) {
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Hình Ảnh (URL)</Text>
+                <Text style={styles.inputLabel}>Hình Ảnh</Text>
+                
+                <TouchableOpacity 
+                  style={styles.imagePickerButton}
+                  onPress={showImageOptions}
+                >
+                  <MaterialCommunityIcons name="camera-plus" size={20} color="#FF6B35" />
+                  <Text style={styles.imagePickerText}>Chọn/Chụp Hình Ảnh</Text>
+                </TouchableOpacity>
+
+                {selectedImage && (
+                  <View style={styles.imagePreviewContainer}>
+                    <Image source={{ uri: selectedImage }} style={styles.imagePreview} />
+                    <TouchableOpacity 
+                      style={styles.removeImageButton}
+                      onPress={() => {
+                        setSelectedImage(null);
+                        setFormData({...formData, foodImage: ''});
+                      }}
+                    >
+                      <MaterialCommunityIcons name="close-circle" size={24} color="#E74C3C" />
+                    </TouchableOpacity>
+                  </View>
+                )}
+
+                <Text style={styles.inputLabel}>Hoặc nhập URL hình ảnh</Text>
                 <TextInput
                   style={styles.textInput}
                   value={formData.foodImage}
-                  onChangeText={(text) => setFormData({...formData, foodImage: text})}
+                  onChangeText={(text) => {
+                    setFormData({...formData, foodImage: text});
+                    if (text && !selectedImage) {
+                      setSelectedImage(text);
+                    }
+                  }}
                   placeholder="Nhập URL hình ảnh"
                 />
               </View>
@@ -867,11 +991,41 @@ export default function MenuManagerScreen({ navigation }) {
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Hình Ảnh (URL)</Text>
+                <Text style={styles.inputLabel}>Hình Ảnh</Text>
+                
+                <TouchableOpacity 
+                  style={styles.imagePickerButton}
+                  onPress={showImageOptions}
+                >
+                  <MaterialCommunityIcons name="camera-plus" size={20} color="#FF6B35" />
+                  <Text style={styles.imagePickerText}>Chọn/Chụp Hình Ảnh</Text>
+                </TouchableOpacity>
+
+                {selectedImage && (
+                  <View style={styles.imagePreviewContainer}>
+                    <Image source={{ uri: selectedImage }} style={styles.imagePreview} />
+                    <TouchableOpacity 
+                      style={styles.removeImageButton}
+                      onPress={() => {
+                        setSelectedImage(null);
+                        setFormData({...formData, foodImage: ''});
+                      }}
+                    >
+                      <MaterialCommunityIcons name="close-circle" size={24} color="#E74C3C" />
+                    </TouchableOpacity>
+                  </View>
+                )}
+
+                <Text style={styles.inputLabel}>Hoặc nhập URL hình ảnh</Text>
                 <TextInput
                   style={styles.textInput}
                   value={formData.foodImage}
-                  onChangeText={(text) => setFormData({...formData, foodImage: text})}
+                  onChangeText={(text) => {
+                    setFormData({...formData, foodImage: text});
+                    if (text && !selectedImage) {
+                      setSelectedImage(text);
+                    }
+                  }}
                   placeholder="Nhập URL hình ảnh"
                 />
               </View>
@@ -1413,5 +1567,48 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#856404',
     textAlign: 'center',
+  },
+  // Image picker styles
+  imagePickerButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFF2E8',
+    borderWidth: 1,
+    borderColor: '#FF6B35',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    marginBottom: 10,
+  },
+  imagePickerText: {
+    marginLeft: 8,
+    fontSize: 16,
+    color: '#FF6B35',
+    fontWeight: '600',
+  },
+  imagePreviewContainer: {
+    position: 'relative',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  imagePreview: {
+    width: 120,
+    height: 120,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#E0E0E0',
+  },
+  removeImageButton: {
+    position: 'absolute',
+    top: -10,
+    right: '35%',
+    backgroundColor: 'white',
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
   },
 });
