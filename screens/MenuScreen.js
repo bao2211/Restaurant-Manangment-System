@@ -132,7 +132,7 @@ export default function MenuScreen({ navigation }) {
       let foodData;
       
       if (categoryId === 'all') {
-        // Fetch all food items from all categories
+        // Fetch all food items from all categories (showing duplicates is fine)
         console.log('Fetching all food items from all categories');
         const allFoodItems = [];
         

@@ -20,25 +20,76 @@ const api = axios.create({
 
 // Helper function to extract data from API response
 const extractApiData = (data) => {
+  console.log('extractApiData - Input data:', data);
+  
   // Handle cases where API returns data wrapped in $values
-  if (data && data.$values) {
-    // Filter out $ref objects but keep real objects
-    return data.$values.filter(item => 
-      item && 
-      typeof item === 'object' && 
-      !item.$ref && 
-      (item.foodId || item.cateId || item.orderId || item.billId || item.tableId || item.userId || item.ingreId) // Check for any valid ID type
-    );
+  if (data && data.$values && Array.isArray(data.$values)) {
+    console.log('Found $values array with length:', data.$values.length);
+    
+    // Filter and clean the data
+    const processed = data.$values
+      .filter(item => {
+        const isValid = item && 
+          typeof item === 'object' && 
+          !item.$ref && 
+          (item.foodId || item.cateId || item.orderId || item.billId || item.tableId || item.userId || item.ingreId);
+        
+        if (!isValid) {
+          console.log('Filtering out invalid item:', item);
+        }
+        return isValid;
+      })
+      .map(item => {
+        // Clean up string fields by trimming whitespace
+        const cleanedItem = { ...item };
+        
+        // Clean foodId and other ID fields
+        if (cleanedItem.foodId) {
+          cleanedItem.foodId = cleanedItem.foodId.toString().trim();
+        }
+        if (cleanedItem.cateId) {
+          cleanedItem.cateId = cleanedItem.cateId.toString().trim();
+        }
+        if (cleanedItem.foodName) {
+          cleanedItem.foodName = cleanedItem.foodName.trim();
+        }
+        if (cleanedItem.cateName) {
+          cleanedItem.cateName = cleanedItem.cateName.trim();
+        }
+        if (cleanedItem.description) {
+          cleanedItem.description = cleanedItem.description.trim();
+        }
+        if (cleanedItem.foodImage) {
+          cleanedItem.foodImage = cleanedItem.foodImage.trim();
+        }
+        
+        // Ensure unitPrice is a number
+        if (cleanedItem.unitPrice) {
+          cleanedItem.unitPrice = parseFloat(cleanedItem.unitPrice) || 0;
+        }
+        
+        return cleanedItem;
+      });
+    
+    console.log('extractApiData - Processed items:', processed.length);
+    console.log('extractApiData - Sample processed item:', processed[0]);
+    return processed;
   }
+  
   // Handle regular array responses
   if (Array.isArray(data)) {
-    return data.filter(item => 
+    console.log('Found direct array with length:', data.length);
+    const filtered = data.filter(item => 
       item && 
       typeof item === 'object' && 
       !item.$ref
     );
+    console.log('extractApiData - Filtered array items:', filtered.length);
+    return filtered;
   }
+  
   // Handle single object responses
+  console.log('extractApiData - Single object response');
   return data;
 };
 
