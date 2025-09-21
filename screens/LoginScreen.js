@@ -25,7 +25,7 @@ export default function LoginScreen({ navigation }) {
     } else {
       Alert.alert("Thành công", "Đăng nhập thành công!");
     }
-    navigation.navigate('Profile');
+    navigation.navigate('Home');
   } catch (error) {
     if (Platform.OS === "web") {
       alert(error.message);
