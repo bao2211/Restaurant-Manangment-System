@@ -36,8 +36,11 @@ export default function MenuManagerScreen({ navigation }) {
   const [selectedCategory, setSelectedCategory] = useState(null);
   
   // Success popup state
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [isErrorMessage, setIsErrorMessage] = useState(false);
 
   // Form states
   const [formData, setFormData] = useState({
@@ -62,10 +65,55 @@ export default function MenuManagerScreen({ navigation }) {
   // Success popup utility function
   const showSuccess = (message) => {
     setSuccessMessage(message);
+    setIsErrorMessage(false);
     setShowSuccessPopup(true);
     setTimeout(() => {
       setShowSuccessPopup(false);
     }, 2000);
+  };
+
+  // Error popup utility function
+  const showError = (message) => {
+    setSuccessMessage(message);
+    setIsErrorMessage(true);
+    setShowSuccessPopup(true);
+    setTimeout(() => {
+      setShowSuccessPopup(false);
+    }, 3000); // Show errors a bit longer
+  };
+
+  // Translate English error messages to Vietnamese
+  const translateErrorMessage = (message) => {
+    if (!message) return 'Có lỗi xảy ra khi xóa món ăn.';
+    
+    // Convert to string if not already
+    const msgStr = message.toString();
+    
+    // Check for common error patterns and translate them
+    if (msgStr.includes('referenced in') && msgStr.includes('order')) {
+      // Extract number of orders if possible
+      const orderMatch = msgStr.match(/(\d+)\s+order/);
+      const orderCount = orderMatch ? orderMatch[1] : '';
+      return orderCount ? 
+        `Không thể xóa món ăn này vì đang được sử dụng trong ${orderCount} đơn hàng.` :
+        'Không thể xóa món ăn này vì đang được sử dụng trong các đơn hàng.';
+    }
+    
+    if (msgStr.includes('Cannot delete food item')) {
+      return 'Không thể xóa món ăn này vì đang được sử dụng trong hệ thống.';
+    }
+    
+    if (msgStr.includes('being used in existing orders')) {
+      return 'Món ăn này đang được sử dụng trong các đơn hàng hiện tại.';
+    }
+    
+    if (msgStr.includes('constraint')) {
+      return 'Không thể xóa do ràng buộc dữ liệu trong hệ thống.';
+    }
+    
+    // If no specific pattern matches, return the original message
+    // but try to keep it in Vietnamese if already translated
+    return msgStr.includes('Món ăn') ? msgStr : 'Không thể xóa món ăn này vì đang được sử dụng trong hệ thống.';
   };
 
   // Load data on component mount
@@ -404,48 +452,79 @@ export default function MenuManagerScreen({ navigation }) {
   };
 
   const handleDeleteItem = (item) => {
-    Alert.alert(
-      "Xác Nhận Xóa",
-      `Bạn có chắc chắn muốn xóa "${item.foodName}"?`,
-      [
-        { text: "Hủy", style: "cancel" },
-        { 
-          text: "Xóa", 
-          style: "destructive",
-          onPress: async () => {
-            try {
-              console.log('Deleting food item:', item.foodId);
-              
-              // Use API service to delete the item
-              await apiService.deleteFoodItem(item.foodId);
-              
-              console.log('Successfully deleted item via API');
-              // Reload data from API to get updated list
-              await loadMenuItems();
-              showSuccess('Đã xóa món ăn thành công!');
-              
-            } catch (error) {
-              console.error('Error deleting item:', error);
-              
-              // Check if it's a constraint error
-              if (error.response && error.response.status === 409) {
-                // Handle constraint violation error
-                const errorData = error.response.data;
-                Alert.alert(
-                  'Không thể xóa',
-                  errorData.message || 'Món ăn này đang được sử dụng và không thể xóa.',
-                  [{ text: 'OK', style: 'default' }]
-                );
-              } else {
-                // Fallback: remove from local state if API fails
-                setMenuItems(menuItems.filter(menuItem => menuItem.foodId !== item.foodId));
-                Alert.alert('Cảnh báo', 'Đã xóa món ăn (chỉ cục bộ - vui lòng kiểm tra kết nối mạng)');
-              }
+    console.log('=== DELETE BUTTON PRESSED ===');
+    console.log('Item to delete:', item);
+    console.log('Item ID:', item.foodId);
+    console.log('Item Name:', item.foodName);
+    
+    // Set the item to delete and show confirmation modal
+    setItemToDelete(item);
+    setShowDeleteConfirm(true);
+    console.log('Delete confirmation modal should now be visible');
+  };
+
+  const performDelete = async () => {
+    if (!itemToDelete) return;
+    
+    console.log('=== USER CONFIRMED DELETE ===');
+    setShowDeleteConfirm(false);
+    
+    try {
+      // Trim any whitespace from foodId
+      const cleanFoodId = itemToDelete.foodId.toString().trim();
+      console.log('Deleting food item:', cleanFoodId, 'Original ID:', itemToDelete.foodId);
+      console.log('About to call apiService.deleteFoodItem...');
+      
+      // Use API service to delete the item
+      const result = await apiService.deleteFoodItem(cleanFoodId);
+      console.log('API delete result:', result);
+      
+      console.log('Successfully deleted item via API');
+      // Reload data from API to get updated list
+      await loadMenuItems();
+      showSuccess('Đã xóa món ăn thành công!');
+      
+    } catch (error) {
+      console.log('=== DELETE ERROR OCCURRED ===');
+      console.error('Error deleting item:', error);
+      console.error('Error details:', {
+        message: error.message,
+        response: error.response ? {
+          status: error.response.status,
+          data: error.response.data
+        } : 'No response'
+      });
+      
+      // Check if it's a constraint error (409 Conflict) or other known errors
+      if (error.response && (error.response.status === 409 || error.response.status === 400)) {
+        // Handle constraint violation error
+        const errorData = error.response.data;
+        console.log('Showing constraint error popup');
+        
+        // Show custom error popup
+        const vietnameseMessage = translateErrorMessage(errorData.details || errorData.message || 'Món ăn này đang được sử dụng trong hệ thống và không thể xóa.');
+        showError(vietnameseMessage);
+        
+      } else if (error.response && error.response.status === 404) {
+        console.log('Item not found - probably already deleted');
+        Alert.alert(
+          'Thông báo', 
+          'Món ăn không tồn tại hoặc đã được xóa. Đang cập nhật danh sách...',
+          [{ 
+            text: 'OK', 
+            onPress: async () => {
+              await loadMenuItems(); // Refresh the list
             }
-          }
-        }
-      ]
-    );
+          }]
+        );
+      } else {
+        // Fallback: remove from local state if API fails
+        setMenuItems(menuItems.filter(menuItem => menuItem.foodId !== itemToDelete.foodId));
+        Alert.alert('Cảnh báo', 'Đã xóa món ăn (chỉ cục bộ - vui lòng kiểm tra kết nối mạng)');
+      }
+    }
+    
+    setItemToDelete(null);
   };
 
   const openEditModal = (item) => {
@@ -695,7 +774,7 @@ export default function MenuManagerScreen({ navigation }) {
           <TouchableOpacity 
             style={styles.categoryButton}
             onPress={() => {
-              Alert.alert('Test', 'Debug button pressed!');
+              Alert.alert('Kiểm tra', 'Nút gỡ lỗi đã được nhấn!');
               debugApiData();
             }}
           >
@@ -761,6 +840,7 @@ export default function MenuManagerScreen({ navigation }) {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
+        keyboardShouldPersistTaps="handled"
       >
         {filteredItems.length === 0 ? (
           <View style={styles.emptyState}>
@@ -790,10 +870,16 @@ export default function MenuManagerScreen({ navigation }) {
                 </TouchableOpacity>
                 
                 <TouchableOpacity 
-                  style={styles.deleteButton}
-                  onPress={() => handleDeleteItem(item)}
+                  style={[styles.deleteButton, { minWidth: 40, minHeight: 40 }]}
+                  onPress={() => {
+                    console.log('Delete button touched!');
+                    Alert.alert('Debug', 'Delete button was pressed!');
+                    handleDeleteItem(item);
+                  }}
+                  activeOpacity={0.7}
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 >
-                  <MaterialCommunityIcons name="delete" size={18} color="#E74C3C" />
+                  <Text style={{ color: '#E74C3C', fontSize: 16, fontWeight: 'bold' }}>🗑️</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -1245,7 +1331,48 @@ export default function MenuManagerScreen({ navigation }) {
         </View>
       </Modal>
 
-      {/* Success Popup Modal */}
+      {/* Delete Confirmation Modal */}
+      <Modal
+        visible={showDeleteConfirm}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => {
+          setShowDeleteConfirm(false);
+          setItemToDelete(null);
+        }}
+      >
+        <View style={styles.successOverlay}>
+          <View style={styles.successModal}>
+            <View style={[styles.successIcon, { backgroundColor: '#ff6b6b' }]}>
+              <Text style={styles.successCheckmark}>⚠️</Text>
+            </View>
+            <Text style={styles.successTitle}>Xác Nhận Xóa</Text>
+            <Text style={styles.successMessage}>
+              {itemToDelete ? `Bạn có chắc chắn muốn xóa "${itemToDelete.foodName}"?` : ''}
+            </Text>
+            <View style={{ flexDirection: 'row', gap: 15 }}>
+              <TouchableOpacity 
+                style={[styles.successButton, { backgroundColor: '#6c757d' }]}
+                onPress={() => {
+                  console.log('User cancelled delete');
+                  setShowDeleteConfirm(false);
+                  setItemToDelete(null);
+                }}
+              >
+                <Text style={styles.successButtonText}>Hủy</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.successButton, { backgroundColor: '#dc3545' }]}
+                onPress={performDelete}
+              >
+                <Text style={styles.successButtonText}>Xóa</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Success/Error Popup Modal */}
       <Modal
         visible={showSuccessPopup}
         transparent={true}
@@ -1254,13 +1381,13 @@ export default function MenuManagerScreen({ navigation }) {
       >
         <View style={styles.successOverlay}>
           <View style={styles.successModal}>
-            <View style={styles.successIcon}>
-              <Text style={styles.successCheckmark}>✓</Text>
+            <View style={[styles.successIcon, { backgroundColor: isErrorMessage ? '#dc3545' : '#4CAF50' }]}>
+              <Text style={styles.successCheckmark}>{isErrorMessage ? '❌' : '✓'}</Text>
             </View>
-            <Text style={styles.successTitle}>Thành công!</Text>
+            <Text style={styles.successTitle}>{isErrorMessage ? 'Không thể xóa!' : 'Thành công!'}</Text>
             <Text style={styles.successMessage}>{successMessage}</Text>
             <TouchableOpacity 
-              style={styles.successButton}
+              style={[styles.successButton, { backgroundColor: isErrorMessage ? '#dc3545' : '#FF6B35' }]}
               onPress={() => setShowSuccessPopup(false)}
             >
               <Text style={styles.successButtonText}>OK</Text>

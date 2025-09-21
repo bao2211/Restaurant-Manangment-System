@@ -414,11 +414,24 @@ export const apiService = {
 
   deleteFoodItem: async (foodId) => {
     try {
-      console.log('Deleting food item:', foodId);
-      const response = await api.delete(`/api/FoodInfo/${foodId}`);
+      // Ensure foodId is trimmed and clean
+      const cleanFoodId = foodId.toString().trim();
+      console.log('=== API SERVICE DELETE START ===');
+      console.log('Deleting food item - Clean ID:', cleanFoodId);
+      console.log('Making DELETE request to:', `${API_BASE_URL}api/FoodInfo/${cleanFoodId}`);
+      
+      const response = await api.delete(`/api/FoodInfo/${cleanFoodId}`);
+      console.log('Delete response status:', response.status);
+      console.log('Delete response data:', response.data);
+      console.log('=== API SERVICE DELETE SUCCESS ===');
       return response.data;
     } catch (error) {
+      console.log('=== API SERVICE DELETE ERROR ===');
       console.error('Error deleting food item:', error);
+      if (error.response) {
+        console.error('Error response status:', error.response.status);
+        console.error('Error response data:', error.response.data);
+      }
       throw error;
     }
   },
