@@ -35,6 +35,10 @@ export default function MenuManagerScreen({ navigation }) {
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   
+  // Success popup state
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+
   // Form states
   const [formData, setFormData] = useState({
     foodId: '',
@@ -54,6 +58,15 @@ export default function MenuManagerScreen({ navigation }) {
     cateName: '',
     description: ''
   });
+
+  // Success popup utility function
+  const showSuccess = (message) => {
+    setSuccessMessage(message);
+    setShowSuccessPopup(true);
+    setTimeout(() => {
+      setShowSuccessPopup(false);
+    }, 2000);
+  };
 
   // Load data on component mount
   useEffect(() => {
@@ -328,35 +341,30 @@ export default function MenuManagerScreen({ navigation }) {
 
       console.log('Adding new item:', newItem);
       
-      // Try to add via API first
-      try {
-        const response = await fetch(`${API_BASE_URL}api/FoodInfo`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(newItem)
-        });
-        
-        if (response.ok) {
-          console.log('Successfully added item via API');
-          // Reload data from API
-          await loadMenuItems();
-        } else {
-          console.log('API add failed, adding locally');
-          setMenuItems([...menuItems, newItem]);
-        }
-      } catch (apiError) {
-        console.log('API add failed, adding locally:', apiError);
-        setMenuItems([...menuItems, newItem]);
-      }
+      // Use API service to add the item
+      const result = await apiService.createFoodItem(newItem);
       
+      console.log('Successfully added item via API:', result);
+      // Reload data from API
+      await loadMenuItems();
       setIsAddModalVisible(false);
       resetForm();
-      Alert.alert('Thành công', 'Đã thêm món ăn mới');
+      showSuccess('Đã thêm món ăn mới thành công!');
+      
     } catch (error) {
       console.error('Error adding item:', error);
-      Alert.alert('Lỗi', 'Không thể thêm món ăn. Vui lòng thử lại.');
+      
+      // Fallback: add to local state if API fails
+      const newItem = {
+        ...formData,
+        foodId: generateFoodId(),
+        unitPrice: parseFloat(formData.unitPrice),
+        foodImage: formData.foodImage || 'default-food.jpg'
+      };
+      setMenuItems([...menuItems, newItem]);
+      setIsAddModalVisible(false);
+      resetForm();
+      Alert.alert('Cảnh báo', 'Đã thêm món ăn mới (chỉ cục bộ - vui lòng kiểm tra kết nối mạng)');
     }
   };
 
@@ -369,20 +377,29 @@ export default function MenuManagerScreen({ navigation }) {
         unitPrice: parseFloat(formData.unitPrice)
       };
 
-      // For production, uncomment these API calls:
-      // await apiService.updateFoodItem(selectedItem.foodId, updatedItem);
+      console.log('Updating food item:', selectedItem.foodId, updatedItem);
       
-      // For now, update local state
+      // Use API service to update the item
+      const result = await apiService.updateFoodItem(selectedItem.foodId, updatedItem);
+      
+      console.log('Successfully updated item via API:', result);
+      // Reload data from API to get updated list
+      await loadMenuItems();
+      setIsEditModalVisible(false);
+      setSelectedItem(null);
+      resetForm();
+      showSuccess('Đã cập nhật món ăn thành công!');
+    } catch (error) {
+      console.error('Error updating item:', error);
+      
+      // Fallback: update local state if API fails
       setMenuItems(menuItems.map(item => 
         item.foodId === selectedItem.foodId ? { ...item, ...updatedItem } : item
       ));
       setIsEditModalVisible(false);
       setSelectedItem(null);
       resetForm();
-      Alert.alert('Thành công', 'Đã cập nhật món ăn');
-    } catch (error) {
-      console.error('Error updating item:', error);
-      Alert.alert('Lỗi', 'Không thể cập nhật món ăn. Vui lòng thử lại.');
+      Alert.alert('Cảnh báo', 'Đã cập nhật món ăn (chỉ cục bộ - vui lòng kiểm tra kết nối mạng)');
     }
   };
 
@@ -399,35 +416,31 @@ export default function MenuManagerScreen({ navigation }) {
             try {
               console.log('Deleting food item:', item.foodId);
               
-              // Try to delete via API first
-              try {
-                const response = await fetch(`${API_BASE_URL}api/FoodInfo/${item.foodId}`, {
-                  method: 'DELETE',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  }
-                });
-                
-                if (response.ok) {
-                  console.log('Successfully deleted item via API');
-                  // Reload data from API to get updated list
-                  await loadMenuItems();
-                  Alert.alert('Thành công', 'Đã xóa món ăn');
-                } else {
-                  console.log('API delete failed, removing locally');
-                  // Remove from local state if API fails
-                  setMenuItems(menuItems.filter(menuItem => menuItem.foodId !== item.foodId));
-                  Alert.alert('Thành công', 'Đã xóa món ăn (local)');
-                }
-              } catch (apiError) {
-                console.log('API delete failed, removing locally:', apiError);
-                // Remove from local state if API fails
-                setMenuItems(menuItems.filter(menuItem => menuItem.foodId !== item.foodId));
-                Alert.alert('Thành công', 'Đã xóa món ăn (local)');
-              }
+              // Use API service to delete the item
+              await apiService.deleteFoodItem(item.foodId);
+              
+              console.log('Successfully deleted item via API');
+              // Reload data from API to get updated list
+              await loadMenuItems();
+              showSuccess('Đã xóa món ăn thành công!');
+              
             } catch (error) {
               console.error('Error deleting item:', error);
-              Alert.alert('Lỗi', 'Không thể xóa món ăn. Vui lòng thử lại.');
+              
+              // Check if it's a constraint error
+              if (error.response && error.response.status === 409) {
+                // Handle constraint violation error
+                const errorData = error.response.data;
+                Alert.alert(
+                  'Không thể xóa',
+                  errorData.message || 'Món ăn này đang được sử dụng và không thể xóa.',
+                  [{ text: 'OK', style: 'default' }]
+                );
+              } else {
+                // Fallback: remove from local state if API fails
+                setMenuItems(menuItems.filter(menuItem => menuItem.foodId !== item.foodId));
+                Alert.alert('Cảnh báo', 'Đã xóa món ăn (chỉ cục bộ - vui lòng kiểm tra kết nối mạng)');
+              }
             }
           }
         }
@@ -534,35 +547,28 @@ export default function MenuManagerScreen({ navigation }) {
 
       console.log('Adding new category:', newCategory);
       
-      // Try to add via API first
-      try {
-        const response = await fetch(`${API_BASE_URL}api/Category`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(newCategory)
-        });
-        
-        if (response.ok) {
-          console.log('Successfully added category via API');
-          // Reload data from API
-          await loadCategories();
-        } else {
-          console.log('API add failed, adding locally');
-          setCategories([...categories, newCategory]);
-        }
-      } catch (apiError) {
-        console.log('API add failed, adding locally:', apiError);
-        setCategories([...categories, newCategory]);
-      }
+      // Use API service to add the category
+      await apiService.createCategory(newCategory);
       
+      console.log('Successfully added category via API');
+      // Reload data from API
+      await loadCategories();
       setIsAddCategoryModalVisible(false);
       resetCategoryForm();
-      Alert.alert('Thành công', 'Đã thêm danh mục mới');
+      showSuccess('Đã thêm danh mục mới thành công!');
+      
     } catch (error) {
       console.error('Error adding category:', error);
-      Alert.alert('Lỗi', 'Không thể thêm danh mục. Vui lòng thử lại.');
+      
+      // Fallback: add to local state if API fails
+      const newCategory = {
+        ...categoryFormData,
+        cateId: generateCategoryId()
+      };
+      setCategories([...categories, newCategory]);
+      setIsAddCategoryModalVisible(false);
+      resetCategoryForm();
+      Alert.alert('Cảnh báo', 'Đã thêm danh mục mới (chỉ cục bộ - vui lòng kiểm tra kết nối mạng)');
     }
   };
 
@@ -574,20 +580,28 @@ export default function MenuManagerScreen({ navigation }) {
         ...categoryFormData
       };
 
-      // For production, uncomment these API calls:
-      // await apiService.updateCategory(selectedCategory.cateId, updatedCategory);
+      console.log('Updating category:', selectedCategory.cateId, updatedCategory);
       
-      // For now, update local state
+      // Use API service to update the category
+      await apiService.updateCategory(selectedCategory.cateId, updatedCategory);
+      
+      // Reload data from API to get updated list
+      await loadCategories();
+      setIsEditCategoryModalVisible(false);
+      setSelectedCategory(null);
+      resetCategoryForm();
+      showSuccess('Đã cập nhật danh mục thành công!');
+    } catch (error) {
+      console.error('Error updating category:', error);
+      
+      // Fallback: update local state if API fails
       setCategories(categories.map(cat => 
         cat.cateId === selectedCategory.cateId ? { ...cat, ...updatedCategory } : cat
       ));
       setIsEditCategoryModalVisible(false);
       setSelectedCategory(null);
       resetCategoryForm();
-      Alert.alert('Thành công', 'Đã cập nhật danh mục');
-    } catch (error) {
-      console.error('Error updating category:', error);
-      Alert.alert('Lỗi', 'Không thể cập nhật danh mục. Vui lòng thử lại.');
+      Alert.alert('Cảnh báo', 'Đã cập nhật danh mục (chỉ cục bộ - vui lòng kiểm tra kết nối mạng)');
     }
   };
 
@@ -615,35 +629,31 @@ export default function MenuManagerScreen({ navigation }) {
             try {
               console.log('Deleting category:', category.cateId);
               
-              // Try to delete via API first
-              try {
-                const response = await fetch(`${API_BASE_URL}api/Category/${category.cateId}`, {
-                  method: 'DELETE',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  }
-                });
-                
-                if (response.ok) {
-                  console.log('Successfully deleted category via API');
-                  // Reload data from API to get updated list
-                  await loadCategories();
-                  Alert.alert('Thành công', 'Đã xóa danh mục');
-                } else {
-                  console.log('API delete failed, removing locally');
-                  // Remove from local state if API fails
-                  setCategories(categories.filter(cat => cat.cateId !== category.cateId));
-                  Alert.alert('Thành công', 'Đã xóa danh mục (local)');
-                }
-              } catch (apiError) {
-                console.log('API delete failed, removing locally:', apiError);
-                // Remove from local state if API fails
-                setCategories(categories.filter(cat => cat.cateId !== category.cateId));
-                Alert.alert('Thành công', 'Đã xóa danh mục (local)');
-              }
+              // Use API service to delete the category
+              await apiService.deleteCategory(category.cateId);
+              
+              console.log('Successfully deleted category via API');
+              // Reload data from API to get updated list
+              await loadCategories();
+              showSuccess('Đã xóa danh mục thành công!');
+              
             } catch (error) {
               console.error('Error deleting category:', error);
-              Alert.alert('Lỗi', 'Không thể xóa danh mục. Vui lòng thử lại.');
+              
+              // Check if it's a constraint error
+              if (error.response && error.response.status === 409) {
+                // Handle constraint violation error
+                const errorData = error.response.data;
+                Alert.alert(
+                  'Không thể xóa',
+                  errorData.message || 'Danh mục này đang được sử dụng và không thể xóa.',
+                  [{ text: 'OK', style: 'default' }]
+                );
+              } else {
+                // Fallback: remove from local state if API fails
+                setCategories(categories.filter(cat => cat.cateId !== category.cateId));
+                Alert.alert('Cảnh báo', 'Đã xóa danh mục (chỉ cục bộ - vui lòng kiểm tra kết nối mạng)');
+              }
             }
           }
         }
@@ -1234,6 +1244,30 @@ export default function MenuManagerScreen({ navigation }) {
           </View>
         </View>
       </Modal>
+
+      {/* Success Popup Modal */}
+      <Modal
+        visible={showSuccessPopup}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowSuccessPopup(false)}
+      >
+        <View style={styles.successOverlay}>
+          <View style={styles.successModal}>
+            <View style={styles.successIcon}>
+              <Text style={styles.successCheckmark}>✓</Text>
+            </View>
+            <Text style={styles.successTitle}>Thành công!</Text>
+            <Text style={styles.successMessage}>{successMessage}</Text>
+            <TouchableOpacity 
+              style={styles.successButton}
+              onPress={() => setShowSuccessPopup(false)}
+            >
+              <Text style={styles.successButtonText}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -1610,5 +1644,62 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 3,
     elevation: 3,
+  },
+  // Success popup styles
+  successOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  successModal: {
+    backgroundColor: 'white',
+    borderRadius: 15,
+    padding: 30,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 10,
+    minWidth: 280,
+  },
+  successIcon: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#4CAF50',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  successCheckmark: {
+    color: 'white',
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
+  successTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 10,
+  },
+  successMessage: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 25,
+    lineHeight: 22,
+  },
+  successButton: {
+    backgroundColor: '#FF6B35',
+    paddingHorizontal: 40,
+    paddingVertical: 12,
+    borderRadius: 25,
+  },
+  successButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });

@@ -388,6 +388,74 @@ export const apiService = {
       throw error;
     }
   },
+
+  // Food Items CRUD operations
+  createFoodItem: async (foodData) => {
+    try {
+      console.log('Creating food item:', foodData);
+      const response = await api.post('/api/FoodInfo', foodData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating food item:', error);
+      throw error;
+    }
+  },
+
+  updateFoodItem: async (foodId, foodData) => {
+    try {
+      console.log('Updating food item:', foodId, foodData);
+      const response = await api.put(`/api/FoodInfo/${foodId}`, foodData);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating food item:', error);
+      throw error;
+    }
+  },
+
+  deleteFoodItem: async (foodId) => {
+    try {
+      console.log('Deleting food item:', foodId);
+      const response = await api.delete(`/api/FoodInfo/${foodId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting food item:', error);
+      throw error;
+    }
+  },
+
+  // Categories CRUD operations
+  createCategory: async (categoryData) => {
+    try {
+      console.log('Creating category:', categoryData);
+      const response = await api.post('/api/Category', categoryData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating category:', error);
+      throw error;
+    }
+  },
+
+  updateCategory: async (categoryId, categoryData) => {
+    try {
+      console.log('Updating category:', categoryId, categoryData);
+      const response = await api.put(`/api/Category/${categoryId}`, categoryData);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating category:', error);
+      throw error;
+    }
+  },
+
+  deleteCategory: async (categoryId) => {
+    try {
+      console.log('Deleting category:', categoryId);
+      const response = await api.delete(`/api/Category/${categoryId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting category:', error);
+      throw error;
+    }
+  },
 };
 
 // Helper function to generate category icons based on category name
