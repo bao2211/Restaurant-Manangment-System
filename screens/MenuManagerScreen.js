@@ -292,11 +292,11 @@ export default function MenuManagerScreen({ navigation }) {
   const generateFoodId = () => {
     const lastId = menuItems.length > 0 
       ? Math.max(...menuItems.map(item => {
-          const idNum = parseInt(item.foodId?.replace('F', '') || '0');
+          const idNum = parseInt(item.foodId || '0');
           return isNaN(idNum) ? 0 : idNum;
         }))
       : 0;
-    return `F${String(lastId + 1).padStart(3, '0')}`;
+    return String(lastId + 1);
   };
 
   const validateForm = () => {
@@ -508,11 +508,11 @@ export default function MenuManagerScreen({ navigation }) {
   const generateCategoryId = () => {
     const lastId = categories.length > 0 
       ? Math.max(...categories.map(cat => {
-          const idNum = parseInt(cat.cateId?.replace('C', '') || '0');
+          const idNum = parseInt(cat.cateId || '0');
           return isNaN(idNum) ? 0 : idNum;
         }))
       : 0;
-    return `C${String(lastId + 1).padStart(3, '0')}`;
+    return String(lastId + 1);
   };
 
   const validateCategoryForm = () => {
