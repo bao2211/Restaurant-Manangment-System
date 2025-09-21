@@ -152,10 +152,53 @@ namespace RMS_APIServer.Controllers
                 return NotFound();
             }
 
-            _context.FoodInfos.Remove(foodInfo);
-            await _context.SaveChangesAsync();
+            try
+            {
+                // Check if the food item is used in any orders
+                var orderDetails = await _context.OrderDetails.Where(od => od.FoodId == id).ToListAsync();
+                if (orderDetails.Any())
+                {
+                    return Conflict(new
+                    {
+                        message = "Cannot delete food item. It is being used in existing orders.",
+                        details = $"Food item is referenced in {orderDetails.Count} order(s)."
+                    });
+                }
 
-            return NoContent();
+                // Check if the food item has any recipes
+                var recipes = await _context.Recipes.Where(r => r.FoodId == id).ToListAsync();
+                if (recipes.Any())
+                {
+                    return Conflict(new
+                    {
+                        message = "Cannot delete food item. It has associated recipes.",
+                        details = $"Food item has {recipes.Count} recipe(s). Please delete the recipes first."
+                    });
+                }
+
+                // If no constraints, proceed with deletion
+                _context.FoodInfos.Remove(foodInfo);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (DbUpdateException ex)
+            {
+                // Handle any other database constraints
+                return Conflict(new
+                {
+                    message = "Cannot delete food item due to database constraints.",
+                    details = ex.InnerException?.Message ?? ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    message = "An error occurred while deleting the food item.",
+                    details = ex.Message
+                });
+            }
         }
 
         private bool FoodInfoExists(string id)

@@ -100,10 +100,43 @@ namespace RMS_APIServer.Controllers
                 return NotFound();
             }
 
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
+            try
+            {
+                // Check if the category is used by any food items
+                var foodItems = await _context.FoodInfos.Where(f => f.CateId == id).ToListAsync();
+                if (foodItems.Any())
+                {
+                    return Conflict(new
+                    {
+                        message = "Cannot delete category. It is being used by existing food items.",
+                        details = $"Category is used by {foodItems.Count} food item(s). Please move or delete these food items first.",
+                        foodItems = foodItems.Select(f => new { f.FoodId, f.FoodName }).ToList()
+                    });
+                }
 
-            return NoContent();
+                // If no constraints, proceed with deletion
+                _context.Categories.Remove(category);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (DbUpdateException ex)
+            {
+                // Handle any other database constraints
+                return Conflict(new
+                {
+                    message = "Cannot delete category due to database constraints.",
+                    details = ex.InnerException?.Message ?? ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    message = "An error occurred while deleting the category.",
+                    details = ex.Message
+                });
+            }
         }
 
         private bool CategoryExists(string id)
