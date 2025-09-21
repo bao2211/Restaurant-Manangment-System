@@ -114,11 +114,23 @@ namespace RMS_APIServer.Controllers
                     });
                 }
 
+                // Store category info before deletion for response
+                var deletedCategoryInfo = new
+                {
+                    cateId = category.CateId,
+                    cateName = category.CateName
+                };
+
                 // If no constraints, proceed with deletion
                 _context.Categories.Remove(category);
                 await _context.SaveChangesAsync();
 
-                return NoContent();
+                return Ok(new
+                {
+                    message = "Category deleted successfully.",
+                    deletedCategory = deletedCategoryInfo,
+                    deletedAt = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss UTC")
+                });
             }
             catch (DbUpdateException ex)
             {

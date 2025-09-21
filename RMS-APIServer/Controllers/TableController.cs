@@ -109,10 +109,24 @@ namespace RMS_APIServer.Controllers
                 return NotFound();
             }
 
+            // Store table info before deletion for response
+            var deletedTableInfo = new
+            {
+                tableId = table.TableId,
+                tableName = table.TableName,
+                numOfSeats = table.NumOfSeats,
+                status = table.Status
+            };
+
             _context.Tables.Remove(table);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(new
+            {
+                message = "Table deleted successfully.",
+                deletedTable = deletedTableInfo,
+                deletedAt = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss UTC")
+            });
         }
 
         private bool TableExists(string id)

@@ -172,10 +172,23 @@ namespace RMS_APIServer.Controllers
                 return NotFound();
             }
 
+            // Store recipe info before deletion for response
+            var deletedRecipeInfo = new
+            {
+                recipeId = recipe.RecipeId,
+                recipeDescription = recipe.RecipeDescription,
+                foodId = recipe.FoodId
+            };
+
             _context.Recipes.Remove(recipe);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(new
+            {
+                message = "Recipe deleted successfully.",
+                deletedRecipe = deletedRecipeInfo,
+                deletedAt = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss UTC")
+            });
         }
 
         private bool RecipeExists(string id)

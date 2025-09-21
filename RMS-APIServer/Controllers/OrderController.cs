@@ -257,10 +257,25 @@ namespace RMS_APIServer.Controllers
                 return NotFound();
             }
 
+            // Store order info before deletion for response
+            var deletedOrderInfo = new
+            {
+                orderId = order.OrderId,
+                createdTime = order.CreatedTime,
+                status = order.Status,
+                total = order.Total,
+                tableId = order.TableId
+            };
+
             _context.Orders.Remove(order);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(new
+            {
+                message = "Order deleted successfully.",
+                deletedOrder = deletedOrderInfo,
+                deletedAt = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss UTC")
+            });
         }
 
         private bool OrderExists(string id)

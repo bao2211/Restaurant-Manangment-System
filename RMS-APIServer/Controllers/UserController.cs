@@ -130,10 +130,25 @@ namespace RMS_APIServer.Controllers
                 return NotFound();
             }
 
+            // Store user info before deletion for response (excluding sensitive data)
+            var deletedUserInfo = new
+            {
+                userId = user.UserId,
+                userName = user.UserName,
+                role = user.Role,
+                fullName = user.FullName,
+                email = user.Email
+            };
+
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(new
+            {
+                message = "User deleted successfully.",
+                deletedUser = deletedUserInfo,
+                deletedAt = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss UTC")
+            });
         }
 
         private bool UserExists(string id)

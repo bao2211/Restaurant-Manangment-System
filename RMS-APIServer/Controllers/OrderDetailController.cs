@@ -151,10 +151,25 @@ namespace RMS_APIServer.Controllers
                 return NotFound();
             }
 
+            // Store order detail info before deletion for response
+            var deletedOrderDetailInfo = new
+            {
+                foodId = orderDetail.FoodId,
+                orderId = orderDetail.OrderId,
+                unitPrice = orderDetail.UnitPrice,
+                status = orderDetail.Status,
+                quantity = orderDetail.Quantity
+            };
+
             _context.OrderDetails.Remove(orderDetail);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(new
+            {
+                message = "Order detail deleted successfully.",
+                deletedOrderDetail = deletedOrderDetailInfo,
+                deletedAt = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss UTC")
+            });
         }
 
         private bool OrderDetailExists(string foodId, string orderId)

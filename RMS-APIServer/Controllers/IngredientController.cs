@@ -125,10 +125,24 @@ namespace RMS_APIServer.Controllers
                 return NotFound();
             }
 
+            // Store ingredient info before deletion for response
+            var deletedIngredientInfo = new
+            {
+                ingreId = ingredient.IngreId,
+                ingreName = ingredient.IngreName,
+                stock = ingredient.Stock,
+                unitMeasurement = ingredient.UnitMeasurement
+            };
+
             _context.Ingredients.Remove(ingredient);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(new
+            {
+                message = "Ingredient deleted successfully.",
+                deletedIngredient = deletedIngredientInfo,
+                deletedAt = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss UTC")
+            });
         }
 
         private bool IngredientExists(string id)

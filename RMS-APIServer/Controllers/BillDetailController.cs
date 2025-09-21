@@ -148,10 +148,24 @@ namespace RMS_APIServer.Controllers
                 return NotFound();
             }
 
+            // Store bill detail info before deletion for response
+            var deletedBillDetailInfo = new
+            {
+                orderId = billDetail.OrderId,
+                billId = billDetail.BillId,
+                quantity = billDetail.Quantity,
+                unitPrice = billDetail.UnitPrice
+            };
+
             _context.BillDetails.Remove(billDetail);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(new
+            {
+                message = "Bill detail deleted successfully.",
+                deletedBillDetail = deletedBillDetailInfo,
+                deletedAt = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss UTC")
+            });
         }
 
         private bool BillDetailExists(string orderId, string billId)

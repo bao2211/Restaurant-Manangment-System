@@ -180,7 +180,16 @@ namespace RMS_APIServer.Controllers
                 _context.FoodInfos.Remove(foodInfo);
                 await _context.SaveChangesAsync();
 
-                return NoContent();
+                return Ok(new
+                {
+                    message = "Food item deleted successfully.",
+                    deletedItem = new
+                    {
+                        foodId = foodInfo.FoodId,
+                        foodName = foodInfo.FoodName,
+                        deletedAt = DateTime.Now
+                    }
+                });
             }
             catch (DbUpdateException ex)
             {
