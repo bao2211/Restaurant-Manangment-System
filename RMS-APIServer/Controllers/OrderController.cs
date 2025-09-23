@@ -19,36 +19,30 @@ namespace RMS_APIServer.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrders()
         {
-            var ordersRaw = await _context.Orders
+            var orders = await _context.Orders
                 .Include(o => o.OrderDetails)
-                .Select(o => new
+                .Select(o => new OrderDto
                 {
-                    OrderId = o.OrderId,
-                    TableId = o.TableId,
-                    UserId = o.UserId,
-                    CreatedTime = o.CreatedTime,
-                    Status = o.Status,
-                    OrderDetails = o.OrderDetails.Select(od => new
+                    Id = o.OrderId,
+                    TableId = o.TableId ?? string.Empty,
+                    UserId = o.UserId ?? string.Empty,
+                    OrderDate = o.CreatedTime ?? DateTime.MinValue,
+                    Status = o.Status ?? string.Empty,
+                    Total = o.Total,
+                    Note = o.Note,
+                    Discount = o.Discount,
+                    ReservationId = o.ReservationId,
+                    OrderDetails = o.OrderDetails.Select(od => new OrderDetailDto
                     {
+                        OrderId = od.OrderId,
                         FoodId = od.FoodId,
-                        Quantity = od.Quantity
+                        Quantity = od.Quantity ?? 0,
+                        UnitPrice = od.UnitPrice,
+                        Status = od.Status
                     }).ToList()
                 })
                 .ToListAsync();
 
-            var orders = ordersRaw.Select(o => new OrderDto
-            {
-                Id = int.TryParse(o.OrderId, out var oid) ? oid : 0,
-                TableId = int.TryParse(o.TableId, out var tid) ? tid : 0,
-                UserId = int.TryParse(o.UserId, out var uid) ? uid : 0,
-                OrderDate = o.CreatedTime ?? DateTime.MinValue,
-                Status = o.Status ?? string.Empty,
-                OrderDetails = o.OrderDetails.Select(od => new OrderDetailDto
-                {
-                    FoodId = int.TryParse(od.FoodId, out var fid) ? fid : 0,
-                    Quantity = od.Quantity ?? 0
-                }).ToList()
-            }).ToList();
             return orders;
         }
 
@@ -78,6 +72,10 @@ namespace RMS_APIServer.Controllers
                 userName = order.User?.UserName,
                 createdTime = order.CreatedTime,
                 status = order.Status,
+                total = order.Total,
+                note = order.Note,
+                discount = order.Discount,
+                reservationId = order.ReservationId,
                 orderDetails = order.OrderDetails?.Select(od => new
                 {
                     foodId = od.FoodId,
@@ -112,6 +110,10 @@ namespace RMS_APIServer.Controllers
                 userName = order.User?.UserName,
                 createdTime = order.CreatedTime,
                 status = order.Status,
+                total = order.Total,
+                note = order.Note,
+                discount = order.Discount,
+                reservationId = order.ReservationId,
                 orderDetails = order.OrderDetails?.Select(od => new
                 {
                     foodId = od.FoodId,
@@ -146,6 +148,10 @@ namespace RMS_APIServer.Controllers
                 userName = order.User?.UserName,
                 createdTime = order.CreatedTime,
                 status = order.Status,
+                total = order.Total,
+                note = order.Note,
+                discount = order.Discount,
+                reservationId = order.ReservationId,
                 orderDetails = order.OrderDetails?.Select(od => new
                 {
                     foodId = od.FoodId,
@@ -180,6 +186,10 @@ namespace RMS_APIServer.Controllers
                 userName = order.User?.UserName,
                 createdTime = order.CreatedTime,
                 status = order.Status,
+                total = order.Total,
+                note = order.Note,
+                discount = order.Discount,
+                reservationId = order.ReservationId,
                 orderDetails = order.OrderDetails?.Select(od => new
                 {
                     foodId = od.FoodId,

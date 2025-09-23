@@ -2,20 +2,26 @@ namespace RMS_APIServer.Models
 {
     public class OrderDto
     {
-        public int Id { get; set; }
-        public int TableId { get; set; }
-        public int UserId { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string TableId { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;
         public DateTime OrderDate { get; set; }
-        public string Status { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public decimal? Total { get; set; }
+        public string? Note { get; set; }
+        public decimal? Discount { get; set; }
+        public string? ReservationId { get; set; }
         // Add other properties you want to expose
-        public List<OrderDetailDto> OrderDetails { get; set; }
+        public List<OrderDetailDto> OrderDetails { get; set; } = new List<OrderDetailDto>();
     }
 
     public class OrderDetailDto
     {
-        public int Id { get; set; }
-        public int FoodId { get; set; }
+        public string OrderId { get; set; } = string.Empty;
+        public string FoodId { get; set; } = string.Empty;
         public int Quantity { get; set; }
+        public decimal? UnitPrice { get; set; }
+        public string? Status { get; set; }
         // Add other properties you want to expose
     }
 }
