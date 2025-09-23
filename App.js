@@ -9,6 +9,8 @@ import MenuScreen from './screens/MenuScreen';
 import OrdersScreen from './screens/OrdersScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import TableScreen from './screens/TableScreen';
+import BillScreen from './screens/BillScreen';
+import ReportScreen from './screens/ReportScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -30,7 +32,11 @@ export default function App() {
             } else if (route.name === 'Profile') {
               iconName = focused ? 'account' : 'account-outline';
             } else if (route.name === 'Table') {
-              iconName = focused ? 'table' : 'table-outline';
+              iconName = focused ? 'table-chair' : 'table-chair-outline';
+            } else if (route.name === 'Bill') {
+              iconName = focused ? 'file-document' : 'file-document-outline';
+            } else if (route.name === 'Report') {
+              iconName = focused ? 'file-chart' : 'file-chart-outline';
             }
             
 
@@ -74,12 +80,22 @@ export default function App() {
         <Tab.Screen 
           name="Table" 
           component={TableScreen} 
-          options={{ headerTitle: 'Table' }}
+          options={{ headerTitle: 'Our Table' }}
+        />
+        <Tab.Screen 
+          name="Bill" 
+          component={BillScreen} 
+          options={{ headerTitle: 'Our Bill' }}
+        />
+        <Tab.Screen 
+          name="Report" 
+          component={ReportScreen} 
+          options={{ headerTitle: 'Our Report' }}
         />
           <Tab.Screen 
           name="Profile" 
           component={ProfileScreen} 
-          options={{ headerTitle: 'Profile' }}
+          options={{ headerTitle: 'My Profile' }}
         />
       </Tab.Navigator>
     </NavigationContainer>
