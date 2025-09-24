@@ -234,27 +234,42 @@ namespace RMS_APIServer.Controllers
 
         // POST: api/Order
         [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(Order order)
+        public async Task<ActionResult<object>> PostOrder(Order order)
         {
             order.CreatedTime = DateTime.Now;
             _context.Orders.Add(order);
             try
             {
                 await _context.SaveChangesAsync();
+
+                // Return the created order with clean structure
+                var createdOrder = new
+                {
+                    orderId = order.OrderId,
+                    tableId = order.TableId,
+                    userId = order.UserId,
+                    createdTime = order.CreatedTime,
+                    status = order.Status,
+                    total = order.Total,
+                    note = order.Note,
+                    discount = order.Discount,
+                    reservationId = order.ReservationId,
+                    message = "Order created successfully"
+                };
+
+                return CreatedAtAction("GetOrder", new { id = order.OrderId }, createdOrder);
             }
             catch (DbUpdateException)
             {
                 if (OrderExists(order.OrderId))
                 {
-                    return Conflict();
+                    return Conflict(new { message = "Order with this ID already exists" });
                 }
                 else
                 {
                     throw;
                 }
             }
-
-            return CreatedAtAction("GetOrder", new { id = order.OrderId }, order);
         }
 
         // DELETE: api/Order/5
