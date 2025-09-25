@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Alert, Image, TextInput } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Alert, Image, TextInput, Modal } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { apiService, getCategoryIcon, formatPrice } from '../services/apiService';
 
@@ -15,6 +15,29 @@ export default function MenuScreen({ navigation, route }) {
   const [orderItems, setOrderItems] = useState([]);
   const [orderId, setOrderId] = useState('');
   const [selectedTable, setSelectedTable] = useState(null);
+  // Order notification modal state
+  const [showOrderNotification, setShowOrderNotification] = useState(false);
+  const [createdOrderSummary, setCreatedOrderSummary] = useState(null);
+
+  // Handlers for notification modal actions
+  const handleCloseNotification = () => {
+    console.log('[OrderNotification] Close pressed');
+    setShowOrderNotification(false);
+  };
+  const handleGoToOrders = () => {
+    console.log('[OrderNotification] Go To Orders pressed');
+    setShowOrderNotification(false);
+    navigation.navigate('Orders');
+  };
+  const handleCreateAnother = () => {
+    console.log('[OrderNotification] Create Another pressed');
+    // Reset order items and generate a new order id but keep same table selection
+    setOrderItems([]);
+    const newValidOrderId = generateValidOrderId();
+    setOrderId(newValidOrderId);
+    console.log('Initialized new order after modal action with ID:', newValidOrderId);
+    setShowOrderNotification(false);
+  };
 
   // Fetch categories on component mount and initialize order
   useEffect(() => {
@@ -420,7 +443,7 @@ export default function MenuScreen({ navigation, route }) {
       // Based on API documentation, using the full Order object format
       const orderData = {
         orderId: orderId, // Already validated to be 10 chars starting with "HD"
-        status: 'Pending',
+        status: 'Chưa làm', // Default status for new orders
         total: total,
         note: `Order for ${selectedTable.tableName || selectedTable.tableId}`,
         discount: 0,
@@ -451,7 +474,7 @@ export default function MenuScreen({ navigation, route }) {
         // Try alternative format based on OrderDto structure
         const alternativeOrderData = {
           orderId: orderId, // Keep our HD format for the string version
-          status: 'Pending',
+          status: 'Chưa làm', // Default status for new orders
           total: parseFloat(total), // Ensure it's a proper decimal
           note: `Order for ${selectedTable.tableName || selectedTable.tableId}`,
           discount: 0.0, // Explicit decimal format
@@ -483,7 +506,9 @@ export default function MenuScreen({ navigation, route }) {
           const orderDetailData = {
             foodId: (item.id || '').trim(), // Clean up any extra spaces
             orderId: createdOrderId,
-            quantity: item.quantity
+            quantity: item.quantity,
+            // Explicit initial status for each detail to prevent backend auto-upgrade
+            status: 'Chưa làm'
           };
           
           console.log('Creating order detail:', orderDetailData);
@@ -515,29 +540,18 @@ export default function MenuScreen({ navigation, route }) {
 
       console.log('=== ORDER SUBMISSION COMPLETE ===');
       
-      // Show success message
-      Alert.alert(
-        'Order Submitted Successfully!',
-        `Order ${orderId} has been created with ${orderItems.length} items.\nTotal: ${formatPrice(total)}`,
-        [
-          {
-            text: 'Create New Order',
-            onPress: () => {
-              // Reset the order form
-              setOrderItems([]);
-              const newValidOrderId = generateValidOrderId();
-              setOrderId(newValidOrderId);
-              console.log('New order initialized with valid ID:', newValidOrderId);
-            }
-          },
-          {
-            text: 'Back to Tables',
-            onPress: () => {
-              navigation.goBack();
-            }
-          }
-        ]
-      );
+      // Show custom notification modal instead of Alert
+      const summary = {
+        orderId: createdOrderId,
+        table: selectedTable?.tableName || selectedTable?.tableId || 'N/A',
+        items: orderItems.length,
+        total: total,
+        status: 'Chưa làm',
+        createdAt: new Date().toLocaleString()
+      };
+      setCreatedOrderSummary(summary);
+      console.log('[OrderNotification] Showing modal with summary:', summary);
+      setShowOrderNotification(true);
 
     } catch (error) {
       console.error('=== ORDER SUBMISSION ERROR ===');
@@ -735,6 +749,65 @@ export default function MenuScreen({ navigation, route }) {
         {/* Right Side - Order Form */}
         {renderOrderForm()}
       </View>
+
+      {/* Order Creation Notification Modal */}
+      <Modal
+        visible={showOrderNotification}
+        transparent
+        animationType="fade"
+        onRequestClose={handleCloseNotification}
+      >
+        <View style={styles.modalBackdrop}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalHeader}>
+              <MaterialCommunityIcons name="check-circle" size={42} color="#27AE60" />
+              <Text style={styles.modalTitle}>Order Created!</Text>
+              <Text style={styles.modalSubtitle}>Your order has been submitted successfully.</Text>
+            </View>
+            {createdOrderSummary && (
+              <View style={styles.summarySection}>
+                <View style={styles.summaryRow}>
+                  <Text style={styles.summaryLabel}>Order ID:</Text>
+                  <Text style={styles.summaryValue}>{createdOrderSummary.orderId}</Text>
+                </View>
+                <View style={styles.summaryRow}>
+                  <Text style={styles.summaryLabel}>Table:</Text>
+                  <Text style={styles.summaryValue}>{createdOrderSummary.table}</Text>
+                </View>
+                <View style={styles.summaryRow}>
+                  <Text style={styles.summaryLabel}>Items:</Text>
+                  <Text style={styles.summaryValue}>{createdOrderSummary.items}</Text>
+                </View>
+                <View style={styles.summaryRow}>
+                  <Text style={styles.summaryLabel}>Total:</Text>
+                  <Text style={[styles.summaryValue, styles.summaryTotal]}>{formatPrice(createdOrderSummary.total)}</Text>
+                </View>
+                <View style={styles.summaryRow}>
+                  <Text style={styles.summaryLabel}>Status:</Text>
+                  <Text style={[styles.summaryValue, styles.statusBadge]}>{createdOrderSummary.status}</Text>
+                </View>
+                <View style={styles.summaryRow}>
+                  <Text style={styles.summaryLabel}>Created:</Text>
+                  <Text style={styles.summaryValue}>{createdOrderSummary.createdAt}</Text>
+                </View>
+              </View>
+            )}
+            <View style={styles.modalActions}>
+              <TouchableOpacity style={[styles.modalButton, styles.secondaryButton]} onPress={handleCloseNotification}>
+                <Text style={[styles.modalButtonText, styles.secondaryButtonText]}>Close</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.modalButton, styles.primaryButton]} onPress={handleGoToOrders}>
+                <MaterialCommunityIcons name="clipboard-list" size={18} color="white" />
+                <Text style={styles.modalButtonText}>Orders</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.modalButton, styles.accentButton]} onPress={handleCreateAnother}>
+                <MaterialCommunityIcons name="plus-circle" size={18} color="white" />
+                <Text style={styles.modalButtonText}>New Order</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -1080,4 +1153,105 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  // Modal styles
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalContainer: {
+    width: '100%',
+    backgroundColor: 'white',
+    borderRadius: 18,
+    padding: 24,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+  },
+  modalHeader: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#2C3E50',
+    marginTop: 10,
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    color: '#7F8C8D',
+    marginTop: 4,
+    textAlign: 'center',
+  },
+  summarySection: {
+    backgroundColor: '#F8F9FA',
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 18,
+  },
+  summaryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 6,
+  },
+  summaryLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#34495E',
+  },
+  summaryValue: {
+    fontSize: 14,
+    color: '#2C3E50',
+    fontWeight: '500',
+  },
+  summaryTotal: {
+    color: '#27AE60',
+    fontWeight: '700',
+  },
+  statusBadge: {
+    backgroundColor: '#FFEFD5',
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    borderRadius: 10,
+    overflow: 'hidden',
+    fontSize: 12,
+    color: '#D35400',
+  },
+  modalActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  modalButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+    paddingVertical: 12,
+    marginHorizontal: 4,
+    borderRadius: 10,
+  },
+  primaryButton: {
+    backgroundColor: '#27AE60',
+  },
+  accentButton: {
+    backgroundColor: '#FF6B35',
+  },
+  secondaryButton: {
+    backgroundColor: '#ECF0F1',
+  },
+  modalButtonText: {
+    color: 'white',
+    fontWeight: '600',
+    marginLeft: 6,
+  },
+  secondaryButtonText: {
+    color: '#2C3E50',
+    marginLeft: 0,
+  }
 });

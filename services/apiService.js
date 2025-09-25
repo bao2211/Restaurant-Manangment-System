@@ -152,8 +152,29 @@ export const apiService = {
 
   getFoodItemById: async (foodId) => {
     try {
+      console.log('getFoodItemById - Fetching food item for ID:', foodId);
       const response = await api.get(`/api/FoodInfo/${foodId}`);
-      return extractApiData(response.data);
+      console.log('getFoodItemById - Raw response:', response.data);
+      
+      // For single item requests, the API might return the object directly
+      // or wrapped in the $values structure
+      let foodItem = null;
+      
+      if (response.data) {
+        if (response.data.$values && Array.isArray(response.data.$values)) {
+          // If wrapped in $values array, take the first item
+          foodItem = response.data.$values[0];
+        } else if (Array.isArray(response.data)) {
+          // If it's a direct array
+          foodItem = response.data[0];
+        } else if (typeof response.data === 'object') {
+          // If it's a direct object
+          foodItem = response.data;
+        }
+      }
+      
+      console.log('getFoodItemById - Processed food item:', foodItem);
+      return foodItem;
     } catch (error) {
       console.error('Error fetching food item:', error);
       throw error;
@@ -415,8 +436,12 @@ export const apiService = {
 
   getOrderDetails: async (orderId) => {
     try {
+      console.log('Fetching order details for orderId:', orderId);
       const response = await api.get(`/api/OrderDetail/order/${orderId}`);
-      return response.data;
+      console.log('Raw order details API response:', response.data);
+      const extractedData = extractApiData(response.data);
+      console.log('Extracted order details:', extractedData);
+      return extractedData;
     } catch (error) {
       console.error('Error fetching order details:', error);
       throw error;

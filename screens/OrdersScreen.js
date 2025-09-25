@@ -64,7 +64,7 @@ export default function OrdersScreen() {
           orderId: order.orderId || order.orderID || order.id || 'N/A',
           createDate: order.createdTime || order.createDate || order.createdAt || order.orderDate || new Date().toISOString(),
           totalAmount: parseFloat(total), // Ensure it's a number
-          status: order.status || 'chưa làm',
+          status: order.status || 'Chưa làm',
           tableId: order.tableId || order.table?.tableId || 'Unknown',
           userId: order.userId || order.user?.userId || 'Unknown',
           user: {
@@ -180,6 +180,9 @@ export default function OrdersScreen() {
 const OrderItem = ({ order }) => {
   console.log('Rendering order:', order);
   const [staffName, setStaffName] = useState('');
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [orderDetails, setOrderDetails] = useState([]);
+  const [loadingDetails, setLoadingDetails] = useState(false);
 
   useEffect(() => {
     const fetchStaffName = async () => {
@@ -196,6 +199,44 @@ const OrderItem = ({ order }) => {
 
     fetchStaffName();
   }, [order.userId]);
+
+  const fetchOrderDetails = async () => {
+    if (!order.orderId) return;
+    
+    setLoadingDetails(true);
+    try {
+      console.log('Fetching order details for orderId:', order.orderId);
+      const details = await apiService.getOrderDetails(order.orderId);
+      console.log('Raw order details response:', details);
+      
+      // Handle different response formats
+      let processedDetails = [];
+      if (details) {
+        if (Array.isArray(details)) {
+          processedDetails = details;
+        } else if (details.$values && Array.isArray(details.$values)) {
+          processedDetails = details.$values;
+        } else if (typeof details === 'object') {
+          processedDetails = [details];
+        }
+      }
+      
+      console.log('Processed order details:', processedDetails);
+      setOrderDetails(processedDetails);
+    } catch (error) {
+      console.error('Error fetching order details:', error);
+      setOrderDetails([]);
+    } finally {
+      setLoadingDetails(false);
+    }
+  };
+
+  const handleToggleExpand = () => {
+    if (!isExpanded) {
+      fetchOrderDetails();
+    }
+    setIsExpanded(!isExpanded);
+  };
 
   const formatDate = (dateString) => {
     try {
@@ -220,9 +261,11 @@ const OrderItem = ({ order }) => {
 
   const createdDate = formatDate(order.createDate);
 
-  // Get status color
+  // Get status color (robust against casing / initial capital)
   const getStatusColor = (status) => {
-    switch (status) {
+    if (!status) return '#7F8C8D';
+    const normalized = status.toLowerCase();
+    switch (normalized) {
       case 'hoàn tất':
         return '#27AE60'; // Green
       case 'đã thanh toán':
@@ -275,6 +318,43 @@ const OrderItem = ({ order }) => {
         </View>
       </View>
 
+      {/* Expand/Collapse Button */}
+      <TouchableOpacity 
+        style={styles.expandButton}
+        onPress={handleToggleExpand}
+      >
+        <Text style={styles.expandButtonText}>
+          {isExpanded ? 'Hide Order Details' : 'Show Order Details'}
+        </Text>
+        <MaterialCommunityIcons 
+          name={isExpanded ? 'chevron-up' : 'chevron-down'} 
+          size={20} 
+          color="#3498DB"
+        />
+      </TouchableOpacity>
+
+      {/* Order Details Dropdown */}
+      {isExpanded && (
+        <View style={styles.orderDetailsList}>
+          {loadingDetails ? (
+            <View style={styles.detailsLoader}>
+              <ActivityIndicator size="small" color="#3498DB" />
+              <Text style={styles.loadingDetailsText}>Loading dishes...</Text>
+            </View>
+          ) : orderDetails.length > 0 ? (
+            orderDetails.map((detail, index) => (
+              <OrderDetailItem 
+                key={index} 
+                detail={detail} 
+                index={index}
+              />
+            ))
+          ) : (
+            <Text style={styles.noDetailsText}>No dishes found in this order</Text>
+          )}
+        </View>
+      )}
+
       <View style={styles.orderFooter}>
         <View style={styles.footerContent}>
           <View style={styles.amountRow}>
@@ -287,6 +367,97 @@ const OrderItem = ({ order }) => {
             <Text style={styles.calculatingText}>Calculating total...</Text>
           )}
         </View>
+      </View>
+    </View>
+  );
+};
+
+const OrderDetailItem = ({ detail, index }) => {
+  const [foodInfo, setFoodInfo] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchFoodInfo = async () => {
+      if (!detail.foodId) return;
+
+      setLoading(true);
+      try {
+        console.log('OrderDetailItem - Fetching food info for foodId:', detail.foodId);
+        const foodData = await apiService.getFoodItemById(detail.foodId);
+        console.log('OrderDetailItem - Received food data:', foodData);
+        
+        // The getFoodItemById should now return a single food object directly
+        if (foodData && typeof foodData === 'object') {
+          console.log('OrderDetailItem - Setting food info with price:', foodData.price);
+          setFoodInfo(foodData);
+        } else {
+          console.warn('OrderDetailItem - Invalid food data received:', foodData);
+          setFoodInfo(null);
+        }
+      } catch (error) {
+        console.error('Error fetching food info:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFoodInfo();
+  }, [detail.foodId]);
+
+  // Extract food information with accurate data priority
+  const foodName = foodInfo?.name || 
+                  foodInfo?.foodName || 
+                  detail.foodName || 
+                  detail.food?.name || 
+                  detail.food?.foodName || 
+                  detail.foodInfo?.name ||
+                  detail.foodInfo?.foodName ||
+                  `Food ID: ${detail.foodId || 'Unknown'}`;
+
+  // Use actual food price from database, then fallback to order detail price
+  // Note: FoodInfo API uses 'unitPrice' property, not 'price'
+  const fetchedPrice = foodInfo?.unitPrice || foodInfo?.price;
+  const detailPrice = detail.price || detail.unitPrice;
+  const unitPrice = fetchedPrice || detailPrice || 0;
+
+  const quantity = detail.quantity || 1;
+  const totalItemPrice = unitPrice * quantity;
+
+  console.log('OrderDetailItem price calculation:', {
+    foodId: detail.foodId,
+    foodName,
+    foodInfoUnitPrice: foodInfo?.unitPrice,
+    foodInfoPrice: foodInfo?.price,
+    fetchedPrice: fetchedPrice,
+    detailPrice: detailPrice,
+    finalUnitPrice: unitPrice,
+    quantity,
+    totalItemPrice,
+    hasValidFoodInfo: !!foodInfo,
+    foodInfoKeys: foodInfo ? Object.keys(foodInfo) : 'null'
+  });
+
+  return (
+    <View style={styles.orderDetailItem}>
+      <View style={styles.orderDetailInfo}>
+        <Text style={styles.dishName}>{foodName}</Text>
+        <View style={styles.priceContainer}>
+          <Text style={styles.dishPrice}>
+            Unit: {formatPrice(unitPrice)}
+          </Text>
+          <Text style={styles.totalPrice}>
+            Total: {formatPrice(totalItemPrice)}
+          </Text>
+        </View>
+        {detail.foodId && (
+          <Text style={styles.foodIdText}>ID: {detail.foodId}</Text>
+        )}
+        {loading && (
+          <Text style={styles.loadingPriceText}>Loading accurate price...</Text>
+        )}
+      </View>
+      <View style={styles.quantityBadge}>
+        <Text style={styles.quantityText}>x{quantity}</Text>
       </View>
     </View>
   );
@@ -479,5 +650,106 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#95A5A6',
     marginLeft: 8,
+  },
+  // Order Details Dropdown Styles
+  expandButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    marginTop: 8,
+    backgroundColor: '#F8F9FA',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+  },
+  expandButtonText: {
+    fontSize: 14,
+    color: '#3498DB',
+    fontWeight: '600',
+    marginRight: 8,
+  },
+  orderDetailsList: {
+    marginTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#F5F5F5',
+    paddingTop: 12,
+  },
+  detailsLoader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+  },
+  loadingDetailsText: {
+    marginLeft: 8,
+    fontSize: 14,
+    color: '#7F8C8D',
+  },
+  orderDetailItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+    backgroundColor: '#F8F9FA',
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  orderDetailInfo: {
+    flex: 1,
+    marginRight: 12,
+  },
+  dishName: {
+    fontSize: 14,
+    color: '#2C3E50',
+    fontWeight: '500',
+    marginBottom: 4,
+  },
+  priceContainer: {
+    marginTop: 4,
+  },
+  dishPrice: {
+    fontSize: 12,
+    color: '#FF6B35',
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  totalPrice: {
+    fontSize: 13,
+    color: '#27AE60',
+    fontWeight: 'bold',
+  },
+  foodIdText: {
+    fontSize: 11,
+    color: '#95A5A6',
+    fontStyle: 'italic',
+    marginTop: 2,
+  },
+  loadingPriceText: {
+    fontSize: 10,
+    color: '#3498DB',
+    fontStyle: 'italic',
+    marginTop: 2,
+  },
+  quantityBadge: {
+    backgroundColor: '#E8F6F3',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#27AE60',
+  },
+  quantityText: {
+    fontSize: 14,
+    color: '#27AE60',
+    fontWeight: '600',
+  },
+  noDetailsText: {
+    textAlign: 'center',
+    color: '#95A5A6',
+    fontStyle: 'italic',
+    padding: 16,
+    fontSize: 14,
   },
 });
