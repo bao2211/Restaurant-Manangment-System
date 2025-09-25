@@ -1,0 +1,11 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Add getAllOrders to apiService",
+			"type": "shell",
+			"command": "echo Adding getAllOrders method to apiService",
+			"group": "none"
+		}
+	]
+}

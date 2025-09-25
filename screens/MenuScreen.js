@@ -1,19 +1,56 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Alert, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Alert, Image, TextInput, Modal } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { apiService, getCategoryIcon, formatPrice } from '../services/apiService';
 
-export default function MenuScreen({ navigation }) {
+export default function MenuScreen({ navigation, route }) {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [categories, setCategories] = useState([]);
   const [foodItems, setFoodItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingItems, setLoadingItems] = useState(false);
   const [imageErrors, setImageErrors] = useState({}); // Track failed image loads
+  
+  // Order form state
+  const [orderItems, setOrderItems] = useState([]);
+  const [orderId, setOrderId] = useState('');
+  const [selectedTable, setSelectedTable] = useState(null);
+  // Order notification modal state
+  const [showOrderNotification, setShowOrderNotification] = useState(false);
+  const [createdOrderSummary, setCreatedOrderSummary] = useState(null);
 
-  // Fetch categories on component mount
+  // Handlers for notification modal actions
+  const handleCloseNotification = () => {
+    console.log('[OrderNotification] Close pressed');
+    setShowOrderNotification(false);
+  };
+  const handleGoToOrders = () => {
+    console.log('[OrderNotification] Go To Orders pressed');
+    setShowOrderNotification(false);
+    navigation.navigate('Orders');
+  };
+  const handleCreateAnother = () => {
+    console.log('[OrderNotification] Create Another pressed');
+    // Reset order items and generate a new order id but keep same table selection
+    setOrderItems([]);
+    const newValidOrderId = generateValidOrderId();
+    setOrderId(newValidOrderId);
+    console.log('Initialized new order after modal action with ID:', newValidOrderId);
+    setShowOrderNotification(false);
+  };
+
+  // Fetch categories on component mount and initialize order
   useEffect(() => {
     fetchCategories();
+    
+    // Initialize order if coming from table selection
+    if (route?.params?.selectedTable) {
+      const table = route.params.selectedTable;
+      const validOrderId = generateValidOrderId();
+      console.log('Generated valid OrderID:', validOrderId);
+      setOrderId(validOrderId);
+      setSelectedTable(table);
+    }
   }, []);
 
   // Fetch food items when category changes
@@ -265,19 +302,361 @@ export default function MenuScreen({ navigation }) {
   };
 
   const handleAddToCart = (item) => {
-    Alert.alert(
-      'Add to Cart',
-      `Add ${item.name} to your cart?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Add', 
-          onPress: () => {
-            // TODO: Implement cart functionality
-            Alert.alert('Success', `${item.name} added to cart!`);
+    console.log('=== ADD TO CART DEBUG ===');
+    console.log('Adding item:', item);
+    
+    // Check if item already exists in order
+    const existingItemIndex = orderItems.findIndex(orderItem => orderItem.id === item.id);
+    
+    if (existingItemIndex !== -1) {
+      // If item exists, increase quantity
+      const updatedItems = [...orderItems];
+      updatedItems[existingItemIndex].quantity += 1;
+      console.log('Item already exists, increased quantity:', updatedItems[existingItemIndex]);
+      setOrderItems(updatedItems);
+    } else {
+      // If item doesn't exist, add new item
+      const newOrderItem = {
+        id: item.id,
+        name: item.name,
+        price: item.unitPrice,
+        quantity: 1,
+        formattedPrice: item.price
+      };
+      console.log('Adding new item to order:', newOrderItem);
+      setOrderItems([...orderItems, newOrderItem]);
+    }
+    
+    console.log('Current order items after addition:', [...orderItems]);
+    Alert.alert('Success', `${item.name} added to order!`);
+  };
+
+  const updateQuantity = (itemId, change) => {
+    console.log('=== UPDATE QUANTITY DEBUG ===');
+    console.log('Item ID:', itemId);
+    console.log('Change:', change);
+    console.log('Current order items before update:', orderItems);
+    
+    const updatedItems = orderItems.map(item => {
+      if (item.id === itemId) {
+        const newQuantity = Math.max(0, item.quantity + change);
+        console.log(`Updating item ${item.name} quantity from ${item.quantity} to ${newQuantity}`);
+        return { ...item, quantity: newQuantity };
+      }
+      return item;
+    }).filter(item => item.quantity > 0); // Remove items with 0 quantity
+    
+    console.log('Updated order items:', updatedItems);
+    setOrderItems(updatedItems);
+  };
+
+  const calculateTotal = () => {
+    return orderItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+  };
+
+  // Generate a valid OrderID (10 characters, starts with "HD")
+  const generateValidOrderId = () => {
+    const timestamp = Date.now();
+    // Take last 8 digits of timestamp to ensure 10 total characters with "HD" prefix
+    const orderNumber = timestamp.toString().slice(-8);
+    return `HD${orderNumber}`;
+  };
+
+  // Validate OrderID format (10 characters, starts with "HD")
+  const validateOrderId = (orderIdToValidate) => {
+    if (!orderIdToValidate) {
+      console.log('OrderID validation failed: OrderID is empty');
+      return false;
+    }
+    
+    if (orderIdToValidate.length !== 10) {
+      console.log(`OrderID validation failed: Length is ${orderIdToValidate.length}, expected 10`);
+      return false;
+    }
+    
+    if (!orderIdToValidate.startsWith('HD')) {
+      console.log(`OrderID validation failed: Does not start with "HD", starts with "${orderIdToValidate.substring(0, 2)}"`);
+      return false;
+    }
+    
+    console.log(`OrderID validation passed: ${orderIdToValidate}`);
+    return true;
+  };
+
+  const submitOrder = async () => {
+    console.log('=== SUBMIT ORDER DEBUG ===');
+    console.log('Order ID:', orderId);
+    console.log('Selected Table:', selectedTable);
+    console.log('Order Items:', orderItems);
+    console.log('Order Items Length:', orderItems.length);
+    
+    // Add detailed debugging for each order item
+    orderItems.forEach((item, index) => {
+      console.log(`Order Item ${index + 1}:`, {
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        total: item.price * item.quantity
+      });
+    });
+    
+    if (orderItems.length === 0) {
+      console.log('ERROR: No items in order');
+      Alert.alert('Error', 'Please add items to the order');
+      return;
+    }
+
+    if (!selectedTable) {
+      console.log('ERROR: No table selected');
+      Alert.alert('Error', 'No table selected');
+      return;
+    }
+
+    // Validate OrderID format
+    if (!validateOrderId(orderId)) {
+      console.log('ERROR: Invalid OrderID format');
+      Alert.alert('Error', 'Invalid Order ID format. Order ID must be 10 characters and start with "HD"');
+      return;
+    }
+
+    try {
+      const total = calculateTotal();
+      console.log('Calculated Total:', total);
+
+      // Test API connection first
+      console.log('=== TESTING API CONNECTION ===');
+      const connectionTest = await apiService.testConnection();
+      console.log('Connection test result:', connectionTest);
+      
+      if (!connectionTest) {
+        Alert.alert('Connection Error', 'Cannot connect to the API server. Please check your internet connection and try again.');
+        return;
+      }
+
+      // Try alternative fetch test
+      console.log('=== TESTING WITH FETCH ===');
+      const fetchTest = await apiService.testWithFetch();
+      console.log('Fetch test result:', fetchTest);
+
+      // Prepare order data for API with validated format
+      // Based on API documentation, using the full Order object format
+      const orderData = {
+        orderId: orderId, // Already validated to be 10 chars starting with "HD"
+        status: 'Chưa làm', // Default status for new orders
+        total: total,
+        note: `Order for ${selectedTable.tableName || selectedTable.tableId}`,
+        discount: 0,
+        tableId: (selectedTable.tableId || selectedTable.id || '').trim(), // Clean up extra spaces
+        userId: 1 // User specifically requested number 1
+      };
+
+      console.log('=== ORDER DATA VALIDATION ===');
+      console.log('OrderID:', orderData.orderId, '(Length:', orderData.orderId.length, ', Starts with HD:', orderData.orderId.startsWith('HD'), ')');
+      console.log('UserID:', orderData.userId, '(Type:', typeof orderData.userId, ')');
+      console.log('TableID:', orderData.tableId, '(Type:', typeof orderData.tableId, ')');
+      console.log('Total:', orderData.total, '(Type:', typeof orderData.total, ')');
+      console.log('Selected Table Object:', selectedTable);
+      console.log('Order Data to send:', JSON.stringify(orderData, null, 2));
+
+      // Create the main order
+      console.log('Creating order via API...');
+      
+      // Try creating order with our current format first
+      let createdOrder;
+      try {
+        createdOrder = await apiService.createOrderWithCorsHandling(orderData);
+        console.log('Order created successfully with primary format:', createdOrder);
+      } catch (primaryError) {
+        console.log('Primary format failed, trying alternative formats...');
+        console.error('Primary error:', primaryError.message);
+        
+        // Try alternative format based on OrderDto structure
+        const alternativeOrderData = {
+          orderId: orderId, // Keep our HD format for the string version
+          status: 'Chưa làm', // Default status for new orders
+          total: parseFloat(total), // Ensure it's a proper decimal
+          note: `Order for ${selectedTable.tableName || selectedTable.tableId}`,
+          discount: 0.0, // Explicit decimal format
+          tableId: (selectedTable.tableId || selectedTable.id || '').trim(),
+          userId: "1" // Try string format as shown in API examples
+        };
+        
+        console.log('Trying alternative order format:', JSON.stringify(alternativeOrderData, null, 2));
+        
+        try {
+          createdOrder = await apiService.createOrderWithCorsHandling(alternativeOrderData);
+          console.log('Order created successfully with alternative format:', createdOrder);
+        } catch (alternativeError) {
+          console.error('Alternative format also failed:', alternativeError.message);
+          throw primaryError; // Throw the original error
+        }
+      }
+
+      // Create order details for each item
+      console.log('Creating order details...');
+      // Use the order ID from the created order response, or fall back to our original ID
+      const createdOrderId = createdOrder?.orderId || createdOrder?.id || orderId;
+      console.log('Using order ID for details:', createdOrderId);
+      
+      // Check if order creation was actually successful
+      if (createdOrder && !createdOrder.type && !createdOrder.title) {
+        // Order was created successfully, now create details
+        for (const item of orderItems) {
+          const orderDetailData = {
+            foodId: (item.id || '').trim(), // Clean up any extra spaces
+            orderId: createdOrderId,
+            quantity: item.quantity,
+            // Explicit initial status for each detail to prevent backend auto-upgrade
+            status: 'Chưa làm'
+          };
+          
+          console.log('Creating order detail:', orderDetailData);
+          
+          try {
+            const createdDetail = await apiService.createOrderDetail(orderDetailData);
+            console.log('Order detail created:', createdDetail);
+          } catch (detailError) {
+            console.error('Error creating order detail:', detailError);
+            console.error('Order detail error response:', detailError.response?.data);
+            console.error('Order detail error status:', detailError.response?.status);
+            
+            // Log validation errors for order details
+            if (detailError.response?.status === 400 && detailError.response?.data?.errors) {
+              console.log('=== ORDER DETAIL VALIDATION ERRORS ===');
+              console.log('Detail validation errors:', detailError.response.data.errors);
+              Object.keys(detailError.response.data.errors).forEach(field => {
+                console.log(`${field}:`, detailError.response.data.errors[field]);
+              });
+            }
+            // Continue with other items even if one fails
           }
         }
-      ]
+      } else {
+        console.error('Order creation failed, skipping order details creation');
+        console.error('Order response indicates error:', createdOrder);
+        throw new Error('Order creation failed with validation errors');
+      }
+
+      console.log('=== ORDER SUBMISSION COMPLETE ===');
+      
+      // Show custom notification modal instead of Alert
+      const summary = {
+        orderId: createdOrderId,
+        table: selectedTable?.tableName || selectedTable?.tableId || 'N/A',
+        items: orderItems.length,
+        total: total,
+        status: 'Chưa làm',
+        createdAt: new Date().toLocaleString()
+      };
+      setCreatedOrderSummary(summary);
+      console.log('[OrderNotification] Showing modal with summary:', summary);
+      setShowOrderNotification(true);
+
+    } catch (error) {
+      console.error('=== ORDER SUBMISSION ERROR ===');
+      console.error('Error details:', error);
+      console.error('Error message:', error.message);
+      console.error('Error code:', error.code);
+      console.error('Error response status:', error.response?.status);
+      console.error('Error response data:', error.response?.data);
+      
+      let errorMessage = 'Failed to submit order';
+      
+      // Handle specific error types
+      if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
+        errorMessage = 'Network connection failed. This might be due to:\n• CORS policy blocking the request\n• Server is not running\n• Network connectivity issues\n\nTry using a native mobile device or configure CORS on the server.';
+      } else if (error.response?.status === 500) {
+        errorMessage = 'Server internal error. Please check the server logs and try again.';
+      } else if (error.response?.status === 400) {
+        errorMessage = 'Invalid order data. Please check all required fields.';
+      } else {
+        errorMessage = error.message || 'Unknown error occurred';
+      }
+      
+      Alert.alert(
+        'Order Submission Failed',
+        errorMessage,
+        [
+          { text: 'Retry', onPress: submitOrder },
+          { text: 'Cancel', style: 'cancel' }
+        ]
+      );
+    }
+  };
+
+  const renderOrderForm = () => {
+    const total = calculateTotal();
+    
+    return (
+      <View style={styles.orderFormContainer}>
+        <Text style={styles.orderFormTitle}>Order Details</Text>
+        
+        {/* Order Info */}
+        <View style={styles.orderInfoSection}>
+          <Text style={styles.orderInfoLabel}>Order ID:</Text>
+          <Text style={styles.orderInfoValue}>{orderId || 'No Order'}</Text>
+          
+          <Text style={styles.orderInfoLabel}>Table:</Text>
+          <Text style={styles.orderInfoValue}>
+            {selectedTable ? `${selectedTable.tableName || selectedTable.tableId}` : 'No Table'}
+          </Text>
+        </View>
+        
+        {/* Order Items */}
+        <Text style={styles.orderItemsTitle}>Items:</Text>
+        <ScrollView style={styles.orderItemsList}>
+          {orderItems.length === 0 ? (
+            <Text style={styles.emptyOrderText}>No items added yet</Text>
+          ) : (
+            orderItems.map((item) => (
+              <View key={item.id} style={styles.orderItem}>
+                <View style={styles.orderItemInfo}>
+                  <Text style={styles.orderItemName}>{item.name}</Text>
+                  <Text style={styles.orderItemPrice}>{formatPrice(item.price)}</Text>
+                </View>
+                <View style={styles.quantityControls}>
+                  <TouchableOpacity 
+                    style={styles.quantityButton}
+                    onPress={() => updateQuantity(item.id, -1)}
+                  >
+                    <MaterialCommunityIcons name="minus" size={16} color="white" />
+                  </TouchableOpacity>
+                  <Text style={styles.quantityText}>{item.quantity}</Text>
+                  <TouchableOpacity 
+                    style={styles.quantityButton}
+                    onPress={() => updateQuantity(item.id, 1)}
+                  >
+                    <MaterialCommunityIcons name="plus" size={16} color="white" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))
+          )}
+        </ScrollView>
+        
+        {/* Total */}
+        <View style={styles.totalSection}>
+          <Text style={styles.totalLabel}>Total Amount:</Text>
+          <Text style={styles.totalAmount}>{formatPrice(total)}</Text>
+        </View>
+        
+        {/* Action Buttons */}
+        <View style={styles.orderActions}>
+          <TouchableOpacity 
+            style={styles.clearButton}
+            onPress={() => setOrderItems([])}
+          >
+            <Text style={styles.clearButtonText}>Clear Order</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.submitButton}
+            onPress={submitOrder}
+          >
+            <Text style={styles.submitButtonText}>Submit Order</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     );
   };
 
@@ -309,59 +688,126 @@ export default function MenuScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* Category Tabs */}
-      <View style={styles.categoryContainer}>
-        <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false} 
-          contentContainerStyle={styles.categoryContentContainer}
-          style={styles.categoryScrollView}
-        >
-          {categories.map((category) => (
-          <TouchableOpacity
-            key={category.id}
-            style={[
-              styles.categoryTab,
-              selectedCategory === category.id && styles.activeCategoryTab
-            ]}
-            onPress={() => setSelectedCategory(category.id)}
-          >
-            <MaterialCommunityIcons 
-              name={category.icon} 
-              size={18} 
-              color={selectedCategory === category.id ? 'white' : '#FF6B35'} 
-            />
-            <Text style={[
-              styles.categoryText,
-              selectedCategory === category.id && styles.activeCategoryText
-            ]}>
-              {category.name}
+      {/* Main Content Area */}
+      <View style={styles.mainContent}>
+        {/* Left Side - Menu */}
+        <View style={styles.menuSection}>
+          {/* Category Tabs */}
+          <View style={styles.categoryContainer}>
+            <ScrollView 
+              horizontal 
+              showsHorizontalScrollIndicator={false} 
+              contentContainerStyle={styles.categoryContentContainer}
+              style={styles.categoryScrollView}
+            >
+              {categories.map((category) => (
+                <TouchableOpacity
+                  key={category.id}
+                  style={[
+                    styles.categoryTab,
+                    selectedCategory === category.id && styles.activeCategoryTab
+                  ]}
+                  onPress={() => setSelectedCategory(category.id)}
+                >
+                  <MaterialCommunityIcons 
+                    name={category.icon} 
+                    size={18} 
+                    color={selectedCategory === category.id ? 'white' : '#FF6B35'} 
+                  />
+                  <Text style={[
+                    styles.categoryText,
+                    selectedCategory === category.id && styles.activeCategoryText
+                  ]}>
+                    {category.name}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+
+          {/* Menu Items */}
+          <ScrollView style={styles.menuContainer}>
+            <Text style={styles.categoryTitle}>
+              {selectedCategory === 'all' ? 'Tất cả món ăn' : (categories.find(cat => cat.id === selectedCategory)?.name || 'Menu Items')}
             </Text>
-          </TouchableOpacity>
-        ))}
-        </ScrollView>
+            {loadingItems ? (
+              <View style={styles.itemsLoadingContainer}>
+                <ActivityIndicator size="large" color="#FF6B35" />
+                <Text style={styles.loadingText}>Loading menu items...</Text>
+              </View>
+            ) : foodItems.length === 0 ? (
+              <View style={styles.emptyItemsContainer}>
+                <MaterialCommunityIcons name="food-off" size={60} color="#BDC3C7" />
+                <Text style={styles.emptyItemsText}>No items in this category</Text>
+              </View>
+            ) : (
+              foodItems.map(renderMenuItem)
+            )}
+          </ScrollView>
+        </View>
+        
+        {/* Right Side - Order Form */}
+        {renderOrderForm()}
       </View>
 
-      {/* Menu Items */}
-      <ScrollView style={styles.menuContainer}>
-        <Text style={styles.categoryTitle}>
-          {selectedCategory === 'all' ? 'Tất cả món ăn' : (categories.find(cat => cat.id === selectedCategory)?.name || 'Menu Items')}
-        </Text>
-        
-        {loadingItems ? (
-          <View style={styles.itemsLoadingContainer}>
-            <ActivityIndicator size="large" color="#FF6B35" />
-            <Text style={styles.loadingText}>Loading menu items...</Text>
+      {/* Order Creation Notification Modal */}
+      <Modal
+        visible={showOrderNotification}
+        transparent
+        animationType="fade"
+        onRequestClose={handleCloseNotification}
+      >
+        <View style={styles.modalBackdrop}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalHeader}>
+              <MaterialCommunityIcons name="check-circle" size={42} color="#27AE60" />
+              <Text style={styles.modalTitle}>Order Created!</Text>
+              <Text style={styles.modalSubtitle}>Your order has been submitted successfully.</Text>
+            </View>
+            {createdOrderSummary && (
+              <View style={styles.summarySection}>
+                <View style={styles.summaryRow}>
+                  <Text style={styles.summaryLabel}>Order ID:</Text>
+                  <Text style={styles.summaryValue}>{createdOrderSummary.orderId}</Text>
+                </View>
+                <View style={styles.summaryRow}>
+                  <Text style={styles.summaryLabel}>Table:</Text>
+                  <Text style={styles.summaryValue}>{createdOrderSummary.table}</Text>
+                </View>
+                <View style={styles.summaryRow}>
+                  <Text style={styles.summaryLabel}>Items:</Text>
+                  <Text style={styles.summaryValue}>{createdOrderSummary.items}</Text>
+                </View>
+                <View style={styles.summaryRow}>
+                  <Text style={styles.summaryLabel}>Total:</Text>
+                  <Text style={[styles.summaryValue, styles.summaryTotal]}>{formatPrice(createdOrderSummary.total)}</Text>
+                </View>
+                <View style={styles.summaryRow}>
+                  <Text style={styles.summaryLabel}>Status:</Text>
+                  <Text style={[styles.summaryValue, styles.statusBadge]}>{createdOrderSummary.status}</Text>
+                </View>
+                <View style={styles.summaryRow}>
+                  <Text style={styles.summaryLabel}>Created:</Text>
+                  <Text style={styles.summaryValue}>{createdOrderSummary.createdAt}</Text>
+                </View>
+              </View>
+            )}
+            <View style={styles.modalActions}>
+              <TouchableOpacity style={[styles.modalButton, styles.secondaryButton]} onPress={handleCloseNotification}>
+                <Text style={[styles.modalButtonText, styles.secondaryButtonText]}>Close</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.modalButton, styles.primaryButton]} onPress={handleGoToOrders}>
+                <MaterialCommunityIcons name="clipboard-list" size={18} color="white" />
+                <Text style={styles.modalButtonText}>Orders</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.modalButton, styles.accentButton]} onPress={handleCreateAnother}>
+                <MaterialCommunityIcons name="plus-circle" size={18} color="white" />
+                <Text style={styles.modalButtonText}>New Order</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        ) : foodItems.length === 0 ? (
-          <View style={styles.emptyItemsContainer}>
-            <MaterialCommunityIcons name="food-off" size={60} color="#BDC3C7" />
-            <Text style={styles.emptyItemsText}>No items in this category</Text>
-          </View>
-        ) : (
-          foodItems.map(renderMenuItem)
-        )}
-      </ScrollView>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -370,6 +816,157 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
+  },
+  mainContent: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  menuSection: {
+    flex: 2,
+    backgroundColor: '#F5F5F5',
+  },
+  orderFormContainer: {
+    flex: 1,
+    backgroundColor: 'white',
+    margin: 10,
+    borderRadius: 15,
+    padding: 15,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+  },
+  orderFormTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  orderInfoSection: {
+    marginBottom: 15,
+    padding: 10,
+    backgroundColor: '#F8F9FA',
+    borderRadius: 8,
+  },
+  orderInfoLabel: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#34495E',
+    marginTop: 5,
+  },
+  orderInfoValue: {
+    fontSize: 14,
+    color: '#2C3E50',
+    marginBottom: 5,
+  },
+  orderItemsTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    marginBottom: 10,
+  },
+  orderItemsList: {
+    flex: 1,
+    maxHeight: 300,
+  },
+  emptyOrderText: {
+    fontSize: 14,
+    color: '#7F8C8D',
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  orderItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#F8F9FA',
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  orderItemInfo: {
+    flex: 1,
+  },
+  orderItemName: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+  },
+  orderItemPrice: {
+    fontSize: 12,
+    color: '#FF6B35',
+  },
+  quantityControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  quantityButton: {
+    backgroundColor: '#FF6B35',
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  quantityText: {
+    marginHorizontal: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    minWidth: 20,
+    textAlign: 'center',
+  },
+  totalSection: {
+    marginTop: 15,
+    padding: 15,
+    backgroundColor: '#E8F6F3',
+    borderRadius: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  totalLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+  },
+  totalAmount: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#27AE60',
+  },
+  orderActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 15,
+  },
+  clearButton: {
+    flex: 1,
+    backgroundColor: '#E74C3C',
+    padding: 12,
+    borderRadius: 8,
+    marginRight: 5,
+    alignItems: 'center',
+  },
+  clearButtonText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  submitButton: {
+    flex: 1,
+    backgroundColor: '#27AE60',
+    padding: 12,
+    borderRadius: 8,
+    marginLeft: 5,
+    alignItems: 'center',
+  },
+  submitButtonText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   loadingContainer: {
     flex: 1,
@@ -556,4 +1153,105 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  // Modal styles
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalContainer: {
+    width: '100%',
+    backgroundColor: 'white',
+    borderRadius: 18,
+    padding: 24,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+  },
+  modalHeader: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#2C3E50',
+    marginTop: 10,
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    color: '#7F8C8D',
+    marginTop: 4,
+    textAlign: 'center',
+  },
+  summarySection: {
+    backgroundColor: '#F8F9FA',
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 18,
+  },
+  summaryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 6,
+  },
+  summaryLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#34495E',
+  },
+  summaryValue: {
+    fontSize: 14,
+    color: '#2C3E50',
+    fontWeight: '500',
+  },
+  summaryTotal: {
+    color: '#27AE60',
+    fontWeight: '700',
+  },
+  statusBadge: {
+    backgroundColor: '#FFEFD5',
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    borderRadius: 10,
+    overflow: 'hidden',
+    fontSize: 12,
+    color: '#D35400',
+  },
+  modalActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  modalButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+    paddingVertical: 12,
+    marginHorizontal: 4,
+    borderRadius: 10,
+  },
+  primaryButton: {
+    backgroundColor: '#27AE60',
+  },
+  accentButton: {
+    backgroundColor: '#FF6B35',
+  },
+  secondaryButton: {
+    backgroundColor: '#ECF0F1',
+  },
+  modalButtonText: {
+    color: 'white',
+    fontWeight: '600',
+    marginLeft: 6,
+  },
+  secondaryButtonText: {
+    color: '#2C3E50',
+    marginLeft: 0,
+  }
 });

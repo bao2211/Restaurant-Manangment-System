@@ -10,11 +10,16 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
+    // Add headers that might help with CORS
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Accept, Authorization',
   },
-  // Add these for better network handling
+  // CORS and network handling configuration
   withCredentials: false,
+  crossdomain: true,
   validateStatus: function (status) {
-    return status >= 200 && status < 300; // default
+    return status >= 200 && status < 300; // Only treat 2xx as success, not 400+ errors
   },
 });
 
@@ -203,8 +208,29 @@ export const apiService = {
 
   getFoodItemById: async (foodId) => {
     try {
+      console.log('getFoodItemById - Fetching food item for ID:', foodId);
       const response = await api.get(`/api/FoodInfo/${foodId}`);
-      return extractApiData(response.data);
+      console.log('getFoodItemById - Raw response:', response.data);
+      
+      // For single item requests, the API might return the object directly
+      // or wrapped in the $values structure
+      let foodItem = null;
+      
+      if (response.data) {
+        if (response.data.$values && Array.isArray(response.data.$values)) {
+          // If wrapped in $values array, take the first item
+          foodItem = response.data.$values[0];
+        } else if (Array.isArray(response.data)) {
+          // If it's a direct array
+          foodItem = response.data[0];
+        } else if (typeof response.data === 'object') {
+          // If it's a direct object
+          foodItem = response.data;
+        }
+      }
+      
+      console.log('getFoodItemById - Processed food item:', foodItem);
+      return foodItem;
     } catch (error) {
       console.error('Error fetching food item:', error);
       throw error;
@@ -344,6 +370,20 @@ export const apiService = {
   },
 
   // Orders
+  getAllOrders: async () => {
+    try {
+      console.log('Fetching all orders from API...');
+      const response = await api.get('/api/Order');
+      console.log('Raw orders response:', response.data);
+      const extractedData = extractApiData(response.data);
+      console.log('Extracted orders data:', extractedData);
+      return extractedData;
+    } catch (error) {
+      console.error('Error fetching all orders:', error);
+      throw error;
+    }
+  },
+
   createOrder: async (orderData) => {
     try {
       const response = await api.post('/api/Order', orderData);
@@ -351,6 +391,71 @@ export const apiService = {
     } catch (error) {
       console.error('Error creating order:', error);
       throw error;
+    }
+  },
+
+  // CORS-aware order submission with fallback to fetch
+  createOrderWithCorsHandling: async (orderData) => {
+    console.log('=== ATTEMPTING CORS-AWARE ORDER SUBMISSION ===');
+    console.log('Order data to submit:', orderData);
+    
+    // First try with axios
+    try {
+      console.log('Trying with axios...');
+      const response = await api.post('/api/Order', orderData);
+      console.log('Axios request successful:', response.data);
+      return response.data;
+    } catch (axiosError) {
+      console.log('Axios failed, error:', axiosError.message);
+      console.log('Axios error response:', axiosError.response?.data);
+      console.log('Axios error status:', axiosError.response?.status);
+      
+      // If it's a validation error (400), log the specific errors
+      if (axiosError.response?.status === 400 && axiosError.response?.data?.errors) {
+        console.log('=== VALIDATION ERRORS ===');
+        console.log('Validation errors:', axiosError.response.data.errors);
+        Object.keys(axiosError.response.data.errors).forEach(field => {
+          console.log(`${field}:`, axiosError.response.data.errors[field]);
+        });
+      }
+      
+      // If it's a CORS or network error, try with native fetch
+      if (axiosError.message === 'Network Error' || axiosError.code === 'ERR_NETWORK') {
+        console.log('Trying with native fetch API as fallback...');
+        
+        try {
+          const fetchResponse = await fetch(`${API_BASE_URL}api/Order`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+            body: JSON.stringify(orderData),
+            mode: 'cors', // Explicitly set CORS mode
+          });
+          
+          console.log('Fetch response status:', fetchResponse.status);
+          console.log('Fetch response headers:', fetchResponse.headers);
+          
+          if (!fetchResponse.ok) {
+            const errorText = await fetchResponse.text();
+            console.error('Fetch response not ok:', errorText);
+            throw new Error(`HTTP ${fetchResponse.status}: ${errorText}`);
+          }
+          
+          const responseData = await fetchResponse.json();
+          console.log('Fetch request successful:', responseData);
+          return responseData;
+          
+        } catch (fetchError) {
+          console.error('Fetch also failed:', fetchError.message);
+          throw new Error(`Both axios and fetch failed. Original error: ${axiosError.message}. Fetch error: ${fetchError.message}`);
+        }
+      } else {
+        // Re-throw non-CORS errors
+        throw axiosError;
+      }
     }
   },
 
@@ -387,8 +492,12 @@ export const apiService = {
 
   getOrderDetails: async (orderId) => {
     try {
+      console.log('Fetching order details for orderId:', orderId);
       const response = await api.get(`/api/OrderDetail/order/${orderId}`);
-      return response.data;
+      console.log('Raw order details API response:', response.data);
+      const extractedData = extractApiData(response.data);
+      console.log('Extracted order details:', extractedData);
+      return extractedData;
     } catch (error) {
       console.error('Error fetching order details:', error);
       throw error;
