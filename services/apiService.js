@@ -504,6 +504,44 @@ export const apiService = {
     }
   },
 
+  getAllOrderDetails: async () => {
+    try {
+      console.log('Fetching all order details from API...');
+      const response = await api.get('/api/OrderDetail');
+      console.log('Raw all order details response:', response.data);
+      const extractedData = extractApiData(response.data);
+      console.log('Extracted all order details:', extractedData);
+      return extractedData;
+    } catch (error) {
+      console.error('Error fetching all order details:', error);
+      throw error;
+    }
+  },
+
+  updateOrderDetail: async (foodId, orderId, orderDetailData) => {
+    try {
+      console.log('Updating order detail:', { foodId, orderId, orderDetailData });
+      const response = await api.put(`/api/OrderDetail/food/${foodId}/order/${orderId}`, orderDetailData);
+      console.log('Update order detail response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating order detail:', error);
+      throw error;
+    }
+  },
+
+  getOrderDetailByCompositeKey: async (foodId, orderId) => {
+    try {
+      console.log('Fetching order detail by composite key:', { foodId, orderId });
+      const response = await api.get(`/api/OrderDetail/food/${foodId}/order/${orderId}`);
+      console.log('Order detail by composite key response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching order detail by composite key:', error);
+      throw error;
+    }
+  },
+
   // User Authentication
   login: async (loginData) => {
     try {

@@ -292,7 +292,10 @@ export default function TableScreen({ navigation }) {
       setShowFullTableModal(true);
       return;
     }
-    navigation.navigate('Menu', { selectedTable: table });
+    navigation.navigate('Menu', { 
+      selectedTable: table,
+      lastUpdated: Date.now()
+    });
   };
 
   const renderTableItem = ({ item }) => (

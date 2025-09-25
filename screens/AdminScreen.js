@@ -28,6 +28,15 @@ export default function AdminScreen({ navigation }) {
           <MaterialCommunityIcons name="chevron-right" size={24} color="#BDC3C7" />
         </TouchableOpacity>
 
+        <TouchableOpacity 
+          style={styles.menuItem}
+          onPress={() => navigation.navigate('OrderDetailManager')}
+        >
+          <MaterialCommunityIcons name="food-fork-drink" size={24} color="#2C3E50" />
+          <Text style={styles.menuText}>Quản Lý Trạng Thái Món Ăn</Text>
+          <MaterialCommunityIcons name="chevron-right" size={24} color="#BDC3C7" />
+        </TouchableOpacity>
+
         <TouchableOpacity style={styles.menuItem}>
           <MaterialCommunityIcons name="table-furniture" size={24} color="#2C3E50" />
           <Text style={styles.menuText}>Quản Lý Danh Sách Bàn</Text>

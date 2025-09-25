@@ -42,16 +42,31 @@ export default function MenuScreen({ navigation, route }) {
   // Fetch categories on component mount and initialize order
   useEffect(() => {
     fetchCategories();
-    
-    // Initialize order if coming from table selection
+
+    const initialOrderId = generateValidOrderId();
+    console.log('Initialized order with ID:', initialOrderId);
+    setOrderId(initialOrderId);
+  }, []);
+
+  useEffect(() => {
     if (route?.params?.selectedTable) {
       const table = route.params.selectedTable;
-      const validOrderId = generateValidOrderId();
-      console.log('Generated valid OrderID:', validOrderId);
-      setOrderId(validOrderId);
+      const newOrderId = generateValidOrderId();
+      console.log('Table selected from TableScreen:', table);
+      console.log('Generated new OrderID for selected table:', newOrderId);
+
       setSelectedTable(table);
+      setOrderItems([]);
+      setOrderId(newOrderId);
+
+      if (navigation?.setParams) {
+        navigation.setParams({
+          ...route.params,
+          selectedTable: null
+        });
+      }
     }
-  }, []);
+  }, [route?.params?.lastUpdated]);
 
   // Fetch food items when category changes
   useEffect(() => {

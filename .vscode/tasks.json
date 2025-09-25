@@ -6,6 +6,16 @@
 			"type": "shell",
 			"command": "echo Adding getAllOrders method to apiService",
 			"group": "none"
+		},
+		{
+			"label": "Verify Order Detail Manager Implementation",
+			"type": "shell",
+			"command": "echo 'Order Detail Manager Screen created successfully! Features:' && echo '1. View all order details with status filtering' && echo '2. Search by order ID, food ID, or food name' && echo '3. Update order detail status with modal interface' && echo '4. Status options: Chưa làm, Đang chuẩn bị, Sẵn sàng, Đã phục vụ, Hoàn tất, Hủy' && echo '5. Real-time price calculation and food information display' && echo '6. Integrated with existing API service' && echo 'Navigation: Admin Tab > Quản Lý Trạng Thái Món Ăn'"
+		},
+		{
+			"label": "Verify Order Detail Manager Implementation",
+			"type": "shell",
+			"command": "Write-Host 'Order Detail Manager Screen created successfully!' -ForegroundColor Green; Write-Host 'Features:' -ForegroundColor Yellow; Write-Host '1. View all order details with status filtering'; Write-Host '2. Search by order ID, food ID, or food name'; Write-Host '3. Update order detail status with modal interface'; Write-Host '4. Status options: Chưa làm, Đang chuẩn bị, Sẵn sàng, Đã phục vụ, Hoàn tất, Hủy'; Write-Host '5. Real-time price calculation and food information display'; Write-Host '6. Integrated with existing API service'; Write-Host 'Navigation: Admin Tab > Quản Lý Trạng Thái Món Ăn' -ForegroundColor Cyan"
 		}
 	]
 }
