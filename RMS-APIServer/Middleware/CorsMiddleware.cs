@@ -14,17 +14,21 @@ namespace RMS_APIServer.Middleware
 
         public async Task InvokeAsync(HttpContext context)
         {
-            // Add CORS headers to all responses
-            context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
-            context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Accept");
-            context.Response.Headers.Add("Access-Control-Max-Age", "86400"); // 24 hours
+            // Add comprehensive CORS headers to all responses
+            context.Response.Headers["Access-Control-Allow-Origin"] = "*";
+            context.Response.Headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH";
+            context.Response.Headers["Access-Control-Allow-Headers"] = 
+                "Content-Type, Authorization, X-Requested-With, Accept, Origin, Cache-Control, X-File-Name";
+            context.Response.Headers["Access-Control-Expose-Headers"] = 
+                "Content-Length, Content-Range, Content-Type";
+            context.Response.Headers["Access-Control-Max-Age"] = "86400"; // 24 hours
+            context.Response.Headers["Access-Control-Allow-Credentials"] = "false";
 
-            // Handle preflight OPTIONS requests
-            if (context.Request.Method == "OPTIONS")
+            // Handle preflight OPTIONS requests immediately
+            if (context.Request.Method.Equals("OPTIONS", StringComparison.OrdinalIgnoreCase))
             {
-                context.Response.StatusCode = 200;
-                await context.Response.WriteAsync("");
+                context.Response.StatusCode = 204; // No Content for OPTIONS
+                context.Response.Headers["Content-Length"] = "0";
                 return;
             }
 

@@ -17,7 +17,7 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.MaxDepth = 32;
     });
 
-// Add CORS support with more specific configuration
+// Add CORS support with proper configuration
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
@@ -25,8 +25,7 @@ builder.Services.AddCors(options =>
         {
             policy.AllowAnyOrigin()
                   .AllowAnyMethod()
-                  .AllowAnyHeader()
-                  .WithExposedHeaders("*"); // Expose all headers in response
+                  .AllowAnyHeader();
         });
 
     // Add a specific policy for development (more permissive)
@@ -36,8 +35,7 @@ builder.Services.AddCors(options =>
             policy.SetIsOriginAllowed(_ => true) // Allow any origin
                   .AllowAnyMethod()
                   .AllowAnyHeader()
-                  .AllowCredentials()
-                  .WithExposedHeaders("*");
+                  .AllowCredentials();
         });
 });
 

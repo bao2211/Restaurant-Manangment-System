@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Admin\\Desktop\\School\\CNPMNC\\Restaurant-Manangment-System\\RMS-APIServer\\RMS-APIServer.csproj": {}
+    "c:\\Users\\Admin\\Desktop\\School\\CNPMNC\\Restaurant-Manangment-System\\RMS-APIServer\\RMS-APIServer.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Admin\\Desktop\\School\\CNPMNC\\Restaurant-Manangment-System\\RMS-APIServer\\RMS-APIServer.csproj": {
+    "c:\\Users\\Admin\\Desktop\\School\\CNPMNC\\Restaurant-Manangment-System\\RMS-APIServer\\RMS-APIServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Admin\\Desktop\\School\\CNPMNC\\Restaurant-Manangment-System\\RMS-APIServer\\RMS-APIServer.csproj",
+        "projectUniqueName": "c:\\Users\\Admin\\Desktop\\School\\CNPMNC\\Restaurant-Manangment-System\\RMS-APIServer\\RMS-APIServer.csproj",
         "projectName": "RMS-APIServer",
-        "projectPath": "C:\\Users\\Admin\\Desktop\\School\\CNPMNC\\Restaurant-Manangment-System\\RMS-APIServer\\RMS-APIServer.csproj",
+        "projectPath": "c:\\Users\\Admin\\Desktop\\School\\CNPMNC\\Restaurant-Manangment-System\\RMS-APIServer\\RMS-APIServer.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Admin\\Desktop\\School\\CNPMNC\\Restaurant-Manangment-System\\RMS-APIServer\\obj\\",
+        "outputPath": "c:\\Users\\Admin\\Desktop\\School\\CNPMNC\\Restaurant-Manangment-System\\RMS-APIServer\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
