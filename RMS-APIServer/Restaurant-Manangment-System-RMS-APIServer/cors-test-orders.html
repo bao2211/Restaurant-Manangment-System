@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CORS Test for Orders Endpoint</title>
+</head>
+<body>
+    <h1>Testing Orders Endpoint CORS</h1>
+    <button onclick="testOrders()">Test Orders Endpoint</button>
+    <button onclick="testOrdersWithFetch()">Test Orders with Fetch</button>
+    <div id="results"></div>
+
+    <script>
+        async function testOrders() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<h3>Testing with XMLHttpRequest...</h3>';
+            
+            try {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', 'http://46.250.231.129:8080/api/Order', true);
+                xhr.setRequestHeader('Origin', window.location.origin);
+                
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        results.innerHTML += `<p>Status: ${xhr.status}</p>`;
+                        results.innerHTML += `<p>Response Headers:</p>`;
+                        results.innerHTML += `<pre>${xhr.getAllResponseHeaders()}</pre>`;
+                        
+                        if (xhr.status === 500) {
+                            results.innerHTML += `<p style="color: orange;">500 Error - but let's check if CORS headers are present</p>`;
+                        }
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    results.innerHTML += `<p style="color: red;">Network Error - this is likely CORS blocking</p>`;
+                };
+                
+                xhr.send();
+            } catch (error) {
+                results.innerHTML += `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+        }
+        
+        async function testOrdersWithFetch() {
+            const results = document.getElementById('results');
+            results.innerHTML += '<h3>Testing with Fetch API...</h3>';
+            
+            try {
+                const response = await fetch('http://46.250.231.129:8080/api/Order', {
+                    method: 'GET',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                results.innerHTML += `<p>Fetch Status: ${response.status}</p>`;
+                results.innerHTML += `<p>Fetch Headers:</p>`;
+                results.innerHTML += `<pre>`;
+                for (let [key, value] of response.headers.entries()) {
+                    if (key.toLowerCase().includes('access-control')) {
+                        results.innerHTML += `${key}: ${value}\n`;
+                    }
+                }
+                results.innerHTML += `</pre>`;
+                
+                if (response.status === 500) {
+                    const text = await response.text();
+                    results.innerHTML += `<p style="color: orange;">500 Error received, Response: ${text}</p>`;
+                    results.innerHTML += `<p style="color: green;">✅ If you can see this, CORS is working even with 500 errors!</p>`;
+                } else {
+                    const data = await response.json();
+                    results.innerHTML += `<p style="color: green;">Success: ${JSON.stringify(data, null, 2)}</p>`;
+                }
+                
+            } catch (error) {
+                results.innerHTML += `<p style="color: red;">Fetch Error: ${error.message}</p>`;
+                if (error.message.includes('CORS') || error.message.includes('network')) {
+                    results.innerHTML += `<p style="color: red;">❌ This is a CORS issue</p>`;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

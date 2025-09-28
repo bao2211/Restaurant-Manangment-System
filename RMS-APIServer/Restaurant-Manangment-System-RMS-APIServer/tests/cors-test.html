@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORS Test - Restaurant Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .test-button:hover {
+            background: #45a049;
+        }
+        .test-button.cors-test {
+            background: #FF5722;
+        }
+        .test-button.cors-test:hover {
+            background: #E64A19;
+        }
+        .test-button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-success { background: #4CAF50; }
+        .status-error { background: #F44336; }
+        .status-warning { background: #FF9800; }
+    </style>
+</head>
+<body>
+    <h1>🔒 CORS Test Suite</h1>
+    <p>Restaurant Management System API Server</p>
+    <p><strong>API URL:</strong> <code id="api-url">http://46.250.231.129:8080/api</code></p>
+
+    <!-- Overall Status -->
+    <div class="test-card">
+        <h3>📊 Overall CORS Status</h3>
+        <div id="overall-status">
+            <span class="status-indicator status-warning"></span>
+            <span>Not tested yet</span>
+        </div>
+    </div>
+
+    <!-- Test 1: Basic GET Request -->
+    <div class="test-card">
+        <h3>🟢 Test 1: Basic GET Request (Categories)</h3>
+        <p>Tests if basic GET requests work (usually not blocked by CORS)</p>
+        <button class="test-button" onclick="testBasicGet()">Run GET Test</button>
+        <div id="get-result"></div>
+    </div>
+
+    <!-- Test 2: POST Request (Triggers Preflight) -->
+    <div class="test-card">
+        <h3>🟡 Test 2: POST Request (CORS Preflight)</h3>
+        <p>Tests if POST requests work (requires CORS preflight OPTIONS request)</p>
+        <button class="test-button cors-test" onclick="testCorsPost()">Run CORS POST Test</button>
+        <div id="post-result"></div>
+    </div>
+
+    <!-- Test 3: Order Creation -->
+    <div class="test-card">
+        <h3>🔴 Test 3: Order Creation (Full CORS Test)</h3>
+        <p>Tests actual order creation endpoint that was previously blocked</p>
+        <button class="test-button cors-test" onclick="testOrderCreation()">Test Order Creation</button>
+        <div id="order-result"></div>
+    </div>
+
+    <!-- Test 4: Order Detail Creation -->
+    <div class="test-card">
+        <h3>🔴 Test 4: Order Detail Creation</h3>
+        <p>Tests order detail creation that was also blocked</p>
+        <button class="test-button cors-test" onclick="testOrderDetailCreation()">Test Order Detail Creation</button>
+        <div id="detail-result"></div>
+    </div>
+
+    <!-- Run All Tests -->
+    <div class="test-card">
+        <h3>🚀 Run All Tests</h3>
+        <button class="test-button" onclick="runAllTests()" style="background: #2196F3;">Run All CORS Tests</button>
+        <button class="test-button" onclick="clearResults()" style="background: #9E9E9E;">Clear Results</button>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://46.250.231.129:8080/api';
+        let testResults = { passed: 0, failed: 0, total: 0 };
+
+        function updateOverallStatus() {
+            const statusEl = document.getElementById('overall-status');
+            if (testResults.total === 0) {
+                statusEl.innerHTML = '<span class="status-indicator status-warning"></span><span>Not tested yet</span>';
+            } else if (testResults.failed === 0) {
+                statusEl.innerHTML = '<span class="status-indicator status-success"></span><span>✅ All CORS tests passed! CORS is working correctly.</span>';
+            } else if (testResults.passed === 0) {
+                statusEl.innerHTML = '<span class="status-indicator status-error"></span><span>❌ All CORS tests failed! CORS is completely blocked.</span>';
+            } else {
+                statusEl.innerHTML = '<span class="status-indicator status-warning"></span><span>⚠️ Some CORS tests failed. CORS is partially working.</span>';
+            }
+        }
+
+        function showResult(elementId, success, message, details = '') {
+            const element = document.getElementById(elementId);
+            const className = success ? 'success' : 'error';
+            const icon = success ? '✅' : '❌';
+            
+            if (success) {
+                testResults.passed++;
+            } else {
+                testResults.failed++;
+            }
+            testResults.total++;
+            
+            element.innerHTML = `<div class="result ${className}">${icon} ${message}\n${details}</div>`;
+            updateOverallStatus();
+            
+            console.log(`CORS Test: ${success ? 'PASSED' : 'FAILED'} - ${message}`);
+            if (details) console.log('Details:', details);
+        }
+
+        async function testBasicGet() {
+            console.log('🟢 Starting Basic GET Test...');
+            try {
+                const response = await fetch(`${API_BASE_URL}/Category`);
+                if (response.ok) {
+                    const data = await response.json();
+                    showResult('get-result', true, 'GET request successful', 
+                        `Status: ${response.status}\nFound ${data.length} categories\nNo CORS blocking detected`);
+                } else {
+                    showResult('get-result', false, 'GET request failed', 
+                        `Status: ${response.status}\nResponse: ${response.statusText}`);
+                }
+            } catch (error) {
+                const isCorsError = error.message.includes('CORS') || error.message.includes('blocked');
+                showResult('get-result', false, 'GET request failed', 
+                    `Error: ${error.message}\nCORS Issue: ${isCorsError ? 'YES' : 'UNKNOWN'}`);
+            }
+        }
+
+        async function testCorsPost() {
+            console.log('🟡 Starting CORS POST Test...');
+            try {
+                const response = await fetch(`${API_BASE_URL}/Test`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        test: 'CORS Test Data',
+                        timestamp: new Date().toISOString()
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    showResult('post-result', true, 'POST request successful (CORS working!)', 
+                        `Status: ${response.status}\nResponse: ${JSON.stringify(data, null, 2)}\nPreflight request was successful`);
+                } else {
+                    showResult('post-result', false, 'POST request failed', 
+                        `Status: ${response.status}\nResponse: ${response.statusText}`);
+                }
+            } catch (error) {
+                const isCorsError = error.message.includes('CORS') || error.message.includes('blocked') || error.message.includes('NetworkError');
+                showResult('post-result', false, 'POST request blocked (CORS issue!)', 
+                    `Error: ${error.message}\nThis indicates CORS preflight is being blocked\nCORS Issue: ${isCorsError ? 'YES' : 'UNKNOWN'}`);
+            }
+        }
+
+        async function testOrderCreation() {
+            console.log('🔴 Starting Order Creation Test...');
+            try {
+                const testOrderData = {
+                    orderId: 'HDCORSTEST',
+                    status: 'Pending',
+                    total: 1000,
+                    note: 'CORS Test Order',
+                    discount: 0,
+                    tableId: '1',
+                    userId: 'USER000001'
+                };
+
+                const response = await fetch(`${API_BASE_URL}/Order`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(testOrderData)
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    showResult('order-result', true, 'Order creation successful!', 
+                        `Status: ${response.status}\nOrder ID: ${data.orderId}\nCORS is working for order creation!`);
+                } else if (response.status === 409) {
+                    showResult('order-result', true, 'Order creation attempted (409 = duplicate ID)', 
+                        `Status: ${response.status}\nThis is expected - the test order ID already exists\nCORS is working!`);
+                } else {
+                    const errorText = await response.text();
+                    showResult('order-result', false, 'Order creation failed', 
+                        `Status: ${response.status}\nError: ${errorText}`);
+                }
+            } catch (error) {
+                const isCorsError = error.message.includes('CORS') || error.message.includes('blocked') || error.message.includes('NetworkError');
+                showResult('order-result', false, 'Order creation blocked (CORS issue!)', 
+                    `Error: ${error.message}\nThis is the original problem that was reported\nCORS Issue: ${isCorsError ? 'YES' : 'UNKNOWN'}`);
+            }
+        }
+
+        async function testOrderDetailCreation() {
+            console.log('🔴 Starting Order Detail Creation Test...');
+            try {
+                const testOrderDetailData = {
+                    foodId: '10',
+                    orderId: 'HDCORSTEST',
+                    quantity: 1,
+                    unitPrice: 45000,
+                    status: 'Chưa làm'
+                };
+
+                const response = await fetch(`${API_BASE_URL}/OrderDetail`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(testOrderDetailData)
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    showResult('detail-result', true, 'Order detail creation successful!', 
+                        `Status: ${response.status}\nOrder Detail created\nCORS is working for order details!`);
+                } else if (response.status === 409) {
+                    showResult('detail-result', true, 'Order detail creation attempted (409 = duplicate)', 
+                        `Status: ${response.status}\nThis is expected - the test order detail already exists\nCORS is working!`);
+                } else {
+                    const errorText = await response.text();
+                    showResult('detail-result', false, 'Order detail creation failed', 
+                        `Status: ${response.status}\nError: ${errorText}`);
+                }
+            } catch (error) {
+                const isCorsError = error.message.includes('CORS') || error.message.includes('blocked') || error.message.includes('NetworkError');
+                showResult('detail-result', false, 'Order detail creation blocked (CORS issue!)', 
+                    `Error: ${error.message}\nThis was also part of the original problem\nCORS Issue: ${isCorsError ? 'YES' : 'UNKNOWN'}`);
+            }
+        }
+
+        async function runAllTests() {
+            console.log('🚀 Running All CORS Tests...');
+            clearResults();
+            
+            await testBasicGet();
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
+            
+            await testCorsPost();
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
+            
+            await testOrderCreation();
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
+            
+            await testOrderDetailCreation();
+            
+            console.log('🏁 All CORS tests completed');
+            console.log(`Results: ${testResults.passed} passed, ${testResults.failed} failed`);
+        }
+
+        function clearResults() {
+            document.getElementById('get-result').innerHTML = '';
+            document.getElementById('post-result').innerHTML = '';
+            document.getElementById('order-result').innerHTML = '';
+            document.getElementById('detail-result').innerHTML = '';
+            testResults = { passed: 0, failed: 0, total: 0 };
+            updateOverallStatus();
+        }
+
+        // Show initial message
+        console.log('CORS Test Suite Loaded');
+        console.log('API URL:', API_BASE_URL);
+        console.log('Run tests by clicking the buttons or call runAllTests() in console');
+    </script>
+</body>
+</html>

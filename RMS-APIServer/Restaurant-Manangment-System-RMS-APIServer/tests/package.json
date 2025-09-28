@@ -1,0 +1,17 @@
+{
+  "name": "rms-api-tests",
+  "version": "1.0.0",
+  "description": "API endpoint tests for Restaurant Management System",
+  "main": "tests/apiEndpointTests.js",
+  "scripts": {
+    "test": "node tests/apiEndpointTests.js",
+    "test:local": "node -e \"const tests = require('./tests/apiEndpointTests.js'); tests.CONFIG.USE_LOCAL = true; tests.runAllTests().then(r => process.exit(r.failed > 0 ? 1 : 0));\"",
+    "test:production": "node -e \"const tests = require('./tests/apiEndpointTests.js'); tests.CONFIG.USE_LOCAL = false; tests.runAllTests().then(r => process.exit(r.failed > 0 ? 1 : 0));\""
+  },
+  "devDependencies": {
+    "axios": "^1.5.0"
+  },
+  "keywords": ["api", "testing", "restaurant", "management", "system"],
+  "author": "RMS Development Team",
+  "license": "MIT"
+}

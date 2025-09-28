@@ -1,0 +1,249 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Cors;
+using RMS_APIServer.Models;
+
+namespace RMS_APIServer.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    // Removed [EnableCors] attribute - using global CORS configuration instead
+    public class OrderDetailController : ControllerBase
+    {
+        private readonly DBContext _context;
+
+        public OrderDetailController(DBContext context)
+        {
+            _context = context;
+        }
+
+        // GET: api/OrderDetail
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<object>>> GetOrderDetails()
+        {
+            var orderDetails = await _context.OrderDetails
+                .Include(od => od.Food)
+                .Include(od => od.Order)
+                .ToListAsync();
+
+            // Return clean data without circular references
+            var result = orderDetails.Select(od => new
+            {
+                foodId = od.FoodId,
+                foodName = od.Food?.FoodName,
+                orderId = od.OrderId,
+                quantity = od.Quantity,
+                unitPrice = od.UnitPrice ?? od.Food?.UnitPrice,
+                status = !string.IsNullOrEmpty(od.Status) ? od.Status : "Chưa làm"
+            }).ToList();
+
+            return Ok(result);
+        }
+
+        // GET: api/OrderDetail/order/5
+        [HttpGet("order/{orderId}")]
+        public async Task<ActionResult<IEnumerable<object>>> GetOrderDetailsByOrder(string orderId)
+        {
+            var orderDetails = await _context.OrderDetails
+                .Include(od => od.Food)
+                .Include(od => od.Order)
+                .Where(od => od.OrderId == orderId)
+                .ToListAsync();
+
+            // Return clean data without circular references
+            var result = orderDetails.Select(od => new
+            {
+                foodId = od.FoodId,
+                foodName = od.Food?.FoodName,
+                orderId = od.OrderId,
+                quantity = od.Quantity,
+                unitPrice = od.UnitPrice ?? od.Food?.UnitPrice,
+                status = !string.IsNullOrEmpty(od.Status) ? od.Status : "Chưa làm"
+            }).ToList();
+
+            return Ok(result);
+        }
+
+        // GET: api/OrderDetail/food/5/order/10
+        [HttpGet("food/{foodId}/order/{orderId}")]
+        public async Task<ActionResult<object>> GetOrderDetail(string foodId, string orderId)
+        {
+            var orderDetail = await _context.OrderDetails
+                .Include(od => od.Food)
+                .Include(od => od.Order)
+                .FirstOrDefaultAsync(od => od.FoodId == foodId && od.OrderId == orderId);
+
+            if (orderDetail == null)
+            {
+                return NotFound();
+            }
+
+            // Return clean data without circular references
+            var result = new
+            {
+                foodId = orderDetail.FoodId,
+                foodName = orderDetail.Food?.FoodName,
+                orderId = orderDetail.OrderId,
+                quantity = orderDetail.Quantity,
+                unitPrice = orderDetail.UnitPrice ?? orderDetail.Food?.UnitPrice,
+                status = !string.IsNullOrEmpty(orderDetail.Status) ? orderDetail.Status : "Chưa làm"
+            };
+
+            return Ok(result);
+        }
+
+        // PUT: api/OrderDetail/food/5/order/10
+        [HttpPut("food/{foodId}/order/{orderId}")]
+        public async Task<IActionResult> PutOrderDetail(string foodId, string orderId, OrderDetail orderDetail)
+        {
+            if (foodId != orderDetail.FoodId || orderId != orderDetail.OrderId)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(orderDetail).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!OrderDetailExists(foodId, orderId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // OPTIONS: api/OrderDetail (Handle preflight requests)
+        [HttpOptions]
+        public IActionResult PreflightRoute()
+        {
+            return Ok();
+        }
+
+        // POST: api/OrderDetail
+        [HttpPost]
+        public async Task<ActionResult<OrderDetail>> PostOrderDetail(CreateOrderDetailDto orderDetailDto)
+        {
+            // Create OrderDetail entity from DTO
+            var orderDetail = new OrderDetail
+            {
+                FoodId = orderDetailDto.FoodId?.Trim() ?? string.Empty,
+                OrderId = orderDetailDto.OrderId?.Trim() ?? string.Empty,
+                Quantity = orderDetailDto.Quantity ?? 1,
+                UnitPrice = orderDetailDto.UnitPrice,
+                Status = orderDetailDto.Status ?? "Chưa làm"
+            };
+
+            // Ensure both IDs are exactly 10 characters (database constraint)
+            if (!string.IsNullOrEmpty(orderDetail.FoodId) && orderDetail.FoodId.Length < 10)
+            {
+                orderDetail.FoodId = orderDetail.FoodId.PadRight(10).Substring(0, 10);
+            }
+            if (!string.IsNullOrEmpty(orderDetail.OrderId) && orderDetail.OrderId.Length < 10)
+            {
+                orderDetail.OrderId = orderDetail.OrderId.PadRight(10).Substring(0, 10);
+            }
+
+            _context.OrderDetails.Add(orderDetail);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                if (!string.IsNullOrEmpty(orderDetail.FoodId) && !string.IsNullOrEmpty(orderDetail.OrderId) &&
+                    OrderDetailExists(orderDetail.FoodId, orderDetail.OrderId))
+                {
+                    return Conflict(new { message = "Order detail already exists for this food and order combination" });
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            await _context.Entry(orderDetail).Reference(od => od.Food).LoadAsync();
+
+            var createdResult = new
+            {
+                foodId = orderDetail.FoodId,
+                foodName = orderDetail.Food?.FoodName,
+                orderId = orderDetail.OrderId,
+                quantity = orderDetail.Quantity,
+                unitPrice = orderDetail.UnitPrice,
+                status = !string.IsNullOrEmpty(orderDetail.Status) ? orderDetail.Status : "Chưa làm",
+                message = "Order detail created successfully"
+            };
+
+            return CreatedAtAction("GetOrderDetail", new { foodId = orderDetail.FoodId, orderId = orderDetail.OrderId }, createdResult);
+        }
+
+        // DELETE: api/OrderDetail/food/5/order/10
+        [HttpDelete("food/{foodId}/order/{orderId}")]
+        public async Task<IActionResult> DeleteOrderDetail(string foodId, string orderId)
+        {
+            var orderDetail = await _context.OrderDetails.FindAsync(foodId, orderId);
+            if (orderDetail == null)
+            {
+                return NotFound();
+            }
+
+            // Store order detail info before deletion for response
+            var deletedOrderDetailInfo = new
+            {
+                foodId = orderDetail.FoodId,
+                orderId = orderDetail.OrderId,
+                unitPrice = orderDetail.UnitPrice,
+                status = orderDetail.Status,
+                quantity = orderDetail.Quantity
+            };
+
+            _context.OrderDetails.Remove(orderDetail);
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Order detail deleted successfully.",
+                deletedOrderDetail = deletedOrderDetailInfo,
+                deletedAt = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss UTC")
+            });
+        }
+
+        // POST: api/OrderDetail/fix-null-statuses
+        [HttpPost("fix-null-statuses")]
+        public async Task<ActionResult> FixNullStatuses()
+        {
+            var orderDetailsWithNullStatus = await _context.OrderDetails
+                .Where(od => od.Status == null || od.Status == "")
+                .ToListAsync();
+
+            foreach (var orderDetail in orderDetailsWithNullStatus)
+            {
+                orderDetail.Status = "Chưa làm"; // Set default status
+            }
+
+            int updatedCount = await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = $"Updated {updatedCount} order details with null status",
+                updatedCount = updatedCount,
+                timestamp = DateTime.UtcNow
+            });
+        }
+
+        private bool OrderDetailExists(string foodId, string orderId)
+        {
+            return _context.OrderDetails.Any(e => e.FoodId == foodId && e.OrderId == orderId);
+        }
+    }
+}

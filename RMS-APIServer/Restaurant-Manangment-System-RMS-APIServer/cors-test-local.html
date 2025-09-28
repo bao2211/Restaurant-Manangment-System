@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local CORS Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .test-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .test-button:hover {
+            background-color: #0056b3;
+        }
+        
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .warning {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        
+        #log {
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f8f9fa;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 Local CORS Configuration Test</h1>
+        <p>Testing CORS configuration for local ASP.NET Core API server</p>
+        <p><strong>API URL:</strong> <span id="api-url">http://localhost:8080</span></p>
+        <p><strong>Test Origin:</strong> <span id="test-origin"></span></p>
+    </div>
+
+    <div class="container">
+        <h2>🧪 Test Controls</h2>
+        <button class="test-button" onclick="testCategories()">Test Categories (GET)</button>
+        <button class="test-button" onclick="testTables()">Test Tables (GET)</button>
+        <button class="test-button" onclick="testFoodItems()">Test Food Items (GET)</button>
+        <button class="test-button" onclick="testOrderCreation()">Test Order Creation (POST)</button>
+        <button class="test-button" onclick="testCorsHeaders()">Test CORS Headers</button>
+        <button class="test-button" onclick="clearLog()">Clear Log</button>
+    </div>
+
+    <div class="container">
+        <h2>📋 Test Results</h2>
+        <div id="log"></div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8080/api';
+        
+        // Show current origin
+        document.getElementById('test-origin').textContent = window.location.origin;
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logElement = document.getElementById('log');
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : type === 'warning' ? 'warning' : '';
+            logElement.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+        
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+        }
+        
+        async function testCategories() {
+            log('🧪 Testing Categories API endpoint...');
+            try {
+                const response = await fetch(`${API_BASE_URL}/Category`);
+                if (response.ok) {
+                    const data = await response.json();
+                    log(`✅ Categories API test PASSED - Status: ${response.status}`, 'success');
+                    log(`📊 Response: ${JSON.stringify(data).substring(0, 200)}...`);
+                } else {
+                    log(`❌ Categories API test FAILED - Status: ${response.status}`, 'error');
+                    const errorText = await response.text();
+                    log(`📊 Error: ${errorText}`);
+                }
+            } catch (error) {
+                log(`❌ Categories API test FAILED - Error: ${error.message}`, 'error');
+                if (error.message.includes('CORS')) {
+                    log('🚫 CORS policy is still blocking the request!', 'error');
+                }
+            }
+        }
+        
+        async function testTables() {
+            log('🧪 Testing Tables API endpoint...');
+            try {
+                const response = await fetch(`${API_BASE_URL}/Table`);
+                if (response.ok) {
+                    const data = await response.json();
+                    log(`✅ Tables API test PASSED - Status: ${response.status}`, 'success');
+                    log(`📊 Response: ${JSON.stringify(data).substring(0, 200)}...`);
+                } else {
+                    log(`❌ Tables API test FAILED - Status: ${response.status}`, 'error');
+                    const errorText = await response.text();
+                    log(`📊 Error: ${errorText}`);
+                }
+            } catch (error) {
+                log(`❌ Tables API test FAILED - Error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testFoodItems() {
+            log('🧪 Testing Food Items API endpoint...');
+            try {
+                const response = await fetch(`${API_BASE_URL}/FoodInfo`);
+                if (response.ok) {
+                    const data = await response.json();
+                    log(`✅ Food Items API test PASSED - Status: ${response.status}`, 'success');
+                    log(`📊 Response: ${JSON.stringify(data).substring(0, 200)}...`);
+                } else {
+                    log(`❌ Food Items API test FAILED - Status: ${response.status}`, 'error');
+                    const errorText = await response.text();
+                    log(`📊 Error: ${errorText}`);
+                }
+            } catch (error) {
+                log(`❌ Food Items API test FAILED - Error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testOrderCreation() {
+            log('🧪 Testing Order Creation API endpoint...');
+            const testOrder = {
+                orderId: `TEST${Date.now()}`,
+                status: "Pending",
+                total: 100000,
+                note: "CORS Test Order",
+                discount: 0,
+                tableId: "1",
+                userId: "USER000001"
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/Order`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testOrder)
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    log(`✅ Order Creation API test PASSED - Status: ${response.status}`, 'success');
+                    log(`📊 Response: ${JSON.stringify(data)}`);
+                } else {
+                    log(`❌ Order Creation API test FAILED - Status: ${response.status}`, 'error');
+                    const errorText = await response.text();
+                    log(`📊 Error: ${errorText}`);
+                }
+            } catch (error) {
+                log(`❌ Order Creation API test FAILED - Error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testCorsHeaders() {
+            log('🧪 Testing CORS Headers with OPTIONS request...');
+            try {
+                const response = await fetch(`${API_BASE_URL}/Category`, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Origin': window.location.origin,
+                        'Access-Control-Request-Method': 'GET',
+                        'Access-Control-Request-Headers': 'Content-Type'
+                    }
+                });
+                
+                log(`📊 OPTIONS Response Status: ${response.status}`);
+                
+                // Log all response headers
+                for (let [key, value] of response.headers.entries()) {
+                    if (key.toLowerCase().includes('access-control')) {
+                        log(`📊 ${key}: ${value}`, 'success');
+                    }
+                }
+                
+                if (response.status === 204 || response.status === 200) {
+                    log(`✅ CORS preflight test PASSED`, 'success');
+                } else {
+                    log(`❌ CORS preflight test FAILED`, 'error');
+                }
+            } catch (error) {
+                log(`❌ CORS Headers test FAILED - Error: ${error.message}`, 'error');
+            }
+        }
+        
+        // Auto-run basic connectivity test on page load
+        window.addEventListener('load', () => {
+            log('🚀 Local CORS Test Page Loaded');
+            log(`🌐 Testing from origin: ${window.location.origin}`);
+            log(`🎯 Testing API at: ${API_BASE_URL}`);
+            log('💡 Click the test buttons above to verify CORS configuration');
+            
+            // Run a quick connectivity test
+            setTimeout(testCorsHeaders, 1000);
+        });
+    </script>
+</body>
+</html>

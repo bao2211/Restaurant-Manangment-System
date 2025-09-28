@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36202.13 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RMS-APIServer", "RMS-APIServer\RMS-APIServer.csproj", "{FFC7493B-633D-4854-B630-26899D7F279E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FFC7493B-633D-4854-B630-26899D7F279E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFC7493B-633D-4854-B630-26899D7F279E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFC7493B-633D-4854-B630-26899D7F279E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFC7493B-633D-4854-B630-26899D7F279E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {655C8222-2305-4C38-8791-F7690E146769}
+	EndGlobalSection
+EndGlobal
