@@ -11,6 +11,7 @@ EXPOSE 8081
 # Set environment variables for production
 ENV ASPNETCORE_ENVIRONMENT=Production
 ENV ASPNETCORE_URLS=http://+:8080
+ENV DOTNET_RUNNING_IN_CONTAINER=true
 
 
 # This stage is used to build the service project

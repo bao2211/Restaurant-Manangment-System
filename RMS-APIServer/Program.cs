@@ -47,11 +47,13 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure URLs for Docker deployment
+// Configure URLs for Docker deployment - Force HTTP only in containers
 if (app.Environment.IsDevelopment() || Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
 {
+    // Always use HTTP for Docker containers to avoid certificate issues
+    app.Urls.Clear(); // Clear any existing URLs
     app.Urls.Add("http://0.0.0.0:8080");
-    app.Urls.Add("https://0.0.0.0:8081");
+    Console.WriteLine("🐳 Docker container detected - Using HTTP only on port 8080");
 }
 
 // Configure the HTTP request pipeline.
@@ -67,7 +69,11 @@ app.UseMiddleware<CorsMiddleware>();
 // Also use built-in CORS as backup
 app.UseCors(app.Environment.IsDevelopment() ? "Development" : "AllowAll");
 
-app.UseHttpsRedirection();
+// Only use HTTPS redirection in production and NOT in Docker containers
+if (!app.Environment.IsDevelopment() && Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") != "true")
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseRouting();
 
