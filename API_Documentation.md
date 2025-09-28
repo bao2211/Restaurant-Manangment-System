@@ -1,1833 +1,372 @@
-# Restaurant Management System - API Documentation
+# Restaurant Management System – API Guide
+_Last updated: September 28, 2025_
 
-_Last updated: September 23, 2025_
+## Base URLs
+- **Production**: `http://46.250.231.129:8080/api`
+- **Local (HTTPS)**: `https://localhost:7127/api`
+- **Local (HTTP)**: `http://localhost:8080/api`
 
-## Base URL
-
-```
-http://localhost:5181/api
-```
-
-## Table of Contents
-
-1. [User Management](#user-management)
-2. [Food Information Management](#food-information-management)
-3. [Category Management](#category-management)
-4. [Table Management](#table-management)
-5. [Order Management](#order-management)
-6. [Order Detail Management](#order-detail-management)
-7. [Bill Management](#bill-management)
-8. [Bill Detail Management](#bill-detail-management)
-9. [Recipe Management](#recipe-management)
-10. [Recipe Detail Management](#recipe-detail-management)
-11. [Ingredient Management](#ingredient-management)
+All examples below assume the production base URL unless noted otherwise.
 
 ---
 
-## User Management
+## Conventions
+- Requests and responses use `application/json`.
+- Identifier fields in the database are fixed-length strings (usually 10 characters). Trim IDs before sending them.
+- Date/time values are returned in ISO-8601 format (UTC).
+- Amount fields are decimals (VND) and may be returned as numbers or strings depending on the endpoint.
 
-### Get All Users
+---
 
-**GET** `/api/User`
+## Authentication
+The current deployment does not require authentication tokens. User login is handled via `/api/User/login` and returns the hydrated user record that can be cached client-side.
 
-**Response:**
+---
 
-```json
-[
-  {
-    "userId": "1",
-    "userName": "admin",
-    "role": "Admin",
-    "fullName": "Administrator",
-    "email": "admin@restaurant.com"
-  }
-]
+## 1. User Management
+
+| Method | Endpoint | Description |
+| ------ | -------- | ----------- |
+| GET | `/User` | List all users |
+| GET | `/User/{userId}` | Retrieve a single user by ID |
+| GET | `/User/username/{username}` | Look up by username |
+| POST | `/User/login` | Validate credentials |
+| POST | `/User` | Create a new user |
+| PUT | `/User/{userId}` | Update an existing user |
+| DELETE | `/User/{userId}` | Soft-delete a user |
+
+### Example – Login
+```http
+POST /api/User/login
+Content-Type: application/json
+
+{
+  "userName": "admin",
+  "password": "P@ssword123"
+}
 ```
-
-### Get User by ID
-
-**GET** `/api/User/{id}`
-
-**Parameters:**
-
-- `id` (string): User ID
-
-**Response:**
-
+**Response**
 ```json
 {
-  "userId": "1",
+  "userId": "USER000001",
   "userName": "admin",
+  "fullName": "Site Administrator",
+  "email": "admin@restaurant.com",
   "role": "Admin",
-  "fullName": "Administrator",
-  "email": "admin@restaurant.com"
-}
-```
-
-### Get User by Username
-
-**GET** `/api/User/username/{username}`
-
-**Parameters:**
-
-- `username` (string): Username
-
-**Response:**
-
-```json
-{
-  "userId": "1",
-  "userName": "admin",
-  "role": "Admin",
-  "fullName": "Administrator",
-  "email": "admin@restaurant.com"
-}
-```
-
-### User Login
-
-**POST** `/api/User/login`
-
-**Request Body:**
-
-```json
-{
-  "userName": "admin",
-  "password": "password123"
-}
-```
-
-**Response:**
-
-```json
-{
-  "success": true,
-  "message": "Login successful",
-  "user": {
-    "userId": "1",
-    "userName": "admin",
-    "role": "Admin",
-    "fullName": "Administrator"
-  }
-}
-```
-
-### Update User
-
-**PUT** `/api/User/{id}`
-
-**Parameters:**
-
-- `id` (string): User ID
-
-**Request Body:**
-
-```json
-{
-  "userId": "1",
-  "userName": "admin",
-  "password": "newpassword123",
-  "role": "Admin",
-  "fullName": "Administrator",
-  "email": "admin@restaurant.com"
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "User updated successfully"
-}
-```
-
-### Create User
-
-**POST** `/api/User`
-
-**Request Body:**
-
-```json
-{
-  "userId": "2",
-  "userName": "staff01",
-  "password": "password123",
-  "role": "Staff",
-  "fullName": "John Doe",
-  "email": "john@restaurant.com"
-}
-```
-
-**Response:**
-
-```json
-{
-  "userId": "2",
-  "userName": "staff01",
-  "role": "Staff",
-  "fullName": "John Doe",
-  "email": "john@restaurant.com"
-}
-```
-
-### Delete User
-
-**DELETE** `/api/User/{id}`
-
-**Parameters:**
-
-- `id` (string): User ID
-
-**Response:**
-
-```json
-{
-  "message": "User deleted successfully.",
-  "deletedUser": {
-    "userId": "2",
-    "userName": "staff01",
-    "role": "Staff",
-    "fullName": "John Doe",
-    "email": "john@restaurant.com"
-  },
-  "deletedAt": "2025-09-21 10:30:45 UTC"
+  "status": "Active"
 }
 ```
 
 ---
 
-## Food Information Management
+## 2. Food Information
 
-### Get All Food Items
+| Method | Endpoint | Description |
+| ------ | -------- | ----------- |
+| GET | `/FoodInfo` | List all dishes |
+| GET | `/FoodInfo/{foodId}` | Retrieve a dish by ID |
+| GET | `/FoodInfo/category/{categoryId}` | List dishes by category |
+| POST | `/FoodInfo` | Create a dish |
+| PUT | `/FoodInfo/{foodId}` | Update a dish |
+| DELETE | `/FoodInfo/{foodId}` | Delete a dish (fails if in use) |
 
-**GET** `/api/FoodInfo`
-
-**Response:**
-
-```json
-[
-  {
-    "foodId": "1",
-    "foodName": "Chicken Curry",
-    "price": 15.99,
-    "description": "Spicy chicken curry",
-    "cateId": "1",
-    "status": "Available",
-    "imgUrl": "https://example.com/chicken-curry.jpg"
-  }
-]
+### Example – Retrieve Food Item
+```http
+GET /api/FoodInfo/10
 ```
-
-### Get Food Item by ID
-
-**GET** `/api/FoodInfo/{id}`
-
-**Parameters:**
-
-- `id` (string): Food ID
-
-**Response:**
-
+**Response**
 ```json
 {
-  "foodId": "1",
-  "foodName": "Chicken Curry",
-  "price": 15.99,
-  "description": "Spicy chicken curry",
-  "cateId": "1",
-  "status": "Available",
-  "imgUrl": "https://example.com/chicken-curry.jpg"
-}
-```
-
-### Get Food Items by Category
-
-**GET** `/api/FoodInfo/category/{categoryId}`
-
-**Parameters:**
-
-- `categoryId` (string): Category ID
-
-**Response:**
-
-```json
-[
-  {
-    "foodId": "1",
-    "foodName": "Chicken Curry",
-    "price": 15.99,
-    "description": "Spicy chicken curry",
-    "cateId": "1",
-    "status": "Available",
-    "imgUrl": "https://example.com/chicken-curry.jpg"
-  }
-]
-```
-
-### Update Food Item
-
-**PUT** `/api/FoodInfo/{id}`
-
-**Parameters:**
-
-- `id` (string): Food ID
-
-**Request Body:**
-
-```json
-{
-  "foodId": "1",
-  "foodName": "Chicken Curry",
-  "price": 16.99,
-  "description": "Spicy chicken curry with vegetables",
-  "cateId": "1",
-  "status": "Available",
-  "imgUrl": "https://example.com/chicken-curry.jpg"
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "Food item updated successfully"
-}
-```
-
-### Create Food Item
-
-**POST** `/api/FoodInfo`
-
-**Request Body:**
-
-```json
-{
-  "foodId": "2",
-  "foodName": "Beef Steak",
-  "price": 25.99,
-  "description": "Grilled beef steak",
-  "cateId": "1",
-  "status": "Available",
-  "imgUrl": "https://example.com/beef-steak.jpg"
-}
-```
-
-**Response:**
-
-```json
-{
-  "foodId": "2",
-  "foodName": "Beef Steak",
-  "price": 25.99,
-  "description": "Grilled beef steak",
-  "cateId": "1",
-  "status": "Available",
-  "imgUrl": "https://example.com/beef-steak.jpg"
-}
-```
-
-### Delete Food Item
-
-**DELETE** `/api/FoodInfo/{id}`
-
-**Parameters:**
-
-- `id` (string): Food ID
-
-**Response:**
-
-```json
-{
-  "message": "Food item deleted successfully.",
-  "deletedFood": {
-    "foodId": "2",
-    "foodName": "Beef Steak"
-  },
-  "deletedAt": "2025-09-21 10:30:45 UTC"
-}
-```
-
-**Error Response (Constraint Violation):**
-
-```json
-{
-  "message": "Cannot delete food item. It is being used by existing orders or recipes.",
-  "details": "Food item is used by 3 order(s) and 1 recipe(s). Please remove these dependencies first.",
-  "relatedOrders": ["Order123", "Order124"],
-  "relatedRecipes": ["Recipe001"]
+  "foodId": "10",
+  "foodName": "Cơm Gà Xối Mỡ",
+  "description": "Fried chicken with rice",
+  "unitPrice": 45000.0,
+  "cateId": "CATE000003",
+  "imgUrl": "https://cdn.example.com/foods/10.jpg"
 }
 ```
 
 ---
 
-## Category Management
+## 3. Category Management
 
-### Get All Categories
+| Method | Endpoint | Description |
+| ------ | -------- | ----------- |
+| GET | `/Category` | List all categories |
+| GET | `/Category/{categoryId}` | Retrieve category detail |
+| POST | `/Category` | Create a category |
+| PUT | `/Category/{categoryId}` | Update a category |
+| DELETE | `/Category/{categoryId}` | Delete a category (fails if dishes exist) |
 
-**GET** `/api/Category`
-
-**Response:**
-
-```json
-[
-  {
-    "cateId": "1",
-    "cateName": "Main Dishes",
-    "description": "Primary dishes"
-  }
-]
+### Example – Category List
+```http
+GET /api/Category
 ```
-
-### Get Category by ID
-
-**GET** `/api/Category/{id}`
-
-**Parameters:**
-
-- `id` (string): Category ID
-
-**Response:**
-
+**Response**
 ```json
 {
-  "cateId": "1",
-  "cateName": "Main Dishes",
-  "description": "Primary dishes"
-}
-```
-
-### Update Category
-
-**PUT** `/api/Category/{id}`
-
-**Parameters:**
-
-- `id` (string): Category ID
-
-**Request Body:**
-
-```json
-{
-  "cateId": "1",
-  "cateName": "Main Courses",
-  "description": "Primary dishes and entrees"
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "Category updated successfully"
-}
-```
-
-### Create Category
-
-**POST** `/api/Category`
-
-**Request Body:**
-
-```json
-{
-  "cateId": "2",
-  "cateName": "Desserts",
-  "description": "Sweet dishes and desserts"
-}
-```
-
-**Response:**
-
-```json
-{
-  "cateId": "2",
-  "cateName": "Desserts",
-  "description": "Sweet dishes and desserts"
-}
-```
-
-### Delete Category
-
-**DELETE** `/api/Category/{id}`
-
-**Parameters:**
-
-- `id` (string): Category ID
-
-**Response:**
-
-```json
-{
-  "message": "Category deleted successfully.",
-  "deletedCategory": {
-    "cateId": "2",
-    "cateName": "Desserts"
-  },
-  "deletedAt": "2025-09-21 10:30:45 UTC"
-}
-```
-
-**Error Response (Constraint Violation):**
-
-```json
-{
-  "message": "Cannot delete category. It is being used by existing food items.",
-  "details": "Category is used by 5 food item(s). Please move or delete these food items first.",
-  "foodItems": [
-    { "foodId": "1", "foodName": "Chicken Curry" },
-    { "foodId": "2", "foodName": "Beef Steak" }
-  ]
+  "cateId": "CATE000001",
+  "cateName": "Món Chính",
+  "description": "Main courses"
 }
 ```
 
 ---
 
-## Table Management
+## 4. Table Management
 
-### Get All Tables
+| Method | Endpoint | Description |
+| ------ | -------- | ----------- |
+| GET | `/Table` | List all tables |
+| GET | `/Table/{tableId}` | Retrieve table detail |
+| GET | `/Table/available` | List currently available tables |
+| POST | `/Table` | Create a table |
+| PUT | `/Table/{tableId}` | Update status or metadata |
+| DELETE | `/Table/{tableId}` | Remove a table |
 
-**GET** `/api/Table`
+### Example – Update Table Status
+```http
+PUT /api/Table/TBL0000003
+Content-Type: application/json
 
-**Response:**
-
-```json
-[
-  {
-    "tableId": "1",
-    "tableName": "Table 1",
-    "numOfSeats": 4,
-    "status": "Available"
-  }
-]
-```
-
-### Get Table by ID
-
-**GET** `/api/Table/{id}`
-
-**Parameters:**
-
-- `id` (string): Table ID
-
-**Response:**
-
-```json
 {
-  "tableId": "1",
-  "tableName": "Table 1",
-  "numOfSeats": 4,
-  "status": "Available"
-}
-```
-
-### Get Available Tables
-
-**GET** `/api/Table/available`
-
-**Response:**
-
-```json
-[
-  {
-    "tableId": "1",
-    "tableName": "Table 1",
-    "numOfSeats": 4,
-    "status": "Available"
-  }
-]
-```
-
-### Update Table
-
-**PUT** `/api/Table/{id}`
-
-**Parameters:**
-
-- `id` (string): Table ID
-
-**Request Body:**
-
-```json
-{
-  "tableId": "1",
-  "tableName": "Table 1",
-  "numOfSeats": 6,
+  "tableId": "TBL0000003",
+  "tableName": "Bàn 3",
+  "capacity": 4,
   "status": "Occupied"
 }
 ```
-
-**Response:**
-
+**Response**
 ```json
 {
   "message": "Table updated successfully"
 }
 ```
 
-### Create Table
+---
 
-**POST** `/api/Table`
+## 5. Order Management
 
-**Request Body:**
+| Method | Endpoint | Description |
+| ------ | -------- | ----------- |
+| GET | `/Order` | List all orders |
+| GET | `/Order/{orderId}` | Retrieve order detail |
+| GET | `/Order/table/{tableId}` | Orders for a specific table |
+| GET | `/Order/user/{userId}` | Orders created by a user |
+| GET | `/Order/status/{status}` | Filter orders by status |
+| POST | `/Order` | Create an order |
+| PUT | `/Order/{orderId}` | Update an order |
+| DELETE | `/Order/{orderId}` | Delete an order |
 
-```json
+**Order status values**: `Pending`, `InProgress`, `Completed`, `Cancelled` (Vietnamese aliases such as `Đang xử lý` may also appear depending on data).
+
+### Example – Create Order
+```http
+POST /api/Order
+Content-Type: application/json
+
 {
-  "tableId": "2",
-  "tableName": "Table 2",
-  "numOfSeats": 2,
-  "status": "Available"
+  "orderId": "HD390A7803",
+  "tableId": "TBL0000003",
+  "userId": "USER000014",
+  "status": "Pending",
+  "note": "VIP guest",
+  "discount": 10000,
+  "total": 235000
 }
 ```
-
-**Response:**
-
+**Response**
 ```json
 {
-  "tableId": "2",
-  "tableName": "Table 2",
-  "numOfSeats": 2,
-  "status": "Available"
-}
-```
-
-### Delete Table
-
-**DELETE** `/api/Table/{id}`
-
-**Parameters:**
-
-- `id` (string): Table ID
-
-**Response:**
-
-```json
-{
-  "message": "Table deleted successfully.",
-  "deletedTable": {
-    "tableId": "2",
-    "tableName": "Table 2",
-    "numOfSeats": 2,
-    "status": "Available"
-  },
-  "deletedAt": "2025-09-21 10:30:45 UTC"
+  "orderId": "HD390A7803",
+  "createdTime": "2025-09-28T09:15:42Z",
+  "status": "Pending",
+  "tableId": "TBL0000003",
+  "userId": "USER000014",
+  "total": 235000,
+  "discount": 10000,
+  "note": "VIP guest"
 }
 ```
 
 ---
 
-## Order Management
+## 6. Order Detail Management
 
-### Get All Orders
+| Method | Endpoint | Description |
+| ------ | -------- | ----------- |
+| GET | `/OrderDetail` | List all order line items |
+| GET | `/OrderDetail/order/{orderId}` | Order lines for a specific order |
+| GET | `/OrderDetail/food/{foodId}/order/{orderId}` | Retrieve a single line item |
+| POST | `/OrderDetail` | Create an order line |
+| PUT | `/OrderDetail/food/{foodId}/order/{orderId}` | Update an order line |
+| DELETE | `/OrderDetail/food/{foodId}/order/{orderId}` | Delete an order line |
 
-**GET** `/api/Order`
+**Order detail status values**: `Chưa làm` (Not started) and `Hoàn tất` (Completed). Older records may still hold `Pending` or `Đang chuẩn bị`; normalize these to the supported set when consuming the API.
 
-**Response:**
-
-```json
-[
-  {
-    "id": "ORDER001",
-    "tableId": "TABLE02",
-    "userId": "USER004",
-    "orderDate": "2025-07-05T18:42:05.943",
-    "status": "Đã tạo bill",
-    "total": 88005.0,
-    "note": null,
-    "discount": 0.0,
-    "reservationId": null,
-    "orderDetails": [
-      {
-        "orderId": "ORDER001",
-        "foodId": "FOOD123",
-        "quantity": 1,
-        "unitPrice": 50000.0,
-        "status": "Đang chế biến"
-      }
-    ]
-  }
-]
+### Example – Order Detail List (excerpt)
+```http
+GET /api/OrderDetail/order/HD390A7803
 ```
-
-### Get Order by ID
-
-**GET** `/api/Order/{id}`
-
-**Parameters:**
-
-- `id` (string): Order ID
-
-**Response:**
-
+**Response**
 ```json
 {
-  "orderId": "ORDER001",
-  "tableId": "TABLE02",
-  "tableName": "Table 2",
-  "userId": "USER004",
-  "userName": "John Doe",
-  "createdTime": "2025-07-05T18:42:05.943",
-  "status": "Đã tạo bill",
-  "total": 88005.0,
-  "note": null,
-  "discount": 0.0,
-  "reservationId": null,
-  "orderDetails": [
-    {
-      "foodId": "FOOD123",
-      "foodName": "Phở Bò",
-      "quantity": 1,
-      "unitPrice": 50000.0
-    }
-  ]
-}
-```
-
-### Get Orders by Table
-
-**GET** `/api/Order/table/{tableId}`
-
-**Parameters:**
-
-- `tableId` (string): Table ID
-
-**Response:**
-
-```json
-[
-  {
-    "orderId": "ORDER001",
-    "tableId": "TABLE02",
-    "tableName": "Table 2",
-    "userId": "USER004",
-    "userName": "John Doe",
-    "createdTime": "2025-07-05T18:42:05.943",
-    "status": "Đã tạo bill",
-    "total": 88005.0,
-    "note": null,
-    "discount": 0.0,
-    "reservationId": null,
-    "orderDetails": [
-      {
-        "foodId": "FOOD123",
-        "foodName": "Phở Bò",
-        "quantity": 1,
-        "unitPrice": 50000.0
-      }
-    ]
-  }
-]
-```
-
-### Get Orders by User
-
-**GET** `/api/Order/user/{userId}`
-
-**Parameters:**
-
-- `userId` (string): User ID
-
-**Response:**
-
-```json
-[
-  {
-    "orderId": "ORDER001",
-    "tableId": "TABLE02",
-    "tableName": "Table 2",
-    "userId": "USER004",
-    "userName": "John Doe",
-    "createdTime": "2025-07-05T18:42:05.943",
-    "status": "Đã tạo bill",
-    "total": 88005.0,
-    "note": null,
-    "discount": 0.0,
-    "reservationId": null,
-    "orderDetails": [
-      {
-        "foodId": "FOOD123",
-        "foodName": "Phở Bò",
-        "quantity": 1,
-        "unitPrice": 50000.0
-      }
-    ]
-  }
-]
-```
-
-### Get Orders by Status
-
-**GET** `/api/Order/status/{status}`
-
-**Parameters:**
-
-- `status` (string): Order status (e.g., "Pending", "Completed", "Cancelled")
-
-**Response:**
-
-```json
-[
-  {
-    "orderId": "ORDER001",
-    "tableId": "TABLE02",
-    "tableName": "Table 2",
-    "userId": "USER004",
-    "userName": "John Doe",
-    "createdTime": "2025-07-05T18:42:05.943",
-    "status": "Đã tạo bill",
-    "total": 88005.0,
-    "note": null,
-    "discount": 0.0,
-    "reservationId": null,
-    "orderDetails": [
-      {
-        "foodId": "FOOD123",
-        "foodName": "Phở Bò",
-        "quantity": 1,
-        "unitPrice": 50000.0
-      }
-    ]
-  }
-]
-```
-
-### Update Order
-
-**PUT** `/api/Order/{id}`
-
-**Parameters:**
-
-- `id` (string): Order ID
-
-**Request Body:**
-
-```json
-{
-  "orderId": "1",
-  "status": "Completed",
-  "total": 31.98,
-  "note": "Extra spicy - completed",
-  "discount": 2.0,
-  "tableId": "1",
-  "userId": "1"
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "Order updated successfully"
-}
-```
-
-### Create Order
-
-**POST** `/api/Order`
-
-**Request Body:**
-
-```json
-{
-  "orderId": "2",
-  "status": "Pending",
-  "total": 45.5,
-  "note": "No onions",
-  "discount": 0.0,
-  "tableId": "2",
-  "userId": "1"
-}
-```
-
-**Response:**
-
-```json
-{
-  "orderId": "2",
-  "createdTime": "2025-09-21T10:15:00Z",
-  "status": "Pending",
-  "total": 45.5,
-  "note": "No onions",
-  "discount": 0.0,
-  "tableId": "2",
-  "userId": "1"
-}
-```
-
-### Delete Order
-
-**DELETE** `/api/Order/{id}`
-
-**Parameters:**
-
-- `id` (string): Order ID
-
-**Response:**
-
-```json
-{
-  "message": "Order deleted successfully.",
-  "deletedOrder": {
-    "orderId": "2",
-    "createdTime": "2025-09-21T10:15:00Z",
-    "status": "Pending",
-    "total": 45.5,
-    "tableId": "2"
-  },
-  "deletedAt": "2025-09-21 10:30:45 UTC"
-}
-```
-
-**Note:** The Order API has been updated to properly return string IDs instead of 0 values. The `GET /api/Order` endpoint now returns orders with their associated order details in a nested structure, and individual order endpoints include additional information like table names, user names, and food names for better usability. All Order endpoints now include the complete order information: `total`, `note`, `discount`, and `reservationId` fields from the database.
-
----
-
-## Order Detail Management
-
-### Get All Order Details
-
-**GET** `/api/OrderDetail`
-
-**Response:**
-
-```json
-[
-  {
-    "foodId": "FOOD123",
-    "foodName": "Phở Bò",
-    "orderId": "ORDER001",
-    "quantity": 2,
-    "unitPrice": 50000.0
-  }
-]
-```
-
-### Get Order Details by Order
-
-**GET** `/api/OrderDetail/order/{orderId}`
-
-**Parameters:**
-
-- `orderId` (string): Order ID
-
-**Response:**
-
-```json
-[
-  {
-    "foodId": "FOOD123",
-    "foodName": "Phở Bò",
-    "orderId": "ORDER001",
-    "quantity": 2,
-    "unitPrice": 50000.0
-  }
-]
-```
-
-### Get Order Detail by Food and Order
-
-**GET** `/api/OrderDetail/food/{foodId}/order/{orderId}`
-
-**Parameters:**
-
-- `foodId` (string): Food ID
-- `orderId` (string): Order ID
-
-**Response:**
-
-```json
-{
-  "foodId": "1",
-  "orderId": "1",
-  "unitPrice": 15.99,
-  "status": "Pending",
-  "quantity": 2
-}
-```
-
-### Update Order Detail
-
-**PUT** `/api/OrderDetail/food/{foodId}/order/{orderId}`
-
-**Parameters:**
-
-- `foodId` (string): Food ID
-- `orderId` (string): Order ID
-
-**Request Body:**
-
-```json
-{
-  "foodId": "1",
-  "orderId": "1",
-  "unitPrice": 15.99,
-  "status": "Completed",
-  "quantity": 3
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "Order detail updated successfully"
-}
-```
-
-### Create Order Detail
-
-**POST** `/api/OrderDetail`
-
-**Request Body:**
-
-```json
-{
-  "foodId": "2",
-  "orderId": "1",
-  "unitPrice": 25.99,
-  "status": "Pending",
-  "quantity": 1
-}
-```
-
-**Response:**
-
-```json
-{
-  "foodId": "2",
-  "orderId": "1",
-  "unitPrice": 25.99,
-  "status": "Pending",
-  "quantity": 1
-}
-```
-
-### Delete Order Detail
-
-**DELETE** `/api/OrderDetail/food/{foodId}/order/{orderId}`
-
-**Parameters:**
-
-- `foodId` (string): Food ID
-- `orderId` (string): Order ID
-
-**Response:**
-
-```json
-{
-  "message": "Order detail deleted successfully.",
-  "deletedOrderDetail": {
-    "foodId": "2",
-    "orderId": "1",
-    "unitPrice": 25.99,
-    "status": "Pending",
-    "quantity": 1
-  },
-  "deletedAt": "2025-09-21 10:30:45 UTC"
-}
-```
-
----
-
-## Bill Management
-
-### Get All Bills
-
-**GET** `/api/Bill`
-
-**Response:**
-
-```json
-[
-  {
-    "billId": "1",
-    "total": 31.98,
-    "discount": 2.0,
-    "totalFinal": 29.98,
-    "payment": "Credit Card",
-    "createdTime": "2025-09-21T11:00:00Z",
-    "orderId": "1",
-    "userId": "1"
-  }
-]
-```
-
-### Get Bill by ID
-
-**GET** `/api/Bill/{id}`
-
-**Parameters:**
-
-- `id` (string): Bill ID
-
-**Response:**
-
-```json
-{
-  "billId": "1",
-  "total": 31.98,
-  "discount": 2.0,
-  "totalFinal": 29.98,
-  "payment": "Credit Card",
-  "createdTime": "2025-09-21T11:00:00Z",
-  "orderId": "1",
-  "userId": "1"
-}
-```
-
-### Get Bills by Order
-
-**GET** `/api/Bill/order/{orderId}`
-
-**Parameters:**
-
-- `orderId` (string): Order ID
-
-**Response:**
-
-```json
-[
-  {
-    "billId": "1",
-    "total": 31.98,
-    "discount": 2.0,
-    "totalFinal": 29.98,
-    "orderId": "1"
-  }
-]
-```
-
-### Get Bills by User
-
-**GET** `/api/Bill/user/{userId}`
-
-**Parameters:**
-
-- `userId` (string): User ID
-
-**Response:**
-
-```json
-[
-  {
-    "billId": "1",
-    "total": 31.98,
-    "discount": 2.0,
-    "totalFinal": 29.98,
-    "userId": "1"
-  }
-]
-```
-
-### Get Bills by Date
-
-**GET** `/api/Bill/date/{date}`
-
-**Parameters:**
-
-- `date` (string): Date in YYYY-MM-DD format
-
-**Response:**
-
-```json
-[
-  {
-    "billId": "1",
-    "total": 31.98,
-    "discount": 2.0,
-    "totalFinal": 29.98,
-    "createdTime": "2025-09-21T11:00:00Z"
-  }
-]
-```
-
-### Update Bill
-
-**PUT** `/api/Bill/{id}`
-
-**Parameters:**
-
-- `id` (string): Bill ID
-
-**Request Body:**
-
-```json
-{
-  "billId": "1",
-  "total": 31.98,
-  "discount": 3.0,
-  "totalFinal": 28.98,
-  "payment": "Cash",
-  "orderId": "1",
-  "userId": "1"
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "Bill updated successfully"
-}
-```
-
-### Create Bill
-
-**POST** `/api/Bill`
-
-**Request Body:**
-
-```json
-{
-  "billId": "2",
-  "total": 45.5,
-  "discount": 0.0,
-  "totalFinal": 45.5,
-  "payment": "Credit Card",
-  "orderId": "2",
-  "userId": "1"
-}
-```
-
-**Response:**
-
-```json
-{
-  "billId": "2",
-  "total": 45.5,
-  "discount": 0.0,
-  "totalFinal": 45.5,
-  "payment": "Credit Card",
-  "createdTime": "2025-09-21T11:15:00Z",
-  "orderId": "2",
-  "userId": "1"
-}
-```
-
-### Delete Bill
-
-**DELETE** `/api/Bill/{id}`
-
-**Parameters:**
-
-- `id` (string): Bill ID
-
-**Response:**
-
-```json
-{
-  "message": "Bill deleted successfully.",
-  "deletedBill": {
-    "billId": "2",
-    "orderId": "2",
-    "total": 45.5,
-    "totalFinal": 45.5,
-    "createdTime": "2025-09-21T11:15:00Z"
-  },
-  "deletedAt": "2025-09-21 10:30:45 UTC"
-}
-```
-
----
-
-## Bill Detail Management
-
-### Get All Bill Details
-
-**GET** `/api/BillDetail`
-
-**Response:**
-
-```json
-[
-  {
-    "billId": "1",
-    "orderId": "1",
-    "quantity": 2,
-    "unitPrice": 15.99
-  }
-]
-```
-
-### Get Bill Details by Bill
-
-**GET** `/api/BillDetail/bill/{billId}`
-
-**Parameters:**
-
-- `billId` (string): Bill ID
-
-**Response:**
-
-```json
-[
-  {
-    "billId": "1",
-    "orderId": "1",
-    "quantity": 2,
-    "unitPrice": 15.99
-  }
-]
-```
-
-### Get Bill Detail by Order and Bill
-
-**GET** `/api/BillDetail/order/{orderId}/bill/{billId}`
-
-**Parameters:**
-
-- `orderId` (string): Order ID
-- `billId` (string): Bill ID
-
-**Response:**
-
-```json
-{
-  "billId": "1",
-  "orderId": "1",
+  "foodId": "10",
+  "orderId": "HD390A7803",
   "quantity": 2,
-  "unitPrice": 15.99
+  "unitPrice": 45000,
+  "status": "Hoàn tất"
 }
 ```
 
-### Update Bill Detail
+### Example – Update Order Detail Status
+```http
+PUT /api/OrderDetail/food/11/order/HD390A7803
+Content-Type: application/json
 
-**PUT** `/api/BillDetail/order/{orderId}/bill/{billId}`
-
-**Parameters:**
-
-- `orderId` (string): Order ID
-- `billId` (string): Bill ID
-
-**Request Body:**
-
+{
+  "foodId": "11",
+  "orderId": "HD390A7803",
+  "quantity": 1,
+  "unitPrice": 30000,
+  "status": "Hoàn tất"
+}
+```
+**Response**
 ```json
 {
-  "billId": "1",
-  "orderId": "1",
-  "quantity": 3,
-  "unitPrice": 15.99
+  "message": "Order detail updated successfully",
+  "orderDetail": {
+    "foodId": "11",
+    "orderId": "HD390A7803",
+    "quantity": 1,
+    "unitPrice": 30000,
+    "status": "Hoàn tất"
+  }
 }
 ```
 
-**Response:**
+---
 
+## 7. Bill Management
+
+| Method | Endpoint | Description |
+| ------ | -------- | ----------- |
+| GET | `/Bill` | List all bills |
+| GET | `/Bill/{billId}` | Retrieve bill detail |
+| GET | `/Bill/order/{orderId}` | Bills generated for an order |
+| GET | `/Bill/user/{userId}` | Bills associated with a user |
+| GET | `/Bill/date/{yyyy-MM-dd}` | Bills on a specific date |
+| POST | `/Bill` | Create a bill |
+| PUT | `/Bill/{billId}` | Update a bill |
+| DELETE | `/Bill/{billId}` | Delete a bill |
+
+### Example – Create Bill
+```http
+POST /api/Bill
+Content-Type: application/json
+
+{
+  "billId": "BL25092801",
+  "orderId": "HD390A7803",
+  "userId": "USER000014",
+  "total": 235000,
+  "status": "Open"
+}
+```
+**Response**
 ```json
 {
-  "message": "Bill detail updated successfully"
+  "billId": "BL25092801",
+  "orderId": "HD390A7803",
+  "userId": "USER000014",
+  "total": 235000,
+  "status": "Open",
+  "createdTime": "2025-09-28T09:20:32Z"
 }
 ```
 
-### Create Bill Detail
+---
 
-**POST** `/api/BillDetail`
+## 8. Bill Detail Management
 
-**Request Body:**
+| Method | Endpoint | Description |
+| ------ | -------- | ----------- |
+| GET | `/BillDetail` | List all bill line items |
+| GET | `/BillDetail/bill/{billId}` | Lines associated with a bill |
+| GET | `/BillDetail/order/{orderId}/bill/{billId}` | Retrieve a single bill line |
+| POST | `/BillDetail` | Create a bill line |
+| PUT | `/BillDetail/order/{orderId}/bill/{billId}` | Update a bill line |
+| DELETE | `/BillDetail/order/{orderId}/bill/{billId}` | Delete a bill line |
 
+### Example – Bill Detail Response
+```http
+GET /api/BillDetail/bill/BL25092801
+```
+**Response**
 ```json
 {
-  "billId": "1",
-  "orderId": "1",
+  "billId": "BL25092801",
+  "orderId": "HD390A7803",
+  "foodId": "10",
   "quantity": 2,
-  "unitPrice": 15.99
-}
-```
-
-**Response:**
-
-```json
-{
-  "billId": "1",
-  "orderId": "1",
-  "quantity": 2,
-  "unitPrice": 15.99
-}
-```
-
-### Delete Bill Detail
-
-**DELETE** `/api/BillDetail/order/{orderId}/bill/{billId}`
-
-**Parameters:**
-
-- `orderId` (string): Order ID
-- `billId` (string): Bill ID
-
-**Response:**
-
-```json
-{
-  "message": "Bill detail deleted successfully.",
-  "deletedBillDetail": {
-    "orderId": "1",
-    "billId": "1",
-    "quantity": 2,
-    "unitPrice": 15.99
-  },
-  "deletedAt": "2025-09-21 10:30:45 UTC"
+  "unitPrice": 45000,
+  "lineTotal": 90000
 }
 ```
 
 ---
 
-## Recipe Management
+## 9. Recipe & Ingredient Management (optional modules)
 
-### Get All Recipes
+| Method | Endpoint | Description |
+| ------ | -------- | ----------- |
+| GET | `/Recipe` | List all recipes |
+| GET | `/Recipe/{recipeId}` | Retrieve recipe detail |
+| GET | `/Recipe/food/{foodId}` | Recipes for a dish |
+| POST | `/Recipe` | Create a recipe |
+| PUT | `/Recipe/{recipeId}` | Update a recipe |
+| DELETE | `/Recipe/{recipeId}` | Delete a recipe |
+| GET | `/RecipeDetail` | List recipe line items |
+| GET | `/RecipeDetail/recipe/{recipeId}` | Details for a recipe |
+| GET | `/Ingredient` | List ingredients |
 
-**GET** `/api/Recipe`
+Example payloads mirror the bill detail shape, with `ingredientId`, `quantity`, and `unit` fields.
 
-**Response:**
+---
 
-```json
-[
-  {
-    "recipeId": "1",
-    "recipeDescription": "Traditional chicken curry recipe",
-    "foodId": "1"
-  }
-]
-```
+## Error Handling
+- Validation failures return **400 Bad Request** with `message` and `errors` collections.
+- Duplicate keys (e.g., inserting another order detail with the same `foodId` + `orderId`) return **409 Conflict**.
+- Missing resources return **404 Not Found**.
+- Unexpected issues return **500 Internal Server Error**.
 
-### Get Recipe by ID
-
-**GET** `/api/Recipe/{id}`
-
-**Parameters:**
-
-- `id` (string): Recipe ID
-
-**Response:**
-
+Example error body:
 ```json
 {
-  "recipeId": "1",
-  "recipeDescription": "Traditional chicken curry recipe",
-  "foodId": "1"
-}
-```
-
-### Get Recipes by Food
-
-**GET** `/api/Recipe/food/{foodId}`
-
-**Parameters:**
-
-- `foodId` (string): Food ID
-
-**Response:**
-
-```json
-[
-  {
-    "recipeId": "1",
-    "recipeDescription": "Traditional chicken curry recipe",
-    "foodId": "1"
-  }
-]
-```
-
-### Update Recipe
-
-**PUT** `/api/Recipe/{id}`
-
-**Parameters:**
-
-- `id` (string): Recipe ID
-
-**Request Body:**
-
-```json
-{
-  "recipeId": "1",
-  "recipeDescription": "Updated chicken curry recipe with coconut milk",
-  "foodId": "1"
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "Recipe updated successfully"
-}
-```
-
-### Create Recipe
-
-**POST** `/api/Recipe`
-
-**Request Body:**
-
-```json
-{
-  "recipeId": "2",
-  "recipeDescription": "Grilled beef steak with herbs",
-  "foodId": "2"
-}
-```
-
-**Response:**
-
-```json
-{
-  "recipeId": "2",
-  "recipeDescription": "Grilled beef steak with herbs",
-  "foodId": "2"
-}
-```
-
-### Delete Recipe
-
-**DELETE** `/api/Recipe/{id}`
-
-**Parameters:**
-
-- `id` (string): Recipe ID
-
-**Response:**
-
-```json
-{
-  "message": "Recipe deleted successfully.",
-  "deletedRecipe": {
-    "recipeId": "2",
-    "recipeDescription": "Grilled beef steak with herbs",
-    "foodId": "2"
-  },
-  "deletedAt": "2025-09-21 10:30:45 UTC"
+  "message": "Cannot delete food item. It is being used by existing orders or recipes.",
+  "relatedOrders": ["HD390A7803"],
+  "relatedRecipes": []
 }
 ```
 
 ---
 
-## Recipe Detail Management
+## Status Reference
 
-### Get All Recipe Details
+| Entity | Field | Allowed Values |
+| ------ | ----- | -------------- |
+| Order | `status` | `Pending`, `InProgress`, `Completed`, `Cancelled` (may appear in Vietnamese) |
+| Order Detail | `status` | `Chưa làm`, `Hoàn tất` |
+| Bill | `status` | `Open`, `Paid`, `Cancelled` |
 
-**GET** `/api/RecipeDetail`
-
-**Response:**
-
-```json
-[
-  {
-    "recipeId": "1",
-    "ingreId": "1",
-    "unitMeasurement": "grams",
-    "quantity": 500
-  }
-]
-```
-
-### Get Recipe Details by Recipe
-
-**GET** `/api/RecipeDetail/recipe/{recipeId}`
-
-**Parameters:**
-
-- `recipeId` (string): Recipe ID
-
-**Response:**
-
-```json
-[
-  {
-    "recipeId": "1",
-    "ingreId": "1",
-    "unitMeasurement": "grams",
-    "quantity": 500
-  }
-]
-```
-
-### Get Recipe Detail by Recipe and Ingredient
-
-**GET** `/api/RecipeDetail/{recipeId}/{ingredientId}`
-
-**Parameters:**
-
-- `recipeId` (string): Recipe ID
-- `ingredientId` (string): Ingredient ID
-
-**Response:**
-
-```json
-{
-  "recipeId": "1",
-  "ingreId": "1",
-  "unitMeasurement": "grams",
-  "quantity": 500
-}
-```
-
-### Update Recipe Detail
-
-**PUT** `/api/RecipeDetail/{recipeId}/{ingredientId}`
-
-**Parameters:**
-
-- `recipeId` (string): Recipe ID
-- `ingredientId` (string): Ingredient ID
-
-**Request Body:**
-
-```json
-{
-  "recipeId": "1",
-  "ingreId": "1",
-  "unitMeasurement": "grams",
-  "quantity": 600
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "Recipe detail updated successfully"
-}
-```
-
-### Create Recipe Detail
-
-**POST** `/api/RecipeDetail`
-
-**Request Body:**
-
-```json
-{
-  "recipeId": "1",
-  "ingreId": "2",
-  "unitMeasurement": "ml",
-  "quantity": 200
-}
-```
-
-**Response:**
-
-```json
-{
-  "recipeId": "1",
-  "ingreId": "2",
-  "unitMeasurement": "ml",
-  "quantity": 200
-}
-```
-
-### Delete Recipe Detail
-
-**DELETE** `/api/RecipeDetail/{recipeId}/{ingredientId}`
-
-**Parameters:**
-
-- `recipeId` (string): Recipe ID
-- `ingredientId` (string): Ingredient ID
-
-**Response:**
-
-```json
-{
-  "message": "Recipe detail deleted successfully.",
-  "deletedRecipeDetail": {
-    "recipeId": "1",
-    "ingredientId": "2",
-    "unitMeasurement": "ml",
-    "quantity": 200
-  },
-  "deletedAt": "2025-09-21 10:30:45 UTC"
-}
-```
+Normalize and localize these values on the client as needed.
 
 ---
 
-## Ingredient Management
+## Useful Tips
+- Use the `/api/OrderDetail/order/{orderId}` endpoint for reliable detail lists. It returns completed items even when the bulk `/api/OrderDetail` endpoint omits them because of historic status values.
+- When connecting from mobile, ensure your device can reach `46.250.231.129` on port `8080`.
+- For local testing with self-signed certificates, enable `TrustServerCertificate=True` in the connection string and set `NODE_TLS_REJECT_UNAUTHORIZED=0` (development only).
 
-### Get All Ingredients
-
-**GET** `/api/Ingredient`
-
-**Response:**
-
-```json
-[
-  {
-    "ingreId": "1",
-    "ingreName": "Chicken Breast",
-    "stock": 1000,
-    "unitMeasurement": "grams"
-  }
-]
-```
-
-### Get Ingredient by ID
-
-**GET** `/api/Ingredient/{id}`
-
-**Parameters:**
-
-- `id` (string): Ingredient ID
-
-**Response:**
-
-```json
-{
-  "ingreId": "1",
-  "ingreName": "Chicken Breast",
-  "stock": 1000,
-  "unitMeasurement": "grams"
-}
-```
-
-### Get Low Stock Ingredients
-
-**GET** `/api/Ingredient/lowstock/{threshold}`
-
-**Parameters:**
-
-- `threshold` (number): Stock threshold level
-
-**Response:**
-
-```json
-[
-  {
-    "ingreId": "2",
-    "ingreName": "Coconut Milk",
-    "stock": 50,
-    "unitMeasurement": "ml"
-  }
-]
-```
-
-### Update Ingredient
-
-**PUT** `/api/Ingredient/{id}`
-
-**Parameters:**
-
-- `id` (string): Ingredient ID
-
-**Request Body:**
-
-```json
-{
-  "ingreId": "1",
-  "ingreName": "Chicken Breast (Premium)",
-  "stock": 1200,
-  "unitMeasurement": "grams"
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "Ingredient updated successfully"
-}
-```
-
-### Update Ingredient Stock
-
-**PUT** `/api/Ingredient/{id}/stock/{quantity}`
-
-**Parameters:**
-
-- `id` (string): Ingredient ID
-- `quantity` (number): New stock quantity
-
-**Response:**
-
-```json
-{
-  "message": "Ingredient stock updated successfully"
-}
-```
-
-### Create Ingredient
-
-**POST** `/api/Ingredient`
-
-**Request Body:**
-
-```json
-{
-  "ingreId": "3",
-  "ingreName": "Fresh Herbs",
-  "stock": 200,
-  "unitMeasurement": "grams"
-}
-```
-
-**Response:**
-
-```json
-{
-  "ingreId": "3",
-  "ingreName": "Fresh Herbs",
-  "stock": 200,
-  "unitMeasurement": "grams"
-}
-```
-
-### Delete Ingredient
-
-**DELETE** `/api/Ingredient/{id}`
-
-**Parameters:**
-
-- `id` (string): Ingredient ID
-
-**Response:**
-
-```json
-{
-  "message": "Ingredient deleted successfully.",
-  "deletedIngredient": {
-    "ingreId": "3",
-    "ingreName": "Fresh Herbs",
-    "stock": 200,
-    "unitMeasurement": "grams"
-  },
-  "deletedAt": "2025-09-21 10:30:45 UTC"
-}
-```
-
----
-
-## Common HTTP Status Codes
-
-### Success Responses
-
-- **200 OK**: Request successful
-- **201 Created**: Resource created successfully
-- **204 No Content**: Request successful, no content to return
-
-### Error Responses
-
-- **400 Bad Request**: Invalid request data
-- **404 Not Found**: Resource not found
-- **409 Conflict**: Resource conflict (e.g., foreign key constraints)
-- **500 Internal Server Error**: Server error
-
-### Example Error Response
-
-```json
-{
-  "message": "Cannot delete category. It is being used by existing food items.",
-  "details": "Category is used by 5 food item(s). Please move or delete these food items first.",
-  "foodItems": [
-    { "foodId": "1", "foodName": "Chicken Curry" },
-    { "foodId": "2", "foodName": "Beef Steak" }
-  ]
-}
-```
-
----
-
-## Notes
-
-1. All endpoints return JSON responses
-2. Date/time fields are in ISO 8601 format (UTC)
-3. All DELETE operations return detailed information about the deleted item
-4. Constraint violations (foreign key dependencies) are handled gracefully with informative error messages
-5. Authentication and authorization may be required for certain endpoints (implementation dependent)
-6. Base URL may vary depending on deployment environment
+Happy coding! 🎉
