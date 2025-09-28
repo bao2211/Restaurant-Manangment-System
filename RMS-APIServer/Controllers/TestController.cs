@@ -12,8 +12,9 @@ namespace RMS_APIServer.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(new { 
-                message = "CORS test successful", 
+            return Ok(new
+            {
+                message = "CORS test successful",
                 timestamp = DateTime.UtcNow,
                 method = "GET"
             });
@@ -23,8 +24,9 @@ namespace RMS_APIServer.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] object data)
         {
-            return Ok(new { 
-                message = "CORS POST test successful", 
+            return Ok(new
+            {
+                message = "CORS POST test successful",
                 timestamp = DateTime.UtcNow,
                 method = "POST",
                 receivedData = data
@@ -35,8 +37,9 @@ namespace RMS_APIServer.Controllers
         [HttpOptions]
         public IActionResult Options()
         {
-            return Ok(new { 
-                message = "CORS OPTIONS test successful", 
+            return Ok(new
+            {
+                message = "CORS OPTIONS test successful",
                 timestamp = DateTime.UtcNow,
                 method = "OPTIONS"
             });

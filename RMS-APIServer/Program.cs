@@ -28,7 +28,7 @@ builder.Services.AddCors(options =>
                   .AllowAnyHeader()
                   .WithExposedHeaders("*"); // Expose all headers in response
         });
-    
+
     // Add a specific policy for development (more permissive)
     options.AddPolicy("Development",
         policy =>
