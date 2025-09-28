@@ -1,4 +1,5 @@
 # 🐳 Docker Hub Deployment Guide
+
 # Restaurant Management System API - Status Field Fix
 
 ## 📋 Prerequisites
@@ -10,12 +11,15 @@
 ## 🚀 Quick Deploy Commands
 
 ### Step 1: Login to Docker Hub
+
 ```bash
 docker login
 ```
+
 Enter your Docker Hub username and password when prompted.
 
 ### Step 2: Build the Docker Image
+
 ```bash
 # Navigate to the RMS-APIServer directory
 cd "C:\Users\Admin\Desktop\School\CNPMNC\Restaurant-Manangment-System\RMS-APIServer"
@@ -29,6 +33,7 @@ docker tag rms-api-fixed:latest yourusername/rms-api-server:latest
 ```
 
 ### Step 3: Push to Docker Hub
+
 ```bash
 # Push both tags
 docker push yourusername/rms-api-server:status-fix-v1.0
@@ -36,6 +41,7 @@ docker push yourusername/rms-api-server:latest
 ```
 
 ### Step 4: Deploy to Production Server
+
 ```bash
 # On your production server (46.250.231.129), run:
 docker pull yourusername/rms-api-server:latest
@@ -47,6 +53,7 @@ docker run -d --name rms-api-current -p 8080:8080 yourusername/rms-api-server:la
 ## 🔧 Advanced Configuration
 
 ### Environment Variables
+
 ```bash
 docker run -d \
   --name rms-api-server \
@@ -57,9 +64,11 @@ docker run -d \
 ```
 
 ### Docker Compose (Alternative)
+
 Create `docker-compose.yml`:
+
 ```yaml
-version: '3.8'
+version: "3.8"
 services:
   rms-api:
     image: yourusername/rms-api-server:latest
@@ -73,6 +82,7 @@ services:
 ```
 
 Then run:
+
 ```bash
 docker-compose up -d
 ```
@@ -80,6 +90,7 @@ docker-compose up -d
 ## ✅ Verification
 
 ### Test the Status Field Fix
+
 ```bash
 # Test the fixed API endpoint
 curl -H "Accept: application/json" http://46.250.231.129:8080/api/OrderDetail/order/HD16D450CE
@@ -96,6 +107,7 @@ curl -H "Accept: application/json" http://46.250.231.129:8080/api/OrderDetail/or
 ```
 
 ### Run API Tests
+
 ```bash
 # Run the comprehensive test suite
 cd "C:\Users\Admin\Desktop\School\CNPMNC\Restaurant-Manangment-System\tests"
@@ -105,12 +117,14 @@ node apiEndpointTests.js
 ## 📊 What This Fix Includes
 
 ### ✅ Fixed Issues:
+
 - **Status field missing** in OrderDetail endpoints
 - **NULL status values** now return "Chưa làm" (default)
 - **HD16D450CE order** now shows correct "Hoàn tất" status
 - **All OrderDetail endpoints** now include status field
 
 ### 🔧 Technical Changes:
+
 - Updated `OrderDetailController.cs`
 - Added NULL handling for status field
 - Consistent status field in all responses
@@ -119,11 +133,13 @@ node apiEndpointTests.js
 ## 🐳 Docker Hub Repository Information
 
 ### Image Tags:
+
 - `yourusername/rms-api-server:latest` - Latest version with status fix
 - `yourusername/rms-api-server:status-fix-v1.0` - Specific version tag
 - `yourusername/rms-api-server:production` - Production-ready version
 
 ### Image Info:
+
 - **Base Image**: mcr.microsoft.com/dotnet/aspnet:8.0
 - **Size**: ~200MB (optimized)
 - **Expose Ports**: 8080, 8081
@@ -133,6 +149,7 @@ node apiEndpointTests.js
 ## 🚀 Deployment Options
 
 ### Option 1: Direct Production Deployment
+
 ```bash
 ssh user@46.250.231.129
 docker pull yourusername/rms-api-server:latest
@@ -141,6 +158,7 @@ docker run -d --name current-api -p 8080:8080 yourusername/rms-api-server:latest
 ```
 
 ### Option 2: Blue-Green Deployment
+
 ```bash
 # Deploy to port 8081 first (green)
 docker run -d --name rms-api-green -p 8081:8080 yourusername/rms-api-server:latest
@@ -155,6 +173,7 @@ docker stop rms-api-green
 ```
 
 ### Option 3: Kubernetes Deployment
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -171,10 +190,10 @@ spec:
         app: rms-api
     spec:
       containers:
-      - name: rms-api
-        image: yourusername/rms-api-server:latest
-        ports:
-        - containerPort: 8080
+        - name: rms-api
+          image: yourusername/rms-api-server:latest
+          ports:
+            - containerPort: 8080
 ---
 apiVersion: v1
 kind: Service
@@ -184,8 +203,8 @@ spec:
   selector:
     app: rms-api
   ports:
-  - port: 8080
-    targetPort: 8080
+    - port: 8080
+      targetPort: 8080
   type: LoadBalancer
 ```
 
@@ -209,6 +228,7 @@ After deployment, your mobile app will automatically receive the status field:
 ## 🔄 Rollback Plan
 
 If issues occur, rollback quickly:
+
 ```bash
 # Stop current container
 docker stop rms-api-current
@@ -220,16 +240,19 @@ docker run -d --name rms-api-rollback -p 8080:8080 yourusername/rms-api-server:p
 ## 📞 Support & Monitoring
 
 ### Health Check
+
 ```bash
 curl http://46.250.231.129:8080/api/Category
 ```
 
 ### Logs
+
 ```bash
 docker logs rms-api-current -f
 ```
 
 ### Container Stats
+
 ```bash
 docker stats rms-api-current
 ```
@@ -239,6 +262,7 @@ docker stats rms-api-current
 ## 🎉 Success Criteria
 
 After deployment, verify:
+
 - ✅ Status field present in all OrderDetail responses
 - ✅ HD16D450CE shows "Hoàn tất" status
 - ✅ Mobile app displays correct statuses

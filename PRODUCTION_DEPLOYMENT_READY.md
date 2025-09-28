@@ -1,8 +1,11 @@
 # 🚀 Production Deployment Instructions
+
 # Docker Image: bao2211/rms-api:latest (Status Fix v2.0)
+
 # Upload completed successfully to Docker Hub!
 
 ## ✅ Upload Status: COMPLETED
+
 - **Repository**: bao2211/rms-api
 - **Tags**: latest, status-fix-v2.0
 - **Image Size**: 348MB
@@ -11,11 +14,13 @@
 ## 🖥️ Production Server Deployment Commands
 
 ### SSH into your production server:
+
 ```bash
 ssh user@46.250.231.129
 ```
 
 ### Deploy the updated API server:
+
 ```bash
 # Pull the latest image with status field fix
 docker pull bao2211/rms-api:latest
@@ -41,11 +46,13 @@ curl -H "Accept: application/json" http://46.250.231.129:8080/api/OrderDetail/or
 ```
 
 ## 🧪 Quick Test Command (Run after deployment):
+
 ```bash
 curl -H "Accept: application/json" http://46.250.231.129:8080/api/OrderDetail/order/HD16D450CE
 ```
 
 **Expected Result**: You should now see the status field in the response:
+
 ```json
 [{
   "foodId": "FDD76BE992",
@@ -58,11 +65,13 @@ curl -H "Accept: application/json" http://46.250.231.129:8080/api/OrderDetail/or
 ```
 
 ## 🔄 Alternative: One-Line Deployment
+
 ```bash
 docker pull bao2211/rms-api:latest && docker stop rms-api-server && docker rm rms-api-server && docker run -d --name rms-api-server -p 8080:8080 --restart unless-stopped bao2211/rms-api:latest
 ```
 
 ## 📋 Container Management
+
 ```bash
 # Check container status
 docker ps | grep rms-api
@@ -75,6 +84,7 @@ docker restart rms-api-server
 ```
 
 ## 🎯 What This Fix Includes:
+
 - ✅ Status field now present in all OrderDetail endpoints
 - ✅ NULL database values return "Chưa làm" as default
 - ✅ HD16D450CE order shows correct "Hoàn tất" status
@@ -82,6 +92,7 @@ docker restart rms-api-server
 - ✅ Production-optimized Docker configuration
 
 ## 🚨 Rollback (if needed):
+
 ```bash
 # If you need to rollback to previous version
 docker stop rms-api-server

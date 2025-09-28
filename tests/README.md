@@ -5,16 +5,19 @@ This comprehensive test suite provides multiple ways to test all API endpoints i
 ## 🎯 Test Suite Components
 
 ### 1. Node.js Command Line Tests (`tests/apiEndpointTests.js`)
+
 - **Purpose**: Automated testing from command line
 - **Features**: Comprehensive logging, JSON export, detailed status field analysis
 - **Best for**: CI/CD integration, automated testing, detailed debugging
 
 ### 2. React Native Mobile Test Screen (`screens/APITestScreen.js`)
+
 - **Purpose**: In-app testing for mobile developers
 - **Features**: Touch-friendly interface, real-time results, status field visualization
 - **Best for**: Mobile app integration, on-device testing
 
 ### 3. HTML Browser Test Page (`tests/api-test.html`)
+
 - **Purpose**: Browser-based testing with visual interface
 - **Features**: Interactive UI, real-time updates, export functionality
 - **Best for**: Manual testing, demonstrations, cross-platform compatibility
@@ -50,17 +53,19 @@ npm run test:production
 ### Option 3: React Native Integration
 
 1. Import the test screen:
+
 ```javascript
-import APITestScreen from './screens/APITestScreen';
+import APITestScreen from "./screens/APITestScreen";
 ```
 
 2. Add to your navigation or tab system:
+
 ```javascript
 // In your navigator
-<Tab.Screen 
-  name="APITests" 
-  component={APITestScreen} 
-  options={{ title: 'API Tests' }}
+<Tab.Screen
+  name="APITests"
+  component={APITestScreen}
+  options={{ title: "API Tests" }}
 />
 ```
 
@@ -68,23 +73,24 @@ import APITestScreen from './screens/APITestScreen';
 
 ### Core Endpoints Tested
 
-| Category | Endpoints | Priority |
-|----------|-----------|----------|
-| **Connection** | Basic connectivity | High |
-| **User Management** | List users, Login test | Medium |
-| **Category Management** | List categories, Get by ID | Medium |
-| **Food Information** | List foods, Get by ID, By category | Medium |
-| **Table Management** | List tables, Available tables, Get by ID | Medium |
-| **Order Management** | List orders, Get by ID, By table, By status | High |
+| Category                    | Endpoints                                     | Priority        |
+| --------------------------- | --------------------------------------------- | --------------- |
+| **Connection**              | Basic connectivity                            | High            |
+| **User Management**         | List users, Login test                        | Medium          |
+| **Category Management**     | List categories, Get by ID                    | Medium          |
+| **Food Information**        | List foods, Get by ID, By category            | Medium          |
+| **Table Management**        | List tables, Available tables, Get by ID      | Medium          |
+| **Order Management**        | List orders, Get by ID, By table, By status   | High            |
 | **Order Detail Management** | **List details, Specific order (HD16D450CE)** | **🔥 Critical** |
-| **Bill Management** | List bills, Get by ID, Bill details | Medium |
-| **Recipe & Ingredients** | List recipes, ingredients, recipe details | Low |
+| **Bill Management**         | List bills, Get by ID, Bill details           | Medium          |
+| **Recipe & Ingredients**    | List recipes, ingredients, recipe details     | Low             |
 
 ### 🎯 Status Field Testing Focus
 
 The test suite pays special attention to Order Detail endpoints:
 
 - **Bulk Order Details** (`GET /api/OrderDetail`)
+
   - ✅ Checks if status field is present
   - ✅ Validates status field values
   - ✅ Reports missing status fields
@@ -97,11 +103,13 @@ The test suite pays special attention to Order Detail endpoints:
 ## 🔧 Configuration Options
 
 ### API Endpoints
+
 - **Production**: `http://46.250.231.129:8080/api`
 - **Local**: `http://localhost:5181/api`
 - **Custom**: Configure your own endpoint
 
 ### Test Parameters
+
 - **Timeout**: 10 seconds (configurable)
 - **Retry Logic**: Built-in error handling
 - **Logging**: Detailed success/failure reporting
@@ -109,6 +117,7 @@ The test suite pays special attention to Order Detail endpoints:
 ## 📈 Understanding Results
 
 ### Status Field Analysis
+
 When testing Order Detail endpoints, the suite provides:
 
 ```javascript
@@ -120,12 +129,14 @@ When testing Order Detail endpoints, the suite provides:
 ```
 
 ### Test Result Status
+
 - **✅ PASSED**: Endpoint works correctly
 - **❌ FAILED**: Endpoint returned error
 - **⚠️ SKIPPED**: Test was skipped (no data available)
 - **🔄 RUNNING**: Test in progress
 
 ### Pass Rate Interpretation
+
 - **80%+**: Excellent - API is stable
 - **60-79%**: Good - Minor issues exist
 - **<60%**: Needs attention - Multiple endpoints failing
@@ -135,27 +146,35 @@ When testing Order Detail endpoints, the suite provides:
 ### Common Issues
 
 #### 1. Connection Refused
+
 ```
 Error: connect ECONNREFUSED
 ```
+
 **Solution**: Check if API server is running and accessible
 
 #### 2. CORS Errors (Browser)
+
 ```
 Access to fetch blocked by CORS policy
 ```
+
 **Solution**: Ensure API server allows cross-origin requests
 
 #### 3. Timeout Errors
+
 ```
 Error: timeout of 10000ms exceeded
 ```
+
 **Solution**: Increase timeout or check network connectivity
 
 #### 4. Missing Status Field
+
 ```
 hasStatusField: false
 ```
+
 **Solution**: Verify backend fix is deployed and status field is not NULL
 
 ### Debug Mode
@@ -196,7 +215,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: "16"
       - run: cd tests && npm install
       - run: cd tests && npm test
 ```
@@ -241,7 +260,14 @@ pipeline {
       "statusFieldInfo": {
         "hasStatusField": true,
         "statusValue": "Hoàn tất",
-        "allKeys": ["foodId", "foodName", "orderId", "quantity", "unitPrice", "status"]
+        "allKeys": [
+          "foodId",
+          "foodName",
+          "orderId",
+          "quantity",
+          "unitPrice",
+          "status"
+        ]
       }
     }
   ]
@@ -271,4 +297,4 @@ If tests fail consistently:
 
 **Happy Testing! 🎉**
 
-*This test suite was created to ensure the Restaurant Management System API is robust, reliable, and delivers the status field correctly for order management operations.*
+_This test suite was created to ensure the Restaurant Management System API is robust, reliable, and delivers the status field correctly for order management operations._
