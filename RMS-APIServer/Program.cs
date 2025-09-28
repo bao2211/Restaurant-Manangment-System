@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RMS_APIServer.Models;
+using RMS_APIServer.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,15 +17,27 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.MaxDepth = 32;
     });
 
-// Add CORS support
+// Add CORS support with more specific configuration
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
-        builder =>
+        policy =>
         {
-            builder.AllowAnyOrigin()
-                   .AllowAnyMethod()
-                   .AllowAnyHeader();
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .WithExposedHeaders("*"); // Expose all headers in response
+        });
+    
+    // Add a specific policy for development (more permissive)
+    options.AddPolicy("Development",
+        policy =>
+        {
+            policy.SetIsOriginAllowed(_ => true) // Allow any origin
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .AllowCredentials()
+                  .WithExposedHeaders("*");
         });
 });
 
@@ -34,6 +47,13 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Configure URLs for Docker deployment
+if (app.Environment.IsDevelopment() || Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true")
+{
+    app.Urls.Add("http://0.0.0.0:8080");
+    app.Urls.Add("https://0.0.0.0:8081");
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -41,10 +61,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Use custom CORS middleware first
+app.UseMiddleware<CorsMiddleware>();
+
+// Also use built-in CORS as backup
+app.UseCors(app.Environment.IsDevelopment() ? "Development" : "AllowAll");
+
 app.UseHttpsRedirection();
 
-// Use CORS
-app.UseCors("AllowAll");
+app.UseRouting();
 
 app.UseAuthorization();
 

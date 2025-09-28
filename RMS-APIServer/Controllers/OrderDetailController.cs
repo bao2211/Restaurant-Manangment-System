@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Cors;
 using RMS_APIServer.Models;
 
 namespace RMS_APIServer.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [EnableCors("AllowAll")] // Enable CORS for this controller
     public class OrderDetailController : ControllerBase
     {
         private readonly DBContext _context;
@@ -118,6 +120,13 @@ namespace RMS_APIServer.Controllers
             }
 
             return NoContent();
+        }
+
+        // OPTIONS: api/OrderDetail (Handle preflight requests)
+        [HttpOptions]
+        public IActionResult PreflightRoute()
+        {
+            return Ok();
         }
 
         // POST: api/OrderDetail

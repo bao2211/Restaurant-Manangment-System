@@ -29,6 +29,42 @@ const APITestScreen = () => {
 
   // Test endpoints configuration
   const TEST_ENDPOINTS = [
+    // CORS Tests (High Priority)
+    { 
+      group: 'CORS Tests', 
+      name: 'CORS GET Test', 
+      method: 'GET', 
+      endpoint: '/Test',
+      description: 'Test basic CORS with GET request',
+      priority: 'high'
+    },
+    { 
+      group: 'CORS Tests', 
+      name: 'CORS POST Test', 
+      method: 'POST', 
+      endpoint: '/Test',
+      body: { test: 'CORS Test Data', timestamp: new Date().toISOString() },
+      description: 'Test CORS preflight with POST request',
+      priority: 'high'
+    },
+    { 
+      group: 'CORS Tests', 
+      name: 'CORS Order Creation', 
+      method: 'POST', 
+      endpoint: '/Order',
+      body: {
+        orderId: 'HDCORSTEST',
+        status: 'Pending',
+        total: 1000,
+        note: 'CORS Test Order',
+        discount: 0,
+        tableId: '1',
+        userId: 'USER000001'
+      },
+      description: 'Test CORS with actual order creation',
+      priority: 'high'
+    },
+    
     // Connection Test
     { 
       group: 'Connection', 
@@ -230,6 +266,64 @@ const APITestScreen = () => {
     }
   };
 
+  // Run CORS tests only
+  const runCorsTestsOnly = async () => {
+    setIsTestingAll(true);
+    setTestResults([]);
+    setSummary({ total: 0, passed: 0, failed: 0, skipped: 0 });
+    
+    const corsTests = TEST_ENDPOINTS.filter(test => test.group === 'CORS Tests');
+    const results = [];
+    let passed = 0, failed = 0, skipped = 0;
+    
+    console.log('=== STARTING CORS-SPECIFIC TESTS ===');
+    
+    for (const testConfig of corsTests) {
+      console.log(`Running CORS test: ${testConfig.name}`);
+      const result = await runSingleTest(testConfig);
+      
+      const testResult = {
+        ...testConfig,
+        ...result,
+        timestamp: new Date().toLocaleTimeString()
+      };
+      
+      results.push(testResult);
+      
+      if (result.status === 'PASSED') {
+        console.log(`✅ ${testConfig.name} - PASSED`);
+        passed++;
+      } else if (result.status === 'FAILED') {
+        console.log(`❌ ${testConfig.name} - FAILED: ${result.error}`);
+        failed++;
+      } else {
+        skipped++;
+      }
+      
+      // Update state progressively
+      setTestResults([...results]);
+      setSummary({
+        total: results.length,
+        passed,
+        failed,
+        skipped
+      });
+    }
+    
+    console.log('=== CORS TESTS COMPLETED ===');
+    console.log(`Results: ${passed} passed, ${failed} failed, ${skipped} skipped`);
+    
+    // Show alert with CORS results
+    const corsStatus = failed === 0 ? 'CORS is working! ✅' : 'CORS is blocked! ❌';
+    Alert.alert(
+      'CORS Test Results',
+      `${corsStatus}\n\nPassed: ${passed}\nFailed: ${failed}\nSkipped: ${skipped}\n\nCheck console for detailed logs.`,
+      [{ text: 'OK' }]
+    );
+    
+    setIsTestingAll(false);
+  };
+
   // Run all tests
   const runAllTests = async () => {
     setIsTestingAll(true);
@@ -370,6 +464,15 @@ const APITestScreen = () => {
 
       {/* Controls */}
       <View style={styles.controlsSection}>
+        <TouchableOpacity 
+          style={[styles.button, styles.corsButton]} 
+          onPress={runCorsTestsOnly}
+          disabled={isTestingAll}
+        >
+          <MaterialCommunityIcons name="shield-check" size={20} color="#FFFFFF" />
+          <Text style={styles.buttonText}>Test CORS Only</Text>
+        </TouchableOpacity>
+        
         <TouchableOpacity 
           style={[styles.button, styles.primaryButton]} 
           onPress={runAllTests}
@@ -603,6 +706,10 @@ const styles = StyleSheet.create({
   },
   primaryButton: {
     backgroundColor: '#4CAF50',
+  },
+  corsButton: {
+    backgroundColor: '#FF5722',
+    marginBottom: 10,
   },
   buttonText: {
     color: '#FFFFFF',
