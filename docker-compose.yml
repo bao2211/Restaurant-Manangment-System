@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  rms-api:
+    image: bao2211/rms-api-server:latest
+    container_name: rms-api-server
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+    restart: unless-stopped
+    networks:
+      - rms-network
+
+networks:
+  rms-network:
+    driver: bridge
+
+# Optional: Add database service
+# services:
+#   sqlserver:
+#     image: mcr.microsoft.com/mssql/server:2022-latest
+#     environment:
+#       - ACCEPT_EULA=Y
+#       - SA_PASSWORD=YourStrong!Passw0rd
+#     ports:
+#       - "1433:1433"
+#     networks:
+#       - rms-network
