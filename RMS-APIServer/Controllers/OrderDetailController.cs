@@ -32,7 +32,7 @@ namespace RMS_APIServer.Controllers
                 orderId = od.OrderId,
                 quantity = od.Quantity,
                 unitPrice = od.UnitPrice ?? od.Food?.UnitPrice,
-                status = od.Status
+                status = !string.IsNullOrEmpty(od.Status) ? od.Status : "Chưa làm"
             }).ToList();
 
             return Ok(result);
@@ -56,7 +56,7 @@ namespace RMS_APIServer.Controllers
                 orderId = od.OrderId,
                 quantity = od.Quantity,
                 unitPrice = od.UnitPrice ?? od.Food?.UnitPrice,
-                status = od.Status
+                status = !string.IsNullOrEmpty(od.Status) ? od.Status : "Chưa làm"
             }).ToList();
 
             return Ok(result);
@@ -84,7 +84,7 @@ namespace RMS_APIServer.Controllers
                 orderId = orderDetail.OrderId,
                 quantity = orderDetail.Quantity,
                 unitPrice = orderDetail.UnitPrice ?? orderDetail.Food?.UnitPrice,
-                status = orderDetail.Status
+                status = !string.IsNullOrEmpty(orderDetail.Status) ? orderDetail.Status : "Chưa làm"
             };
 
             return Ok(result);
@@ -150,7 +150,7 @@ namespace RMS_APIServer.Controllers
                 orderId = orderDetail.OrderId,
                 quantity = orderDetail.Quantity,
                 unitPrice = orderDetail.UnitPrice,
-                status = orderDetail.Status
+                status = !string.IsNullOrEmpty(orderDetail.Status) ? orderDetail.Status : "Chưa làm"
             };
 
             return CreatedAtAction("GetOrderDetail", new { foodId = orderDetail.FoodId, orderId = orderDetail.OrderId }, createdResult);
@@ -184,6 +184,29 @@ namespace RMS_APIServer.Controllers
                 message = "Order detail deleted successfully.",
                 deletedOrderDetail = deletedOrderDetailInfo,
                 deletedAt = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss UTC")
+            });
+        }
+
+        // POST: api/OrderDetail/fix-null-statuses
+        [HttpPost("fix-null-statuses")]
+        public async Task<ActionResult> FixNullStatuses()
+        {
+            var orderDetailsWithNullStatus = await _context.OrderDetails
+                .Where(od => od.Status == null || od.Status == "")
+                .ToListAsync();
+
+            foreach (var orderDetail in orderDetailsWithNullStatus)
+            {
+                orderDetail.Status = "Chưa làm"; // Set default status
+            }
+
+            int updatedCount = await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = $"Updated {updatedCount} order details with null status",
+                updatedCount = updatedCount,
+                timestamp = DateTime.UtcNow
             });
         }
 
