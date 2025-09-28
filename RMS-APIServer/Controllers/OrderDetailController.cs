@@ -31,7 +31,8 @@ namespace RMS_APIServer.Controllers
                 foodName = od.Food?.FoodName,
                 orderId = od.OrderId,
                 quantity = od.Quantity,
-                unitPrice = od.Food?.UnitPrice
+                unitPrice = od.UnitPrice ?? od.Food?.UnitPrice,
+                status = od.Status
             }).ToList();
 
             return Ok(result);
@@ -54,7 +55,8 @@ namespace RMS_APIServer.Controllers
                 foodName = od.Food?.FoodName,
                 orderId = od.OrderId,
                 quantity = od.Quantity,
-                unitPrice = od.Food?.UnitPrice
+                unitPrice = od.UnitPrice ?? od.Food?.UnitPrice,
+                status = od.Status
             }).ToList();
 
             return Ok(result);
@@ -81,7 +83,8 @@ namespace RMS_APIServer.Controllers
                 foodName = orderDetail.Food?.FoodName,
                 orderId = orderDetail.OrderId,
                 quantity = orderDetail.Quantity,
-                unitPrice = orderDetail.Food?.UnitPrice
+                unitPrice = orderDetail.UnitPrice ?? orderDetail.Food?.UnitPrice,
+                status = orderDetail.Status
             };
 
             return Ok(result);
@@ -138,7 +141,19 @@ namespace RMS_APIServer.Controllers
                 }
             }
 
-            return CreatedAtAction("GetOrderDetail", new { foodId = orderDetail.FoodId, orderId = orderDetail.OrderId }, orderDetail);
+            await _context.Entry(orderDetail).Reference(od => od.Food).LoadAsync();
+
+            var createdResult = new
+            {
+                foodId = orderDetail.FoodId,
+                foodName = orderDetail.Food?.FoodName,
+                orderId = orderDetail.OrderId,
+                quantity = orderDetail.Quantity,
+                unitPrice = orderDetail.UnitPrice,
+                status = orderDetail.Status
+            };
+
+            return CreatedAtAction("GetOrderDetail", new { foodId = orderDetail.FoodId, orderId = orderDetail.OrderId }, createdResult);
         }
 
         // DELETE: api/OrderDetail/food/5/order/10
