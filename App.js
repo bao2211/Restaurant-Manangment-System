@@ -29,6 +29,10 @@ import ReportScreen from './screens/ReportScreen';
 import MenuManagerScreen from './screens/MenuManagerScreen';
 import OrderDetailManagerScreen from './screens/OrderDetailManagerScreen';
 
+import UpdateInformationScreen from "./screens/UpdateInformationScreen";
+import ChangePasswordScreen from "./screens/ChangePasswordScreen";
+import RegisterScreen from "./screens/RegisterScreen";
+
 const Stack = createStackNavigator();
 const { width: screenWidth } = Dimensions.get('window');
 const SIDEBAR_WIDTH = screenWidth * 0.3;
@@ -45,6 +49,21 @@ function ProfileStack() {
         name="Login"
         component={LoginScreen}
         options={{ headerTitle: "Profile" }}
+      />
+      <Stack.Screen
+        name="Register"
+        component={RegisterScreen}
+        options={{ headerTitle: "Register" }}
+      />
+      <Stack.Screen
+        name="UpdateInformation"
+        component={UpdateInformationScreen}
+        options={{ headerTitle: "Update Information" }}
+      />
+      <Stack.Screen
+        name="ChangePassword"
+        component={ChangePasswordScreen}
+        options={{ headerTitle: "Change Password" }}
       />
     </Stack.Navigator>
   );

@@ -124,7 +124,7 @@ http://localhost:8080/api
 {
   "userId": "1",
   "userName": "admin",
-  "password": "newpassword123",
+  //"password": "newpassword123",
   "role": "Admin",
   "fullName": "Administrator",
   "email": "admin@restaurant.com"

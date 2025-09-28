@@ -2,17 +2,17 @@ import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, Platform, ScrollView, Image, KeyboardAvoidingView } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AuthContext } from '../context/AuthContext';
-import { apiService } from '../services/apiService';
 
-export default function LoginScreen({ navigation }) {
+export default function RegisterScreen({ navigation }) {
+  const [fullName, setFullName] = useState('');
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [debugMode, setDebugMode] = useState(false); // Toggle for debug mode
-  const { login, loading } = useContext(AuthContext);
+  const { register, loading } = useContext(AuthContext); // Use register and loading from AuthContext
 
-  const handleLogin = async () => {
-    if (!username || !password) {
+  const handleRegister = async () => {
+    if (!fullName || !username || !email || !password) {
       if (Platform.OS === "web") {
         alert("Vui lòng nhập đầy đủ thông tin");
       } else {
@@ -21,46 +21,41 @@ export default function LoginScreen({ navigation }) {
       return;
     }
 
-
-    // DEBUG MODE: Test different login formats if debug is enabled
-    if (debugMode) {
-      console.log('=== DEBUGGING LOGIN FORMATS ===');
-      try {
-        const debugResult = await apiService.testLoginFormats(username, password);
-        console.log('Debug login result:', debugResult);
-        
-        if (debugResult.success) {
-          console.log(`Working format found: Format ${debugResult.format}`);
-          Alert.alert('Debug Info', `Working format found: Format ${debugResult.format}`);
-        } else {
-          Alert.alert('Debug Info', 'No working format found');
-          return; // Don't proceed if debug mode and no format works
-        }
-      } catch (debugError) {
-        console.log('Debug test failed:', debugError);
-        Alert.alert('Debug Error', debugError.message);
-        return;
-      }
+    // Simple email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      Alert.alert("Lỗi", "Email không hợp lệ");
+      return;
     }
 
     try {
-      await login(username, password);
+      const registerData = {
+        username,
+        password,
+        fullName,
+        email,
+      };
+
+      await register(registerData); // Call register from AuthContext
+
       if (Platform.OS === "web") {
-        alert("Đăng nhập thành công!");
+        alert("Đăng ký và đăng nhập thành công!");
       } else {
-        Alert.alert("Thành công", "Đăng nhập thành công!");
+        Alert.alert("Thành công", "Đăng ký và đăng nhập thành công!");
       }
-      // Navigate to Home screen 
+      
+      // Navigate to Home screen
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Home', state: { routes: [{ name: 'Profile' }] } }],
+        routes: [{ name: 'Home' }],
       });
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Register error:', error);
+      const errorMessage = error.message || "Đăng ký thất bại. Vui lòng thử lại.";
       if (Platform.OS === "web") {
-        alert(error.message);
+        alert(errorMessage);
       } else {
-        Alert.alert("Lỗi", error.message);
+        Alert.alert("Lỗi", errorMessage);
       }
     }
   };
@@ -79,19 +74,30 @@ export default function LoginScreen({ navigation }) {
             resizeMode="contain"
           />
           <Text style={styles.appTitle}>Restaurant Management</Text>
-          <Text style={styles.appSubtitle}>Sign in to continue</Text>
+          <Text style={styles.appSubtitle}>Sign up to get started</Text>
         </View>
 
-        {/* Login Form Section */}
+        {/* Register Form Section */}
         <View style={styles.formSection}>
-          <View style={styles.loginCard}>
+          <View style={styles.registerCard}>
             <View style={styles.cardHeader}>
-              <MaterialCommunityIcons name="account-circle" size={60} color="#FF6B35" />
-              <Text style={styles.loginTitle}>Welcome Back!</Text>
-              <Text style={styles.loginSubtitle}>Please sign in to your account</Text>
+              <MaterialCommunityIcons name="account-plus" size={60} color="#FF6B35" />
+              <Text style={styles.registerTitle}>Create Account</Text>
+              <Text style={styles.registerSubtitle}>Please fill in your details</Text>
             </View>
 
             <View style={styles.inputContainer}>
+              <View style={styles.inputWrapper}>
+                <MaterialCommunityIcons name="account-box" size={20} color="#7F8C8D" style={styles.inputIcon} />
+                <TextInput
+                  placeholder="Full Name"
+                  style={styles.input}
+                  value={fullName}
+                  onChangeText={setFullName}
+                  placeholderTextColor="#BDC3C7"
+                />
+              </View>
+
               <View style={styles.inputWrapper}>
                 <MaterialCommunityIcons name="account" size={20} color="#7F8C8D" style={styles.inputIcon} />
                 <TextInput
@@ -99,6 +105,19 @@ export default function LoginScreen({ navigation }) {
                   style={styles.input}
                   value={username}
                   onChangeText={setUsername}
+                  autoCapitalize="none"
+                  placeholderTextColor="#BDC3C7"
+                />
+              </View>
+
+              <View style={styles.inputWrapper}>
+                <MaterialCommunityIcons name="email" size={20} color="#7F8C8D" style={styles.inputIcon} />
+                <TextInput
+                  placeholder="Email"
+                  style={styles.input}
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
                   autoCapitalize="none"
                   placeholderTextColor="#BDC3C7"
                 />
@@ -127,30 +146,15 @@ export default function LoginScreen({ navigation }) {
               </View>
             </View>
 
-            {/* Debug Mode Toggle 
-            <TouchableOpacity 
-              style={styles.debugToggle}
-              onPress={() => setDebugMode(!debugMode)}
-            >
-              <MaterialCommunityIcons 
-                name={debugMode ? "bug" : "bug-outline"} 
-                size={16} 
-                color={debugMode ? "#FF6B35" : "#BDC3C7"} 
-              />
-              <Text style={[styles.debugText, debugMode && styles.debugActive]}>
-                Debug Mode {debugMode ? 'ON' : 'OFF'}
-              </Text>
-            </TouchableOpacity>*/}
-
             {loading ? (
               <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color="#FF6B35" />
-                <Text style={styles.loadingText}>Signing in...</Text>
+                <Text style={styles.loadingText}>Registering...</Text>
               </View>
             ) : (
-              <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-                <MaterialCommunityIcons name="login" size={20} color="white" style={styles.buttonIcon} />
-                <Text style={styles.loginButtonText}>Sign In</Text>
+              <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+                <MaterialCommunityIcons name="account-plus" size={20} color="white" style={styles.buttonIcon} />
+                <Text style={styles.registerButtonText}>Sign Up</Text>
               </TouchableOpacity>
             )}
 
@@ -161,11 +165,11 @@ export default function LoginScreen({ navigation }) {
             </View>
 
             <TouchableOpacity 
-              style={styles.guestButton} 
-              onPress={() => navigation.navigate('Home')}
+              style={styles.loginButton} 
+              onPress={() => navigation.navigate('Login')}
             >
-              <MaterialCommunityIcons name="account-question" size={20} color="#34495E" />
-              <Text style={styles.guestButtonText}>Continue as Guest</Text>
+              <MaterialCommunityIcons name="login" size={20} color="#34495E" />
+              <Text style={styles.loginButtonText}>Sign In</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -173,7 +177,7 @@ export default function LoginScreen({ navigation }) {
         {/* Footer Section */}
         <View style={styles.footerSection}>
           <Text style={styles.footerText}>
-            Don't have an account? Contact your administrator
+            Already have an account? Sign in
           </Text>
         </View>
       </ScrollView>
@@ -222,7 +226,7 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: 'center',
   },
-  loginCard: {
+  registerCard: {
     backgroundColor: 'white',
     borderRadius: 25,
     padding: 30,
@@ -236,14 +240,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 30,
   },
-  loginTitle: {
+  registerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#2C3E50',
     marginTop: 15,
     marginBottom: 5,
   },
-  loginSubtitle: {
+  registerSubtitle: {
     fontSize: 16,
     color: '#7F8C8D',
     textAlign: 'center',
@@ -275,27 +279,8 @@ const styles = StyleSheet.create({
   eyeIcon: {
     padding: 5,
   },
-  // Debug Toggle Styles
-  debugToggle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 15,
-    padding: 8,
-    borderRadius: 20,
-    backgroundColor: '#F8F9FA',
-  },
-  debugText: {
-    marginLeft: 5,
-    fontSize: 12,
-    color: '#BDC3C7',
-  },
-  debugActive: {
-    color: '#FF6B35',
-    fontWeight: 'bold',
-  },
   // Button Styles
-  loginButton: {
+  registerButton: {
     backgroundColor: '#FF6B35',
     paddingVertical: 18,
     borderRadius: 15,
@@ -309,7 +294,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     marginBottom: 20,
   },
-  loginButtonText: {
+  registerButtonText: {
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
@@ -344,8 +329,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#7F8C8D',
   },
-  // Guest Button Styles
-  guestButton: {
+  // Login Button Styles
+  loginButton: {
     backgroundColor: '#ECF0F1',
     paddingVertical: 15,
     borderRadius: 15,
@@ -355,7 +340,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#BDC3C7',
   },
-  guestButtonText: {
+  loginButtonText: {
     color: '#34495E',
     fontSize: 16,
     fontWeight: '600',

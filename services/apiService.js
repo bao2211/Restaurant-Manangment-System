@@ -664,7 +664,267 @@ export const apiService = {
       throw error;
     }
   },
+
+  // Thêm vào apiService object các methods mới:
+
+// Function updateUser để gọi PUT /api/User/{id} - General update
+updateUser: async (userId, updatedData) => {
+  try {
+    console.log('Updating user:', userId, 'with data:', updatedData);
+    const response = await api.put(`/api/User/${userId}`, {
+      ...updatedData, 
+      userId, // Đảm bảo gửi userId trong body nếu API yêu cầu
+    });
+    console.log('Update user response status:', response.status);
+    console.log('Update user response data:', response.data); 
+    
+    // Vì API chỉ trả về message thành công, fetch lại user để có data đầy đủ
+    const updatedUser = await apiService.getUserById(userId); 
+    return updatedUser; 
+  } catch (error) {
+    console.error('Error updating user - Full error:', error);
+    console.error('Error response:', error.response?.data);
+    console.error('Error status:', error.response?.status);
+    
+    // Enhanced error handling 
+    if (error.response?.status === 400) {
+      // Try to extract specific validation errors
+      const errorData = error.response.data;
+      if (errorData && errorData.errors) {
+        const errorMessages = Object.values(errorData.errors).flat();
+        throw new Error(errorMessages.join(', '));
+      }
+      throw new Error('Dữ liệu không hợp lệ. Vui lòng kiểm tra các trường.');
+    } else if (error.response?.status === 404) {
+      throw new Error('User không tồn tại.');
+    } else if (error.response?.status === 409) {
+      throw new Error('Tên đăng nhập hoặc email đã tồn tại.');
+    } else if (error.response?.status === 500) {
+      throw new Error('Lỗi server. Vui lòng thử lại sau.');
+    } else if (error.message.includes('Network Error')) {
+      throw new Error('Không kết nối được server. Kiểm tra mạng.');
+    } else {
+      throw new Error(error.response?.data?.message || 'Cập nhật user thất bại.');
+    }
+  }
+},
+
+// Function updateUserInfo - Chỉ cập nhật thông tin cá nhân (không đổi password)
+updateUserInfo: async (userId, userInfo) => {
+  try {
+    console.log('Updating user info only for userId:', userId);
+    
+    // Lấy thông tin user hiện tại để giữ nguyên password
+    const currentUser = await apiService.getUserById(userId);
+    if (!currentUser) {
+      throw new Error('Không tìm thấy thông tin user hiện tại');
+    }
+
+    // Merge với thông tin mới nhưng giữ nguyên password
+    const updateData = {
+      userId: userId,
+      userName: userInfo.userName || currentUser.userName,
+      password: currentUser.password, // Giữ nguyên password cũ
+      role: currentUser.role,
+      right: currentUser.right,
+      fullName: userInfo.fullName || currentUser.fullName,
+      phone: userInfo.phone || currentUser.phone,
+      email: userInfo.email || currentUser.email,
+    };
+
+    console.log('Sending user info update data:', { ...updateData, password: '[HIDDEN]' });
+
+    // Gọi API update
+    return await apiService.updateUser(userId, updateData);
+  } catch (error) {
+    console.error('Error updating user info:', error);
+    throw error;
+  }
+},
+
+// Function updateUserPassword - Chỉ cập nhật mật khẩu
+updateUserPassword: async (userId, passwordData) => {
+  try {
+    console.log('Updating password for userId:', userId);
+    
+    // Lấy thông tin user hiện tại để giữ nguyên các field khác
+    const currentUser = await apiService.getUserById(userId);
+    if (!currentUser) {
+      throw new Error('Không tìm thấy thông tin user hiện tại');
+    }
+
+    // Verify old password (nếu có)
+    if (passwordData.oldPassword && currentUser.password !== passwordData.oldPassword) {
+      throw new Error('Mật khẩu cũ không đúng');
+    }
+
+    // Tạo data update với mật khẩu mới
+    const updateData = {
+      userId: userId,
+      userName: currentUser.userName,
+      password: passwordData.newPassword, // Mật khẩu mới
+      role: currentUser.role,
+      right: currentUser.right,
+      fullName: currentUser.fullName,
+      //phone: currentUser.phone,
+      phone: Number(currentUser.phone),
+      email: currentUser.email,
+    };
+
+    console.log('Sending password update data:', { ...updateData, password: '[HIDDEN]' });
+
+    // Gọi API update
+    return await apiService.updateUser(userId, updateData);
+  } catch (error) {
+    console.error('Error updating password:', error);
+    throw error;
+  }
+},
+// Thêm function này vào apiService.js để test different user update formats
+
+testUserUpdateFormats: async (userId, userData) => {
+  console.log('=== TESTING USER UPDATE FORMATS ===');
+  console.log('User ID:', userId);
+  console.log('User Data:', userData);
+
+  const cleanUserId = userId.toString().trim();
+  
+  // Test different data formats
+  const formats = [
+    // Format 1: Full data với tất cả fields
+    {
+      userId: cleanUserId,
+      userName: userData.userName,
+      password: userData.password,
+      role: userData.role,
+      right: userData.right,
+      fullName: userData.fullName,
+      phone: userData.phone,
+      email: userData.email,
+    },
+    // Format 2: Không có field 'right'
+    {
+      userId: cleanUserId,
+      userName: userData.userName,
+      password: userData.password,
+      role: userData.role,
+      fullName: userData.fullName,
+      phone: userData.phone,
+      email: userData.email,
+    },
+    // Format 3: Chỉ fields bắt buộc theo API doc
+    {
+      userId: cleanUserId,
+      userName: userData.userName,
+      password: userData.password,
+      role: userData.role,
+      fullName: userData.fullName,
+      email: userData.email,
+    },
+    // Format 4: Minimal format
+    {
+      userName: userData.userName,
+      password: userData.password,
+      role: userData.role,
+      fullName: userData.fullName,
+      email: userData.email,
+    },
+  ];
+
+  for (let i = 0; i < formats.length; i++) {
+    try {
+      console.log(`\n=== Testing Format ${i + 1} ===`);
+      console.log('Data being sent:', formats[i]);
+      
+      const response = await api.put(`/api/User/${cleanUserId}`, formats[i]);
+      console.log(`Format ${i + 1} SUCCESS:`, response.status, response.data);
+      
+      return { 
+        success: true, 
+        format: i + 1, 
+        data: response.data,
+        formatUsed: formats[i] 
+      };
+    } catch (error) {
+      console.log(`Format ${i + 1} FAILED:`, error.response?.status);
+      console.log('Error data:', error.response?.data);
+      console.log('Error details:', error.message);
+    }
+  }
+  
+  return { success: false, message: 'All formats failed' };
+},
+
+// Test what fields are actually required
+testRequiredFields: async (userId, userData) => {
+  console.log('=== TESTING REQUIRED FIELDS ===');
+  
+  const cleanUserId = userId.toString().trim();
+  
+  // Test với từng field một để xem field nào bắt buộc
+  const fieldTests = [
+    // Test 1: Chỉ userName + password
+    {
+      userName: userData.userName,
+      password: userData.password,
+    },
+    // Test 2: Thêm role
+    {
+      userName: userData.userName,
+      password: userData.password,
+      role: userData.role,
+    },
+    // Test 3: Thêm fullName
+    {
+      userName: userData.userName,
+      password: userData.password,
+      role: userData.role,
+      fullName: userData.fullName,
+    },
+    // Test 4: Thêm email
+    {
+      userName: userData.userName,
+      password: userData.password,
+      role: userData.role,
+      fullName: userData.fullName,
+      email: userData.email,
+    },
+  ];
+
+  const results = [];
+  
+  for (let i = 0; i < fieldTests.length; i++) {
+    try {
+      console.log(`\n=== Testing Required Fields Set ${i + 1} ===`);
+      console.log('Fields being tested:', Object.keys(fieldTests[i]));
+      
+      const response = await api.put(`/api/User/${cleanUserId}`, fieldTests[i]);
+      console.log(`Field test ${i + 1} SUCCESS:`, response.status);
+      
+      results.push({
+        success: true,
+        fields: Object.keys(fieldTests[i]),
+        status: response.status
+      });
+      
+    } catch (error) {
+      console.log(`Field test ${i + 1} FAILED:`, error.response?.status);
+      console.log('Error:', error.response?.data);
+      
+      results.push({
+        success: false,
+        fields: Object.keys(fieldTests[i]),
+        error: error.response?.status,
+        errorData: error.response?.data
+      });
+    }
+  }
+  
+  return results;
+}
 };
+
+
 
 // Helper function to generate category icons based on category name
 export const getCategoryIcon = (categoryName) => {
