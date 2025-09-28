@@ -17,9 +17,9 @@ namespace RMS_APIServer.Middleware
             // Add comprehensive CORS headers to all responses
             context.Response.Headers["Access-Control-Allow-Origin"] = "*";
             context.Response.Headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH";
-            context.Response.Headers["Access-Control-Allow-Headers"] = 
+            context.Response.Headers["Access-Control-Allow-Headers"] =
                 "Content-Type, Authorization, X-Requested-With, Accept, Origin, Cache-Control, X-File-Name";
-            context.Response.Headers["Access-Control-Expose-Headers"] = 
+            context.Response.Headers["Access-Control-Expose-Headers"] =
                 "Content-Length, Content-Range, Content-Type";
             context.Response.Headers["Access-Control-Max-Age"] = "86400"; // 24 hours
             context.Response.Headers["Access-Control-Allow-Credentials"] = "false";

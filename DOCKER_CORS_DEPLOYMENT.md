@@ -11,13 +11,14 @@ The Restaurant Management System API Server has been updated with comprehensive 
 ## 🔧 CORS Fixes Applied
 
 ### 1. Enhanced CORS Middleware (`CorsMiddleware.cs`)
+
 ```csharp
 // Comprehensive CORS headers
 context.Response.Headers["Access-Control-Allow-Origin"] = "*";
 context.Response.Headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH";
-context.Response.Headers["Access-Control-Allow-Headers"] = 
+context.Response.Headers["Access-Control-Allow-Headers"] =
     "Content-Type, Authorization, X-Requested-With, Accept, Origin, Cache-Control, X-File-Name";
-context.Response.Headers["Access-Control-Expose-Headers"] = 
+context.Response.Headers["Access-Control-Expose-Headers"] =
     "Content-Length, Content-Range, Content-Type";
 context.Response.Headers["Access-Control-Max-Age"] = "86400";
 context.Response.Headers["Access-Control-Allow-Credentials"] = "false";
@@ -32,6 +33,7 @@ if (context.Request.Method.Equals("OPTIONS", StringComparison.OrdinalIgnoreCase)
 ```
 
 ### 2. Fixed Built-in CORS Policy (`Program.cs`)
+
 ```csharp
 builder.Services.AddCors(options =>
 {
@@ -57,6 +59,7 @@ builder.Services.AddCors(options =>
 ## 🚀 Deployment Instructions
 
 ### Option 1: Docker Run Command
+
 ```bash
 # Run the CORS-fixed version
 docker run -d \
@@ -68,8 +71,9 @@ docker run -d \
 ```
 
 ### Option 2: Docker Compose
+
 ```yaml
-version: '3.8'
+version: "3.8"
 services:
   rms-api:
     image: bao2211/rms-api-server:cors-fixed
@@ -83,6 +87,7 @@ services:
 ```
 
 ### Option 3: Update Existing Deployment
+
 ```bash
 # Stop current container
 docker stop rms-api-server
@@ -102,6 +107,7 @@ docker run -d \
 ## 🌐 CORS Issues Resolved
 
 ✅ **Fixed Issues:**
+
 - Cross-Origin Request Blocked errors from React Native web
 - Missing `Access-Control-Allow-Headers` in preflight responses
 - Incorrect OPTIONS request handling (now returns 204 instead of 200)
@@ -109,6 +115,7 @@ docker run -d \
 - Improper header setting that could cause duplicate key exceptions
 
 ✅ **Now Supports:**
+
 - All major browsers (Chrome, Firefox, Safari, Edge)
 - React Native web applications
 - Expo web development
@@ -121,10 +128,10 @@ To use the updated server, update your `services/apiService.js`:
 
 ```javascript
 // For remote deployment
-const API_BASE_URL = 'http://46.250.231.129:8080/';
+const API_BASE_URL = "http://46.250.231.129:8080/";
 
-// For local testing  
-const API_BASE_URL = 'http://localhost:8080/';
+// For local testing
+const API_BASE_URL = "http://localhost:8080/";
 ```
 
 ## 🔍 Testing CORS Configuration
