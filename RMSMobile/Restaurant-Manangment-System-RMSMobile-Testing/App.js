@@ -11,7 +11,8 @@ import {
   Modal, 
   Animated, 
   Dimensions,
-  TouchableWithoutFeedback 
+  TouchableWithoutFeedback,
+  ScrollView 
 } from "react-native";
 
 // screens
@@ -222,7 +223,11 @@ function CustomSidebarMenu({ visible, onClose }) {
                 <Text style={styles.sidebarHeaderSubtitle}>Restaurant Management</Text>
               </View>
               
-              <View style={styles.sidebarItems}>
+              <ScrollView 
+                style={styles.sidebarItems}
+                showsVerticalScrollIndicator={true}
+                contentContainerStyle={styles.sidebarItemsContent}
+              >
                 <Text style={styles.sectionTitle}>Main Menu</Text>
                 {menuItems.map((item) => (
                   <TouchableOpacity 
@@ -248,7 +253,7 @@ function CustomSidebarMenu({ visible, onClose }) {
                     <MaterialCommunityIcons name="chevron-right" size={20} color="#BDC3C7" />
                   </TouchableOpacity>
                 ))}
-              </View>
+              </ScrollView>
 
               <View style={styles.sidebarFooter}>
                 <TouchableOpacity 
@@ -304,7 +309,10 @@ const styles = StyleSheet.create({
   },
   sidebarItems: {
     flex: 1,
+  },
+  sidebarItemsContent: {
     paddingTop: 20,
+    paddingBottom: 20,
   },
   sectionTitle: {
     fontSize: 14,
