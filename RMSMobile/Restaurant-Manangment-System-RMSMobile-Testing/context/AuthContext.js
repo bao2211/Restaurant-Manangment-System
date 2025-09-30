@@ -110,6 +110,64 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Complete user profile update function with API call
+  const updateUserProfile = async (profileData) => {
+    setLoading(true);
+    try {
+      if (!user || !user.userId) {
+        throw new Error('User không tồn tại hoặc chưa login');
+      }
+
+      const cleanUserId = user.userId.toString().trim();
+      console.log('AuthContext - Updating profile for userId:', `"${cleanUserId}"`);
+      
+      // Get current user data from API to preserve existing values
+      const currentUserData = await apiService.getUserById(cleanUserId);
+      console.log('Current user data from API:', currentUserData);
+      
+      // Build complete update data with all required fields
+      const updateData = {
+        UserId: cleanUserId,
+        UserName: profileData.userName || currentUserData.UserName || user.userName,
+        Password: currentUserData.Password || currentUserData.password, // Keep existing password
+        Role: currentUserData.Role || currentUserData.role || user.role || 'Staff',
+        FullName: profileData.fullName || currentUserData.FullName || user.fullName,
+        Phone: profileData.phone || currentUserData.Phone || user.phone || '0',
+        Email: profileData.email || currentUserData.Email || user.email || `${user.userName}@restaurant.com`,
+        Right: currentUserData.Right || currentUserData.right || user.right || 'USER',
+      };
+
+      console.log('Sending profile update data:', { ...updateData, Password: '[HIDDEN]' });
+
+      // Update user via API
+      await apiService.updateUser(cleanUserId, updateData);
+
+      // Create updated user object for context (without password)
+      const updatedUser = {
+        ...user,
+        fullName: updateData.FullName,
+        FullName: updateData.FullName,
+        email: updateData.Email,
+        Email: updateData.Email,
+        phone: updateData.Phone,
+        Phone: updateData.Phone,
+        userName: updateData.UserName,
+        UserName: updateData.UserName,
+      };
+      
+      setUser(updatedUser);
+      await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
+      
+      console.log('Profile updated successfully');
+      return updatedUser;
+    } catch (error) {
+      console.error('Profile update error:', error);
+      throw new Error(error?.message || 'Cập nhật thông tin thất bại');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AuthContext.Provider value={{ 
       user, 
@@ -117,6 +175,7 @@ export const AuthProvider = ({ children }) => {
       logout, 
       updateUserPassword, 
       updateUserInfo, 
+      updateUserProfile, 
       loading 
     }}>
       {children}
