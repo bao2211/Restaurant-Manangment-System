@@ -22,9 +22,12 @@ import OrdersScreen from "./screens/OrdersScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import LoginScreen from "./screens/LoginScreen";
 import ChangePasswordScreen from "./screens/ChangePasswordScreen";
+import UpdateInformationScreen from "./screens/UpdateInformationScreen";
+import RegisterScreen from "./screens/RegisterScreen";
 
 // context
 import { AuthProvider } from "./context/AuthContext";
+import { ToastProvider } from "./context/ToastContext";
 import TableScreen from './screens/TableScreen';
 import BillScreen from './screens/BillScreen';
 import ReportScreen from './screens/ReportScreen';
@@ -47,6 +50,16 @@ function ProfileStack() {
         name="Login"
         component={LoginScreen}
         options={{ headerTitle: "Profile" }}
+      />
+      <Stack.Screen
+        name="Register"
+        component={RegisterScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="UpdateInformation"
+        component={UpdateInformationScreen}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
@@ -144,9 +157,19 @@ function MainAppStack({ openSidebar }) {
         options={{ headerTitle: "Profile" }}
       />
       <Stack.Screen
+        name="Register"
+        component={RegisterScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
         name="ChangePassword"
         component={ChangePasswordScreen}
         options={{ headerTitle: "Change Password" }}
+      />
+      <Stack.Screen
+        name="UpdateInformation"
+        component={UpdateInformationScreen}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
@@ -382,10 +405,12 @@ function AppContainer() {
 export default function App() {
   return (
     <AuthProvider>
-      <NavigationContainer>
-        <StatusBar style="auto" />
-        <AppContainer />
-      </NavigationContainer>
+      <ToastProvider>
+        <NavigationContainer>
+          <StatusBar style="auto" />
+          <AppContainer />
+        </NavigationContainer>
+      </ToastProvider>
     </AuthProvider>
   );
 }

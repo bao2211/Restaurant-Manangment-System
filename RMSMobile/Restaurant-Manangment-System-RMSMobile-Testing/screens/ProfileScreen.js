@@ -3,9 +3,11 @@ import React, { useContext, useCallback, useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { AuthContext } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 
 export default function ProfileScreen({ navigation }) {
   const { user, logout } = useContext(AuthContext);
+  const { showInfo } = useToast();
   const [currentUser, setCurrentUser] = useState(user);
 
   // Update user state whenever the context changes
@@ -48,7 +50,16 @@ export default function ProfileScreen({ navigation }) {
               <Text style={styles.loginButtonText}>Log In</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.registerButton} onPress={() => navigation.navigate('Register')}>
+            <TouchableOpacity 
+              style={styles.registerButton} 
+              onPress={() => {
+                showInfo('Tạo tài khoản mới để trải nghiệm đầy đủ tính năng của ứng dụng', {
+                  title: '✨ Tạo tài khoản mới',
+                  duration: 3000
+                });
+                navigation.navigate('Register');
+              }}
+            >
               <MaterialCommunityIcons name="account-plus" size={20} color="#FF6B35" style={styles.buttonIcon} />
               <Text style={styles.registerButtonText}>Register</Text>
             </TouchableOpacity>
@@ -60,7 +71,19 @@ export default function ProfileScreen({ navigation }) {
 
   const profileMenuItems = [
     { id: 1, title: 'My Orders', icon: 'clipboard-list', action: () => navigation.navigate('Orders'), color: '#4CAF50' },
-    { id: 2, title: 'Update Information', icon: 'account-edit', action: () => navigation.navigate('UpdateInformation'), color: '#3498DB' },
+    { 
+      id: 2, 
+      title: 'Update Information', 
+      icon: 'account-edit', 
+      action: () => {
+        showInfo('Bạn có thể cập nhật thông tin cá nhân tại đây', {
+          title: 'ℹ️ Cập nhật thông tin',
+          duration: 3000
+        });
+        navigation.navigate('UpdateInformation');
+      }, 
+      color: '#3498DB' 
+    },
     { id: 3, title: 'Change Password', icon: 'lock-reset', action: () => navigation.navigate('ChangePassword'), color: '#fccb72ff' },
     
     //{ id: 4, title: 'Order History', icon: 'history', action: () => navigation.navigate('OrderHistory'), color: '#2196F3' },
@@ -124,6 +147,24 @@ export default function ProfileScreen({ navigation }) {
             </TouchableOpacity>
           ))}
         </View>
+      </View>
+
+      {/* Additional Account Management */}
+      <View style={styles.additionalSection}>
+        <Text style={styles.sectionTitle}>Quản lý tài khoản</Text>
+        <TouchableOpacity 
+          style={styles.createAccountButton}
+          onPress={() => {
+            showInfo('Tạo tài khoản mới cho nhân viên hoặc thành viên khác', {
+              title: '👥 Tạo tài khoản mới',
+              duration: 3000
+            });
+            navigation.navigate('Register');
+          }}
+        >
+          <MaterialCommunityIcons name="account-plus" size={24} color="white" />
+          <Text style={styles.createAccountButtonText}>Tạo tài khoản mới</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Logout Section */}
@@ -309,6 +350,32 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#2C3E50',
     marginBottom: 15,
+  },
+  // Additional Section Styles
+  additionalSection: {
+    padding: 20,
+    paddingTop: 0,
+  },
+  createAccountButton: {
+    backgroundColor: '#9B59B6',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    marginBottom: 15,
+  },
+  createAccountButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 10,
   },
   menuList: {
     flexDirection: 'column',
