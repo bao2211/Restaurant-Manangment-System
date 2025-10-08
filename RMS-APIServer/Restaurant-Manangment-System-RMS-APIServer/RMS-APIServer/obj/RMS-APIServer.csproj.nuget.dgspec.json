@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Admin\\Desktop\\New folder\\Restaurant-Manangment-System-RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj": {}
+    "D:\\Study\\TLDH\\Nam 3 - HK1\\CNPMNC\\RMS - Project\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Admin\\Desktop\\New folder\\Restaurant-Manangment-System-RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj": {
+    "D:\\Study\\TLDH\\Nam 3 - HK1\\CNPMNC\\RMS - Project\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Admin\\Desktop\\New folder\\Restaurant-Manangment-System-RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj",
+        "projectUniqueName": "D:\\Study\\TLDH\\Nam 3 - HK1\\CNPMNC\\RMS - Project\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj",
         "projectName": "RMS-APIServer",
-        "projectPath": "C:\\Users\\Admin\\Desktop\\New folder\\Restaurant-Manangment-System-RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj",
-        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Admin\\Desktop\\New folder\\Restaurant-Manangment-System-RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\obj\\",
+        "projectPath": "D:\\Study\\TLDH\\Nam 3 - HK1\\CNPMNC\\RMS - Project\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj",
+        "packagesPath": "C:\\Users\\lengo\\.nuget\\packages\\",
+        "outputPath": "D:\\Study\\TLDH\\Nam 3 - HK1\\CNPMNC\\RMS - Project\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\lengo\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -44,8 +40,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "9.0.300"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -89,7 +84,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
