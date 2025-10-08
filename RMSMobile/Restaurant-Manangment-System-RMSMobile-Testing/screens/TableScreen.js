@@ -182,6 +182,19 @@ export default function TableScreen({ navigation }) {
     fetchTables();
   }, []);
 
+  // Auto-refresh table status when screen gets focus (user returns from other screens)
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      console.log('TableScreen focused - refreshing table status');
+      // Only refresh status if we already have tables loaded
+      if (tables.length > 0) {
+        refreshTableStatus();
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation, tables]);
+
   // Debug effect to track state changes
   useEffect(() => {
     console.log('=== STATE CHANGE ===');
@@ -189,6 +202,93 @@ export default function TableScreen({ navigation }) {
     console.log('Tables length:', tables.length);
     console.log('Tables:', tables.map(t => ({ id: t.tableId, name: t.tableName })));
   }, [loading, tables]);
+
+  // Function to update table status based on existing orders
+  const updateTableStatusBasedOnOrders = async (tablesData) => {
+    try {
+      console.log('=== UPDATING TABLE STATUS BASED ON ORDERS ===');
+      
+      // Get all orders from API
+      const allOrders = await apiService.getAllOrders();
+      console.log('Fetched orders for status update:', allOrders);
+      
+      if (!Array.isArray(allOrders) || allOrders.length === 0) {
+        console.log('No orders found, keeping table status as is');
+        return tablesData;
+      }
+
+      // Create a map to track table status based on orders
+      const tableOrderStatus = {};
+      
+      // Group orders by table and check their status
+      allOrders.forEach(order => {
+        const tableId = order.tableId || order.TableID;
+        const orderStatus = order.status || order.Status;
+        
+        if (tableId) {
+          if (!tableOrderStatus[tableId]) {
+            tableOrderStatus[tableId] = [];
+          }
+          tableOrderStatus[tableId].push(orderStatus);
+        }
+      });
+
+      console.log('Table order status map:', tableOrderStatus);
+
+      // Update table status based on order status
+      const updatedTables = tablesData.map(table => {
+        const tableId = table.tableId || table.TableID;
+        const ordersForTable = tableOrderStatus[tableId];
+        
+        console.log(`Checking table ${tableId}:`, {
+          originalStatus: table.status,
+          ordersForTable: ordersForTable
+        });
+        
+        if (!ordersForTable || ordersForTable.length === 0) {
+          // No orders for this table, keep it available
+          console.log(`  -> No orders found, setting to Available`);
+          return {
+            ...table,
+            status: 'Available'
+          };
+        }
+        
+        // Check if all orders are "Đã thanh toán" (paid) or completed
+        const allOrdersPaid = ordersForTable.every(status => {
+          const normalizedStatus = status?.toLowerCase().trim() || '';
+          const isPaid = (
+            normalizedStatus === 'đã thanh toán' ||
+            normalizedStatus === 'da thanh toan' ||
+            normalizedStatus === 'paid' ||
+            normalizedStatus === 'completed' ||
+            normalizedStatus === 'hoàn tất' ||
+            normalizedStatus === 'hoan tat' ||
+            normalizedStatus === 'finished' ||
+            normalizedStatus === 'done'
+          );
+          console.log(`    Status "${status}" -> normalized: "${normalizedStatus}" -> isPaid: ${isPaid}`);
+          return isPaid;
+        });
+        
+        const newStatus = allOrdersPaid ? 'Available' : 'Occupied';
+        console.log(`  -> All orders paid: ${allOrdersPaid}, setting status to: ${newStatus}`);
+        
+        return {
+          ...table,
+          status: newStatus
+        };
+      });
+
+      console.log('Updated tables with order-based status:', updatedTables);
+      return updatedTables;
+      
+    } catch (error) {
+      console.error('Error updating table status based on orders:', error);
+      // Return original tables if there's an error
+      return tablesData;
+    }
+  };
 
   const fetchTables = async () => {
     try {
@@ -206,11 +306,15 @@ export default function TableScreen({ navigation }) {
         
         if (Array.isArray(tablesData) && tablesData.length > 0) {
           console.log('✓ Setting tables from API response (array)');
-          setTables(tablesData);
+          // Update table status based on existing orders
+          const updatedTables = await updateTableStatusBasedOnOrders(tablesData);
+          setTables(updatedTables);
           return;
         } else if (tablesData && typeof tablesData === 'object' && !Array.isArray(tablesData)) {
           console.log('✓ API returned single object, converting to array');
-          setTables([tablesData]);
+          const singleTableArray = [tablesData];
+          const updatedTables = await updateTableStatusBasedOnOrders(singleTableArray);
+          setTables(updatedTables);
           return;
         } else {
           console.log('⚠ API returned empty or invalid data');
@@ -237,7 +341,14 @@ export default function TableScreen({ navigation }) {
         // Fallback to mock data
         console.log('🔄 Using mock data as fallback');
         Alert.alert('Info', 'Cannot connect to server. Showing sample data.');
-        setTables(mockTables);
+        // Try to update mock data status based on orders if possible
+        try {
+          const updatedMockTables = await updateTableStatusBasedOnOrders(mockTables);
+          setTables(updatedMockTables);
+        } catch (statusError) {
+          console.log('Could not update mock table status:', statusError.message);
+          setTables(mockTables);
+        }
       }
       
     } catch (error) {
@@ -259,6 +370,45 @@ export default function TableScreen({ navigation }) {
     setRefreshing(true);
     await fetchTables();
     setRefreshing(false);
+  };
+
+  // Function to manually refresh table status based on current orders
+  const refreshTableStatus = async () => {
+    try {
+      console.log('=== MANUAL REFRESH TABLE STATUS ===');
+      setRefreshing(true);
+      
+      // Count current status before update
+      const statusCounts = tables.reduce((acc, table) => {
+        acc[table.status] = (acc[table.status] || 0) + 1;
+        return acc;
+      }, {});
+      
+      const updatedTables = await updateTableStatusBasedOnOrders(tables);
+      
+      // Count status after update
+      const newStatusCounts = updatedTables.reduce((acc, table) => {
+        acc[table.status] = (acc[table.status] || 0) + 1;
+        return acc;
+      }, {});
+      
+      setTables(updatedTables);
+      
+      // Show detailed success message
+      const statusSummary = Object.keys(newStatusCounts).map(status => 
+        `${status}: ${newStatusCounts[status]}`
+      ).join(', ');
+      
+      Alert.alert(
+        'Table Status Updated', 
+        `Status refreshed based on current orders!\n\nCurrent status: ${statusSummary}`
+      );
+    } catch (error) {
+      console.error('Error refreshing table status:', error);
+      Alert.alert('Error', 'Failed to refresh table status. Please try again.');
+    } finally {
+      setRefreshing(false);
+    }
   };
 
   const getTableStatusColor = (status) => {
@@ -288,10 +438,20 @@ export default function TableScreen({ navigation }) {
   };
 
   const handleCreateOrder = (table) => {
-    if (table.status?.toLowerCase() === 'đã chiếm giữ' || table.status?.toLowerCase() === 'occupied') {
+    const normalizedStatus = table.status?.toLowerCase().trim() || '';
+    const isOccupied = (
+      normalizedStatus === 'occupied' ||
+      normalizedStatus === 'đã chiếm giữ' ||
+      normalizedStatus === 'da chiem giu' ||
+      normalizedStatus === 'busy' ||
+      normalizedStatus === 'taken'
+    );
+    
+    if (isOccupied) {
       setShowFullTableModal(true);
       return;
     }
+    
     navigation.navigate('Menu', { 
       selectedTable: table,
       lastUpdated: Date.now()
@@ -359,8 +519,8 @@ export default function TableScreen({ navigation }) {
         <View style={styles.modalOverlay}>
           <View style={styles.fullTableModalContent}>
             <MaterialCommunityIcons name="alert-circle" size={48} color="#F44336" style={{ marginBottom: 10 }} />
-            <Text style={styles.fullTableModalTitle}>Bàn này đã đầy</Text>
-            <Text style={styles.fullTableModalText}>Vui lòng chọn bàn khác!</Text>
+            <Text style={styles.fullTableModalTitle}>Bàn này đang có khách</Text>
+            <Text style={styles.fullTableModalText}>Vui lòng chọn bàn khác hoặc đợi khách thanh toán!</Text>
             <TouchableOpacity
               style={styles.fullTableModalButton}
               onPress={() => setShowFullTableModal(false)}
@@ -446,12 +606,21 @@ export default function TableScreen({ navigation }) {
               'Loading tables...'
             }
           </Text>
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={openAddModal}
-          >
-            <MaterialCommunityIcons name="plus" size={24} color="white" />
-          </TouchableOpacity>
+          <View style={styles.headerButtons}>
+            <TouchableOpacity
+              style={styles.refreshStatusButton}
+              onPress={refreshTableStatus}
+            >
+              <MaterialCommunityIcons name="refresh" size={20} color="#3498DB" />
+              <Text style={styles.refreshStatusText}>Refresh Status</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={openAddModal}
+            >
+              <MaterialCommunityIcons name="plus" size={24} color="white" />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
 
@@ -492,6 +661,27 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: 5,
+  },
+  headerButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  refreshStatusButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#3498DB',
+  },
+  refreshStatusText: {
+    color: '#3498DB',
+    fontSize: 12,
+    fontWeight: '600',
+    marginLeft: 4,
   },
   addButton: {
     backgroundColor: '#4CAF50',
