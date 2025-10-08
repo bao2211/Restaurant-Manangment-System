@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Alert, Image, TextInput, Modal } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { apiService, getCategoryIcon, formatPrice } from '../services/apiService';
+import { AuthContext } from '../context/AuthContext';
 
 export default function MenuScreen({ navigation, route }) {
+  const { user } = useContext(AuthContext);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [categories, setCategories] = useState([]);
   const [foodItems, setFoodItems] = useState([]);
@@ -468,16 +470,29 @@ export default function MenuScreen({ navigation, route }) {
       const fetchTest = await apiService.testWithFetch();
       console.log('Fetch test result:', fetchTest);
 
+      // Check if current user is available
+      if (!user || !user.userId) {
+        console.log('ERROR: No current user available');
+        Alert.alert('Error', 'You must be logged in to create an order. Please log in and try again.');
+        return;
+      }
+
+      console.log('Current user info:', {
+        userId: user.userId,
+        userName: user.userName || user.fullName,
+        role: user.role
+      });
+
       // Prepare order data for API with validated format
       // Based on API documentation, using the full Order object format
       const orderData = {
         orderId: orderId, // Already validated to be 10 chars starting with "HD"
         status: 'Chưa làm', // Default status for new orders
         total: total,
-        note: `Order for ${selectedTable.tableName || selectedTable.tableId}`,
+        note: `Order for ${selectedTable.tableName || selectedTable.tableId} by ${user.userName || user.fullName || 'Staff'}`,
         discount: 0,
         tableId: (selectedTable.tableId || selectedTable.id || '').trim(), // Clean up extra spaces
-        userId: 1 // User specifically requested number 1
+        userId: user.userId // Use current logged-in employee's ID
       };
 
       console.log('=== ORDER DATA VALIDATION ===');
@@ -505,10 +520,10 @@ export default function MenuScreen({ navigation, route }) {
           orderId: orderId, // Keep our HD format for the string version
           status: 'Chưa làm', // Default status for new orders
           total: parseFloat(total), // Ensure it's a proper decimal
-          note: `Order for ${selectedTable.tableName || selectedTable.tableId}`,
+          note: `Order for ${selectedTable.tableName || selectedTable.tableId} by ${user.userName || user.fullName || 'Staff'}`,
           discount: 0.0, // Explicit decimal format
           tableId: (selectedTable.tableId || selectedTable.id || '').trim(),
-          userId: "1" // Try string format as shown in API examples
+          userId: user.userId.toString() // Use current user's ID as string format
         };
         
         console.log('Trying alternative order format:', JSON.stringify(alternativeOrderData, null, 2));
