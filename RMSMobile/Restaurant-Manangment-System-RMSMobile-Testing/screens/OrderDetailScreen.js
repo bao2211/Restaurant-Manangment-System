@@ -8,9 +8,9 @@ import {
   Alert,
   RefreshControl,
   TextInput,
-  Modal,
   ScrollView,
   ActivityIndicator,
+  Modal,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { apiService, API_BASE_URL } from '../services/apiService';
@@ -23,10 +23,17 @@ const OrderDetailScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
-  const [selectedOrderDetail, setSelectedOrderDetail] = useState(null);
-  const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [updating, setUpdating] = useState(false);
   const [orderBy, setOrderBy] = useState('newest'); // 'newest' or 'oldest'
+  
+  // Add item functionality states
+  const [showAddItemModal, setShowAddItemModal] = useState(false);
+  const [selectedOrderForAdd, setSelectedOrderForAdd] = useState(null);
+  const [foodItems, setFoodItems] = useState([]);
+  const [filteredFoodItems, setFilteredFoodItems] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [loadingFoodItems, setLoadingFoodItems] = useState(false);
+  const [addingItem, setAddingItem] = useState(false);
 
   // Status options for order details (expanded to match API documentation)
   const statusOptions = [
@@ -416,139 +423,176 @@ const OrderDetailScreen = () => {
     setFilteredOrders(filtered);
   }, [orders, searchQuery, statusFilter, orderBy]);
 
-  // Update order detail status
-  const updateOrderDetailStatus = async (foodId, orderId, newStatus) => {
+  // Load food items and categories for add item modal
+  const loadFoodItems = async () => {
     try {
-      setUpdating(true);
-      const targetNormalizedOrderId = normalizeIdValue(orderId);
-      const targetNormalizedFoodId = normalizeIdValue(foodId);
+      setLoadingFoodItems(true);
       
-      // Find the current order detail
-      const currentOrder = orders.find(order => {
-        const normalizedOrderKey = order.normalizedOrderId ?? normalizeIdValue(order.orderId ?? order.id);
-        return normalizedOrderKey === targetNormalizedOrderId;
-      });
-
-      const currentDetail = currentOrder?.orderDetails.find(detail => {
-        const detailNormalizedFoodId = detail.normalizedFoodId ?? normalizeIdValue(detail.foodId ?? detail.foodID ?? detail.id);
-        const detailNormalizedOrderId = detail.normalizedOrderId ?? normalizeIdValue(detail.orderId ?? currentOrder?.orderId ?? currentOrder?.id);
-        return detailNormalizedFoodId === targetNormalizedFoodId && detailNormalizedOrderId === targetNormalizedOrderId;
+      // Load both food items and categories
+      const [foodsResponse, categoriesResponse] = await Promise.all([
+        apiService.getAllFoodItems(),
+        apiService.getCategories()
+      ]);
+      
+      const foodsArray = Array.isArray(foodsResponse) ? foodsResponse : [];
+      const categoriesArray = Array.isArray(categoriesResponse) ? categoriesResponse : [];
+      
+      // Fix price display by ensuring price is a number and handling different price field names
+      const processedFoods = foodsArray.map(food => {
+        const price = parseFloat(food.price || food.unitPrice || food.foodPrice || 0);
+        return {
+          ...food,
+          price: price
+        };
       });
       
-      if (!currentOrder || !currentDetail) {
-        Alert.alert('Error', 'Order detail not found');
-        return;
-      }
+      setFoodItems(processedFoods);
+      setFilteredFoodItems(processedFoods);
+      setCategories(categoriesArray);
+      setSelectedCategory('All');
+      
+      console.log('Food items loaded:', processedFoods.length);
+      console.log('Categories loaded:', categoriesArray.length);
+      console.log('Sample food item:', processedFoods[0]);
+      console.log('Sample food item price fields:', {
+        price: processedFoods[0]?.price,
+        unitPrice: processedFoods[0]?.unitPrice,
+        foodPrice: processedFoods[0]?.foodPrice,
+        processedPrice: processedFoods[0]?.price
+      });
+    } catch (error) {
+      console.error('Error loading food items and categories:', error);
+      Alert.alert('Error', 'Failed to load food items and categories');
+    } finally {
+      setLoadingFoodItems(false);
+    }
+  };
 
-      // Prepare update data with correct format
-      const updateData = {
-        foodId: currentDetail.foodId || foodId,
-        orderId: currentDetail.orderId || orderId,
-        unitPrice: currentDetail.unitPrice || 0,
-        status: newStatus,
-        quantity: currentDetail.quantity || 1
+  // Filter food items by category
+  const filterFoodItemsByCategory = (categoryId) => {
+    setSelectedCategory(categoryId);
+    
+    if (categoryId === 'All') {
+      setFilteredFoodItems(foodItems);
+    } else {
+      const filtered = foodItems.filter(food => food.cateId === categoryId);
+      setFilteredFoodItems(filtered);
+    }
+  };
+
+  // Handle opening add item modal
+  const handleAddItemToOrder = (order) => {
+    setSelectedOrderForAdd(order);
+    setShowAddItemModal(true);
+    
+    // Reset category filter to show all items
+    setSelectedCategory('All');
+    setFilteredFoodItems(foodItems);
+    
+    if (foodItems.length === 0) {
+      loadFoodItems();
+    }
+  };
+
+  // Add food item to order
+  const addFoodItemToOrder = async (foodItem) => {
+    if (!selectedOrderForAdd || !foodItem) {
+      Alert.alert('Error', 'Invalid order or food item');
+      return;
+    }
+
+    try {
+      setAddingItem(true);
+
+      const unitPrice = parseFloat(foodItem.price || foodItem.unitPrice || foodItem.foodPrice || 0);
+      
+      const orderDetailData = {
+        orderId: selectedOrderForAdd.orderId,
+        foodId: foodItem.foodId,
+        quantity: 1,
+        unitPrice: unitPrice,
+        status: 'Chưa làm'
       };
 
-      console.log('Updating order detail with data:', updateData);
+      console.log('Adding food item to order:', orderDetailData);
 
-      // Use apiService to update the order detail
-      try {
-        const response = await apiService.updateOrderDetail(foodId, orderId, updateData);
-        console.log('Update response:', response);
-        
-        if (response) {
-          // Update local state and check if all order details are complete
-          const updatedOrders = orders.map(order => {
-            const orderNormalizedKey = order.normalizedOrderId ?? normalizeIdValue(order.orderId ?? order.id);
-            if (orderNormalizedKey !== targetNormalizedOrderId) {
-              return order;
-            }
+      // Create order detail via API
+      const response = await apiService.createOrderDetail(orderDetailData);
+      console.log('Add item response:', response);
 
-            // Update the specific order detail
-            const updatedOrderDetails = (order.orderDetails || []).map(detail => {
-              const detailNormalizedFoodId = detail.normalizedFoodId ?? normalizeIdValue(detail.foodId ?? detail.foodID ?? detail.id);
-              const detailNormalizedOrderId = detail.normalizedOrderId ?? normalizeIdValue(detail.orderId ?? order.orderId ?? order.id);
-              if (detailNormalizedFoodId === targetNormalizedFoodId && detailNormalizedOrderId === targetNormalizedOrderId) {
-                return { ...detail, status: newStatus };
-              }
-              return detail;
-            });
+      if (response) {
+        // Update local state
+        const updatedOrders = orders.map(order => {
+          const orderNormalizedKey = order.normalizedOrderId ?? normalizeIdValue(order.orderId ?? order.id);
+          const selectedNormalizedKey = selectedOrderForAdd.normalizedOrderId ?? normalizeIdValue(selectedOrderForAdd.orderId ?? selectedOrderForAdd.id);
+          
+          if (orderNormalizedKey === selectedNormalizedKey) {
+            const newOrderDetail = {
+              ...orderDetailData,
+              foodName: foodItem.foodName,
+              totalPrice: unitPrice * 1,
+              normalizedOrderId: orderNormalizedKey,
+              normalizedFoodId: normalizeIdValue(foodItem.foodId)
+            };
 
-            // Check if all order details are "Hoàn tất"
-            const allComplete = updatedOrderDetails.every(detail => detail.status === 'Hoàn tất');
-            const newOrderStatus = allComplete ? 'Hoàn tất' : (order.status || 'Đang xử lý');
-
-            // Update order status if needed
-            if (allComplete && order.status !== 'Hoàn tất') {
-              console.log(`All order details complete for order ${order.orderId}, updating order status to Hoàn tất`);
-              // Update order status in background (don't wait for it)
-              apiService.updateOrder(order.orderId, { 
-                ...order, 
-                status: 'Hoàn tất' 
-              }).catch(error => {
-                console.error('Failed to update order status:', error);
-              });
-            }
+            const updatedOrderDetails = [...(order.orderDetails || []), newOrderDetail];
+            const newTotal = updatedOrderDetails.reduce((sum, detail) => sum + (detail.totalPrice || 0), 0);
 
             return {
               ...order,
               orderDetails: updatedOrderDetails,
-              status: newOrderStatus
+              total: newTotal
             };
-          });
-          
-          setOrders(updatedOrders);
-          setFilteredOrders(prevFiltered =>
-            prevFiltered.map(order => {
-              const orderNormalizedKey = order.normalizedOrderId ?? normalizeIdValue(order.orderId ?? order.id);
-              if (orderNormalizedKey !== targetNormalizedOrderId) {
-                return order;
-              }
+          }
+          return order;
+        });
+
+        setOrders(updatedOrders);
+        
+        // Update filtered orders as well
+        setFilteredOrders(prevFiltered =>
+          prevFiltered.map(order => {
+            const orderNormalizedKey = order.normalizedOrderId ?? normalizeIdValue(order.orderId ?? order.id);
+            const selectedNormalizedKey = selectedOrderForAdd.normalizedOrderId ?? normalizeIdValue(selectedOrderForAdd.orderId ?? selectedOrderForAdd.id);
+            
+            if (orderNormalizedKey === selectedNormalizedKey) {
+              const newOrderDetail = {
+                ...orderDetailData,
+                foodName: foodItem.foodName,
+                totalPrice: unitPrice * 1,
+                normalizedOrderId: orderNormalizedKey,
+                normalizedFoodId: normalizeIdValue(foodItem.foodId)
+              };
+
+              const updatedOrderDetails = [...(order.orderDetails || []), newOrderDetail];
+              const newTotal = updatedOrderDetails.reduce((sum, detail) => sum + (detail.totalPrice || 0), 0);
 
               return {
                 ...order,
-                orderDetails: (order.orderDetails || []).map(detail => {
-                  const detailNormalizedFoodId = detail.normalizedFoodId ?? normalizeIdValue(detail.foodId ?? detail.foodID ?? detail.id);
-                  const detailNormalizedOrderId = detail.normalizedOrderId ?? normalizeIdValue(detail.orderId ?? order.orderId ?? order.id);
-                  if (detailNormalizedFoodId === targetNormalizedFoodId && detailNormalizedOrderId === targetNormalizedOrderId) {
-                    return { ...detail, status: newStatus };
-                  }
-                  return detail;
-                })
+                orderDetails: updatedOrderDetails,
+                total: newTotal
               };
-            })
-          );
-          setSelectedOrderDetail(prevDetail => {
-            if (!prevDetail) {
-              return prevDetail;
             }
+            return order;
+          })
+        );
 
-            const prevNormalizedFoodId = prevDetail.normalizedFoodId ?? normalizeIdValue(prevDetail.foodId ?? prevDetail.foodID ?? prevDetail.id);
-            const prevNormalizedOrderId = prevDetail.normalizedOrderId ?? normalizeIdValue(prevDetail.orderId ?? prevDetail.orderID ?? prevDetail.id);
-
-            if (prevNormalizedFoodId === targetNormalizedFoodId && prevNormalizedOrderId === targetNormalizedOrderId) {
-              return { ...prevDetail, status: newStatus };
-            }
-
-            return prevDetail;
-          });
-          Alert.alert('Success', 'Order detail status updated successfully');
-          setShowUpdateModal(false);
-          setSelectedOrderDetail(null);
-        } else {
-          console.error('Update failed:', response);
-          Alert.alert('Update Failed', 'Failed to update order detail status. Please try again.');
-        }
-      } catch (apiError) {
-        console.error('API error during update:', apiError);
-        Alert.alert('Update Error', 'Unable to update status. Please check your connection and try again.');
+        Alert.alert('Success', `Added ${foodItem.foodName} to order ${selectedOrderForAdd.orderId}`);
+        setShowAddItemModal(false);
+        setSelectedOrderForAdd(null);
+        
+        // Refresh the orders to ensure we have the latest data
+        setTimeout(() => {
+          loadOrdersWithDetails();
+        }, 500);
+      } else {
+        Alert.alert('Error', 'Failed to add item to order');
       }
-      
     } catch (error) {
-      console.error('Error updating order detail:', error);
-      Alert.alert('Error', 'Failed to update order detail status');
+      console.error('Error adding item to order:', error);
+      Alert.alert('Error', 'Failed to add item to order. Please try again.');
     } finally {
-      setUpdating(false);
+      setAddingItem(false);
     }
   };
 
@@ -618,13 +662,9 @@ const OrderDetailScreen = () => {
     const detailKey = `${normalizedOrderKey ?? 'order'}-${normalizedFoodKey ?? 'item'}`;
 
     return (
-      <TouchableOpacity
+      <View
         key={`detail-${detailKey}`}
         style={styles.orderDetailSubCard}
-        onPress={() => {
-          setSelectedOrderDetail(orderDetail);
-          setShowUpdateModal(true);
-        }}
       >
       <View style={styles.orderDetailHeader}>
         <View style={styles.orderDetailInfo}>
@@ -663,12 +703,7 @@ const OrderDetailScreen = () => {
           </Text>
         </View>
       </View>
-      
-      <View style={styles.updateHint}>
-        <MaterialCommunityIcons name="pencil" size={14} color="#999" />
-        <Text style={styles.updateHintText}>Tap to update status</Text>
       </View>
-      </TouchableOpacity>
     );
   };
 
@@ -720,6 +755,17 @@ const OrderDetailScreen = () => {
         {isExpanded && (
           <View style={styles.orderDetailsContainer}>
             {orderDetailsList.map(orderDetail => renderOrderDetailItem(orderDetail))}
+            
+            {/* Add Item Button for orders with "Chưa làm" status */}
+            {item.status === 'Chưa làm' && (
+              <TouchableOpacity
+                style={styles.addItemButton}
+                onPress={() => handleAddItemToOrder(item)}
+              >
+                <MaterialCommunityIcons name="plus-circle" size={20} color="#FF6B35" />
+                <Text style={styles.addItemButtonText}>Thêm món</Text>
+              </TouchableOpacity>
+            )}
           </View>
         )}
       </View>
@@ -770,95 +816,6 @@ const OrderDetailScreen = () => {
         ))}
       </ScrollView>
     </View>
-  );
-
-  // Render update status modal
-  const renderUpdateModal = () => (
-    <Modal
-      visible={showUpdateModal}
-      animationType="slide"
-      transparent={true}
-      onRequestClose={() => {
-        setShowUpdateModal(false);
-        setSelectedOrderDetail(null);
-      }}
-    >
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>Update Order Detail Status</Text>
-            <TouchableOpacity
-              onPress={() => {
-                setShowUpdateModal(false);
-                setSelectedOrderDetail(null);
-              }}
-              style={styles.modalCloseButton}
-            >
-              <MaterialCommunityIcons name="close" size={24} color="#666" />
-            </TouchableOpacity>
-          </View>
-          
-          {selectedOrderDetail && (
-            <View style={styles.modalBody}>
-              <View style={styles.orderDetailSummary}>
-                <Text style={styles.summaryTitle}>
-                  {selectedOrderDetail.foodName || `Food ${selectedOrderDetail.foodId}`}
-                </Text>
-                <Text style={styles.summarySubtitle}>
-                  Order: {selectedOrderDetail.orderId}
-                </Text>
-                <Text style={styles.summarySubtitle}>
-                  Current Status: {selectedOrderDetail.status}
-                </Text>
-              </View>
-              
-              <Text style={styles.statusSectionTitle}>Select New Status:</Text>
-              
-              <View style={styles.statusOptionsContainer}>
-                {statusOptions.filter(status => status !== 'All').map((status) => (
-                  <TouchableOpacity
-                    key={status}
-                    style={[
-                      styles.statusOption,
-                      { borderColor: statusColors[status] || '#9E9E9E' },
-                      selectedOrderDetail.status === status && styles.statusOptionActive
-                    ]}
-                    onPress={() => updateOrderDetailStatus(
-                      selectedOrderDetail.foodId,
-                      selectedOrderDetail.orderId,
-                      status
-                    )}
-                    disabled={updating}
-                  >
-                    <View style={[
-                      styles.statusOptionBadge,
-                      { backgroundColor: statusColors[status] || '#9E9E9E' }
-                    ]}>
-                      <Text style={styles.statusOptionText}>{status}</Text>
-                    </View>
-                    {selectedOrderDetail.status === status && (
-                      <MaterialCommunityIcons 
-                        name="check-circle" 
-                        size={20} 
-                        color="#4CAF50" 
-                        style={styles.statusCheckIcon}
-                      />
-                    )}
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-          )}
-          
-          {updating && (
-            <View style={styles.updatingOverlay}>
-              <ActivityIndicator size="large" color="#FF6B35" />
-              <Text style={styles.updatingText}>Updating...</Text>
-            </View>
-          )}
-        </View>
-      </View>
-    </Modal>
   );
 
   if (loading) {
@@ -959,8 +916,138 @@ const OrderDetailScreen = () => {
         )}
       />
 
-      {/* Update Status Modal */}
-      {renderUpdateModal()}
+      {/* Add Item Modal */}
+      <Modal
+        visible={showAddItemModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => {
+          setShowAddItemModal(false);
+          setSelectedOrderForAdd(null);
+        }}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>
+                Thêm món cho Order #{selectedOrderForAdd?.orderId}
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setShowAddItemModal(false);
+                  setSelectedOrderForAdd(null);
+                }}
+                style={styles.modalCloseButton}
+              >
+                <MaterialCommunityIcons name="close" size={24} color="#666" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.modalBody}>
+              {loadingFoodItems ? (
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator size="large" color="#FF6B35" />
+                  <Text style={styles.loadingText}>Đang tải danh sách món ăn...</Text>
+                </View>
+              ) : (
+                <>
+                  {/* Category Filter Bar */}
+                  <View style={styles.categoryFilterContainer}>
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={styles.categoryFilterContent}
+                    >
+                      <TouchableOpacity
+                        key="All"
+                        style={[
+                          styles.categoryFilterButton,
+                          selectedCategory === 'All' && styles.categoryFilterButtonActive
+                        ]}
+                        onPress={() => filterFoodItemsByCategory('All')}
+                      >
+                        <Text style={[
+                          styles.categoryFilterText,
+                          selectedCategory === 'All' && styles.categoryFilterTextActive
+                        ]}>
+                          Tất cả
+                        </Text>
+                      </TouchableOpacity>
+                      
+                      {categories.map((category) => (
+                        <TouchableOpacity
+                          key={category.cateId}
+                          style={[
+                            styles.categoryFilterButton,
+                            selectedCategory === category.cateId && styles.categoryFilterButtonActive
+                          ]}
+                          onPress={() => filterFoodItemsByCategory(category.cateId)}
+                        >
+                          <Text style={[
+                            styles.categoryFilterText,
+                            selectedCategory === category.cateId && styles.categoryFilterTextActive
+                          ]}>
+                            {category.cateName || category.cateId}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </ScrollView>
+                  </View>
+
+                  {/* Food Items List */}
+                  <FlatList
+                    data={filteredFoodItems}
+                    keyExtractor={(item) => item.foodId?.toString() || Math.random().toString()}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity
+                        style={styles.foodItem}
+                        onPress={() => addFoodItemToOrder(item)}
+                        disabled={addingItem}
+                      >
+                        <View style={styles.foodItemInfo}>
+                          <Text style={styles.foodItemName}>{item.foodName || 'Unknown Food'}</Text>
+                          <View style={styles.priceContainer}>
+                            <Text style={styles.priceLabel}>Đơn giá: </Text>
+                            <Text style={styles.foodItemPrice}>
+                              {((item.price || item.unitPrice || item.foodPrice || 0)).toLocaleString('vi-VN')}₫
+                            </Text>
+                          </View>
+                          <Text style={styles.foodItemCategory}>
+                            Category: {categories.find(cat => cat.cateId === item.cateId)?.cateName || item.cateId || 'N/A'}
+                          </Text>
+                        </View>
+                        <MaterialCommunityIcons 
+                          name="plus-circle" 
+                          size={24} 
+                          color={addingItem ? "#CCC" : "#FF6B35"} 
+                        />
+                      </TouchableOpacity>
+                    )}
+                    style={styles.foodList}
+                    contentContainerStyle={styles.foodListContent}
+                    ListEmptyComponent={() => (
+                      <View style={styles.emptyFoodContainer}>
+                        <MaterialCommunityIcons name="food-off" size={48} color="#CCC" />
+                        <Text style={styles.emptyFoodText}>Không có món ăn nào</Text>
+                        <Text style={styles.emptyFoodSubtext}>
+                          {selectedCategory === 'All' ? 'Chưa có món ăn trong hệ thống' : 'Không có món ăn trong danh mục này'}
+                        </Text>
+                      </View>
+                    )}
+                  />
+                </>
+              )}
+            </View>
+
+            {addingItem && (
+              <View style={styles.addingOverlay}>
+                <ActivityIndicator size="large" color="#FF6B35" />
+                <Text style={styles.addingText}>Đang thêm món...</Text>
+              </View>
+            )}
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -1125,19 +1212,6 @@ const styles = StyleSheet.create({
     color: '#666',
     marginLeft: 8,
   },
-  updateHint: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 8,
-    borderTopWidth: 1,
-    borderTopColor: '#F0F0F0',
-  },
-  updateHintText: {
-    fontSize: 12,
-    color: '#999',
-    marginLeft: 4,
-  },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -1156,107 +1230,6 @@ const styles = StyleSheet.create({
     color: '#CCC',
     textAlign: 'center',
     marginHorizontal: 32,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    borderRadius: 16,
-    width: '90%',
-    maxHeight: '80%',
-    elevation: 5,
-    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.3)',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  modalCloseButton: {
-    padding: 4,
-  },
-  modalBody: {
-    padding: 20,
-  },
-  orderDetailSummary: {
-    backgroundColor: '#F8F9FA',
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 20,
-  },
-  summaryTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 4,
-  },
-  summarySubtitle: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 2,
-  },
-  statusSectionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 16,
-  },
-  statusOptionsContainer: {
-    gap: 12,
-  },
-  statusOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 12,
-    borderWidth: 2,
-    borderRadius: 8,
-    backgroundColor: '#FAFAFA',
-  },
-  statusOptionActive: {
-    backgroundColor: '#E8F5E8',
-    borderColor: '#4CAF50',
-  },
-  statusOptionBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-  },
-  statusOptionText: {
-    fontSize: 14,
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  statusCheckIcon: {
-    marginLeft: 8,
-  },
-  updatingOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 16,
-  },
-  updatingText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: '#666',
   },
   debugButton: {
     backgroundColor: '#FF6B35',
@@ -1347,6 +1320,173 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     borderLeftWidth: 3,
     borderLeftColor: '#FF6B35',
+  },
+  // Add item button styles
+  addItemButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFF5F2',
+    borderWidth: 1,
+    borderColor: '#FF6B35',
+    borderRadius: 8,
+    padding: 12,
+    marginTop: 8,
+  },
+  addItemButtonText: {
+    fontSize: 14,
+    color: '#FF6B35',
+    fontWeight: 'bold',
+    marginLeft: 8,
+  },
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    width: '90%',
+    maxHeight: '80%',
+    elevation: 5,
+    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.3)',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    flex: 1,
+  },
+  modalCloseButton: {
+    padding: 4,
+  },
+  modalBody: {
+    flex: 1,
+    padding: 20,
+  },
+  // Category filter styles
+  categoryFilterContainer: {
+    marginBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+    paddingBottom: 12,
+  },
+  categoryFilterContent: {
+    paddingVertical: 4,
+  },
+  categoryFilterButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    marginRight: 8,
+    borderRadius: 20,
+    backgroundColor: '#F0F0F0',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+  },
+  categoryFilterButtonActive: {
+    backgroundColor: '#FF6B35',
+    borderColor: '#FF6B35',
+  },
+  categoryFilterText: {
+    fontSize: 14,
+    color: '#666',
+    fontWeight: '500',
+  },
+  categoryFilterTextActive: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  foodList: {
+    flex: 1,
+  },
+  foodListContent: {
+    paddingBottom: 20,
+  },
+  foodItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#FAFAFA',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+  },
+  foodItemInfo: {
+    flex: 1,
+  },
+  foodItemName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 6,
+  },
+  priceContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  priceLabel: {
+    fontSize: 14,
+    color: '#666',
+    fontWeight: '500',
+  },
+  foodItemPrice: {
+    fontSize: 14,
+    color: '#FF6B35',
+    fontWeight: 'bold',
+  },
+  foodItemCategory: {
+    fontSize: 12,
+    color: '#666',
+  },
+  // Empty food list styles
+  emptyFoodContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 48,
+  },
+  emptyFoodText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#999',
+    marginTop: 12,
+    marginBottom: 4,
+  },
+  emptyFoodSubtext: {
+    fontSize: 14,
+    color: '#CCC',
+    textAlign: 'center',
+    paddingHorizontal: 20,
+  },
+  addingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 16,
+  },
+  addingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: '#666',
   },
 });
 

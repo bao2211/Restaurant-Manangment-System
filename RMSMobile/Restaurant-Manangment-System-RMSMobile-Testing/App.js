@@ -33,6 +33,7 @@ import BillScreen from './screens/BillScreen';
 import ReportScreen from './screens/ReportScreen';
 import MenuManagerScreen from './screens/MenuManagerScreen';
 import OrderDetailManagerScreen from './screens/OrderDetailManagerScreen';
+import OrderDetailScreen from './screens/OrderDetailScreen';
 
 const Stack = createStackNavigator();
 const { width: screenWidth } = Dimensions.get('window');
@@ -107,6 +108,13 @@ function MainAppStack({ openSidebar }) {
         component={OrdersScreen}
         options={{ 
           headerTitle: 'My Orders',
+        }}
+      />
+      <Stack.Screen 
+        name="OrderDetail" 
+        component={OrderDetailScreen}
+        options={{ 
+          headerTitle: 'Order Details',
         }}
       />
       <Stack.Screen 
@@ -210,6 +218,7 @@ function CustomSidebarMenu({ visible, onClose }) {
     { name: 'Home', icon: 'home', title: 'Home', screen: 'Home' },
     { name: 'Menu', icon: 'food', title: 'Our Menu', screen: 'Menu' },
     { name: 'Orders', icon: 'clipboard-list', title: 'My Orders', screen: 'Orders' },
+    { name: 'OrderDetail', icon: 'clipboard-text', title: 'Order Details', screen: 'OrderDetail' },
     { name: 'Table', icon: 'table-chair', title: 'Our Table', screen: 'Table' },
     { name: 'Bill', icon: 'file-document', title: 'Our Bill', screen: 'Bill' },
     { name: 'Report', icon: 'file-chart', title: 'Our Report', screen: 'Report' },

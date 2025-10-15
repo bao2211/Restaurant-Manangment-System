@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "MNWBhYqax5+bizlAuEBNgobTBNxUyJO86VVkGOUZHAg=",
+  "Source": "RMS-APIServer",
+  "BasePath": "_content/RMS-APIServer",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
