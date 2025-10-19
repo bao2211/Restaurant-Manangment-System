@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "0ZPhRDXpjh4=",
+  "dgSpecHash": "VIE7/hdrs2I=",
   "success": true,
-  "projectFilePath": "D:\\Study\\TLDH\\Nam 3 - HK1\\CNPMNC\\RMS - Project\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj",
+  "projectFilePath": "D:\\Study\\TLDH\\Nam 3 - HK1\\RMS - Project\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\lengo\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\lengo\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl, TextInput, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 import { apiService, formatPrice } from '../services/apiService';
 
 export default function OrdersScreen() {
@@ -43,6 +44,34 @@ export default function OrdersScreen() {
     filterOrders();
   }, [filterOrders]);
 
+  // Function to calculate total amount for an order from its order details
+  const calculateOrderTotal = async (orderId) => {
+    try {
+      console.log(`Calculating total for order ${orderId}`);
+      const orderDetails = await apiService.getOrderDetails(orderId);
+      console.log(`Order details for ${orderId}:`, orderDetails);
+      
+      if (!Array.isArray(orderDetails) || orderDetails.length === 0) {
+        console.log(`No order details found for order ${orderId}`);
+        return 0;
+      }
+
+      const total = orderDetails.reduce((sum, detail) => {
+        const quantity = detail.quantity || 1;
+        const unitPrice = detail.price || detail.unitPrice || 0;
+        const lineTotal = quantity * unitPrice;
+        console.log(`Detail: foodId=${detail.foodId}, quantity=${quantity}, unitPrice=${unitPrice}, lineTotal=${lineTotal}`);
+        return sum + lineTotal;
+      }, 0);
+
+      console.log(`Total calculated for order ${orderId}: ${total}`);
+      return total;
+    } catch (error) {
+      console.error(`Error calculating total for order ${orderId}:`, error);
+      return 0;
+    }
+  };
+
   const fetchOrders = async () => {
     try {
       setLoading(true);
@@ -50,20 +79,22 @@ export default function OrdersScreen() {
       console.log('Raw API response:', response);
 
       // Map the response to ensure all required fields are present
-      const processedOrders = response.map(order => {
+      const processedOrders = await Promise.all(response.map(async order => {
         console.log('Processing order:', order);
-        // Get the correct total amount from either total or totalAmount field
-        const total = order.total || order.totalAmount || 0;
         
         // Extract user information
         const userInfo = order.user || {};
         const staffName = userInfo.fullName || userInfo.userName || order.userId || 'Unknown';
         
+        // Calculate actual total from order details
+        const orderId = order.orderId || order.orderID || order.id || 'N/A';
+        const calculatedTotal = await calculateOrderTotal(orderId);
+        
         return {
           ...order,
-          orderId: order.orderId || order.orderID || order.id || 'N/A',
+          orderId: orderId,
           createDate: order.createdTime || order.createDate || order.createdAt || order.orderDate || new Date().toISOString(),
-          totalAmount: parseFloat(total), // Ensure it's a number
+          totalAmount: calculatedTotal, // Use calculated total from order details
           status: order.status || 'Chưa làm',
           tableId: order.tableId || order.table?.tableId || 'Unknown',
           userId: order.userId || order.user?.userId || 'Unknown',
@@ -72,9 +103,9 @@ export default function OrdersScreen() {
             fullName: staffName
           }
         };
-      });
+      }));
 
-      console.log('Processed orders:', processedOrders);
+      console.log('Processed orders with calculated totals:', processedOrders);
       
       // Sort orders by creation time (most recent first)
       const sortedOrders = processedOrders.sort((a, b) => {
@@ -90,6 +121,39 @@ export default function OrdersScreen() {
       console.error('Error fetching orders:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Function to update total for a specific order
+  const updateOrderTotal = async (orderId) => {
+    try {
+      console.log(`Updating total for order ${orderId}`);
+      const newTotal = await calculateOrderTotal(orderId);
+      
+      setOrders(prevOrders => {
+        const updatedOrders = prevOrders.map(order => {
+          if (order.orderId === orderId) {
+            console.log(`Updating order ${orderId} total from ${order.totalAmount} to ${newTotal}`);
+            return { ...order, totalAmount: newTotal };
+          }
+          return order;
+        });
+        return updatedOrders;
+      });
+      
+      // Also update filtered orders
+      setFilteredOrders(prevFiltered => {
+        const updatedFiltered = prevFiltered.map(order => {
+          if (order.orderId === orderId) {
+            return { ...order, totalAmount: newTotal };
+          }
+          return order;
+        });
+        return updatedFiltered;
+      });
+      
+    } catch (error) {
+      console.error(`Error updating total for order ${orderId}:`, error);
     }
   };
 
@@ -146,6 +210,14 @@ export default function OrdersScreen() {
   useEffect(() => {
     fetchOrders();
   }, []);
+
+  // Use focus effect to refresh data when returning to this screen
+  useFocusEffect(
+    useCallback(() => {
+      console.log('OrdersScreen is focused - refreshing order data');
+      fetchOrders();
+    }, [])
+  );
 
   return (
     <View style={styles.container}>

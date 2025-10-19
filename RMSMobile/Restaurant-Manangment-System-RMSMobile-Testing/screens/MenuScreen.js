@@ -5,7 +5,12 @@ import { apiService, getCategoryIcon, formatPrice } from '../services/apiService
 import { AuthContext } from '../context/AuthContext';
 
 export default function MenuScreen({ navigation, route }) {
-  const { user } = useContext(AuthContext);
+  const { user, getUserRole } = useContext(AuthContext);
+  const userRole = getUserRole();
+  const isCustomer = userRole === 'Customer' || userRole === 'customer' || userRole === 'CUSTOMER';
+  
+  console.log('MenuScreen - Current user role:', userRole, 'Is Customer:', isCustomer);
+  
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [categories, setCategories] = useState([]);
   const [foodItems, setFoodItems] = useState([]);
@@ -13,7 +18,7 @@ export default function MenuScreen({ navigation, route }) {
   const [loadingItems, setLoadingItems] = useState(false);
   const [imageErrors, setImageErrors] = useState({}); // Track failed image loads
   
-  // Order form state
+  // Order form state - only initialize if not a customer
   const [orderItems, setOrderItems] = useState([]);
   const [orderId, setOrderId] = useState('');
   const [selectedTable, setSelectedTable] = useState(null);
@@ -59,13 +64,17 @@ export default function MenuScreen({ navigation, route }) {
   useEffect(() => {
     fetchCategories();
 
-    const initialOrderId = generateValidOrderId();
-    console.log('Initialized order with ID:', initialOrderId);
-    setOrderId(initialOrderId);
-  }, []);
+    // Only initialize order for non-customer users
+    if (!isCustomer) {
+      const initialOrderId = generateValidOrderId();
+      console.log('Initialized order with ID:', initialOrderId);
+      setOrderId(initialOrderId);
+    }
+  }, [isCustomer]);
 
   useEffect(() => {
-    if (route?.params?.selectedTable) {
+    // Only handle table selection for non-customer users
+    if (!isCustomer && route?.params?.selectedTable) {
       const table = route.params.selectedTable;
       const newOrderId = generateValidOrderId();
       console.log('Table selected from TableScreen:', table);
@@ -320,12 +329,14 @@ export default function MenuScreen({ navigation, route }) {
           <Text style={styles.menuItemDescription}>{item.description}</Text>
           <View style={styles.menuItemFooter}>
             <Text style={styles.menuItemPrice}>{item.price}</Text>
-            <TouchableOpacity 
-              style={styles.addButton}
-              onPress={() => handleAddToCart(item)}
-            >
-              <MaterialCommunityIcons name="plus" size={20} color="white" />
-            </TouchableOpacity>
+            {!isCustomer && (
+              <TouchableOpacity 
+                style={styles.addButton}
+                onPress={() => handleAddToCart(item)}
+              >
+                <MaterialCommunityIcons name="plus" size={20} color="white" />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </TouchableOpacity>
@@ -333,6 +344,12 @@ export default function MenuScreen({ navigation, route }) {
   };
 
   const handleAddToCart = (item) => {
+    // Prevent customers from adding items to cart
+    if (isCustomer) {
+      console.log('Customer users cannot add items to cart');
+      return;
+    }
+    
     console.log('=== ADD TO CART DEBUG ===');
     console.log('Adding item:', item);
     
@@ -749,9 +766,9 @@ export default function MenuScreen({ navigation, route }) {
   return (
     <View style={styles.container}>
       {/* Main Content Area */}
-      <View style={styles.mainContent}>
+      <View style={[styles.mainContent, isCustomer && styles.mainContentFullWidth]}>
         {/* Left Side - Menu */}
-        <View style={styles.menuSection}>
+        <View style={[styles.menuSection, isCustomer && styles.menuSectionFullWidth]}>
           {/* Category Tabs */}
           <View style={styles.categoryContainer}>
             <ScrollView 
@@ -806,17 +823,18 @@ export default function MenuScreen({ navigation, route }) {
           </ScrollView>
         </View>
         
-        {/* Right Side - Order Form */}
-        {renderOrderForm()}
+        {/* Right Side - Order Form - Only show for non-customers */}
+        {!isCustomer && renderOrderForm()}
       </View>
 
-      {/* Order Creation Notification Modal */}
-      <Modal
-        visible={showOrderNotification}
-        transparent
-        animationType="fade"
-        onRequestClose={handleCloseNotification}
-      >
+      {/* Order Creation Notification Modal - Only show for non-customers */}
+      {!isCustomer && (
+        <Modal
+          visible={showOrderNotification}
+          transparent
+          animationType="fade"
+          onRequestClose={handleCloseNotification}
+        >
         <View style={styles.modalBackdrop}>
           <View style={styles.modalContainer}>
             <View style={styles.modalHeader}>
@@ -868,6 +886,7 @@ export default function MenuScreen({ navigation, route }) {
           </View>
         </View>
       </Modal>
+      )}
     </View>
   );
 }
@@ -1313,5 +1332,12 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     color: '#2C3E50',
     marginLeft: 0,
-  }
+  },
+  // Customer-specific styles for full-width menu
+  mainContentFullWidth: {
+    flexDirection: 'column', // Stack vertically instead of side-by-side
+  },
+  menuSectionFullWidth: {
+    flex: 1, // Take full available space
+  },
 });

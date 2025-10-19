@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
@@ -26,13 +26,14 @@ import UpdateInformationScreen from "./screens/UpdateInformationScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 
 // context
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, AuthContext } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
 import TableScreen from './screens/TableScreen';
 import BillScreen from './screens/BillScreen';
 import ReportScreen from './screens/ReportScreen';
 import MenuManagerScreen from './screens/MenuManagerScreen';
 import OrderDetailManagerScreen from './screens/OrderDetailManagerScreen';
+import OrderDetailScreen from './screens/OrderDetailScreen';
 
 const Stack = createStackNavigator();
 const { width: screenWidth } = Dimensions.get('window');
@@ -63,6 +64,31 @@ function ProfileStack() {
       />
     </Stack.Navigator>
   );
+}
+
+// Protected Screen Component
+function ProtectedScreen({ children, screenName, fallbackScreen = 'Home' }) {
+  const { hasAccessToScreen } = useContext(AuthContext);
+  const navigation = useNavigation();
+
+  React.useEffect(() => {
+    if (!hasAccessToScreen(screenName)) {
+      console.log(`Access denied to ${screenName}, redirecting to ${fallbackScreen}`);
+      navigation.replace(fallbackScreen);
+    }
+  }, [screenName, hasAccessToScreen, navigation, fallbackScreen]);
+
+  if (!hasAccessToScreen(screenName)) {
+    return (
+      <View style={styles.accessDeniedContainer}>
+        <MaterialCommunityIcons name="lock" size={60} color="#BDC3C7" />
+        <Text style={styles.accessDeniedTitle}>Access Denied</Text>
+        <Text style={styles.accessDeniedText}>You don't have permission to access this screen</Text>
+      </View>
+    );
+  }
+
+  return children;
 }
 
 // Main App Stack with Hamburger Menu
@@ -97,39 +123,64 @@ function MainAppStack({ openSidebar }) {
       />
       <Stack.Screen 
         name="Menu" 
-        component={MenuScreen}
         options={{ 
           headerTitle: 'Our Menu',
         }}
-      />
+      >
+        {(props) => (
+          <ProtectedScreen screenName="Menu">
+            <MenuScreen {...props} />
+          </ProtectedScreen>
+        )}
+      </Stack.Screen>
       <Stack.Screen 
         name="Orders" 
-        component={OrdersScreen}
         options={{ 
           headerTitle: 'My Orders',
         }}
-      />
+      >
+        {(props) => (
+          <ProtectedScreen screenName="Orders">
+            <OrdersScreen {...props} />
+          </ProtectedScreen>
+        )}
+      </Stack.Screen>
       <Stack.Screen 
         name="Table" 
-        component={TableScreen}
         options={{ 
           headerTitle: 'Our Table',
         }}
-      />
+      >
+        {(props) => (
+          <ProtectedScreen screenName="Table">
+            <TableScreen {...props} />
+          </ProtectedScreen>
+        )}
+      </Stack.Screen>
       <Stack.Screen 
         name="Bill" 
-        component={BillScreen}
         options={{ 
           headerTitle: 'Our Bill',
         }}
-      />
+      >
+        {(props) => (
+          <ProtectedScreen screenName="Bill">
+            <BillScreen {...props} />
+          </ProtectedScreen>
+        )}
+      </Stack.Screen>
       <Stack.Screen 
         name="Report" 
-        component={ReportScreen}
         options={{ 
           headerTitle: 'Our Report',
         }}
-      />
+      >
+        {(props) => (
+          <ProtectedScreen screenName="Report">
+            <ReportScreen {...props} />
+          </ProtectedScreen>
+        )}
+      </Stack.Screen>
       <Stack.Screen 
         name="Profile" 
         component={ProfileStack}
@@ -138,19 +189,41 @@ function MainAppStack({ openSidebar }) {
         }}
       />
       <Stack.Screen 
+        name="OrderDetail" 
+        options={{ 
+          headerTitle: 'Order Details',
+        }}
+      >
+        {(props) => (
+          <ProtectedScreen screenName="OrderDetail">
+            <OrderDetailScreen {...props} />
+          </ProtectedScreen>
+        )}
+      </Stack.Screen>
+      <Stack.Screen 
         name="MenuManager" 
-        component={MenuManagerScreen}
         options={{ 
           headerTitle: 'Quản Lý Món Ăn',
         }}
-      />
+      >
+        {(props) => (
+          <ProtectedScreen screenName="MenuManager">
+            <MenuManagerScreen {...props} />
+          </ProtectedScreen>
+        )}
+      </Stack.Screen>
       <Stack.Screen 
         name="OrderDetailManager" 
-        component={OrderDetailManagerScreen}
         options={{ 
           headerTitle: 'Trạng Thái Món Ăn',
         }}
-      />
+      >
+        {(props) => (
+          <ProtectedScreen screenName="OrderDetailManager">
+            <OrderDetailManagerScreen {...props} />
+          </ProtectedScreen>
+        )}
+      </Stack.Screen>
       <Stack.Screen
         name="Login"
         component={LoginScreen}
@@ -180,6 +253,7 @@ function MainAppStack({ openSidebar }) {
 // Custom Sidebar Menu Component
 function CustomSidebarMenu({ visible, onClose }) {
   const slideAnim = React.useRef(new Animated.Value(-SIDEBAR_WIDTH)).current;
+  const { user, getUserRole, getAccessibleMenuItems } = useContext(AuthContext);
 
   React.useEffect(() => {
     if (visible) {
@@ -206,20 +280,13 @@ function CustomSidebarMenu({ visible, onClose }) {
     }, 300);
   };
 
-  const menuItems = [
-    { name: 'Home', icon: 'home', title: 'Home', screen: 'Home' },
-    { name: 'Menu', icon: 'food', title: 'Our Menu', screen: 'Menu' },
-    { name: 'Orders', icon: 'clipboard-list', title: 'My Orders', screen: 'Orders' },
-    { name: 'Table', icon: 'table-chair', title: 'Our Table', screen: 'Table' },
-    { name: 'Bill', icon: 'file-document', title: 'Our Bill', screen: 'Bill' },
-    { name: 'Report', icon: 'file-chart', title: 'Our Report', screen: 'Report' },
-    { name: 'Profile', icon: 'account', title: 'My Profile', screen: 'Profile' },
-  ];
+  // Get role-based menu items
+  const { mainMenu, managementMenu } = getAccessibleMenuItems();
+  const userRole = getUserRole();
 
-  const managementItems = [
-    { name: 'MenuManager', icon: 'silverware-fork-knife', title: 'Quản Lý Món Ăn', screen: 'MenuManager' },
-    { name: 'OrderDetailManager', icon: 'food-fork-drink', title: 'Trạng Thái Món Ăn', screen: 'OrderDetailManager' },
-  ];
+  console.log('CustomSidebarMenu - Current user role:', userRole);
+  console.log('CustomSidebarMenu - Accessible main menu items:', mainMenu.length);
+  console.log('CustomSidebarMenu - Accessible management menu items:', managementMenu.length);
 
   return (
     <Modal
@@ -244,6 +311,9 @@ function CustomSidebarMenu({ visible, onClose }) {
                 <MaterialCommunityIcons name="silverware-fork-knife" size={40} color="#FF6B35" />
                 <Text style={styles.sidebarHeaderTitle}>Delicious Bites</Text>
                 <Text style={styles.sidebarHeaderSubtitle}>Restaurant Management</Text>
+                {user && (
+                  <Text style={styles.userRoleText}>Role: {userRole}</Text>
+                )}
               </View>
               
               <ScrollView 
@@ -251,31 +321,47 @@ function CustomSidebarMenu({ visible, onClose }) {
                 showsVerticalScrollIndicator={true}
                 contentContainerStyle={styles.sidebarItemsContent}
               >
-                <Text style={styles.sectionTitle}>Main Menu</Text>
-                {menuItems.map((item) => (
-                  <TouchableOpacity 
-                    key={item.name}
-                    style={styles.sidebarItem}
-                    onPress={() => handleMenuItemPress(item.screen)}
-                  >
-                    <MaterialCommunityIcons name={item.icon} size={24} color="#2C3E50" />
-                    <Text style={styles.sidebarItemText}>{item.title}</Text>
-                    <MaterialCommunityIcons name="chevron-right" size={20} color="#BDC3C7" />
-                  </TouchableOpacity>
-                ))}
+                {mainMenu.length > 0 && (
+                  <>
+                    <Text style={styles.sectionTitle}>Main Menu</Text>
+                    {mainMenu.map((item) => (
+                      <TouchableOpacity 
+                        key={item.name}
+                        style={styles.sidebarItem}
+                        onPress={() => handleMenuItemPress(item.screen)}
+                      >
+                        <MaterialCommunityIcons name={item.icon} size={24} color="#2C3E50" />
+                        <Text style={styles.sidebarItemText}>{item.title}</Text>
+                        <MaterialCommunityIcons name="chevron-right" size={20} color="#BDC3C7" />
+                      </TouchableOpacity>
+                    ))}
+                  </>
+                )}
 
-                <Text style={styles.sectionTitle}>Management</Text>
-                {managementItems.map((item) => (
-                  <TouchableOpacity 
-                    key={item.name}
-                    style={styles.sidebarItem}
-                    onPress={() => handleMenuItemPress(item.screen)}
-                  >
-                    <MaterialCommunityIcons name={item.icon} size={24} color="#FF6B35" />
-                    <Text style={[styles.sidebarItemText, { color: '#FF6B35' }]}>{item.title}</Text>
-                    <MaterialCommunityIcons name="chevron-right" size={20} color="#BDC3C7" />
-                  </TouchableOpacity>
-                ))}
+                {managementMenu.length > 0 && (
+                  <>
+                    <Text style={styles.sectionTitle}>Management</Text>
+                    {managementMenu.map((item) => (
+                      <TouchableOpacity 
+                        key={item.name}
+                        style={styles.sidebarItem}
+                        onPress={() => handleMenuItemPress(item.screen)}
+                      >
+                        <MaterialCommunityIcons name={item.icon} size={24} color="#FF6B35" />
+                        <Text style={[styles.sidebarItemText, { color: '#FF6B35' }]}>{item.title}</Text>
+                        <MaterialCommunityIcons name="chevron-right" size={20} color="#BDC3C7" />
+                      </TouchableOpacity>
+                    ))}
+                  </>
+                )}
+
+                {mainMenu.length === 0 && managementMenu.length === 0 && (
+                  <View style={styles.noAccessContainer}>
+                    <MaterialCommunityIcons name="lock" size={40} color="#BDC3C7" />
+                    <Text style={styles.noAccessText}>No accessible screens for your role</Text>
+                    <Text style={styles.noAccessSubtext}>Contact your administrator</Text>
+                  </View>
+                )}
               </ScrollView>
 
               <View style={styles.sidebarFooter}>
@@ -381,6 +467,51 @@ const styles = StyleSheet.create({
   hamburgerButton: {
     marginLeft: 15,
     padding: 5,
+  },
+  userRoleText: {
+    color: '#BDC3C7',
+    fontSize: 12,
+    marginTop: 2,
+    fontStyle: 'italic',
+  },
+  noAccessContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 40,
+  },
+  noAccessText: {
+    fontSize: 16,
+    color: '#7F8C8D',
+    textAlign: 'center',
+    marginTop: 10,
+    fontWeight: '500',
+  },
+  noAccessSubtext: {
+    fontSize: 12,
+    color: '#BDC3C7',
+    textAlign: 'center',
+    marginTop: 5,
+  },
+  accessDeniedContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+    padding: 40,
+  },
+  accessDeniedTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  accessDeniedText: {
+    fontSize: 16,
+    color: '#7F8C8D',
+    textAlign: 'center',
+    lineHeight: 22,
   },
 });
 

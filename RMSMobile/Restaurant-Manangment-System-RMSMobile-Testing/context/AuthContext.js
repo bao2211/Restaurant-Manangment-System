@@ -168,6 +168,84 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Role-based access control functions
+  const getUserRole = () => {
+    return user?.role || user?.Role || 'Customer';
+  };
+
+  const hasAccessToScreen = (screenName) => {
+    const userRole = getUserRole();
+    console.log('Checking access for role:', userRole, 'to screen:', screenName);
+    
+    // Admin has access to everything
+    if (userRole === 'Admin' || userRole === 'admin' || userRole === 'ADMIN') {
+      return true;
+    }
+
+    // Define role permissions based on the requirements
+    const rolePermissions = {
+      'NV': ['Home', 'Table', 'Menu', 'Orders', 'OrderDetail', 'Profile'],
+      'nv': ['Home', 'Table', 'Menu', 'Orders', 'OrderDetail', 'Profile'], // lowercase variant
+      'TN': ['Home', 'Orders', 'Bill', 'Profile'],
+      'tn': ['Home', 'Orders', 'Bill', 'Profile'], // lowercase variant
+      'Bep': ['Home', 'OrderDetailManager', 'Profile'],  
+      'bep': ['Home', 'OrderDetailManager', 'Profile'], // lowercase variant
+      'BEP': ['Home', 'OrderDetailManager', 'Profile'], // uppercase variant
+      'Customer': ['Home', 'Menu', 'Profile'],
+      'customer': ['Home', 'Menu', 'Profile'], // lowercase variant
+      'CUSTOMER': ['Home', 'Menu', 'Profile'], // uppercase variant
+    };
+
+    const allowedScreens = rolePermissions[userRole] || ['Home', 'Profile']; // Default fallback
+    const hasAccess = allowedScreens.includes(screenName);
+    
+    console.log(`Role ${userRole} access to ${screenName}: ${hasAccess ? 'GRANTED' : 'DENIED'}`);
+    console.log(`Allowed screens for ${userRole}:`, allowedScreens);
+    
+    return hasAccess;
+  };
+
+  const getAccessibleMenuItems = () => {
+    const userRole = getUserRole();
+    console.log('Getting accessible menu items for role:', userRole);
+    
+    const allMenuItems = [
+      { name: 'Home', icon: 'home', title: 'Home', screen: 'Home' },
+      { name: 'Menu', icon: 'food', title: 'Our Menu', screen: 'Menu' },
+      { name: 'Orders', icon: 'clipboard-list', title: 'My Orders', screen: 'Orders' },
+      { name: 'OrderDetail', icon: 'clipboard-text', title: 'Order Details', screen: 'OrderDetail' },
+      { name: 'Table', icon: 'table-chair', title: 'Our Table', screen: 'Table' },
+      { name: 'Bill', icon: 'file-document', title: 'Our Bill', screen: 'Bill' },
+      { name: 'Report', icon: 'file-chart', title: 'Our Report', screen: 'Report' },
+      { name: 'Profile', icon: 'account', title: 'My Profile', screen: 'Profile' },
+    ];
+
+    const managementItems = [
+      { name: 'MenuManager', icon: 'silverware-fork-knife', title: 'Quản Lý Món Ăn', screen: 'MenuManager' },
+      { name: 'OrderDetailManager', icon: 'food-fork-drink', title: 'Trạng Thái Món Ăn', screen: 'OrderDetailManager' },
+    ];
+
+    // Filter menu items based on role permissions
+    const accessibleMainMenu = allMenuItems.filter(item => {
+      const hasAccess = hasAccessToScreen(item.screen);
+      console.log(`Menu item ${item.name} (${item.screen}) - Access: ${hasAccess ? 'YES' : 'NO'}`);
+      return hasAccess;
+    });
+    
+    const accessibleManagementMenu = managementItems.filter(item => {
+      const hasAccess = hasAccessToScreen(item.screen);
+      console.log(`Management item ${item.name} (${item.screen}) - Access: ${hasAccess ? 'YES' : 'NO'}`);
+      return hasAccess;
+    });
+
+    console.log(`Final accessible items - Main: ${accessibleMainMenu.length}, Management: ${accessibleManagementMenu.length}`);
+
+    return {
+      mainMenu: accessibleMainMenu,
+      managementMenu: accessibleManagementMenu
+    };
+  };
+
   return (
     <AuthContext.Provider value={{ 
       user, 
@@ -176,7 +254,10 @@ export const AuthProvider = ({ children }) => {
       updateUserPassword, 
       updateUserInfo, 
       updateUserProfile, 
-      loading 
+      loading,
+      getUserRole,
+      hasAccessToScreen,
+      getAccessibleMenuItems
     }}>
       {children}
     </AuthContext.Provider>
