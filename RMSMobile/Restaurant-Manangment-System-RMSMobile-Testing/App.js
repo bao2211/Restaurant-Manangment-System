@@ -33,7 +33,8 @@ import BillScreen from './screens/BillScreen';
 import ReportScreen from './screens/ReportScreen';
 import MenuManagerScreen from './screens/MenuManagerScreen';
 import OrderDetailManagerScreen from './screens/OrderDetailManagerScreen';
-import OrderDetailScreen from './screens/OrderDetailScreen';
+import IngredientManagerScreen from './screens/IngredientManagerScreen';
+
 
 const Stack = createStackNavigator();
 const { width: screenWidth } = Dimensions.get('window');
@@ -111,13 +112,6 @@ function MainAppStack({ openSidebar }) {
         }}
       />
       <Stack.Screen 
-        name="OrderDetail" 
-        component={OrderDetailScreen}
-        options={{ 
-          headerTitle: 'Order Details',
-        }}
-      />
-      <Stack.Screen 
         name="Table" 
         component={TableScreen}
         options={{ 
@@ -157,6 +151,13 @@ function MainAppStack({ openSidebar }) {
         component={OrderDetailManagerScreen}
         options={{ 
           headerTitle: 'Trạng Thái Món Ăn',
+        }}
+      />
+      <Stack.Screen 
+        name="IngredientManager" 
+        component={IngredientManagerScreen}
+        options={{ 
+          headerTitle: 'Quản Lý Nguyên Liệu',
         }}
       />
       <Stack.Screen
@@ -218,11 +219,12 @@ function CustomSidebarMenu({ visible, onClose }) {
     { name: 'Home', icon: 'home', title: 'Home', screen: 'Home' },
     { name: 'Menu', icon: 'food', title: 'Our Menu', screen: 'Menu' },
     { name: 'Orders', icon: 'clipboard-list', title: 'My Orders', screen: 'Orders' },
-    { name: 'OrderDetail', icon: 'clipboard-text', title: 'Order Details', screen: 'OrderDetail' },
     { name: 'Table', icon: 'table-chair', title: 'Our Table', screen: 'Table' },
     { name: 'Bill', icon: 'file-document', title: 'Our Bill', screen: 'Bill' },
     { name: 'Report', icon: 'file-chart', title: 'Our Report', screen: 'Report' },
+    { name: 'Ingredient', icon: 'apple', title: 'Our Ingredients', screen: 'IngredientManager' },
     { name: 'Profile', icon: 'account', title: 'My Profile', screen: 'Profile' },
+    
   ];
 
   const managementItems = [
