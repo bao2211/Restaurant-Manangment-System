@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// Base API configuration
-const API_BASE_URL = 'http://46.250.231.129:8080/'; // Remote server URL
+// Base API configuration (no trailing slash to avoid double-slash when joining paths)
+const API_BASE_URL = 'http://46.250.231.129:8080'; // Remote server URL
 // For local testing use: 'https://localhost:7127/' or 'http://localhost:8080/'
 
 const api = axios.create({
@@ -1539,6 +1539,69 @@ export const apiService = {
       return extractedData;
     } catch (error) {
       console.error('Error fetching all ingredients:', error);
+      throw error;
+    }
+  },
+   // Ingredient Items CRUD operations
+  createIngredient: async (ingredientData) => {
+    try {
+      console.log('Creating ingredient:', ingredientData);
+      const response = await api.post('/api/Ingredient', ingredientData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating ingredient:', error);
+      throw error;
+    }
+  },
+
+  updateIngredient: async (ingreID, ingredientData) => {
+    try {
+      console.log('Updating ingredient:', ingreID, ingredientData);
+      const response = await api.put(`/api/Ingredient/${ingreID}`, ingredientData);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating ingredient:', error);
+      throw error;
+    }
+  },
+
+  deleteIngredient: async (ingreID) => {
+    try {
+      const id = (ingreID ?? '').toString().trim();
+      if (!id) throw new Error('Invalid ingredient id');
+
+      console.log('Deleting ingredient:', id);
+      // Build full URL to avoid baseURL + leading slash issues
+      const fullUrl = `${API_BASE_URL.replace(/\/$/, '')}/api/Ingredient/${encodeURIComponent(id)}`;
+      console.log('DELETE full URL:', fullUrl);
+
+      try {
+        const response = await api.delete(`/api/Ingredient/${encodeURIComponent(id)}`);
+        console.log('Delete response status:', response.status, 'data:', response.data);
+        return response.data;
+      } catch (axiosError) {
+        console.error('Axios delete failed:', axiosError.message || axiosError);
+        // If network/CORS issue, try native fetch as fallback to capture server response
+        const isNetwork = axiosError.code === 'ERR_NETWORK' || axiosError.message === 'Network Error';
+        if (isNetwork) {
+          console.log('Attempting fetch fallback for delete...');
+          try {
+            const fetchResp = await fetch(fullUrl, { method: 'DELETE' });
+            console.log('Fetch fallback status:', fetchResp.status);
+            if (!fetchResp.ok) {
+              const text = await fetchResp.text();
+              throw new Error(`Fetch delete failed: ${fetchResp.status} ${text}`);
+            }
+            try { const data = await fetchResp.json(); return data; } catch(e) { return {}; }
+          } catch (fetchError) {
+            console.error('Fetch fallback failed:', fetchError);
+            throw axiosError; // rethrow original axios error for UI handling
+          }
+        }
+        throw axiosError; // rethrow for non-network errors
+      }
+    } catch (error) {
+      console.error('Error deleting ingredient:', error);
       throw error;
     }
   },
