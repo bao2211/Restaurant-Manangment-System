@@ -1,0 +1,454 @@
+"shadow*" style props are deprecated. Use "boxShadow". <anonymous code>:1:147461
+props.pointerEvents is deprecated. Use style.pointerEvents Component Stack: 
+    Choo 4
+    div unknown:0
+    Choo 2
+    div unknown:0
+    Choo 4
+    div unknown:0
+    Choo 4
+    div unknown:0
+    Choo 4
+    node_modules bundle.js:5332
+    Choo 9
+    App unknown:0
+    withDevTools(App) unknown:0
+<anonymous code>:1:147461
+Getting accessible menu items for role: Customer bundle.js:1127:13
+Checking access for role: Customer to screen: Home bundle.js:1103:13
+Role Customer access to Home: GRANTED bundle.js:1121:13
+Allowed screens for Customer: 
+Array(3) [ "Home", "Menu", "Profile" ]
+bundle.js:1122:13
+Menu item Home (Home) - Access: YES bundle.js:1187:15
+Checking access for role: Customer to screen: Menu bundle.js:1103:13
+Role Customer access to Menu: GRANTED bundle.js:1121:13
+Allowed screens for Customer: 
+Array(3) [ "Home", "Menu", "Profile" ]
+bundle.js:1122:13
+Menu item Menu (Menu) - Access: YES bundle.js:1187:15
+Checking access for role: Customer to screen: Orders bundle.js:1103:13
+Role Customer access to Orders: DENIED bundle.js:1121:13
+Allowed screens for Customer: 
+Array(3) [ "Home", "Menu", "Profile" ]
+bundle.js:1122:13
+Menu item Orders (Orders) - Access: NO bundle.js:1187:15
+Checking access for role: Customer to screen: OrderDetail bundle.js:1103:13
+Role Customer access to OrderDetail: DENIED bundle.js:1121:13
+Allowed screens for Customer: 
+Array(3) [ "Home", "Menu", "Profile" ]
+bundle.js:1122:13
+Menu item OrderDetail (OrderDetail) - Access: NO bundle.js:1187:15
+Checking access for role: Customer to screen: Table bundle.js:1103:13
+Role Customer access to Table: DENIED bundle.js:1121:13
+Allowed screens for Customer: 
+Array(3) [ "Home", "Menu", "Profile" ]
+bundle.js:1122:13
+Menu item Table (Table) - Access: NO bundle.js:1187:15
+Checking access for role: Customer to screen: Bill bundle.js:1103:13
+Role Customer access to Bill: DENIED bundle.js:1121:13
+Allowed screens for Customer: 
+Array(3) [ "Home", "Menu", "Profile" ]
+bundle.js:1122:13
+Menu item Bill (Bill) - Access: NO bundle.js:1187:15
+Checking access for role: Customer to screen: BillManager bundle.js:1103:13
+Role Customer access to BillManager: DENIED bundle.js:1121:13
+Allowed screens for Customer: 
+Array(3) [ "Home", "Menu", "Profile" ]
+bundle.js:1122:13
+Menu item BillManager (BillManager) - Access: NO bundle.js:1187:15
+Checking access for role: Customer to screen: Report bundle.js:1103:13
+Role Customer access to Report: DENIED bundle.js:1121:13
+Allowed screens for Customer: 
+Array(3) [ "Home", "Menu", "Profile" ]
+bundle.js:1122:13
+Menu item Report (Report) - Access: NO bundle.js:1187:15
+Checking access for role: Customer to screen: Profile bundle.js:1103:13
+Role Customer access to Profile: GRANTED bundle.js:1121:13
+Allowed screens for Customer: 
+Array(3) [ "Home", "Menu", "Profile" ]
+bundle.js:1122:13
+Menu item Profile (Profile) - Access: YES bundle.js:1187:15
+Checking access for role: Customer to screen: MenuManager bundle.js:1103:13
+Role Customer access to MenuManager: DENIED bundle.js:1121:13
+Allowed screens for Customer: 
+Array(3) [ "Home", "Menu", "Profile" ]
+bundle.js:1122:13
+Management item MenuManager (MenuManager) - Access: NO bundle.js:1192:15
+Checking access for role: Customer to screen: OrderDetailManager bundle.js:1103:13
+Role Customer access to OrderDetailManager: DENIED bundle.js:1121:13
+Allowed screens for Customer: 
+Array(3) [ "Home", "Menu", "Profile" ]
+bundle.js:1122:13
+Management item OrderDetailManager (OrderDetailManager) - Access: NO bundle.js:1192:15
+Final accessible items - Main: 3, Management: 0 bundle.js:1195:13
+CustomSidebarMenu - Current user role: Customer bundle.js:349:11
+CustomSidebarMenu - Accessible main menu items: 3 bundle.js:350:11
+CustomSidebarMenu - Accessible management menu items: 0 bundle.js:351:11
+Animated: `useNativeDriver` is not supported because the native animated module is missing. Falling back to JS-based animation. To resolve this, add `RCTAnimation` module to this app, or remove `useNativeDriver`. Make sure to run `bundle exec pod install` first. Read more about autolinking: https://github.com/react-native-community/cli/blob/master/docs/autolinking.md Component Stack: 
+    Choo 8
+    App unknown:0
+    withDevTools(App) unknown:0
+<anonymous code>:1:147461
+Getting accessible menu items for role: Admin bundle.js:1127:13
+Checking access for role: Admin to screen: Home bundle.js:1103:13
+Menu item Home (Home) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: Menu bundle.js:1103:13
+Menu item Menu (Menu) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: Orders bundle.js:1103:13
+Menu item Orders (Orders) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: OrderDetail bundle.js:1103:13
+Menu item OrderDetail (OrderDetail) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: Table bundle.js:1103:13
+Menu item Table (Table) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: Bill bundle.js:1103:13
+Menu item Bill (Bill) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: BillManager bundle.js:1103:13
+Menu item BillManager (BillManager) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: Report bundle.js:1103:13
+Menu item Report (Report) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: Profile bundle.js:1103:13
+Menu item Profile (Profile) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: MenuManager bundle.js:1103:13
+Management item MenuManager (MenuManager) - Access: YES bundle.js:1192:15
+Checking access for role: Admin to screen: OrderDetailManager bundle.js:1103:13
+Management item OrderDetailManager (OrderDetailManager) - Access: YES bundle.js:1192:15
+Final accessible items - Main: 9, Management: 2 bundle.js:1195:13
+CustomSidebarMenu - Current user role: Admin bundle.js:349:11
+CustomSidebarMenu - Accessible main menu items: 9 bundle.js:350:11
+CustomSidebarMenu - Accessible management menu items: 2 bundle.js:351:11
+Source map error: Error: JSON.parse: unexpected character at line 1 column 1 of the JSON data
+Stack in the worker:parseSourceMapInput@resource://devtools/client/shared/vendor/source-map/lib/util.js:163:15
+_factory@resource://devtools/client/shared/vendor/source-map/lib/source-map-consumer.js:1069:22
+SourceMapConsumer@resource://devtools/client/shared/vendor/source-map/lib/source-map-consumer.js:26:12
+_fetch@resource://devtools/client/shared/source-map-loader/utils/fetchSourceMap.js:83:19
+
+Resource URL: http://localhost:19006/%3Canonymous%20code%3E
+Source Map URL: installHook.js.map
+Getting accessible menu items for role: Admin bundle.js:1127:13
+Checking access for role: Admin to screen: Home bundle.js:1103:13
+Menu item Home (Home) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: Menu bundle.js:1103:13
+Menu item Menu (Menu) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: Orders bundle.js:1103:13
+Menu item Orders (Orders) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: OrderDetail bundle.js:1103:13
+Menu item OrderDetail (OrderDetail) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: Table bundle.js:1103:13
+Menu item Table (Table) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: Bill bundle.js:1103:13
+Menu item Bill (Bill) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: BillManager bundle.js:1103:13
+Menu item BillManager (BillManager) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: Report bundle.js:1103:13
+Menu item Report (Report) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: Profile bundle.js:1103:13
+Menu item Profile (Profile) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: MenuManager bundle.js:1103:13
+Management item MenuManager (MenuManager) - Access: YES bundle.js:1192:15
+Checking access for role: Admin to screen: OrderDetailManager bundle.js:1103:13
+Management item OrderDetailManager (OrderDetailManager) - Access: YES bundle.js:1192:15
+Final accessible items - Main: 9, Management: 2 bundle.js:1195:13
+CustomSidebarMenu - Current user role: Admin bundle.js:349:11
+CustomSidebarMenu - Accessible main menu items: 9 bundle.js:350:11
+CustomSidebarMenu - Accessible management menu items: 2 bundle.js:351:11
+TouchableWithoutFeedback is deprecated. Please use Pressable. Component Stack: 
+    TouchableWithoutFeedback Choo
+    div unknown:0
+    View Choo
+    div unknown:0
+    Choo 2
+    div unknown:0
+    Choo 2
+    div unknown:0
+    Choo 11
+    App unknown:0
+    withDevTools(App) unknown:0
+<anonymous code>:1:147461
+Getting accessible menu items for role: Admin bundle.js:1127:13
+Checking access for role: Admin to screen: Home bundle.js:1103:13
+Menu item Home (Home) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: Menu bundle.js:1103:13
+Menu item Menu (Menu) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: Orders bundle.js:1103:13
+Menu item Orders (Orders) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: OrderDetail bundle.js:1103:13
+Menu item OrderDetail (OrderDetail) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: Table bundle.js:1103:13
+Menu item Table (Table) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: Bill bundle.js:1103:13
+Menu item Bill (Bill) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: BillManager bundle.js:1103:13
+Menu item BillManager (BillManager) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: Report bundle.js:1103:13
+Menu item Report (Report) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: Profile bundle.js:1103:13
+Menu item Profile (Profile) - Access: YES bundle.js:1187:15
+Checking access for role: Admin to screen: MenuManager bundle.js:1103:13
+Management item MenuManager (MenuManager) - Access: YES bundle.js:1192:15
+Checking access for role: Admin to screen: OrderDetailManager bundle.js:1103:13
+Management item OrderDetailManager (OrderDetailManager) - Access: YES bundle.js:1192:15
+Final accessible items - Main: 9, Management: 2 bundle.js:1195:13
+CustomSidebarMenu - Current user role: Admin bundle.js:349:11
+CustomSidebarMenu - Accessible main menu items: 9 bundle.js:350:11
+CustomSidebarMenu - Accessible management menu items: 2 bundle.js:351:11
+Checking access for role: Admin to screen: BillManager bundle.js:1103:13
+Fetching all orders from API... bundle.js:100486:17
+Fetching all bills from API... bundle.js:101118:17
+Checking access for role: Admin to screen: BillManager bundle.js:1103:13
+🚀 Making GET request to: /api/Order bundle.js:99956:11
+🚀 Making GET request to: /api/Bill bundle.js:99956:11
+✅ Response received: 200 OK bundle.js:99963:11
+Raw orders response: 
+Array(64) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+bundle.js:100488:17
+extractApiData - Input data: 
+Array(64) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+bundle.js:100123:11
+Found direct array with length: 64 bundle.js:100125:13
+normalizeKeyName: status -> status 181 bundle.js:100003:13
+extractApiData - Processed items: 64 bundle.js:100140:13
+extractApiData - Sample processed item: 
+Object { id: "HD12D62804", tableId: "2", userId: "4", orderDate: "2025-07-05T18:42:05.943", status: "Đã tạo bill", total: 882005, discount: 0, orderDetails: (1) […] }
+bundle.js:100141:13
+Extracted orders data: 
+Array(64) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+bundle.js:100490:17
+Fetching completed orders... bundle.js:86093:17
+Total orders: 64 bundle.js:86094:17
+Fetching all bills from API... bundle.js:101118:17
+🚀 Making GET request to: /api/Bill bundle.js:99956:11
+✅ Response received: 200 OK bundle.js:99963:11
+Raw bills response: 
+Array(39) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+bundle.js:101120:17
+extractApiData - Input data: 
+Array(39) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+bundle.js:100123:11
+Found direct array with length: 39 bundle.js:100125:13
+extractApiData - Processed items: 39 bundle.js:100140:13
+extractApiData - Sample processed item: 
+Object { billId: "486yrdza31", orderId: "ORD8419448", userId: "4", userName: "VAnh", total: 40000, discount: 0, totalFinal: 40000, payment: "Chưa thanh toán", createdTime: "2025-10-27T15:57:31.35" }
+bundle.js:100141:13
+Extracted bills data: 
+Array(39) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+bundle.js:101122:17
+Fetched bills: 
+Array(39) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+bundle.js:86135:17
+✅ Response received: 200 OK bundle.js:99963:11
+Raw bills response: 
+Array(39) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+bundle.js:101120:17
+extractApiData - Input data: 
+Array(39) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+bundle.js:100123:11
+Found direct array with length: 39 bundle.js:100125:13
+extractApiData - Processed items: 39 bundle.js:100140:13
+extractApiData - Sample processed item: 
+Object { billId: "486yrdza31", orderId: "ORD8419448", userId: "4", userName: "VAnh", total: 40000, discount: 0, totalFinal: 40000, payment: "Chưa thanh toán", createdTime: "2025-10-27T15:57:31.35" }
+bundle.js:100141:13
+Extracted bills data: 
+Array(39) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+bundle.js:101122:17
+Completed orders without bills: 6 bundle.js:86108:17
+Fetching order details for orderId: HDAF3E40F4 bundle.js:100864:17
+Fetching order details for orderId: ORD0239017 bundle.js:100864:17
+Fetching order details for orderId: ORD1534806 bundle.js:100864:17
+Fetching order details for orderId: ORD3110537 bundle.js:100864:17
+Fetching order details for orderId: ORD3143692 bundle.js:100864:17
+Fetching order details for orderId: ORD3602796 bundle.js:100864:17
+🚀 Making GET request to: /api/OrderDetail/order/HDAF3E40F4 bundle.js:99956:11
+🚀 Making GET request to: /api/OrderDetail/order/ORD0239017 bundle.js:99956:11
+🚀 Making GET request to: /api/OrderDetail/order/ORD1534806 bundle.js:99956:11
+🚀 Making GET request to: /api/OrderDetail/order/ORD3110537 bundle.js:99956:11
+🚀 Making GET request to: /api/OrderDetail/order/ORD3143692 bundle.js:99956:11
+🚀 Making GET request to: /api/OrderDetail/order/ORD3602796 bundle.js:99956:11
+✅ Response received: 200 OK bundle.js:99963:11
+Raw order details API response: 
+Array [ {…}, {…} ]
+bundle.js:100866:17
+extractApiData - Input data: 
+Array [ {…}, {…} ]
+bundle.js:100123:11
+Found direct array with length: 2 bundle.js:100125:13
+normalizeKeyName: status -> status 2 bundle.js:100003:13
+extractApiData - Processed items: 2 bundle.js:100140:13
+extractApiData - Sample processed item: 
+Object { foodId: "10", foodName: "Mì xào bò", orderId: "HDAF3E40F4", quantity: 1, unitPrice: 45000, status: "Hoàn tất" }
+bundle.js:100141:13
+API normalizeOrderDetailStatus called with: Hoàn tất type: string bundle.js:100072:11
+API: Original: Hoàn tất Cleaned: Hoàn tất Normalized: hoàn tất bundle.js:100081:11
+API: Direct match found: Hoàn tất bundle.js:100110:13
+API normalizeOrderDetailStatus called with: Hoàn tất type: string bundle.js:100072:11
+API: Original: Hoàn tất Cleaned: Hoàn tất Normalized: hoàn tất bundle.js:100081:11
+API: Direct match found: Hoàn tất bundle.js:100110:13
+Extracted order details: 
+Array [ {…}, {…} ]
+bundle.js:100877:17
+Sample order detail with status: 
+Object { foodId: "10", foodName: "Mì xào bò", orderId: "HDAF3E40F4", quantity: 1, unitPrice: 45000, status: "Hoàn tất" }
+bundle.js:100878:17
+✅ Response received: 200 OK bundle.js:99963:11
+Raw order details API response: 
+Array [ {…} ]
+bundle.js:100866:17
+extractApiData - Input data: 
+Array [ {…} ]
+bundle.js:100123:11
+Found direct array with length: 1 bundle.js:100125:13
+normalizeKeyName: status -> status bundle.js:100003:13
+extractApiData - Processed items: 1 bundle.js:100140:13
+extractApiData - Sample processed item: 
+Object { foodId: "18", foodName: "Nước ngọt Cocacola", orderId: "ORD0239017", quantity: 1, unitPrice: 15000, status: "Hoàn tất" }
+bundle.js:100141:13
+API normalizeOrderDetailStatus called with: Hoàn tất type: string bundle.js:100072:11
+API: Original: Hoàn tất Cleaned: Hoàn tất Normalized: hoàn tất bundle.js:100081:11
+API: Direct match found: Hoàn tất bundle.js:100110:13
+Extracted order details: 
+Array [ {…} ]
+bundle.js:100877:17
+Sample order detail with status: 
+Object { foodId: "18", foodName: "Nước ngọt Cocacola", orderId: "ORD0239017", quantity: 1, unitPrice: 15000, status: "Hoàn tất" }
+bundle.js:100878:17
+✅ Response received: 200 OK bundle.js:99963:11
+Raw order details API response: 
+Array [ {…}, {…} ]
+bundle.js:100866:17
+extractApiData - Input data: 
+Array [ {…}, {…} ]
+bundle.js:100123:11
+Found direct array with length: 2 bundle.js:100125:13
+normalizeKeyName: status -> status 2 bundle.js:100003:13
+extractApiData - Processed items: 2 bundle.js:100140:13
+extractApiData - Sample processed item: 
+Object { foodId: "6", foodName: "Canh rong biển", orderId: "ORD1534806", quantity: 1, unitPrice: 40000, status: "Hoàn tất" }
+bundle.js:100141:13
+API normalizeOrderDetailStatus called with: Hoàn tất type: string bundle.js:100072:11
+API: Original: Hoàn tất Cleaned: Hoàn tất Normalized: hoàn tất bundle.js:100081:11
+API: Direct match found: Hoàn tất bundle.js:100110:13
+API normalizeOrderDetailStatus called with: Hoàn tất type: string bundle.js:100072:11
+API: Original: Hoàn tất Cleaned: Hoàn tất Normalized: hoàn tất bundle.js:100081:11
+API: Direct match found: Hoàn tất bundle.js:100110:13
+Extracted order details: 
+Array [ {…}, {…} ]
+bundle.js:100877:17
+Sample order detail with status: 
+Object { foodId: "6", foodName: "Canh rong biển", orderId: "ORD1534806", quantity: 1, unitPrice: 40000, status: "Hoàn tất" }
+bundle.js:100878:17
+✅ Response received: 200 OK bundle.js:99963:11
+Raw order details API response: 
+Array(5) [ {…}, {…}, {…}, {…}, {…} ]
+bundle.js:100866:17
+extractApiData - Input data: 
+Array(5) [ {…}, {…}, {…}, {…}, {…} ]
+bundle.js:100123:11
+Found direct array with length: 5 bundle.js:100125:13
+normalizeKeyName: status -> status 5 bundle.js:100003:13
+extractApiData - Processed items: 5 bundle.js:100140:13
+extractApiData - Sample processed item: 
+Object { foodId: "17", foodName: "Nước suối", orderId: "ORD3110537", quantity: 1, unitPrice: 7000, status: "Hoàn tất" }
+bundle.js:100141:13
+API normalizeOrderDetailStatus called with: Hoàn tất type: string bundle.js:100072:11
+API: Original: Hoàn tất Cleaned: Hoàn tất Normalized: hoàn tất bundle.js:100081:11
+API: Direct match found: Hoàn tất bundle.js:100110:13
+API normalizeOrderDetailStatus called with: Hoàn tất type: string bundle.js:100072:11
+API: Original: Hoàn tất Cleaned: Hoàn tất Normalized: hoàn tất bundle.js:100081:11
+API: Direct match found: Hoàn tất bundle.js:100110:13
+API normalizeOrderDetailStatus called with: Hoàn tất type: string bundle.js:100072:11
+API: Original: Hoàn tất Cleaned: Hoàn tất Normalized: hoàn tất bundle.js:100081:11
+API: Direct match found: Hoàn tất bundle.js:100110:13
+API normalizeOrderDetailStatus called with: Hoàn tất type: string bundle.js:100072:11
+API: Original: Hoàn tất Cleaned: Hoàn tất Normalized: hoàn tất bundle.js:100081:11
+API: Direct match found: Hoàn tất bundle.js:100110:13
+API normalizeOrderDetailStatus called with: Hoàn tất type: string bundle.js:100072:11
+API: Original: Hoàn tất Cleaned: Hoàn tất Normalized: hoàn tất bundle.js:100081:11
+API: Direct match found: Hoàn tất bundle.js:100110:13
+Extracted order details: 
+Array(5) [ {…}, {…}, {…}, {…}, {…} ]
+bundle.js:100877:17
+Sample order detail with status: 
+Object { foodId: "17", foodName: "Nước suối", orderId: "ORD3110537", quantity: 1, unitPrice: 7000, status: "Hoàn tất" }
+bundle.js:100878:17
+✅ Response received: 200 OK bundle.js:99963:11
+Raw order details API response: 
+Array(3) [ {…}, {…}, {…} ]
+bundle.js:100866:17
+extractApiData - Input data: 
+Array(3) [ {…}, {…}, {…} ]
+bundle.js:100123:11
+Found direct array with length: 3 bundle.js:100125:13
+normalizeKeyName: status -> status 3 bundle.js:100003:13
+extractApiData - Processed items: 3 bundle.js:100140:13
+extractApiData - Sample processed item: 
+Object { foodId: "18", foodName: "Nước ngọt Cocacola", orderId: "ORD3143692", quantity: 1, unitPrice: 15000, status: "Hoàn tất" }
+bundle.js:100141:13
+API normalizeOrderDetailStatus called with: Hoàn tất type: string bundle.js:100072:11
+API: Original: Hoàn tất Cleaned: Hoàn tất Normalized: hoàn tất bundle.js:100081:11
+API: Direct match found: Hoàn tất bundle.js:100110:13
+API normalizeOrderDetailStatus called with: Hoàn tất type: string bundle.js:100072:11
+API: Original: Hoàn tất Cleaned: Hoàn tất Normalized: hoàn tất bundle.js:100081:11
+API: Direct match found: Hoàn tất bundle.js:100110:13
+API normalizeOrderDetailStatus called with: Hoàn tất type: string bundle.js:100072:11
+API: Original: Hoàn tất Cleaned: Hoàn tất Normalized: hoàn tất bundle.js:100081:11
+API: Direct match found: Hoàn tất bundle.js:100110:13
+Extracted order details: 
+Array(3) [ {…}, {…}, {…} ]
+bundle.js:100877:17
+Sample order detail with status: 
+Object { foodId: "18", foodName: "Nước ngọt Cocacola", orderId: "ORD3143692", quantity: 1, unitPrice: 15000, status: "Hoàn tất" }
+bundle.js:100878:17
+✅ Response received: 200 OK bundle.js:99963:11
+Raw order details API response: 
+Array [ {…}, {…} ]
+bundle.js:100866:17
+extractApiData - Input data: 
+Array [ {…}, {…} ]
+bundle.js:100123:11
+Found direct array with length: 2 bundle.js:100125:13
+normalizeKeyName: status -> status 2 bundle.js:100003:13
+extractApiData - Processed items: 2 bundle.js:100140:13
+extractApiData - Sample processed item: 
+Object { foodId: "10", foodName: "Mì xào bò", orderId: "ORD3602796", quantity: 1, unitPrice: 40000, status: "Hoàn tất" }
+bundle.js:100141:13
+API normalizeOrderDetailStatus called with: Hoàn tất type: string bundle.js:100072:11
+API: Original: Hoàn tất Cleaned: Hoàn tất Normalized: hoàn tất bundle.js:100081:11
+API: Direct match found: Hoàn tất bundle.js:100110:13
+API normalizeOrderDetailStatus called with: Hoàn tất type: string bundle.js:100072:11
+API: Original: Hoàn tất Cleaned: Hoàn tất Normalized: hoàn tất bundle.js:100081:11
+API: Direct match found: Hoàn tất bundle.js:100110:13
+Extracted order details: 
+Array [ {…}, {…} ]
+bundle.js:100877:17
+Sample order detail with status: 
+Object { foodId: "10", foodName: "Mì xào bò", orderId: "ORD3602796", quantity: 1, unitPrice: 40000, status: "Hoàn tất" }
+bundle.js:100878:17
+Creating bill: 
+Object { billId: "4jnueoi5aa", orderId: "ORD3602796", userId: "4", userName: "VAnh", total: 70000, discount: 0, totalFinal: 70000, payment: "Chưa thanh toán", createdTime: "2025-10-27T16:22:12.784Z" }
+bundle.js:86247:17
+Creating bill: 
+Object { billId: "4jnueoi5aa", orderId: "ORD3602796", userId: "4", userName: "VAnh", total: 70000, discount: 0, totalFinal: 70000, payment: "Chưa thanh toán", createdTime: "2025-10-27T16:22:12.784Z" }
+bundle.js:101188:17
+🚀 Making POST request to: /api/Bill bundle.js:99956:11
+✅ Response received: 201 Created bundle.js:99963:11
+Create bill response: 
+Object { billId: "4jnueoi5aa", total: 70000, discount: 0, totalFinal: 70000, payment: "Chưa thanh toán", createdTime: "2025-10-27T16:22:13.0297533+00:00", orderId: "ORD3602796", userId: "4", billDetails: [] }
+bundle.js:101190:17
+Updating order: ORD3602796 
+Object { id: "ORD3602796", tableId: "2", userId: "3", orderDate: "2025-10-19T08:46:44.097", status: "Đã tạo bill", total: 40000, discount: 0 }
+bundle.js:100595:17
+🚀 Making PUT request to: /api/Order/ORD3602796 bundle.js:99956:11
+XHRPUT
+http://46.250.231.129:8080/api/Order/ORD3602796
+[HTTP/1.1 400 Bad Request 47ms]
+
+❌ HTTP Error: 400 Bad Request <anonymous code>:1:147461
+Response data: 
+Object { type: "https://tools.ietf.org/html/rfc9110#section-15.5.1", title: "One or more validation errors occurred.", status: 400, errors: {…}, traceId: "00-228f73e16de3691577b08e23d73700fb-eb981bedc292c62e-00" }
+<anonymous code>:1:147461
+Error updating order: 
+Object { message: "Request failed with status code 400", name: "AxiosError", code: "ERR_BAD_REQUEST", config: {…}, request: XMLHttpRequest, response: {…}, status: 400, stack: "", … }
+<anonymous code>:1:147461
+Error creating bill: 
+Object { message: "Request failed with status code 400", name: "AxiosError", code: "ERR_BAD_REQUEST", config: {…}, request: XMLHttpRequest, response: {…}, status: 400, stack: "", … }
+<anonymous code>:1:147461

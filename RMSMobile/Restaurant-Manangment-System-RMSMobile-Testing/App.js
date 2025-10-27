@@ -30,6 +30,7 @@ import { AuthProvider, AuthContext } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
 import TableScreen from './screens/TableScreen';
 import BillScreen from './screens/BillScreen';
+import BillManagerScreen from './screens/BillManagerScreen';
 import ReportScreen from './screens/ReportScreen';
 import MenuManagerScreen from './screens/MenuManagerScreen';
 import OrderDetailManagerScreen from './screens/OrderDetailManagerScreen';
@@ -166,6 +167,18 @@ function MainAppStack({ openSidebar }) {
         {(props) => (
           <ProtectedScreen screenName="Bill">
             <BillScreen {...props} />
+          </ProtectedScreen>
+        )}
+      </Stack.Screen>
+      <Stack.Screen 
+        name="BillManager" 
+        options={{ 
+          headerTitle: 'Bill Management',
+        }}
+      >
+        {(props) => (
+          <ProtectedScreen screenName="BillManager">
+            <BillManagerScreen {...props} />
           </ProtectedScreen>
         )}
       </Stack.Screen>
