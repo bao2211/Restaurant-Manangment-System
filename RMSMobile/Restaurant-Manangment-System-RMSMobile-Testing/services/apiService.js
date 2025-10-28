@@ -70,6 +70,7 @@ const ID_FIELDS = new Set([
   'billId',
   'cateId',
   'foodId',
+  'ingreId',
   'orderDetailId',
   'orderId',
   'recipeId',
@@ -84,11 +85,13 @@ const STRING_FIELDS = new Set([
   'description',
   'foodImage',
   'foodName',
+  'ingreName',
   'note',
   'payment',
   'role',
   'status',
   'tableName',
+  'unitMeasurement',
   'userName',
 ]);
 

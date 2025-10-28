@@ -228,6 +228,18 @@ function MainAppStack({ openSidebar }) {
         )}
       </Stack.Screen>
       <Stack.Screen 
+        name="IngredientManager" 
+        options={{ 
+          headerTitle: 'Quản Lý Nguyên Liệu',
+        }}
+      >
+        {(props) => (
+          <ProtectedScreen screenName="IngredientManager">
+            <IngredientManagerScreen {...props} />
+          </ProtectedScreen>
+        )}
+      </Stack.Screen>
+      <Stack.Screen 
         name="OrderDetailManager" 
         options={{ 
           headerTitle: 'Trạng Thái Món Ăn',
@@ -251,13 +263,6 @@ function MainAppStack({ openSidebar }) {
           </ProtectedScreen>
         )}
       </Stack.Screen>
-      <Stack.Screen 
-        name="IngredientManager" 
-        component={IngredientManagerScreen}
-        options={{ 
-          headerTitle: 'Quản Lý Nguyên Liệu',
-        }}
-      />
       <Stack.Screen
         name="Login"
         component={LoginScreen}
