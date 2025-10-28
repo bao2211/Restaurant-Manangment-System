@@ -255,7 +255,7 @@ export default function TableScreen({ navigation }) {
           };
         }
         
-        // Check if all orders are "Đã thanh toán" (paid) or completed
+        // Check if all orders are "Đã thanh toán" (paid), completed, or have bill created
         const allOrdersPaid = ordersForTable.every(status => {
           const normalizedStatus = status?.toLowerCase().trim() || '';
           const isPaid = (
@@ -266,7 +266,9 @@ export default function TableScreen({ navigation }) {
             normalizedStatus === 'hoàn tất' ||
             normalizedStatus === 'hoan tat' ||
             normalizedStatus === 'finished' ||
-            normalizedStatus === 'done'
+            normalizedStatus === 'done' ||
+            normalizedStatus === 'đã tạo bill' ||
+            normalizedStatus === 'da tao bill'
           );
           console.log(`    Status "${status}" -> normalized: "${normalizedStatus}" -> isPaid: ${isPaid}`);
           return isPaid;
