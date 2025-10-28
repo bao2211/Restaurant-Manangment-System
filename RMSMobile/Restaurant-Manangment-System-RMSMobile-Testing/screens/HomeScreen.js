@@ -8,6 +8,7 @@ export default function HomeScreen({ navigation }) {
     { id: 2, title: 'My Orders', icon: 'clipboard-list', screen: 'Orders', color: '#4CAF50' },
     { id: 3, title: 'Reservations', icon: 'calendar', screen: 'Reservations', color: '#2196F3' },
     { id: 4, title: 'Table', icon: 'table', screen: 'Table', color: '#FF5722' },
+    { id: 5, title: 'Reports', icon: 'chart-bar', screen: 'Report', color: '#9C27B0' },
   ];
 
   return (
