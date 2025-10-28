@@ -34,8 +34,9 @@ import BillManagerScreen from './screens/BillManagerScreen';
 import ReportScreen from './screens/ReportScreen';
 import MenuManagerScreen from './screens/MenuManagerScreen';
 import OrderDetailManagerScreen from './screens/OrderDetailManagerScreen';
-import OrderDetailScreen from './screens/OrderDetailScreen';
+import IngredientManagerScreen from './screens/IngredientManagerScreen';
 import UserManagementScreen from './screens/UserManagementScreen';
+
 
 const Stack = createStackNavigator();
 const { width: screenWidth } = Dimensions.get('window');
@@ -250,6 +251,13 @@ function MainAppStack({ openSidebar }) {
           </ProtectedScreen>
         )}
       </Stack.Screen>
+      <Stack.Screen 
+        name="IngredientManager" 
+        component={IngredientManagerScreen}
+        options={{ 
+          headerTitle: 'Quản Lý Nguyên Liệu',
+        }}
+      />
       <Stack.Screen
         name="Login"
         component={LoginScreen}
@@ -306,10 +314,24 @@ function CustomSidebarMenu({ visible, onClose }) {
     }, 300);
   };
 
-  // Get role-based menu items
+  const menuItems = [
+    { name: 'Home', icon: 'home', title: 'Home', screen: 'Home' },
+    { name: 'Menu', icon: 'food', title: 'Our Menu', screen: 'Menu' },
+    { name: 'Orders', icon: 'clipboard-list', title: 'My Orders', screen: 'Orders' },
+    { name: 'OrderDetail', icon: 'clipboard-text', title: 'Order Details', screen: 'OrderDetail' },
+    { name: 'Table', icon: 'table-chair', title: 'Our Table', screen: 'Table' },
+    { name: 'Bill', icon: 'file-document', title: 'Our Bill', screen: 'Bill' },
+    { name: 'Report', icon: 'file-chart', title: 'Our Report', screen: 'Report' },
+    { name: 'Profile', icon: 'account', title: 'My Profile', screen: 'Profile' },
+  ];
+
+  const managementItems = [
+    { name: 'MenuManager', icon: 'silverware-fork-knife', title: 'Quản Lý Món Ăn', screen: 'MenuManager' },
+    { name: 'OrderDetailManager', icon: 'food-fork-drink', title: 'Trạng Thái Món Ăn', screen: 'OrderDetailManager' },
+  ];
+
   const { mainMenu, managementMenu } = getAccessibleMenuItems();
   const userRole = getUserRole();
-
   console.log('CustomSidebarMenu - Current user role:', userRole);
   console.log('CustomSidebarMenu - Accessible main menu items:', mainMenu.length);
   console.log('CustomSidebarMenu - Accessible management menu items:', managementMenu.length);
