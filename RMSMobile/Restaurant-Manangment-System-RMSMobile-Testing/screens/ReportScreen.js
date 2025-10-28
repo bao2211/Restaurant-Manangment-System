@@ -69,11 +69,62 @@ export default function ReportScreen() {
         apiService.getAllFoodItems()
       ]);
 
-      console.log('Fetched orders:', orders?.length || 0);
-      console.log('Fetched food items:', foodItems?.length || 0);
+      console.log('📊 Fetched orders:', orders?.length || 0);
+      console.log('📊 Fetched food items:', foodItems?.length || 0);
+      
+      // Debug: Log sample order structure
+      if (orders && orders.length > 0) {
+        console.log('📊 Sample order structure:', orders[0]);
+        console.log('📊 Order date fields:', {
+          createDate: orders[0].createDate,
+          createdTime: orders[0].createdTime,
+          createdAt: orders[0].createdAt,
+          orderDate: orders[0].orderDate
+        });
+        
+        // Check if we have orders from different months
+        const orderDates = orders.map(order => {
+          const dateStr = order.createDate || order.createdTime || order.createdAt || order.orderDate;
+          return dateStr ? new Date(dateStr) : null;
+        }).filter(date => date && !isNaN(date.getTime()));
+        
+        const monthsWithOrders = [...new Set(orderDates.map(date => date.getMonth() + 1))];
+        console.log('📅 Orders found in months:', monthsWithOrders);
+        console.log('📅 Total valid order dates:', orderDates.length);
+      } else {
+        console.log('⚠️ No orders found from API - will use sample data');
+        
+        // Optionally create some test orders for demo purposes
+        if (foodItems && foodItems.length > 0) {
+          console.log('💡 Consider creating some test orders to see real data visualization');
+          console.log('💡 Available food items:', foodItems.length);
+        }
+      }
+      
+      // Debug: Log sample order structure and check for order IDs
+      if (orders && orders.length > 0) {
+        console.log('Sample order structure:', orders[0]);
+        console.log('Order ID properties:', {
+          orderId: orders[0].orderId,
+          id: orders[0].id,
+          OrderId: orders[0].OrderId,
+          orderID: orders[0].orderID
+        });
+        
+        // Log all available order IDs to help with debugging
+        console.log('All order IDs found:');
+        orders.slice(0, 5).forEach((order, index) => {
+          const orderId = order.orderId || order.id || order.OrderId || order.orderID || 'NO_ID';
+          console.log(`Order ${index}: ID = ${orderId}`);
+        });
+      } else {
+        console.log('⚠️ No orders found from API - will use sample data');
+      }
 
       // Process data for reports
       const processedData = await processReportData(orders || [], foodItems || []);
+      console.log('Final processed report data:', processedData);
+      console.log('Monthly revenue in processed data:', processedData.monthlyRevenue);
       setReportData(processedData);
       
     } catch (error) {
@@ -121,20 +172,44 @@ export default function ReportScreen() {
     console.log('Number of orders:', orders.length);
     console.log('Number of food items:', foodItems.length);
 
-    // Process orders to calculate revenue and dish popularity
-    for (const order of orders) {
+    // Enhanced order processing with better error handling
+    console.log('🚀 Starting to process orders for revenue calculation...');
+    
+    for (let i = 0; i < orders.length; i++) {
+      const order = orders[i];
       try {
-        const orderDetails = await apiService.getOrderDetails(order.orderId);
-        console.log(`Order ${order.orderId} details:`, orderDetails);
+        // Handle different order ID property names
+        const orderIdValue = order.orderId || order.id || order.OrderId || order.orderID || `order-${i}`;
+        console.log(`📦 Processing order ${i + 1}/${orders.length}: ${orderIdValue}`);
+        
+        // Try to get order details with fallback methods
+        let orderDetails = null;
+        try {
+          orderDetails = await apiService.getOrderDetails(orderIdValue);
+        } catch (detailError) {
+          console.log(`⚠️ Failed to get details for order ${orderIdValue}, trying alternative methods`);
+          // Try with different ID formats or use embedded details if available
+          if (order.orderDetails && Array.isArray(order.orderDetails)) {
+            orderDetails = order.orderDetails;
+            console.log(`✅ Using embedded order details for ${orderIdValue}`);
+          }
+        }
         
         if (orderDetails && orderDetails.length > 0) {
           let orderTotal = 0;
+          console.log(`📋 Found ${orderDetails.length} items in order ${orderIdValue}`);
           
           for (const detail of orderDetails) {
-            // Find food item to get price
-            const foodItem = foodItems.find(f => f.foodId === detail.foodId);
+            // Find food item to get price - try multiple approaches
+            let foodItem = foodItems.find(f => f.foodId === detail.foodId);
+            if (!foodItem && detail.food) {
+              foodItem = detail.food; // Use embedded food info if available
+            }
+            
             if (foodItem) {
-              const itemTotal = foodItem.price * detail.quantity;
+              const price = foodItem.price || foodItem.unitPrice || detail.unitPrice || 0;
+              const quantity = detail.quantity || 1;
+              const itemTotal = price * quantity;
               orderTotal += itemTotal;
               
               // Track dish counts and revenue
@@ -142,39 +217,58 @@ export default function ReportScreen() {
                 dishCounts[detail.foodId] = 0;
                 dishRevenue[detail.foodId] = 0;
               }
-              dishCounts[detail.foodId] += detail.quantity;
+              dishCounts[detail.foodId] += quantity;
               dishRevenue[detail.foodId] += itemTotal;
               
-              console.log(`Dish ${detail.foodId}: +${detail.quantity} (total: ${dishCounts[detail.foodId]})`);
+              console.log(`🍽️ ${foodItem.foodName || detail.foodId}: ${quantity} x ${price} = ${itemTotal}`);
             } else {
-              console.log(`Food item not found for ID: ${detail.foodId}`);
+              console.log(`❌ Food item not found for ID: ${detail.foodId}`);
             }
           }
           
-          totalRevenue += orderTotal;
-          
-          // Add to today's revenue if it's today's order
-          if (order.createDate && order.createDate.startsWith(today)) {
-            todayRevenue += orderTotal;
-          }
-          
-          // Add to monthly revenue tracking
-          if (order.createDate) {
-            const orderDate = new Date(order.createDate);
-            const month = orderDate.getMonth() + 1; // getMonth() returns 0-11
-            console.log(`Order ${order.orderId} date: ${order.createDate}, month: ${month}, total: ${orderTotal}`);
-            if (monthlyData[month] !== undefined) {
-              monthlyData[month] += orderTotal;
-              console.log(`Updated monthly data for month ${month}: ${monthlyData[month]}`);
+          if (orderTotal > 0) {
+            totalRevenue += orderTotal;
+            console.log(`💰 Order ${orderIdValue} total: ${orderTotal} (Running total: ${totalRevenue})`);
+            
+            // Add to today's revenue if it's today's order
+            const orderDateString = order.createDate || order.createdTime || order.createdAt || order.orderDate;
+            if (orderDateString) {
+              try {
+                const orderDate = new Date(orderDateString);
+                if (!isNaN(orderDate.getTime())) {
+                  // Check if it's today
+                  if (orderDateString.startsWith(today)) {
+                    todayRevenue += orderTotal;
+                    console.log(`📅 Today's order found: +${orderTotal}`);
+                  }
+                  
+                  // Add to monthly tracking
+                  const month = orderDate.getMonth() + 1;
+                  const year = orderDate.getFullYear();
+                  const currentYear = new Date().getFullYear();
+                  
+                  // Only count orders from current year for monthly chart
+                  if (year === currentYear && monthlyData[month] !== undefined) {
+                    monthlyData[month] += orderTotal;
+                    console.log(`� Month ${month} revenue: +${orderTotal} (total: ${monthlyData[month]})`);
+                  }
+                } else {
+                  console.log(`❌ Invalid date for order ${orderIdValue}: ${orderDateString}`);
+                }
+              } catch (error) {
+                console.log(`❌ Date parse error for ${orderIdValue}:`, error);
+              }
             }
           }
         } else {
-          console.log(`No details found for order ${order.orderId}`);
+          console.log(`📭 No order details found for ${orderIdValue}`);
         }
       } catch (error) {
-        console.error(`Error processing order ${order.orderId}:`, error);
+        console.error(`❌ Error processing order ${i + 1}:`, error);
       }
     }
+    
+    console.log('🏁 Finished processing all orders');
 
     console.log('Final dish counts:', dishCounts);
     console.log('Final dish revenue:', dishRevenue);
@@ -212,9 +306,9 @@ export default function ReportScreen() {
       .sort((a, b) => b.profit - a.profit)
       .slice(0, 5);
 
-    // If no real data, create some sample data based on available food items
-    if (topSellingDishes.length === 0 && foodItems.length > 0) {
-      console.log('No order data found, creating sample data from food items...');
+    // Only create sample dish data if we have no real orders at all
+    if (topSellingDishes.length === 0 && totalRevenue === 0 && foodItems.length > 0) {
+      console.log('⚠️ No real order data found, creating sample dish data...');
       topSellingDishes = foodItems.slice(0, 5).map((foodItem, index) => ({
         foodId: foodItem.foodId,
         name: foodItem.foodName || `Món ${foodItem.foodId}`,
@@ -222,19 +316,27 @@ export default function ReportScreen() {
         revenue: Math.floor(Math.random() * 2000000) + 500000,
         profit: Math.floor(Math.random() * 600000) + 150000
       }));
-    }
-
-    if (topProfitDishes.length === 0 && foodItems.length > 0) {
+      
       topProfitDishes = [...topSellingDishes].sort((a, b) => b.profit - a.profit);
+      console.log('📊 Created sample dish data for visualization');
+    } else if (topSellingDishes.length > 0) {
+      console.log('✅ Using real dish data from orders');
+      if (topProfitDishes.length === 0) {
+        topProfitDishes = [...topSellingDishes].sort((a, b) => b.profit - a.profit);
+      }
     }
 
     // Convert monthly data to array format for chart
     const monthlyRevenue = [];
     let hasRealMonthlyData = false;
+    let totalRealRevenue = 0;
     
     for (let i = 1; i <= 12; i++) {
       const revenue = monthlyData[i] || 0;
-      if (revenue > 0) hasRealMonthlyData = true;
+      if (revenue > 0) {
+        hasRealMonthlyData = true;
+        totalRealRevenue += revenue;
+      }
       
       monthlyRevenue.push({
         month: i,
@@ -243,25 +345,35 @@ export default function ReportScreen() {
       });
     }
     
-    // If no real monthly data, create sample data for visualization
-    if (!hasRealMonthlyData && totalRevenue === 0) {
-      console.log('No real monthly data found, creating sample monthly data...');
-      for (let i = 0; i < 12; i++) {
-        monthlyRevenue[i].revenue = Math.floor(Math.random() * 3000000) + 1000000;
-      }
-    }
-    
-    console.log('Final monthly revenue data:', monthlyRevenue);
+    console.log(`📊 Monthly data processing: hasRealData=${hasRealMonthlyData}, totalRealRevenue=${totalRealRevenue}`);
+    console.log('📊 Monthly breakdown:', monthlyData);
+    console.log('📊 Final monthly revenue array:', monthlyRevenue);
 
     // Get recent orders with calculated totals
     const recentOrdersWithTotals = [];
-    const sortedOrders = orders
-      .sort((a, b) => new Date(b.createDate) - new Date(a.createDate))
-      .slice(0, 10);
+    
+    // If no orders available, create some sample data for demonstration
+    if (!orders || orders.length === 0) {
+      console.log('No orders found, creating sample data for recent orders...');
+      for (let i = 0; i < 6; i++) {
+        recentOrdersWithTotals.push({
+          orderId: `HD${Date.now().toString().slice(-8)}${i}`,
+          tableId: `B${i + 1}`,
+          createDate: new Date(Date.now() - (i * 60 * 60 * 1000)).toISOString(),
+          status: i % 2 === 0 ? 'Hoàn tất' : 'Đang chuẩn bị',
+          total: Math.floor(Math.random() * 500000) + 100000
+        });
+      }
+    } else {
+      const sortedOrders = orders
+        .sort((a, b) => new Date(b.createDate || b.createdTime || Date.now()) - new Date(a.createDate || a.createdTime || Date.now()))
+        .slice(0, 10);
 
     for (const order of sortedOrders) {
       try {
-        const orderDetails = await apiService.getOrderDetails(order.orderId);
+        // Handle different order ID property names
+        const orderIdValue = order.orderId || order.id || order.OrderId || order.orderID || 'Unknown';
+        const orderDetails = await apiService.getOrderDetails(orderIdValue);
         let orderTotal = 0;
         
         if (orderDetails && orderDetails.length > 0) {
@@ -275,15 +387,18 @@ export default function ReportScreen() {
         
         recentOrdersWithTotals.push({
           ...order,
+          orderId: orderIdValue, // Ensure consistent orderId property
           total: orderTotal
         });
       } catch (error) {
-        console.error(`Error calculating total for order ${order.orderId}:`, error);
+        console.error(`Error calculating total for order ${orderIdValue || order.orderId || 'Unknown'}:`, error);
         recentOrdersWithTotals.push({
           ...order,
+          orderId: order.orderId || order.id || order.OrderId || order.orderID || 'Unknown',
           total: 0
         });
       }
+    }
     }
 
     return {
@@ -427,42 +542,103 @@ export default function ReportScreen() {
     </View>
   );
 
-  const renderMonthlyChart = () => (
-    <View style={styles.chartContainer} ref={monthlyRevenueRef}>
-      <View style={styles.chartCard}>
-        <LinearGradient
-          colors={['#3498DB', '#2980B9']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.cardHeaderGradient}
-        >
-          <MaterialCommunityIcons name="chart-bar" size={26} color="white" />
-          <Text style={styles.cardTitleGradient}>📊 Doanh thu theo tháng</Text>
-        </LinearGradient>
-        <View style={styles.chartWrapper}>
-          {reportData.monthlyRevenue?.map((month, index) => {
-            const maxRevenue = Math.max(...(reportData.monthlyRevenue?.map(m => m.revenue) || [1]));
-            const heightRatio = month.revenue / maxRevenue;
-            const height = Math.max(heightRatio * 120, 20);
-            
-            return (
-              <View key={index} style={styles.chartBarContainer}>
-                <View style={styles.chartBar}>
-                  <LinearGradient
-                    colors={['#64B5F6', '#2196F3']}
-                    style={[styles.bar, { height }]}
-                    start={{ x: 0, y: 1 }}
-                    end={{ x: 0, y: 0 }}
-                  />
+  const renderMonthlyChart = () => {
+    console.log('🚀 renderMonthlyChart called');
+    console.log('📊 reportData.monthlyRevenue:', reportData.monthlyRevenue);
+    
+    // Check if we have real data from API
+    const realData = reportData.monthlyRevenue || [];
+    const hasRealData = realData.length > 0 && realData.some(month => month.revenue > 0);
+    
+    console.log('Has real data:', hasRealData, 'Real data length:', realData.length);
+    
+    let displayData;
+    let isUsingRealData = false;
+    
+    if (hasRealData) {
+      // Use real data from database
+      displayData = realData;
+      isUsingRealData = true;
+      console.log('✅ Using REAL data from database');
+    } else {
+      // Fallback to sample data
+      const baseRevenues = [
+        2800000, 3200000, 3500000, 4100000, 4500000, 5200000,  // T1-T6: Tăng dần
+        5800000, 5500000, 4800000, 4200000, 3800000, 6500000   // T7-T12: Có biến động, T12 cao (mùa lễ)
+      ];
+      
+      displayData = Array.from({length: 12}, (_, i) => ({
+        month: i + 1,
+        monthName: `T${i + 1}`,
+        revenue: baseRevenues[i] + Math.floor(Math.random() * 500000) // Thêm chút biến động
+      }));
+      console.log('⚠️ Using SAMPLE data - no real orders found');
+    }
+
+    console.log('📊 Final display data:', displayData);
+
+    return (
+      <View style={styles.chartContainer} ref={monthlyRevenueRef}>
+        <View style={styles.chartCard}>
+          <LinearGradient
+            colors={['#3498DB', '#2980B9']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.cardHeaderGradient}
+          >
+            <MaterialCommunityIcons name="chart-bar" size={26} color="white" />
+            <Text style={styles.cardTitleGradient}>📊 Doanh thu theo tháng</Text>
+          </LinearGradient>
+          <View style={styles.chartWrapper}>
+            {displayData.map((month, index) => {
+              const maxRevenue = Math.max(...displayData.map(m => m.revenue));
+              const heightRatio = month.revenue / maxRevenue;
+              const height = Math.max(heightRatio * 120, 40); // Minimum height of 40
+              
+              console.log(`Bar ${index + 1}: revenue=${month.revenue}, height=${height}`);
+              
+              return (
+                <View key={`month-${index}`} style={styles.chartBarContainer}>
+                  <View style={styles.chartBar}>
+                    <LinearGradient
+                      colors={['#64B5F6', '#2196F3', '#1976D2']}
+                      style={[styles.bar, { height }]}
+                      start={{ x: 0, y: 1 }}
+                      end={{ x: 0, y: 0 }}
+                    />
+                  </View>
+                  <Text style={styles.chartLabel}>T{month.month}</Text>
                 </View>
-                <Text style={styles.chartLabel}>T{month.month}</Text>
-              </View>
-            );
-          })}
+              );
+            })}
+          </View>
+          {!isUsingRealData && (
+            <View style={styles.noRealDataNotice}>
+              <Text style={styles.noRealDataText}>
+                📊 Hiển thị dữ liệu mẫu - Doanh thu sẽ cập nhật tự động khi có đơn hàng thực tế
+              </Text>
+              <TouchableOpacity 
+                style={styles.refreshButton}
+                onPress={() => {
+                  console.log('🔄 Manual refresh triggered');
+                  fetchReportData();
+                }}
+              >
+                <Text style={styles.refreshButtonText}>🔄 Tải lại dữ liệu</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          {isUsingRealData && (
+            <View style={styles.realDataNotice}>
+              <Text style={styles.realDataText}>
+                ✅ Dữ liệu thực từ hệ thống - Cập nhật theo đơn hàng thực tế
+              </Text>
+            </View>
+          )}
         </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   const renderTopDishes = () => (
     <View style={styles.topDishesContainer}>
@@ -555,26 +731,34 @@ export default function ReportScreen() {
           <Text style={styles.cardTitleGradient}>📋 Danh Sách Đơn Hàng Gần Đây</Text>
         </LinearGradient>
         {reportData.recentOrders && reportData.recentOrders.length > 0 ? (
-          reportData.recentOrders.slice(0, 6).map((order, index) => (
-            <View key={index} style={styles.orderItem}>
-              <View style={styles.orderInfo}>
-                <Text style={styles.orderId}>#{order.orderId}</Text>
-                <Text style={styles.orderDate}>
-                  {new Date(order.createDate || Date.now()).toLocaleDateString('vi-VN')}
-                </Text>
+          reportData.recentOrders.slice(0, 6).map((order, index) => {
+            // Handle different order ID property names
+            const orderIdValue = order.orderId || order.id || order.OrderId || order.orderID || 'N/A';
+            const createDateValue = order.createDate || order.createdTime || order.createdAt || order.orderDate || Date.now();
+            const tableIdValue = order.tableId || order.table?.tableId || order.table?.id || 'N/A';
+            const statusValue = order.status || order.Status || 'Hoàn tất';
+            
+            return (
+              <View key={`order-${orderIdValue}-${index}`} style={styles.orderItem}>
+                <View style={styles.orderInfo}>
+                  <Text style={styles.orderId}>#{orderIdValue}</Text>
+                  <Text style={styles.orderDate}>
+                    {new Date(createDateValue).toLocaleDateString('vi-VN')}
+                  </Text>
+                </View>
+                <View style={styles.orderDetails}>
+                  <Text style={styles.orderTable}>Bàn: {tableIdValue}</Text>
+                  <LinearGradient
+                    colors={['#27AE60', '#58D68D']}
+                    style={styles.statusBadge}
+                  >
+                    <Text style={styles.orderStatus}>{statusValue}</Text>
+                  </LinearGradient>
+                </View>
+                <Text style={styles.orderAmount}>{formatCurrency(order.total || 0)}</Text>
               </View>
-              <View style={styles.orderDetails}>
-                <Text style={styles.orderTable}>Bàn: {order.tableId || 'N/A'}</Text>
-                <LinearGradient
-                  colors={['#27AE60', '#58D68D']}
-                  style={styles.statusBadge}
-                >
-                  <Text style={styles.orderStatus}>{order.status || 'Hoàn tất'}</Text>
-                </LinearGradient>
-              </View>
-              <Text style={styles.orderAmount}>{formatCurrency(order.total || 0)}</Text>
-            </View>
-          ))
+            );
+          })
         ) : (
           <View style={styles.noDataContainer}>
             <MaterialCommunityIcons name="clipboard-outline" size={48} color="#BDC3C7" />
@@ -849,6 +1033,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
+    minHeight: 300, // Ensure minimum height
   },
   cardHeader: {
     flexDirection: 'row',
@@ -890,28 +1075,31 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'space-between',
     marginTop: 15,
-    height: 140,
+    height: 150,
     paddingHorizontal: 5,
   },
   chartBarContainer: {
     alignItems: 'center',
     flex: 1,
-    marginHorizontal: 2,
+    marginHorizontal: 1,
+    backgroundColor: 'transparent',
   },
   chartBar: {
     alignItems: 'center',
     justifyContent: 'flex-end',
-    width: '80%',
+    width: '90%',
+    minHeight: 30,
   },
   bar: {
     width: '100%',
     borderRadius: 8,
     marginBottom: 8,
-    elevation: 2,
+    elevation: 4,
     shadowColor: '#2196F3',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    minHeight: 40, // Ensure minimum height
   },
   chartLabel: {
     fontSize: 11,
@@ -1067,5 +1255,48 @@ const styles = StyleSheet.create({
     marginTop: 6,
     textAlign: 'center',
     lineHeight: 18,
+  },
+  noRealDataNotice: {
+    marginTop: 15,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+    borderRadius: 8,
+    borderLeftWidth: 4,
+    borderLeftColor: '#3498DB',
+  },
+  noRealDataText: {
+    fontSize: 12,
+    color: '#3498DB',
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+  realDataNotice: {
+    marginTop: 15,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: 'rgba(39, 174, 96, 0.1)',
+    borderRadius: 8,
+    borderLeftWidth: 4,
+    borderLeftColor: '#27AE60',
+  },
+  realDataText: {
+    fontSize: 12,
+    color: '#27AE60',
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+  refreshButton: {
+    marginTop: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: '#3498DB',
+    borderRadius: 6,
+    alignSelf: 'center',
+  },
+  refreshButtonText: {
+    fontSize: 12,
+    color: 'white',
+    fontWeight: '600',
   },
 });
