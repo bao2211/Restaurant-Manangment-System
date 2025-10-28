@@ -186,8 +186,8 @@ export const AuthProvider = ({ children }) => {
     const rolePermissions = {
       'NV': ['Home', 'Table', 'Menu', 'Orders', 'OrderDetail', 'Profile'],
       'nv': ['Home', 'Table', 'Menu', 'Orders', 'OrderDetail', 'Profile'], // lowercase variant
-      'TN': ['Home', 'Orders', 'Bill', 'Profile'],
-      'tn': ['Home', 'Orders', 'Bill', 'Profile'], // lowercase variant
+      'TN': ['Home', 'Orders', 'Bill', 'BillManager', 'Profile'],
+      'tn': ['Home', 'Orders', 'Bill', 'BillManager', 'Profile'], // lowercase variant
       'Bep': ['Home', 'Menu', 'OrderDetailManager', 'Profile'],  
       'bep': ['Home', 'Menu', 'OrderDetailManager', 'Profile'], // lowercase variant
       'BEP': ['Home', 'Menu', 'OrderDetailManager', 'Profile'], // uppercase variant
@@ -216,6 +216,7 @@ export const AuthProvider = ({ children }) => {
       { name: 'OrderDetail', icon: 'clipboard-text', title: 'Order Details', screen: 'OrderDetail' },
       { name: 'Table', icon: 'table-chair', title: 'Our Table', screen: 'Table' },
       { name: 'Bill', icon: 'file-document', title: 'Our Bill', screen: 'Bill' },
+      { name: 'BillManager', icon: 'cash-register', title: 'Bill Management', screen: 'BillManager' },
       { name: 'Report', icon: 'file-chart', title: 'Our Report', screen: 'Report' },
       { name: 'Profile', icon: 'account', title: 'My Profile', screen: 'Profile' },
     ];
