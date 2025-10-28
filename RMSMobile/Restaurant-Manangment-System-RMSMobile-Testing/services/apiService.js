@@ -70,7 +70,6 @@ const ID_FIELDS = new Set([
   'billId',
   'cateId',
   'foodId',
-  'ingreId',
   'orderDetailId',
   'orderId',
   'recipeId',
@@ -303,10 +302,22 @@ const extractApiData = (data) => {
       .map(normalizeRecordKeys)
       .map(sanitizeRecord)
       .filter((item) => {
+        // More inclusive filtering - check for any meaningful data
         const hasKnownId = Array.from(ID_FIELDS).some((field) => !!item[field]);
         const hasName = item.foodName || item.cateName || item.tableName || item.userName;
         const hasFallbackId = item.id || item.name;
-        const isValid = hasKnownId || hasName || hasFallbackId;
+        const hasUserData = item.role || item.Role || item.password || item.Password || item.fullName || item.FullName;
+        const isValid = hasKnownId || hasName || hasFallbackId || hasUserData;
+
+        // console.log('extractApiData filter check:', {
+        //   item: JSON.stringify(item).substring(0, 200),
+        //   hasKnownId,
+        //   hasName,
+        //   hasFallbackId,
+        //   hasUserData,
+        //   isValid,
+        //   idFields: Array.from(ID_FIELDS).filter(field => !!item[field])
+        // });
 
         if (!isValid) {
           console.log('Filtering out invalid item after normalization:', item);
@@ -1528,20 +1539,7 @@ export const apiService = {
     }
   },
 
-  // Ingredient Management
-  getAllIngredients: async () => {
-    try {
-      console.log('Fetching all ingredients from API...');
-      const response = await api.get('/api/Ingredient');
-      console.log('Raw ingredients response:', response.data);
-      const extractedData = extractApiData(response.data);
-      console.log('Extracted ingredients data:', extractedData);
-      return extractedData;
-    } catch (error) {
-      console.error('Error fetching all ingredients:', error);
-      throw error;
-    }
-  },
+  // End of service methods
 
   // Food Items CRUD operations
   createFoodItem: async (foodData) => {

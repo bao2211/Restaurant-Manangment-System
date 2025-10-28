@@ -34,6 +34,7 @@ import ReportScreen from './screens/ReportScreen';
 import MenuManagerScreen from './screens/MenuManagerScreen';
 import OrderDetailManagerScreen from './screens/OrderDetailManagerScreen';
 import OrderDetailScreen from './screens/OrderDetailScreen';
+import UserManagementScreen from './screens/UserManagementScreen';
 
 const Stack = createStackNavigator();
 const { width: screenWidth } = Dimensions.get('window');
@@ -221,6 +222,18 @@ function MainAppStack({ openSidebar }) {
         {(props) => (
           <ProtectedScreen screenName="OrderDetailManager">
             <OrderDetailManagerScreen {...props} />
+          </ProtectedScreen>
+        )}
+      </Stack.Screen>
+      <Stack.Screen 
+        name="UserManagement" 
+        options={{ 
+          headerTitle: 'Quản Lý Người Dùng',
+        }}
+      >
+        {(props) => (
+          <ProtectedScreen screenName="UserManagement">
+            <UserManagementScreen {...props} />
           </ProtectedScreen>
         )}
       </Stack.Screen>

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RMS-APIServer")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2a0356d19e87aefe2a3b1c90abfe1a0d684cb4a6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3ec839cc6b08b62b0cc60d279bbbd35b8b26a0b8")]
 [assembly: System.Reflection.AssemblyProductAttribute("RMS-APIServer")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RMS-APIServer")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

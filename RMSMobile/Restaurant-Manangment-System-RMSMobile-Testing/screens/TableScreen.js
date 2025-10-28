@@ -17,6 +17,7 @@ import {
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { apiService } from '../services/apiService';
+import ScreenHeader from '../components/ScreenHeader';
 
 export default function TableScreen({ navigation }) {
   const [tables, setTables] = useState([]);
@@ -597,22 +598,18 @@ export default function TableScreen({ navigation }) {
         </View>
       </Modal>
 
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Restaurant Tables</Text>
-        <View style={styles.headerContent}>
-          <Text style={styles.headerSubtitle}>
-            {(tables && tables.length) ? 
-              `${tables.length} ${tables.length === 1 ? 'table' : 'tables'} found` :
-              'Loading tables...'
-            }
-          </Text>
+      <ScreenHeader
+        title="Restaurant Tables"
+        onRefresh={onRefresh}
+        refreshing={refreshing}
+        rightComponent={
           <View style={styles.headerButtons}>
             <TouchableOpacity
               style={styles.refreshStatusButton}
               onPress={refreshTableStatus}
             >
               <MaterialCommunityIcons name="refresh" size={20} color="#3498DB" />
-              <Text style={styles.refreshStatusText}>Refresh Status</Text>
+              <Text style={styles.refreshStatusText}>Status</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.addButton}
@@ -621,8 +618,8 @@ export default function TableScreen({ navigation }) {
               <MaterialCommunityIcons name="plus" size={24} color="white" />
             </TouchableOpacity>
           </View>
-        </View>
-      </View>
+        }
+      />
 
       {(!tables || tables.length === 0) ? (
         <View style={styles.emptyState}>

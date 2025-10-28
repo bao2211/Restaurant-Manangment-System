@@ -3,6 +3,8 @@ import ToastNotification from '../components/ToastNotification';
 
 const ToastContext = createContext();
 
+export { ToastContext };
+
 export const useToast = () => {
   const context = useContext(ToastContext);
   if (!context) {

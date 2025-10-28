@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl, Te
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { apiService, formatPrice } from '../services/apiService';
+import ScreenHeader from '../components/ScreenHeader';
 
 export default function OrdersScreen() {
   const [orders, setOrders] = useState([]);
@@ -233,7 +234,11 @@ export default function OrdersScreen() {
         </View>
       ) : (
         <View style={styles.content}>
-          <Text style={styles.header}>Your Orders</Text>
+          <ScreenHeader
+            title="Your Orders"
+            onRefresh={onRefresh}
+            refreshing={refreshing}
+          />
           {renderSearchBar()}
           <FlatList
             data={filteredOrders}

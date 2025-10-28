@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Study\\TLDH\\Nam 3 - HK1\\RMS - Project\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj": {}
+    "D:\\Study\\TLDH\\Nam 3 - HK1\\CNPMNC\\RMS - Project\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj": {}
   },
   "projects": {
-    "D:\\Study\\TLDH\\Nam 3 - HK1\\RMS - Project\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj": {
+    "D:\\Study\\TLDH\\Nam 3 - HK1\\CNPMNC\\RMS - Project\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Study\\TLDH\\Nam 3 - HK1\\RMS - Project\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj",
+        "projectUniqueName": "D:\\Study\\TLDH\\Nam 3 - HK1\\CNPMNC\\RMS - Project\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj",
         "projectName": "RMS-APIServer",
-        "projectPath": "D:\\Study\\TLDH\\Nam 3 - HK1\\RMS - Project\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj",
+        "projectPath": "D:\\Study\\TLDH\\Nam 3 - HK1\\CNPMNC\\RMS - Project\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj",
         "packagesPath": "C:\\Users\\lengo\\.nuget\\packages\\",
-        "outputPath": "D:\\Study\\TLDH\\Nam 3 - HK1\\RMS - Project\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\obj\\",
+        "outputPath": "D:\\Study\\TLDH\\Nam 3 - HK1\\CNPMNC\\RMS - Project\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\lengo\\AppData\\Roaming\\NuGet\\NuGet.Config",

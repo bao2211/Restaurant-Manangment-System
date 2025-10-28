@@ -188,9 +188,9 @@ export const AuthProvider = ({ children }) => {
       'nv': ['Home', 'Table', 'Menu', 'Orders', 'OrderDetail', 'Profile'], // lowercase variant
       'TN': ['Home', 'Orders', 'Bill', 'Profile'],
       'tn': ['Home', 'Orders', 'Bill', 'Profile'], // lowercase variant
-      'Bep': ['Home', 'OrderDetailManager', 'Profile'],  
-      'bep': ['Home', 'OrderDetailManager', 'Profile'], // lowercase variant
-      'BEP': ['Home', 'OrderDetailManager', 'Profile'], // uppercase variant
+      'Bep': ['Home', 'Menu', 'OrderDetailManager', 'Profile'],  
+      'bep': ['Home', 'Menu', 'OrderDetailManager', 'Profile'], // lowercase variant
+      'BEP': ['Home', 'Menu', 'OrderDetailManager', 'Profile'], // uppercase variant
       'Customer': ['Home', 'Menu', 'Profile'],
       'customer': ['Home', 'Menu', 'Profile'], // lowercase variant
       'CUSTOMER': ['Home', 'Menu', 'Profile'], // uppercase variant
@@ -223,6 +223,7 @@ export const AuthProvider = ({ children }) => {
     const managementItems = [
       { name: 'MenuManager', icon: 'silverware-fork-knife', title: 'Quản Lý Món Ăn', screen: 'MenuManager' },
       { name: 'OrderDetailManager', icon: 'food-fork-drink', title: 'Trạng Thái Món Ăn', screen: 'OrderDetailManager' },
+      { name: 'UserManagement', icon: 'account-group', title: 'Quản Lý Người Dùng', screen: 'UserManagement' },
     ];
 
     // Filter menu items based on role permissions

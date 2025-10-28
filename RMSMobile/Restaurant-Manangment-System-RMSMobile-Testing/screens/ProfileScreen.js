@@ -183,6 +183,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5F5F5',
   },
+  scrollContent: {
+    flex: 1,
+  },
   // Header Section Styles
   headerSection: {
     backgroundColor: '#2C3E50',

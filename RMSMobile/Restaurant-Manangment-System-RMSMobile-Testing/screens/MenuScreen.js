@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { apiService, getCategoryIcon, formatPrice } from '../services/apiService';
 import { AuthContext } from '../context/AuthContext';
+import ScreenHeader from '../components/ScreenHeader';
 
 export default function MenuScreen({ navigation, route }) {
   const { user, getUserRole } = useContext(AuthContext);
@@ -16,6 +17,7 @@ export default function MenuScreen({ navigation, route }) {
   const [foodItems, setFoodItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingItems, setLoadingItems] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [imageErrors, setImageErrors] = useState({}); // Track failed image loads
   
   // Order form state - only initialize if not a customer
@@ -296,6 +298,22 @@ export default function MenuScreen({ navigation, route }) {
     if (name.includes('wine')) return '🍷';
     
     return '🍽️'; // Default food emoji
+  };
+
+  // Refresh function to reload both categories and food items
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await fetchCategories();
+      // If a category is selected, also refresh its food items
+      if (selectedCategory) {
+        await fetchFoodItemsByCategory(selectedCategory);
+      }
+    } catch (error) {
+      console.error('Error refreshing menu data:', error);
+    } finally {
+      setRefreshing(false);
+    }
   };
 
   const renderMenuItem = (item) => {
@@ -765,6 +783,12 @@ export default function MenuScreen({ navigation, route }) {
 
   return (
     <View style={styles.container}>
+      <ScreenHeader
+        title="Menu"
+        onRefresh={handleRefresh}
+        refreshing={refreshing}
+      />
+      
       {/* Main Content Area */}
       <View style={[styles.mainContent, isCustomer && styles.mainContentFullWidth]}>
         {/* Left Side - Menu */}
