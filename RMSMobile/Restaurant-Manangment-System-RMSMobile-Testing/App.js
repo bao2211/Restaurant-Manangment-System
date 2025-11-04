@@ -19,6 +19,7 @@ import {
 import HomeScreen from "./screens/HomeScreen";
 import MenuScreen from "./screens/MenuScreen";
 import OrdersScreen from "./screens/OrdersScreen";
+import OrderDetailScreen from "./screens/OrderDetailScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import LoginScreen from "./screens/LoginScreen";
 import ChangePasswordScreen from "./screens/ChangePasswordScreen";

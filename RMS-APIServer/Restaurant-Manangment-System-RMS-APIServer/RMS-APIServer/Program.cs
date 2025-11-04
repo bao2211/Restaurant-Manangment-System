@@ -1,4 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using RMS_APIServer.Models;
 using RMS_APIServer.Middleware;
 
@@ -7,6 +10,45 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<DBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Add WebQlquanAnContext for the new auxiliary tables
+builder.Services.AddDbContext<WebQlquanAnContext>(options =>
+    options.UseSqlServer("Server=46.250.231.129;Database=webQLQuanAn;User Id=sa;Password=yB7Y%0Q137cMe%;Encrypt=True;TrustServerCertificate=True;"));
+
+// Register new services for auxiliary features
+builder.Services.AddScoped<RMS_APIServer.Services.IUserFavoritesService, RMS_APIServer.Services.UserFavoritesService>();
+builder.Services.AddScoped<RMS_APIServer.Services.IOrderHistoryService, RMS_APIServer.Services.OrderHistoryService>();
+builder.Services.AddScoped<RMS_APIServer.Services.ITableReservationHistoryService, RMS_APIServer.Services.TableReservationHistoryService>();
+
+// Add JWT Authentication
+var jwtKey = builder.Configuration["Jwt:Key"] ?? "your-super-secret-jwt-key-that-is-at-least-32-characters-long-for-security";
+var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "RMS-APIServer";
+var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "RMS-Users";
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false; // Set to true in production with HTTPS
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtIssuer,
+        ValidAudience = jwtAudience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+        ClockSkew = TimeSpan.Zero // Remove delay of token when expire
+    };
+});
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -105,6 +147,8 @@ app.UseCors(corsPolicy);
 
 Console.WriteLine($"🔧 CORS Policy Applied: {corsPolicy}");
 
+// Add Authentication & Authorization middleware
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
