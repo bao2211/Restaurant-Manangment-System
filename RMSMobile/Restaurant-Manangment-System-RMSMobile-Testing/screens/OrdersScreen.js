@@ -249,7 +249,7 @@ export default function OrdersScreen() {
         <View style={styles.content}>
           {/* Welcome Section with Logo */}
           <LinearGradient
-            colors={['#667EEA', '#764BA2', '#6B5B95']}
+            colors={['#4A90E2', '#357ABD', '#2E5F8C']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.welcomeSection}
@@ -727,22 +727,22 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     marginHorizontal: 4,
     borderWidth: 2,
-    borderColor: '#667EEA',
+    borderColor: '#4A90E2',
     elevation: 3,
-    shadowColor: '#667EEA',
+    shadowColor: '#4A90E2',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
   },
   filterButtonActive: {
-    backgroundColor: '#667EEA',
-    borderColor: '#667EEA',
+    backgroundColor: '#4A90E2',
+    borderColor: '#4A90E2',
     elevation: 6,
     shadowOpacity: 0.4,
   },
   filterButtonText: {
     fontSize: 14,
-    color: '#667EEA',
+    color: '#4A90E2',
     fontWeight: '600',
   },
   filterButtonTextActive: {
@@ -785,12 +785,12 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: 'hidden',
     elevation: 8,
-    shadowColor: '#667EEA',
+    shadowColor: '#4A90E2',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.12,
     shadowRadius: 8,
     borderWidth: 1,
-    borderColor: 'rgba(102, 126, 234, 0.1)',
+    borderColor: 'rgba(74, 144, 226, 0.1)',
   },
   orderHeader: {
     flexDirection: 'row',
@@ -798,9 +798,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 16,
-    backgroundColor: 'rgba(102, 126, 234, 0.05)',
+    backgroundColor: 'rgba(74, 144, 226, 0.05)',
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(102, 126, 234, 0.1)',
+    borderBottomColor: 'rgba(74, 144, 226, 0.1)',
   },
   orderIdContainer: {
     flexDirection: 'row',
@@ -811,7 +811,7 @@ const styles = StyleSheet.create({
   orderId: {
     fontSize: 17,
     fontWeight: '800',
-    color: '#667EEA',
+    color: '#2E5F8C',
     letterSpacing: 0.5,
   },
   orderStatus: {
@@ -848,9 +848,9 @@ const styles = StyleSheet.create({
   orderFooter: {
     paddingHorizontal: 16,
     paddingVertical: 16,
-    backgroundColor: 'rgba(102, 126, 234, 0.03)',
+    backgroundColor: 'rgba(74, 144, 226, 0.03)',
     borderTopWidth: 1,
-    borderTopColor: 'rgba(102, 126, 234, 0.1)',
+    borderTopColor: 'rgba(74, 144, 226, 0.1)',
   },
   footerContent: {
     flexDirection: 'row',
@@ -881,7 +881,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   highlightText: {
-    color: '#667EEA',
+    color: '#4A90E2',
     fontWeight: '700',
   },
   staffId: {
@@ -899,23 +899,23 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginTop: 8,
     marginBottom: 8,
-    backgroundColor: 'rgba(102, 126, 234, 0.08)',
+    backgroundColor: 'rgba(74, 144, 226, 0.08)',
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(102, 126, 234, 0.2)',
+    borderColor: 'rgba(74, 144, 226, 0.2)',
   },
   expandButtonText: {
     fontSize: 14,
-    color: '#667EEA',
+    color: '#4A90E2',
     fontWeight: '700',
     marginRight: 8,
   },
   orderDetailsList: {
     paddingHorizontal: 16,
     paddingBottom: 12,
-    backgroundColor: 'rgba(102, 126, 234, 0.02)',
+    backgroundColor: 'rgba(74, 144, 226, 0.02)',
     borderTopWidth: 1,
-    borderTopColor: 'rgba(102, 126, 234, 0.1)',
+    borderTopColor: 'rgba(74, 144, 226, 0.1)',
   },
   detailsLoader: {
     flexDirection: 'row',
@@ -926,7 +926,7 @@ const styles = StyleSheet.create({
   loadingDetailsText: {
     marginLeft: 10,
     fontSize: 14,
-    color: '#667EEA',
+    color: '#4A90E2',
     fontWeight: '500',
   },
   orderDetailItem: {
@@ -939,9 +939,9 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginTop: 10,
     borderWidth: 1,
-    borderColor: 'rgba(102, 126, 234, 0.1)',
+    borderColor: 'rgba(74, 144, 226, 0.1)',
     elevation: 2,
-    shadowColor: '#667EEA',
+    shadowColor: '#4A90E2',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 4,
@@ -979,7 +979,7 @@ const styles = StyleSheet.create({
   },
   loadingPriceText: {
     fontSize: 11,
-    color: '#667EEA',
+    color: '#4A90E2',
     fontStyle: 'italic',
     marginTop: 3,
   },
