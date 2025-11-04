@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Alert, Image, TextInput, Modal } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Alert, Image, TextInput, Modal, Dimensions } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { apiService, getCategoryIcon, formatPrice } from '../services/apiService';
 import { AuthContext } from '../context/AuthContext';
 import ScreenHeader from '../components/ScreenHeader';
@@ -321,43 +322,79 @@ export default function MenuScreen({ navigation, route }) {
     const shouldShowImage = item.imageUrl && !hasImageError;
 
     return (
-      <TouchableOpacity key={item.id} style={styles.menuItem}>
-        <View style={styles.menuItemImage}>
-          {shouldShowImage ? (
-            <Image 
-              source={{ uri: item.imageUrl }}
-              style={styles.foodImage}
-              onError={() => {
-                console.log(`Failed to load image for ${item.name}: ${item.imageUrl}`);
-                setImageErrors(prev => ({ ...prev, [item.id]: true }));
-              }}
-              onLoad={() => {
-                // Reset error state if image loads successfully
-                setImageErrors(prev => ({ ...prev, [item.id]: false }));
-              }}
-            />
-          ) : (
-            <View style={styles.fallbackImageContainer}>
-              <Text style={styles.emojiImage}>{item.emojiFallback}</Text>
-            </View>
-          )}
-        </View>
-        <View style={styles.menuItemContent}>
-          <Text style={styles.menuItemName}>{item.name}</Text>
-          <Text style={styles.menuItemDescription}>{item.description}</Text>
-          <View style={styles.menuItemFooter}>
-            <Text style={styles.menuItemPrice}>{item.price}</Text>
-            {!isCustomer && (
-              <TouchableOpacity 
-                style={styles.addButton}
-                onPress={() => handleAddToCart(item)}
+      <View key={item.id} style={styles.menuItemWrapper}>
+        <LinearGradient
+          colors={['#FFFFFF', '#FAFAFA']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={styles.menuItem}
+        >
+          {/* Image Section - Left Side */}
+          <View style={styles.menuItemImageContainer}>
+            {shouldShowImage ? (
+              <Image 
+                source={{ uri: item.imageUrl }}
+                style={styles.foodImage}
+                onError={() => {
+                  console.log(`Failed to load image for ${item.name}: ${item.imageUrl}`);
+                  setImageErrors(prev => ({ ...prev, [item.id]: true }));
+                }}
+                onLoad={() => {
+                  // Reset error state if image loads successfully
+                  setImageErrors(prev => ({ ...prev, [item.id]: false }));
+                }}
+              />
+            ) : (
+              <LinearGradient
+                colors={['#FF6B35', '#FF8E53']}
+                style={styles.fallbackImageContainer}
               >
-                <MaterialCommunityIcons name="plus" size={20} color="white" />
-              </TouchableOpacity>
+                <Text style={styles.emojiImage}>{item.emojiFallback}</Text>
+              </LinearGradient>
             )}
           </View>
-        </View>
-      </TouchableOpacity>
+          
+          {/* Content Section - Right Side */}
+          <View style={styles.menuItemContent}>
+            <View style={styles.menuItemHeader}>
+              <Text style={styles.menuItemName}>{item.name}</Text>
+              <View style={styles.priceContainer}>
+                <LinearGradient
+                  colors={['#FF6B35', '#FF8E53']}
+                  style={styles.priceTag}
+                >
+                  <Text style={styles.menuItemPrice}>{item.price}</Text>
+                </LinearGradient>
+              </View>
+            </View>
+            
+            <Text style={styles.menuItemDescription} numberOfLines={2}>
+              {item.description}
+            </Text>
+            
+            <View style={styles.menuItemFooter}>
+              <View style={styles.ratingContainer}>
+                <MaterialCommunityIcons name="star" size={16} color="#FFA726" />
+                <Text style={styles.ratingText}>4.5</Text>
+                <Text style={styles.reviewCount}>(124)</Text>
+              </View>
+              
+              {!isCustomer && (
+                <TouchableOpacity 
+                  onPress={() => handleAddToCart(item)}
+                >
+                  <LinearGradient
+                    colors={['#4CAF50', '#45A049']}
+                    style={styles.addButton}
+                  >
+                    <MaterialCommunityIcons name="plus" size={18} color="white" />
+                  </LinearGradient>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        </LinearGradient>
+      </View>
     );
   };
 
@@ -684,57 +721,161 @@ export default function MenuScreen({ navigation, route }) {
     const total = calculateTotal();
     
     return (
-      <View style={styles.orderFormContainer}>
-        <Text style={styles.orderFormTitle}>Order Details</Text>
+      <LinearGradient
+        colors={['#FFFFFF', '#F8F9FA']}
+        style={styles.orderFormContainer}
+      >
+        <View style={styles.orderFormHeader}>
+          <LinearGradient
+            colors={['#667EEA', '#764BA2']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.orderFormTitleContainer}
+          >
+            <MaterialCommunityIcons name="clipboard-list-outline" size={24} color="white" />
+            <Text style={styles.orderFormTitle}>Chi tiết đơn hàng</Text>
+          </LinearGradient>
+        </View>
         
         {/* Order Info */}
         <View style={styles.orderInfoSection}>
-          <Text style={styles.orderInfoLabel}>Order ID:</Text>
-          <Text style={styles.orderInfoValue}>{orderId || 'No Order'}</Text>
-          
-          <Text style={styles.orderInfoLabel}>Table:</Text>
-          <Text style={styles.orderInfoValue}>
-            {selectedTable ? `${selectedTable.tableName || selectedTable.tableId}` : 'No Table'}
-          </Text>
+          <LinearGradient
+            colors={['#E3F2FD', '#F3E5F5']}
+            style={styles.orderInfoCard}
+          >
+            <View style={styles.orderInfoRow}>
+              <MaterialCommunityIcons name="barcode-scan" size={20} color="#667EEA" />
+              <View style={styles.orderInfoContent}>
+                <Text style={styles.orderInfoLabel}>Mã đơn hàng:</Text>
+                <Text style={styles.orderInfoValue}>{orderId || 'Chưa có mã'}</Text>
+              </View>
+            </View>
+            
+            <View style={styles.orderInfoDivider} />
+            
+            <View style={styles.orderInfoRow}>
+              <MaterialCommunityIcons name="table-furniture" size={20} color="#667EEA" />
+              <View style={styles.orderInfoContent}>
+                <Text style={styles.orderInfoLabel}>Bàn:</Text>
+                <Text style={styles.orderInfoValue}>
+                  {selectedTable ? `${selectedTable.tableName || selectedTable.tableId}` : 'Chưa chọn bàn'}
+                </Text>
+              </View>
+            </View>
+          </LinearGradient>
         </View>
         
         {/* Order Items */}
-        <Text style={styles.orderItemsTitle}>Items:</Text>
-        <ScrollView style={styles.orderItemsList}>
-          {orderItems.length === 0 ? (
-            <Text style={styles.emptyOrderText}>No items added yet</Text>
-          ) : (
-            orderItems.map((item) => (
-              <View key={item.id} style={styles.orderItem}>
-                <View style={styles.orderItemInfo}>
-                  <Text style={styles.orderItemName}>{item.name}</Text>
-                  <Text style={styles.orderItemPrice}>{formatPrice(item.price)}</Text>
-                </View>
-                <View style={styles.quantityControls}>
-                  <TouchableOpacity 
-                    style={styles.quantityButton}
-                    onPress={() => updateQuantity(item.id, -1)}
-                  >
-                    <MaterialCommunityIcons name="minus" size={16} color="white" />
-                  </TouchableOpacity>
-                  <Text style={styles.quantityText}>{item.quantity}</Text>
-                  <TouchableOpacity 
-                    style={styles.quantityButton}
-                    onPress={() => updateQuantity(item.id, 1)}
-                  >
-                    <MaterialCommunityIcons name="plus" size={16} color="white" />
-                  </TouchableOpacity>
-                </View>
+        <View style={styles.orderItemsSection}>
+          <LinearGradient
+            colors={['#667EEA', '#764BA2']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.orderItemsHeader}
+          >
+            <MaterialCommunityIcons name="format-list-bulleted" size={20} color="white" />
+            <Text style={styles.orderItemsTitle}>Danh sách món ({orderItems.length})</Text>
+          </LinearGradient>
+          
+          <ScrollView style={styles.orderItemsList} showsVerticalScrollIndicator={false}>
+            {orderItems.length === 0 ? (
+              <View style={styles.emptyOrderContainer}>
+                <MaterialCommunityIcons name="cart-outline" size={48} color="#BDC3C7" />
+                <Text style={styles.emptyOrderText}>Chưa có món nào</Text>
+                <Text style={styles.emptyOrderSubText}>Thêm món từ menu bên trái</Text>
               </View>
-            ))
-          )}
-        </ScrollView>
+            ) : (
+              orderItems.map((item, index) => (
+                <View key={item.id} style={styles.orderItemWrapper}>
+                  <LinearGradient
+                    colors={['#FFFFFF', '#F8F9FA']}
+                    style={styles.orderItem}
+                  >
+                    <View style={styles.orderItemHeader}>
+                      <View style={styles.itemNumberContainer}>
+                        <LinearGradient
+                          colors={['#FF6B35', '#FF8E53']}
+                          style={styles.itemNumber}
+                        >
+                          <Text style={styles.itemNumberText}>{index + 1}</Text>
+                        </LinearGradient>
+                      </View>
+                      <View style={styles.orderItemInfo}>
+                        <Text style={styles.orderItemName}>{item.name}</Text>
+                        <View style={styles.priceRow}>
+                          <Text style={styles.unitPriceLabel}>Đơn giá:</Text>
+                          <Text style={styles.orderItemPrice}>{formatPrice(item.price)}</Text>
+                        </View>
+                      </View>
+                    </View>
+                    
+                    <View style={styles.orderItemFooter}>
+                      <View style={styles.quantitySection}>
+                        <Text style={styles.quantityLabel}>Số lượng:</Text>
+                        <View style={styles.quantityControls}>
+                          <TouchableOpacity 
+                            onPress={() => updateQuantity(item.id, -1)}
+                          >
+                            <LinearGradient
+                              colors={['#E74C3C', '#C0392B']}
+                              style={styles.quantityButton}
+                            >
+                              <MaterialCommunityIcons name="minus" size={14} color="white" />
+                            </LinearGradient>
+                          </TouchableOpacity>
+                          <View style={styles.quantityDisplay}>
+                            <Text style={styles.quantityText}>{item.quantity}</Text>
+                          </View>
+                          <TouchableOpacity 
+                            onPress={() => updateQuantity(item.id, 1)}
+                          >
+                            <LinearGradient
+                              colors={['#27AE60', '#229954']}
+                              style={styles.quantityButton}
+                            >
+                              <MaterialCommunityIcons name="plus" size={14} color="white" />
+                            </LinearGradient>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                      
+                      <View style={styles.totalPriceContainer}>
+                        <Text style={styles.totalPriceLabel}>Thành tiền:</Text>
+                        <LinearGradient
+                          colors={['#4CAF50', '#45A049']}
+                          style={styles.totalPriceTag}
+                        >
+                          <Text style={styles.totalPriceText}>
+                            {formatPrice(item.price * item.quantity)}
+                          </Text>
+                        </LinearGradient>
+                      </View>
+                    </View>
+                  </LinearGradient>
+                </View>
+              ))
+            )}
+          </ScrollView>
+        </View>
         
         {/* Total */}
-        <View style={styles.totalSection}>
-          <Text style={styles.totalLabel}>Total Amount:</Text>
-          <Text style={styles.totalAmount}>{formatPrice(total)}</Text>
-        </View>
+        <LinearGradient
+          colors={['#E3F2FD', '#F0F8FF']}
+          style={styles.totalSection}
+        >
+          <View style={styles.totalHeader}>
+            <MaterialCommunityIcons name="calculator" size={24} color="#2196F3" />
+            <Text style={styles.totalLabel}>Tổng cộng</Text>
+          </View>
+          <View style={styles.totalAmountContainer}>
+            <LinearGradient
+              colors={['#2196F3', '#1976D2']}
+              style={styles.totalAmountBadge}
+            >
+              <Text style={styles.totalAmount}>{formatPrice(total)}</Text>
+            </LinearGradient>
+          </View>
+        </LinearGradient>
         
         {/* Action Buttons */}
         <View style={styles.orderActions}>
@@ -742,16 +883,28 @@ export default function MenuScreen({ navigation, route }) {
             style={styles.clearButton}
             onPress={() => setOrderItems([])}
           >
-            <Text style={styles.clearButtonText}>Clear Order</Text>
+            <LinearGradient
+              colors={['#E74C3C', '#C0392B']}
+              style={styles.clearButtonGradient}
+            >
+              <MaterialCommunityIcons name="delete-outline" size={18} color="white" />
+              <Text style={styles.clearButtonText}>Xóa đơn</Text>
+            </LinearGradient>
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.submitButton}
             onPress={submitOrder}
           >
-            <Text style={styles.submitButtonText}>Submit Order</Text>
+            <LinearGradient
+              colors={['#27AE60', '#229954']}
+              style={styles.submitButtonGradient}
+            >
+              <MaterialCommunityIcons name="send-outline" size={18} color="white" />
+              <Text style={styles.submitButtonText}>Gửi đơn</Text>
+            </LinearGradient>
           </TouchableOpacity>
         </View>
-      </View>
+      </LinearGradient>
     );
   };
 
@@ -783,11 +936,43 @@ export default function MenuScreen({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <ScreenHeader
-        title="Menu"
-        onRefresh={handleRefresh}
-        refreshing={refreshing}
-      />
+      {/* Background Image */}
+      <View style={styles.backgroundContainer}>
+        <View style={styles.backgroundImageContainer}>
+          <Image 
+            source={{
+              uri: 'https://cdn2.fptshop.com.vn/unsafe/1920x0/filters:format(webp):quality(75)/cac_mon_an_toi_01_d6cd0972c7.jpg'
+            }}
+            style={styles.backgroundImage}
+            resizeMode="cover"
+          />
+        </View>
+      </View>
+      
+      {/* Header with gradient background */}
+      <LinearGradient
+        colors={['#FF6B6B', '#FF8E53', '#FF6B35']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.welcomeSection}
+      >
+        <View style={styles.welcomeContent}>
+          <View style={styles.logoContainer}>
+            <MaterialCommunityIcons name="silverware-fork-knife" size={60} color="white" />
+          </View>
+          <View style={styles.welcomeTextContainer}>
+            <Text style={styles.welcomeTitle}>Thực Đơn</Text>
+            <Text style={styles.welcomeSubtitle}>
+              Khám phá các món ăn đa dạng{'\n'}
+              Chọn và đặt món yêu thích của bạn
+            </Text>
+          </View>
+        </View>
+        
+        {/* Decorative elements */}
+        <View style={styles.decorativeCircle1} />
+        <View style={styles.decorativeCircle2} />
+      </LinearGradient>
       
       {/* Main Content Area */}
       <View style={[styles.mainContent, isCustomer && styles.mainContentFullWidth]}>
@@ -804,23 +989,37 @@ export default function MenuScreen({ navigation, route }) {
               {categories.map((category) => (
                 <TouchableOpacity
                   key={category.id}
-                  style={[
-                    styles.categoryTab,
-                    selectedCategory === category.id && styles.activeCategoryTab
-                  ]}
                   onPress={() => setSelectedCategory(category.id)}
+                  style={styles.categoryTabWrapper}
                 >
-                  <MaterialCommunityIcons 
-                    name={category.icon} 
-                    size={18} 
-                    color={selectedCategory === category.id ? 'white' : '#FF6B35'} 
-                  />
-                  <Text style={[
-                    styles.categoryText,
-                    selectedCategory === category.id && styles.activeCategoryText
-                  ]}>
-                    {category.name}
-                  </Text>
+                  {selectedCategory === category.id ? (
+                    <LinearGradient
+                      colors={['#FF6B35', '#FF8E53', '#FFA726']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={styles.activeCategoryTab}
+                    >
+                      <MaterialCommunityIcons 
+                        name={category.icon} 
+                        size={18} 
+                        color="white" 
+                      />
+                      <Text style={styles.activeCategoryText}>
+                        {category.name}
+                      </Text>
+                    </LinearGradient>
+                  ) : (
+                    <View style={styles.categoryTab}>
+                      <MaterialCommunityIcons 
+                        name={category.icon} 
+                        size={18} 
+                        color="#FF6B35" 
+                      />
+                      <Text style={styles.categoryText}>
+                        {category.name}
+                      </Text>
+                    </View>
+                  )}
                 </TouchableOpacity>
               ))}
             </ScrollView>
@@ -915,79 +1114,285 @@ export default function MenuScreen({ navigation, route }) {
   );
 }
 
+const { width } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#2C3E50',
+  },
+  // Background Image Styles
+  backgroundContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 0,
+  },
+  backgroundImageContainer: {
+    flex: 1,
+    position: 'relative',
+  },
+  backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
+  },
+  backgroundOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+  },
+
+  // Header Section Styles
+  welcomeSection: {
+    paddingTop: 60,
+    paddingBottom: 40,
+    paddingHorizontal: 20,
+    position: 'relative',
+    overflow: 'hidden',
+    zIndex: 1,
+    backgroundColor: 'transparent',
+  },
+  welcomeContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    zIndex: 2,
+  },
+  logoContainer: {
+    marginRight: 20,
+    padding: 10,
+    borderRadius: 40,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    shadowColor: '#FFA726',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 15,
+    elevation: 10,
+  },
+  welcomeTextContainer: {
+    flex: 1,
+  },
+  welcomeTitle: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: 'white',
+    marginBottom: 8,
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+  welcomeSubtitle: {
+    fontSize: 16,
+    color: 'rgba(255,255,255,0.9)',
+    lineHeight: 22,
+    fontWeight: '400',
+  },
+  decorativeCircle1: {
+    position: 'absolute',
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    top: -50,
+    right: -50,
+  },
+  decorativeCircle2: {
+    position: 'absolute',
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    backgroundColor: 'rgba(255,255,255,0.03)',
+    bottom: -30,
+    left: -30,
   },
   mainContent: {
     flex: 1,
     flexDirection: 'row',
+    zIndex: 1,
   },
   menuSection: {
     flex: 2,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    margin: 10,
+    borderRadius: 20,
+    elevation: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    backdropFilter: 'blur(15px)',
   },
   orderFormContainer: {
     flex: 1,
-    backgroundColor: 'white',
-    margin: 10,
-    borderRadius: 15,
-    padding: 15,
-    elevation: 3,
+    margin: 12,
+    borderRadius: 20,
+    padding: 20,
+    elevation: 8,
     shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+  },
+  orderFormHeader: {
+    marginBottom: 20,
+  },
+  orderFormTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderRadius: 16,
+    elevation: 4,
+    shadowColor: '#667EEA',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
   orderFormTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#2C3E50',
-    marginBottom: 15,
-    textAlign: 'center',
+    color: 'white',
+    marginLeft: 12,
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   orderInfoSection: {
-    marginBottom: 15,
-    padding: 10,
-    backgroundColor: '#F8F9FA',
-    borderRadius: 8,
+    marginBottom: 20,
+  },
+  orderInfoCard: {
+    padding: 16,
+    borderRadius: 16,
+    elevation: 3,
+    shadowColor: '#667EEA',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  orderInfoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  orderInfoContent: {
+    flex: 1,
+    marginLeft: 12,
   },
   orderInfoLabel: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#34495E',
-    marginTop: 5,
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#667EEA',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginBottom: 2,
   },
   orderInfoValue: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#2C3E50',
-    marginBottom: 5,
+    fontWeight: '500',
+  },
+  orderInfoDivider: {
+    height: 1,
+    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+    marginVertical: 8,
+    marginLeft: 32,
+  },
+  orderItemsSection: {
+    marginBottom: 20,
+  },
+  orderItemsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    elevation: 3,
+    shadowColor: '#667EEA',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   orderItemsTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#2C3E50',
-    marginBottom: 10,
+    color: 'white',
+    marginLeft: 10,
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   orderItemsList: {
     flex: 1,
-    maxHeight: 300,
+    maxHeight: 250,
+    backgroundColor: '#F8F9FA',
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+  },
+  emptyOrderContainer: {
+    alignItems: 'center',
+    paddingVertical: 40,
   },
   emptyOrderText: {
-    fontSize: 14,
+    fontSize: 16,
+    fontWeight: '600',
     color: '#7F8C8D',
+    marginTop: 12,
+  },
+  emptyOrderSubText: {
+    fontSize: 13,
+    color: '#95A5A6',
+    marginTop: 4,
     textAlign: 'center',
-    marginTop: 20,
+  },
+  orderItemWrapper: {
+    marginBottom: 8,
   },
   orderItem: {
+    padding: 12,
+    borderRadius: 12,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+  },
+  orderItemHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 10,
-    backgroundColor: '#F8F9FA',
-    borderRadius: 8,
+    alignItems: 'flex-start',
     marginBottom: 8,
+  },
+  itemNumberContainer: {
+    marginRight: 10,
+    alignSelf: 'center',
+  },
+  itemNumber: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 2,
+    shadowColor: '#FF6B35',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+  },
+  itemNumberText: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    color: 'white',
   },
   orderItemInfo: {
     flex: 1,
@@ -996,49 +1401,132 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     color: '#2C3E50',
+    marginBottom: 4,
+    letterSpacing: 0.2,
+  },
+  priceRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  unitPriceLabel: {
+    fontSize: 11,
+    color: '#7F8C8D',
+    marginRight: 4,
   },
   orderItemPrice: {
     fontSize: 12,
+    fontWeight: '600',
     color: '#FF6B35',
+  },
+  orderItemFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 6,
+  },
+  quantitySection: {
+    flex: 1,
+  },
+  quantityLabel: {
+    fontSize: 11,
+    color: '#7F8C8D',
+    marginBottom: 4,
   },
   quantityControls: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   quantityButton: {
-    backgroundColor: '#FF6B35',
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
     justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.15,
+    shadowRadius: 2,
+  },
+  quantityDisplay: {
+    backgroundColor: '#E8F6F3',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 10,
+    marginHorizontal: 8,
+    minWidth: 40,
     alignItems: 'center',
   },
   quantityText: {
-    marginHorizontal: 10,
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#2C3E50',
-    minWidth: 20,
-    textAlign: 'center',
-  },
-  totalSection: {
-    marginTop: 15,
-    padding: 15,
-    backgroundColor: '#E8F6F3',
-    borderRadius: 8,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  totalLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#2C3E50',
-  },
-  totalAmount: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#27AE60',
+  },
+  totalPriceContainer: {
+    alignItems: 'flex-end',
+  },
+  totalPriceLabel: {
+    fontSize: 11,
+    color: '#7F8C8D',
+    marginBottom: 3,
+  },
+  totalPriceTag: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 10,
+    elevation: 2,
+    shadowColor: '#4CAF50',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.15,
+    shadowRadius: 2,
+  },
+  totalPriceText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  totalSection: {
+    marginTop: 20,
+    padding: 20,
+    borderRadius: 16,
+    elevation: 6,
+    shadowColor: '#2196F3',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+  },
+  totalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  totalLabel: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#2196F3',
+    marginLeft: 10,
+  },
+  totalAmountContainer: {
+    alignItems: 'center',
+  },
+  totalAmountBadge: {
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 20,
+    elevation: 6,
+    shadowColor: '#2196F3',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+  },
+  totalAmount: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   orderActions: {
     flexDirection: 'row',
@@ -1047,29 +1535,51 @@ const styles = StyleSheet.create({
   },
   clearButton: {
     flex: 1,
-    backgroundColor: '#E74C3C',
-    padding: 12,
-    borderRadius: 8,
-    marginRight: 5,
+    marginRight: 8,
+    borderRadius: 16,
+    elevation: 4,
+    shadowColor: '#E74C3C',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  clearButtonGradient: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 16,
   },
   clearButtonText: {
     color: 'white',
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: 'bold',
+    marginLeft: 8,
   },
   submitButton: {
     flex: 1,
-    backgroundColor: '#27AE60',
-    padding: 12,
-    borderRadius: 8,
-    marginLeft: 5,
+    marginLeft: 8,
+    borderRadius: 16,
+    elevation: 4,
+    shadowColor: '#27AE60',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  submitButtonGradient: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 16,
   },
   submitButtonText: {
     color: 'white',
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: 'bold',
+    marginLeft: 8,
   },
   loadingContainer: {
     flex: 1,
@@ -1115,60 +1625,86 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   categoryContainer: {
-    backgroundColor: 'white',
-    paddingVertical: 0,
-    paddingHorizontal: 10,
-    height: 40,
-    elevation: 2,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    elevation: 6,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    backdropFilter: 'blur(10px)',
   },
   categoryContentContainer: {
     alignItems: 'center',
-    paddingVertical: 5,
+    paddingVertical: 0,
   },
   categoryScrollView: {
     flexGrow: 0,
   },
+  categoryTabWrapper: {
+    marginHorizontal: 6,
+  },
   categoryTab: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 4,
-    borderRadius: 15,
-    marginHorizontal: 4,
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 20,
     backgroundColor: '#F8F9FA',
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#FF6B35',
-    height: 30,
+    elevation: 2,
+    shadowColor: '#FF6B35',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   activeCategoryTab: {
-    backgroundColor: '#FF6B35',
-    borderColor: '#FF6B35',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 20,
+    elevation: 6,
+    shadowColor: '#FF6B35',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
   },
   categoryText: {
-    marginLeft: 6,
-    fontSize: 13,
+    marginLeft: 8,
+    fontSize: 14,
     fontWeight: '600',
     color: '#FF6B35',
   },
   activeCategoryText: {
+    marginLeft: 8,
+    fontSize: 14,
+    fontWeight: 'bold',
     color: 'white',
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   menuContainer: {
     flex: 1,
-    paddingHorizontal: 15,
-    paddingBottom: 15,
-    paddingTop: 0,
+    paddingHorizontal: 16,
+    paddingBottom: 20,
+    paddingTop: 20,
   },
   categoryTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 26,
+    fontWeight: '800',
     color: '#2C3E50',
-    marginBottom: 10,
-    marginTop: 5,
+    marginBottom: 20,
+    textAlign: 'center',
+    letterSpacing: 0.5,
+    textShadowColor: 'rgba(44, 62, 80, 0.1)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   itemsLoadingContainer: {
     flex: 1,
@@ -1185,76 +1721,130 @@ const styles = StyleSheet.create({
     color: '#7F8C8D',
     marginTop: 15,
   },
+  menuItemWrapper: {
+    marginBottom: 16,
+  },
   menuItem: {
     flexDirection: 'row',
-    backgroundColor: 'white',
-    borderRadius: 15,
-    padding: 15,
-    marginBottom: 15,
-    elevation: 2,
+    borderRadius: 20,
+    elevation: 8,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    overflow: 'hidden',
   },
-  menuItemImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 10,
-    backgroundColor: '#F8F9FA',
+  menuItemImageContainer: {
+    width: 90,
+    height: 90,
+    borderRadius: 16,
+    marginLeft: 16,
+    marginRight: 20,
+    overflow: 'hidden',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 15,
-    overflow: 'hidden', // Ensure images don't overflow the rounded corners
+    alignSelf: 'center',
   },
   foodImage: {
     width: '100%',
     height: '100%',
-    borderRadius: 10,
+    borderRadius: 16,
+    resizeMode: 'cover',
   },
   fallbackImageContainer: {
     width: '100%',
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F8F9FA',
+    borderRadius: 16,
   },
   emojiImage: {
     fontSize: 40,
+    textShadowColor: 'rgba(255,255,255,0.8)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   menuItemContent: {
     flex: 1,
+    padding: 16,
     justifyContent: 'space-between',
   },
+  menuItemHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 6,
+  },
   menuItemName: {
-    fontSize: 18,
+    flex: 1,
+    fontSize: 17,
     fontWeight: 'bold',
     color: '#2C3E50',
-    marginBottom: 5,
+    letterSpacing: 0.3,
+    lineHeight: 22,
+    marginRight: 8,
+  },
+  priceContainer: {
+    alignSelf: 'flex-start',
+  },
+  priceTag: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+    elevation: 3,
+    shadowColor: '#FF6B35',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+  },
+  menuItemPrice: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
   },
   menuItemDescription: {
     fontSize: 14,
     color: '#7F8C8D',
     lineHeight: 20,
-    marginBottom: 10,
+    marginBottom: 12,
   },
   menuItemFooter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  menuItemPrice: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#FF6B35',
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  ratingText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FFA726',
+    marginLeft: 4,
+  },
+  reviewCount: {
+    fontSize: 12,
+    color: '#95A5A6',
+    marginLeft: 4,
   },
   addButton: {
-    backgroundColor: '#FF6B35',
-    width: 35,
-    height: 35,
-    borderRadius: 17.5,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
+    elevation: 4,
+    shadowColor: '#4CAF50',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
   // Modal styles
   modalBackdrop: {
