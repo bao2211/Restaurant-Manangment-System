@@ -1849,6 +1849,24 @@ export const apiService = {
       throw error;
     }
   },
+
+  // ============= AUTHENTICATION UTILITIES =============
+  
+  // Set JWT token for authenticated requests
+  setAuthToken: (token) => {
+    if (token) {
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      console.log('✅ Auth token set in API headers');
+    } else {
+      delete api.defaults.headers.common['Authorization'];
+      console.log('🚫 Auth token removed from API headers');
+    }
+  },
+
+  // Get current auth token
+  getAuthToken: () => {
+    return api.defaults.headers.common['Authorization'];
+  },
 };
 
 // Helper function to generate category icons based on category name

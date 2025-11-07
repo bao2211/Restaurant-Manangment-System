@@ -1,1134 +1,983 @@
+ Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+  "shadow*" style props are deprecated. Use "boxShadow".
+warnOnce @ bundle.js:69405
+  "textShadow*" style props are deprecated. Use "textShadow".
+warnOnce @ bundle.js:69405
+  props.pointerEvents is deprecated. Use style.pointerEvents
+warnOnce @ bundle.js:69405
+ Getting accessible menu items for role: Customer
+ Checking access for role: Customer to screen: Home
+ Role Customer access to Home: GRANTED
+ Allowed screens for Customer: Array(4)
+ Menu item Home (Home) - Access: YES
+ Checking access for role: Customer to screen: Menu
+ Role Customer access to Menu: GRANTED
+ Allowed screens for Customer: Array(4)
+ Menu item Menu (Menu) - Access: YES
+ Checking access for role: Customer to screen: Orders
+ Role Customer access to Orders: DENIED
+ Allowed screens for Customer: Array(4)
+ Menu item Orders (Orders) - Access: NO
+ Checking access for role: Customer to screen: Favorites
+ Role Customer access to Favorites: GRANTED
+ Allowed screens for Customer: Array(4)
+ Menu item Favorites (Favorites) - Access: YES
+ Checking access for role: Customer to screen: OrderDetail
+ Role Customer access to OrderDetail: DENIED
+ Allowed screens for Customer: Array(4)
+ Menu item OrderDetail (OrderDetail) - Access: NO
+ Checking access for role: Customer to screen: Table
+ Role Customer access to Table: DENIED
+ Allowed screens for Customer: Array(4)
+ Menu item Table (Table) - Access: NO
+ Checking access for role: Customer to screen: Bill
+ Role Customer access to Bill: DENIED
+ Allowed screens for Customer: Array(4)
+ Menu item Bill (Bill) - Access: NO
+ Checking access for role: Customer to screen: BillManager
+ Role Customer access to BillManager: DENIED
+ Allowed screens for Customer: Array(4)
+ Menu item BillManager (BillManager) - Access: NO
+ Checking access for role: Customer to screen: Report
+ Role Customer access to Report: DENIED
+ Allowed screens for Customer: Array(4)
+ Menu item Report (Report) - Access: NO
  Checking access for role: Customer to screen: Profile
  Role Customer access to Profile: GRANTED
- Allowed screens for Customer: Array(3)
+ Allowed screens for Customer: Array(4)
  Menu item Profile (Profile) - Access: YES
  Checking access for role: Customer to screen: MenuManager
  Role Customer access to MenuManager: DENIED
- Allowed screens for Customer: Array(3)
+ Allowed screens for Customer: Array(4)
  Management item MenuManager (MenuManager) - Access: NO
  Checking access for role: Customer to screen: IngredientManager
  Role Customer access to IngredientManager: DENIED
- Allowed screens for Customer: Array(3)
+ Allowed screens for Customer: Array(4)
  Management item IngredientManager (IngredientManager) - Access: NO
  Checking access for role: Customer to screen: OrderDetailManager
  Role Customer access to OrderDetailManager: DENIED
- Allowed screens for Customer: Array(3)
+ Allowed screens for Customer: Array(4)
  Management item OrderDetailManager (OrderDetailManager) - Access: NO
  Checking access for role: Customer to screen: UserManagement
  Role Customer access to UserManagement: DENIED
- Allowed screens for Customer: Array(3)
+ Allowed screens for Customer: Array(4)
  Management item UserManagement (UserManagement) - Access: NO
- Final accessible items - Main: 3, Management: 0
+ Final accessible items - Main: 4, Management: 0
  CustomSidebarMenu - Current user role: Customer
- CustomSidebarMenu - Accessible main menu items: 3
+ CustomSidebarMenu - Accessible main menu items: 4
  CustomSidebarMenu - Accessible management menu items: 0
   Animated: `useNativeDriver` is not supported because the native animated module is missing. Falling back to JS-based animation. To resolve this, add `RCTAnimation` module to this app, or remove `useNativeDriver`. Make sure to run `bundle exec pod install` first. Read more about autolinking: https://github.com/react-native-community/cli/blob/master/docs/autolinking.md
-shouldUseNativeDriver @ bundle.js:70625
- Getting accessible menu items for role: Admin
- Checking access for role: Admin to screen: Home
+shouldUseNativeDriver @ bundle.js:70704
+ Getting accessible menu items for role: Customer
+ Checking access for role: Customer to screen: Home
+ Role Customer access to Home: GRANTED
+ Allowed screens for Customer: Array(4)
  Menu item Home (Home) - Access: YES
- Checking access for role: Admin to screen: Menu
+ Checking access for role: Customer to screen: Menu
+ Role Customer access to Menu: GRANTED
+ Allowed screens for Customer: Array(4)
  Menu item Menu (Menu) - Access: YES
- Checking access for role: Admin to screen: Orders
- Menu item Orders (Orders) - Access: YES
- Checking access for role: Admin to screen: OrderDetail
- Menu item OrderDetail (OrderDetail) - Access: YES
- Checking access for role: Admin to screen: Table
- Menu item Table (Table) - Access: YES
- Checking access for role: Admin to screen: Bill
- Menu item Bill (Bill) - Access: YES
- Checking access for role: Admin to screen: BillManager
- Menu item BillManager (BillManager) - Access: YES
- Checking access for role: Admin to screen: Report
- Menu item Report (Report) - Access: YES
- Checking access for role: Admin to screen: Profile
+ Checking access for role: Customer to screen: Orders
+ Role Customer access to Orders: DENIED
+ Allowed screens for Customer: Array(4)
+ Menu item Orders (Orders) - Access: NO
+ Checking access for role: Customer to screen: Favorites
+ Role Customer access to Favorites: GRANTED
+ Allowed screens for Customer: Array(4)
+ Menu item Favorites (Favorites) - Access: YES
+ Checking access for role: Customer to screen: OrderDetail
+ Role Customer access to OrderDetail: DENIED
+ Allowed screens for Customer: Array(4)
+ Menu item OrderDetail (OrderDetail) - Access: NO
+ Checking access for role: Customer to screen: Table
+ Role Customer access to Table: DENIED
+ Allowed screens for Customer: Array(4)
+ Menu item Table (Table) - Access: NO
+ Checking access for role: Customer to screen: Bill
+ Role Customer access to Bill: DENIED
+ Allowed screens for Customer: Array(4)
+ Menu item Bill (Bill) - Access: NO
+ Checking access for role: Customer to screen: BillManager
+ Role Customer access to BillManager: DENIED
+ Allowed screens for Customer: Array(4)
+ Menu item BillManager (BillManager) - Access: NO
+ Checking access for role: Customer to screen: Report
+ Role Customer access to Report: DENIED
+ Allowed screens for Customer: Array(4)
+ Menu item Report (Report) - Access: NO
+ Checking access for role: Customer to screen: Profile
+ Role Customer access to Profile: GRANTED
+ Allowed screens for Customer: Array(4)
  Menu item Profile (Profile) - Access: YES
- Checking access for role: Admin to screen: MenuManager
- Management item MenuManager (MenuManager) - Access: YES
- Checking access for role: Admin to screen: IngredientManager
- Management item IngredientManager (IngredientManager) - Access: YES
- Checking access for role: Admin to screen: OrderDetailManager
- Management item OrderDetailManager (OrderDetailManager) - Access: YES
- Checking access for role: Admin to screen: UserManagement
- Management item UserManagement (UserManagement) - Access: YES
- Final accessible items - Main: 9, Management: 4
- CustomSidebarMenu - Current user role: Admin
- CustomSidebarMenu - Accessible main menu items: 9
- CustomSidebarMenu - Accessible management menu items: 4
- Checking access for role: Admin to screen: Table
- === STARTING TABLE FETCH ===
- Fetching tables from API...
- === STATE CHANGE ===
- Loading: true
- Tables length: 0
- Tables: Array(0)
- Checking access for role: Admin to screen: Table
- TableScreen focused - refreshing table status
- 🚀 Making GET request to: /api/Table
- ✅ Response received: 200 OK
- Raw tables response: Array(7)
- extractApiData - Input data: Array(7)
- Found direct array with length: 7
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- extractApiData - Processed items: 7
- extractApiData - Sample processed item: Object
- Extracted tables data: Array(7)
- Number of tables: 7
- === API RESPONSE ===
- Raw tables data: Array(7)
- Tables data type: object
- Is array: true
- Tables data length: 7
- ✓ Setting tables from API response (array)
- === UPDATING TABLE STATUS BASED ON ORDERS ===
- Fetching all orders from API...
- 🚀 Making GET request to: /api/Order
- ✅ Response received: 200 OK
- Raw orders response: Array(66)
- extractApiData - Input data: Array(66)
- Found direct array with length: 66
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- normalizeKeyName: status -> status
- extractApiData - Processed items: 66
- extractApiData - Sample processed item: Object
- Extracted orders data: Array(66)
- Fetched orders for status update: Array(66)
- Table order status map: Object
- Checking table 1: Object
-     Status "Chưa làm" -> normalized: "chưa làm" -> isPaid: false
-   -> All orders paid: false, setting status to: Occupied
- Checking table 2: Object
-     Status "Đã tạo bill" -> normalized: "đã tạo bill" -> isPaid: true
-     Status "Đã thanh toán" -> normalized: "đã thanh toán" -> isPaid: true
-     Status "Đã thanh toán" -> normalized: "đã thanh toán" -> isPaid: true
-     Status "Đã tạo bill" -> normalized: "đã tạo bill" -> isPaid: true
-     Status "Đã tạo bill" -> normalized: "đã tạo bill" -> isPaid: true
-     Status "Đã thanh toán" -> normalized: "đã thanh toán" -> isPaid: true
-     Status "Đã tạo bill" -> normalized: "đã tạo bill" -> isPaid: true
-     Status "Đã thanh toán" -> normalized: "đã thanh toán" -> isPaid: true
-     Status "Hoàn tất" -> normalized: "hoàn tất" -> isPaid: true
-     Status "Đã thanh toán" -> normalized: "đã thanh toán" -> isPaid: true
-     Status "Đã tạo bill" -> normalized: "đã tạo bill" -> isPaid: true
-     Status "Đã thanh toán" -> normalized: "đã thanh toán" -> isPaid: true
-     Status "Đã thanh toán" -> normalized: "đã thanh toán" -> isPaid: true
-     Status "Đã tạo bill" -> normalized: "đã tạo bill" -> isPaid: true
-     Status "Hoàn tất" -> normalized: "hoàn tất" -> isPaid: true
-     Status "Đã tạo bill" -> normalized: "đã tạo bill" -> isPaid: true
-     Status "Hoàn tất" -> normalized: "hoàn tất" -> isPaid: true
-     Status "Đã tạo bill" -> normalized: "đã tạo bill" -> isPaid: true
-   -> All orders paid: true, setting status to: Available
- Checking table 3: Object
-     Status "Chưa làm" -> normalized: "chưa làm" -> isPaid: false
-   -> All orders paid: false, setting status to: Occupied
- Checking table 4: Object
-     Status "Chưa làm" -> normalized: "chưa làm" -> isPaid: false
-   -> All orders paid: false, setting status to: Occupied
- Checking table 5: Object
-     Status "Hoàn tất" -> normalized: "hoàn tất" -> isPaid: true
-     Status "Hoàn tất" -> normalized: "hoàn tất" -> isPaid: true
-     Status "Hoàn tất" -> normalized: "hoàn tất" -> isPaid: true
-   -> All orders paid: true, setting status to: Available
- Checking table 6: Object
-     Status "Đã thanh toán" -> normalized: "đã thanh toán" -> isPaid: true
-     Status "Đã tạo bill" -> normalized: "đã tạo bill" -> isPaid: true
-     Status "Đã thanh toán" -> normalized: "đã thanh toán" -> isPaid: true
-   -> All orders paid: true, setting status to: Available
- Checking table 7: Object
-     Status "Chưa làm" -> normalized: "chưa làm" -> isPaid: false
-   -> All orders paid: false, setting status to: Occupied
- Updated tables with order-based status: Array(7)
- === LOADING COMPLETE ===
- Final tables count: 0
- === RENDER ===
- Loading: false
- Tables array length: 7
- Tables data: Array(7)
- === STATE CHANGE ===
- Loading: false
- Tables length: 7
- Tables: Array(7)
- Checking access for role: Admin to screen: Table
- === RENDER ===
- Loading: false
- Tables array length: 7
- Tables data: Array(7)
- Getting accessible menu items for role: Admin
- Checking access for role: Admin to screen: Home
+ Checking access for role: Customer to screen: MenuManager
+ Role Customer access to MenuManager: DENIED
+ Allowed screens for Customer: Array(4)
+ Management item MenuManager (MenuManager) - Access: NO
+ Checking access for role: Customer to screen: IngredientManager
+ Role Customer access to IngredientManager: DENIED
+ Allowed screens for Customer: Array(4)
+ Management item IngredientManager (IngredientManager) - Access: NO
+ Checking access for role: Customer to screen: OrderDetailManager
+ Role Customer access to OrderDetailManager: DENIED
+ Allowed screens for Customer: Array(4)
+ Management item OrderDetailManager (OrderDetailManager) - Access: NO
+ Checking access for role: Customer to screen: UserManagement
+ Role Customer access to UserManagement: DENIED
+ Allowed screens for Customer: Array(4)
+ Management item UserManagement (UserManagement) - Access: NO
+ Final accessible items - Main: 4, Management: 0
+ CustomSidebarMenu - Current user role: Customer
+ CustomSidebarMenu - Accessible main menu items: 4
+ CustomSidebarMenu - Accessible management menu items: 0
+ Getting accessible menu items for role: Customer
+ Checking access for role: Customer to screen: Home
+ Role Customer access to Home: GRANTED
+ Allowed screens for Customer: Array(4)
  Menu item Home (Home) - Access: YES
- Checking access for role: Admin to screen: Menu
+ Checking access for role: Customer to screen: Menu
+ Role Customer access to Menu: GRANTED
+ Allowed screens for Customer: Array(4)
  Menu item Menu (Menu) - Access: YES
- Checking access for role: Admin to screen: Orders
- Menu item Orders (Orders) - Access: YES
- Checking access for role: Admin to screen: OrderDetail
- Menu item OrderDetail (OrderDetail) - Access: YES
- Checking access for role: Admin to screen: Table
- Menu item Table (Table) - Access: YES
- Checking access for role: Admin to screen: Bill
- Menu item Bill (Bill) - Access: YES
- Checking access for role: Admin to screen: BillManager
- Menu item BillManager (BillManager) - Access: YES
- Checking access for role: Admin to screen: Report
- Menu item Report (Report) - Access: YES
- Checking access for role: Admin to screen: Profile
+ Checking access for role: Customer to screen: Orders
+ Role Customer access to Orders: DENIED
+ Allowed screens for Customer: Array(4)
+ Menu item Orders (Orders) - Access: NO
+ Checking access for role: Customer to screen: Favorites
+ Role Customer access to Favorites: GRANTED
+ Allowed screens for Customer: Array(4)
+ Menu item Favorites (Favorites) - Access: YES
+ Checking access for role: Customer to screen: OrderDetail
+ Role Customer access to OrderDetail: DENIED
+ Allowed screens for Customer: Array(4)
+ Menu item OrderDetail (OrderDetail) - Access: NO
+ Checking access for role: Customer to screen: Table
+ Role Customer access to Table: DENIED
+ Allowed screens for Customer: Array(4)
+ Menu item Table (Table) - Access: NO
+ Checking access for role: Customer to screen: Bill
+ Role Customer access to Bill: DENIED
+ Allowed screens for Customer: Array(4)
+ Menu item Bill (Bill) - Access: NO
+ Checking access for role: Customer to screen: BillManager
+ Role Customer access to BillManager: DENIED
+ Allowed screens for Customer: Array(4)
+ Menu item BillManager (BillManager) - Access: NO
+ Checking access for role: Customer to screen: Report
+ Role Customer access to Report: DENIED
+ Allowed screens for Customer: Array(4)
+ Menu item Report (Report) - Access: NO
+ Checking access for role: Customer to screen: Profile
+ Role Customer access to Profile: GRANTED
+ Allowed screens for Customer: Array(4)
  Menu item Profile (Profile) - Access: YES
- Checking access for role: Admin to screen: MenuManager
- Management item MenuManager (MenuManager) - Access: YES
- Checking access for role: Admin to screen: IngredientManager
- Management item IngredientManager (IngredientManager) - Access: YES
- Checking access for role: Admin to screen: OrderDetailManager
- Management item OrderDetailManager (OrderDetailManager) - Access: YES
- Checking access for role: Admin to screen: UserManagement
- Management item UserManagement (UserManagement) - Access: YES
- Final accessible items - Main: 9, Management: 4
- CustomSidebarMenu - Current user role: Admin
- CustomSidebarMenu - Accessible main menu items: 9
- CustomSidebarMenu - Accessible management menu items: 4
-  TouchableWithoutFeedback is deprecated. Please use Pressable.
-warnOnce @ bundle.js:69326
- Checking access for role: Admin to screen: Table
- === RENDER ===
- Loading: false
- Tables array length: 7
- Tables data: Array(7)
- Getting accessible menu items for role: Admin
- Checking access for role: Admin to screen: Home
- Menu item Home (Home) - Access: YES
- Checking access for role: Admin to screen: Menu
- Menu item Menu (Menu) - Access: YES
- Checking access for role: Admin to screen: Orders
- Menu item Orders (Orders) - Access: YES
- Checking access for role: Admin to screen: OrderDetail
- Menu item OrderDetail (OrderDetail) - Access: YES
- Checking access for role: Admin to screen: Table
- Menu item Table (Table) - Access: YES
- Checking access for role: Admin to screen: Bill
- Menu item Bill (Bill) - Access: YES
- Checking access for role: Admin to screen: BillManager
- Menu item BillManager (BillManager) - Access: YES
- Checking access for role: Admin to screen: Report
- Menu item Report (Report) - Access: YES
- Checking access for role: Admin to screen: Profile
- Menu item Profile (Profile) - Access: YES
- Checking access for role: Admin to screen: MenuManager
- Management item MenuManager (MenuManager) - Access: YES
- Checking access for role: Admin to screen: IngredientManager
- Management item IngredientManager (IngredientManager) - Access: YES
- Checking access for role: Admin to screen: OrderDetailManager
- Management item OrderDetailManager (OrderDetailManager) - Access: YES
- Checking access for role: Admin to screen: UserManagement
- Management item UserManagement (UserManagement) - Access: YES
- Final accessible items - Main: 9, Management: 4
- CustomSidebarMenu - Current user role: Admin
- CustomSidebarMenu - Accessible main menu items: 9
- CustomSidebarMenu - Accessible management menu items: 4
- Checking access for role: Admin to screen: Menu
- MenuScreen - Current user role: Admin Is Customer: false
- === STARTING CONNECTION TESTS ===
- Testing with axios...
- Testing API connection to: http://46.250.231.129:8080
- Full URL being tested: http://46.250.231.129:8080api/Category
- Initialized order with ID: ORD6772935
- Checking access for role: Admin to screen: Menu
- 🚀 Making GET request to: /api/Category
- MenuScreen - Current user role: Admin Is Customer: false
- ✅ Response received: 200 OK
- Connection test successful - Status: 200
- Response headers: AxiosHeaders
- Response data preview: [{"cateId":"1         ","cateName":"Cơm","foodInfos":[]},{"cateId":"2         ","cateName":"Canh","foodInfos":[]},{"cateId":"3         ","cateName":"Súp","foodInfos":[]},{"cateId":"4         ","cateNa
- Axios test result: true
- Testing with fetch...
- Testing with native fetch API...
- Fetch URL: http://46.250.231.129:8080api/Category
-  Fetch test failed: 
-(anonymous) @ bundle.js:102452
- Fetch test result: Object
- Fetching categories from API...
- 🚀 Making GET request to: /api/Category
- ✅ Response received: 200 OK
- Raw categories response: Array(9)
- extractApiData - Input data: Array(9)
- Found direct array with length: 9
- extractApiData - Processed items: 9
- extractApiData - Sample processed item: Object
- Extracted categories data: Array(9)
- Number of categories: 9
- Categories fetched: Array(9)
- Transformed categories: Array(10)
- Setting selected category to: all
- MenuScreen - Current user role: Admin Is Customer: false
- Fetching all food items from all categories
- Fetching food items for category: 1
- MenuScreen - Current user role: Admin Is Customer: false
- 🚀 Making GET request to: /api/FoodInfo/category/1
- ✅ Response received: 200 OK
- Raw food items response for category: Array(5)
- extractApiData - Input data: Array(5)
- Found direct array with length: 5
- extractApiData - Processed items: 5
- extractApiData - Sample processed item: Object
- Main extracted items: Array(5)
- Using main extracted items: Array(5)
- Number of main extracted items: 5
- Fetching food items for category: 2
- 🚀 Making GET request to: /api/FoodInfo/category/2
- ✅ Response received: 200 OK
- Raw food items response for category: Array(5)
- extractApiData - Input data: Array(5)
- Found direct array with length: 5
- extractApiData - Processed items: 5
- extractApiData - Sample processed item: Object
- Main extracted items: Array(5)
- Using main extracted items: Array(5)
- Number of main extracted items: 5
- Fetching food items for category: 3
- 🚀 Making GET request to: /api/FoodInfo/category/3
- ✅ Response received: 200 OK
- Raw food items response for category: Array(2)
- extractApiData - Input data: Array(2)
- Found direct array with length: 2
- extractApiData - Processed items: 2
- extractApiData - Sample processed item: Object
- Main extracted items: Array(2)
- Using main extracted items: Array(2)
- Number of main extracted items: 2
- Fetching food items for category: 4
- 🚀 Making GET request to: /api/FoodInfo/category/4
- ✅ Response received: 200 OK
- Raw food items response for category: Array(2)
- extractApiData - Input data: Array(2)
- Found direct array with length: 2
- extractApiData - Processed items: 2
- extractApiData - Sample processed item: Object
- Main extracted items: Array(2)
- Using main extracted items: Array(2)
- Number of main extracted items: 2
- Fetching food items for category: 5
- 🚀 Making GET request to: /api/FoodInfo/category/5
- ✅ Response received: 200 OK
- Raw food items response for category: Array(3)
- extractApiData - Input data: Array(3)
- Found direct array with length: 3
- extractApiData - Processed items: 3
- extractApiData - Sample processed item: Object
- Main extracted items: Array(3)
- Using main extracted items: Array(3)
- Number of main extracted items: 3
- Fetching food items for category: 6
- 🚀 Making GET request to: /api/FoodInfo/category/6
- ✅ Response received: 200 OK
- Raw food items response for category: Array(2)
- extractApiData - Input data: Array(2)
- Found direct array with length: 2
- extractApiData - Processed items: 2
- extractApiData - Sample processed item: Object
- Main extracted items: Array(2)
- Using main extracted items: Array(2)
- Number of main extracted items: 2
- Fetching food items for category: 7
- 🚀 Making GET request to: /api/FoodInfo/category/7
- ✅ Response received: 200 OK
- Raw food items response for category: Array(4)
- extractApiData - Input data: Array(4)
- Found direct array with length: 4
- extractApiData - Processed items: 4
- extractApiData - Sample processed item: Object
- Main extracted items: Array(4)
- Using main extracted items: Array(4)
- Number of main extracted items: 4
- Fetching food items for category: 8
- 🚀 Making GET request to: /api/FoodInfo/category/8
- ✅ Response received: 200 OK
- Raw food items response for category: Array(1)
- extractApiData - Input data: Array(1)
- Found direct array with length: 1
- extractApiData - Processed items: 1
- extractApiData - Sample processed item: Object
- Main extracted items: Array(1)
- Using main extracted items: Array(1)
- Number of main extracted items: 1
- Fetching food items for category: 9
- 🚀 Making GET request to: /api/FoodInfo/category/9
- ✅ Response received: 200 OK
- Raw food items response for category: Array(0)
- extractApiData - Input data: Array(0)
- Found direct array with length: 0
- extractApiData - Processed items: 0
- extractApiData - Sample processed item: undefined
- Main extracted items: Array(0)
- Using main extracted items: Array(0)
- Number of main extracted items: 0
- Food items fetched: Array(24)
- MenuScreen - Current user role: Admin Is Customer: false
-(index):1  Tracking Prevention blocked access to storage for https://bizweb.dktcdn.net/100/333/628/files/nuoc-sach-giau-khoang.jpg?v=1601260428010.
-(index):1  Tracking Prevention blocked access to storage for https://bizweb.dktcdn.net/100/333/628/files/nuoc-sach-giau-khoang.jpg?v=1601260428010.
-(index):1  Tracking Prevention blocked access to storage for https://bizweb.dktcdn.net/100/333/628/files/nuoc-sach-giau-khoang.jpg?v=1601260428010.
-(index):1  Tracking Prevention blocked access to storage for https://bizweb.dktcdn.net/100/333/628/files/nuoc-sach-giau-khoang.jpg?v=1601260428010.
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
-  Warning: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
-printWarning @ bundle.js:28954
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
-  Warning: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
-printWarning @ bundle.js:28954
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- MenuScreen - Current user role: Admin Is Customer: false
- Checking access for role: Admin to screen: Table
- === RENDER ===
-TableScreen.js:509 Loading: false
-TableScreen.js:510 Tables array length: 7
-TableScreen.js:511 Tables data: Array(7)
-AuthContext.js:178 Checking access for role: Admin to screen: Menu
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-AuthContext.js:210 Getting accessible menu items for role: Admin
-AuthContext.js:178 Checking access for role: Admin to screen: Home
-AuthContext.js:234 Menu item Home (Home) - Access: YES
-AuthContext.js:178 Checking access for role: Admin to screen: Menu
-AuthContext.js:234 Menu item Menu (Menu) - Access: YES
-AuthContext.js:178 Checking access for role: Admin to screen: Orders
-AuthContext.js:234 Menu item Orders (Orders) - Access: YES
-AuthContext.js:178 Checking access for role: Admin to screen: OrderDetail
-AuthContext.js:234 Menu item OrderDetail (OrderDetail) - Access: YES
-AuthContext.js:178 Checking access for role: Admin to screen: Table
-AuthContext.js:234 Menu item Table (Table) - Access: YES
-AuthContext.js:178 Checking access for role: Admin to screen: Bill
-AuthContext.js:234 Menu item Bill (Bill) - Access: YES
-AuthContext.js:178 Checking access for role: Admin to screen: BillManager
-AuthContext.js:234 Menu item BillManager (BillManager) - Access: YES
-AuthContext.js:178 Checking access for role: Admin to screen: Report
-AuthContext.js:234 Menu item Report (Report) - Access: YES
-AuthContext.js:178 Checking access for role: Admin to screen: Profile
-AuthContext.js:234 Menu item Profile (Profile) - Access: YES
-AuthContext.js:178 Checking access for role: Admin to screen: MenuManager
-AuthContext.js:240 Management item MenuManager (MenuManager) - Access: YES
-AuthContext.js:178 Checking access for role: Admin to screen: IngredientManager
-AuthContext.js:240 Management item IngredientManager (IngredientManager) - Access: YES
-AuthContext.js:178 Checking access for role: Admin to screen: OrderDetailManager
-AuthContext.js:240 Management item OrderDetailManager (OrderDetailManager) - Access: YES
-AuthContext.js:178 Checking access for role: Admin to screen: UserManagement
-AuthContext.js:240 Management item UserManagement (UserManagement) - Access: YES
-AuthContext.js:244 Final accessible items - Main: 9, Management: 4
-App.js:340 CustomSidebarMenu - Current user role: Admin
-App.js:341 CustomSidebarMenu - Accessible main menu items: 9
-App.js:342 CustomSidebarMenu - Accessible management menu items: 4
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:331 Failed to load image for Cơm cháy kho quẹt: /Content/img/com-chay-kho-quet.jpg
-MenuScreen.js:331 Failed to load image for Trà Vải: https://poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:1   Failed to load resource: net::ERR_NAME_NOT_RESOLVED
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-react-dom.development.js:86  Warning: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
-printWarning @ react-dom.development.js:86
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-AuthContext.js:178 Checking access for role: Admin to screen: Table
-TableScreen.js:508 === RENDER ===
-TableScreen.js:509 Loading: false
-TableScreen.js:510 Tables array length: 7
-TableScreen.js:511 Tables data: Array(7)
-AuthContext.js:178 Checking access for role: Admin to screen: Menu
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-AuthContext.js:210 Getting accessible menu items for role: Admin
-AuthContext.js:178 Checking access for role: Admin to screen: Home
-AuthContext.js:234 Menu item Home (Home) - Access: YES
-AuthContext.js:178 Checking access for role: Admin to screen: Menu
-AuthContext.js:234 Menu item Menu (Menu) - Access: YES
-AuthContext.js:178 Checking access for role: Admin to screen: Orders
-AuthContext.js:234 Menu item Orders (Orders) - Access: YES
-AuthContext.js:178 Checking access for role: Admin to screen: OrderDetail
-AuthContext.js:234 Menu item OrderDetail (OrderDetail) - Access: YES
-AuthContext.js:178 Checking access for role: Admin to screen: Table
-AuthContext.js:234 Menu item Table (Table) - Access: YES
-AuthContext.js:178 Checking access for role: Admin to screen: Bill
-AuthContext.js:234 Menu item Bill (Bill) - Access: YES
-AuthContext.js:178 Checking access for role: Admin to screen: BillManager
-AuthContext.js:234 Menu item BillManager (BillManager) - Access: YES
-AuthContext.js:178 Checking access for role: Admin to screen: Report
-AuthContext.js:234 Menu item Report (Report) - Access: YES
-AuthContext.js:178 Checking access for role: Admin to screen: Profile
-AuthContext.js:234 Menu item Profile (Profile) - Access: YES
-AuthContext.js:178 Checking access for role: Admin to screen: MenuManager
-AuthContext.js:240 Management item MenuManager (MenuManager) - Access: YES
-AuthContext.js:178 Checking access for role: Admin to screen: IngredientManager
-AuthContext.js:240 Management item IngredientManager (IngredientManager) - Access: YES
-AuthContext.js:178 Checking access for role: Admin to screen: OrderDetailManager
-AuthContext.js:240 Management item OrderDetailManager (OrderDetailManager) - Access: YES
-AuthContext.js:178 Checking access for role: Admin to screen: UserManagement
-AuthContext.js:240 Management item UserManagement (UserManagement) - Access: YES
-AuthContext.js:244 Final accessible items - Main: 9, Management: 4
-App.js:340 CustomSidebarMenu - Current user role: Admin
-App.js:341 CustomSidebarMenu - Accessible main menu items: 9
-App.js:342 CustomSidebarMenu - Accessible management menu items: 4
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-MenuScreen.js:13 MenuScreen - Current user role: Admin Is Customer: false
-App.js:213  Uncaught ReferenceError: OrderDetailScreen is not defined
-    at Object.children (App.js:213:1)
-    at SceneView (SceneView.tsx:132:1)
-    at renderWithHooks (react-dom.development.js:16305:1)
-    at mountIndeterminateComponent (react-dom.development.js:20074:1)
-    at beginWork (react-dom.development.js:21587:1)
-    at HTMLUnknownElement.callCallback (react-dom.development.js:4164:1)
-    at Object.invokeGuardedCallbackDev (react-dom.development.js:4213:1)
-    at invokeGuardedCallback (react-dom.development.js:4277:1)
-    at beginWork$1 (react-dom.development.js:27451:1)
-    at performUnitOfWork (react-dom.development.js:26560:1)
-App.js:213  Uncaught ReferenceError: OrderDetailScreen is not defined
-    at Object.children (App.js:213:1)
-    at SceneView (SceneView.tsx:132:1)
-    at renderWithHooks (react-dom.development.js:16305:1)
-    at mountIndeterminateComponent (react-dom.development.js:20074:1)
-    at beginWork (react-dom.development.js:21587:1)
-    at HTMLUnknownElement.callCallback (react-dom.development.js:4164:1)
-    at Object.invokeGuardedCallbackDev (react-dom.development.js:4213:1)
-    at invokeGuardedCallback (react-dom.development.js:4277:1)
-    at beginWork$1 (react-dom.development.js:27451:1)
-    at performUnitOfWork (react-dom.development.js:26560:1)
-react-dom.development.js:18687  The above error occurred in the <SceneView> component:
+ Checking access for role: Customer to screen: MenuManager
+ Role Customer access to MenuManager: DENIED
+ Allowed screens for Customer: Array(4)
+ Management item MenuManager (MenuManager) - Access: NO
+ Checking access for role: Customer to screen: IngredientManager
+ Role Customer access to IngredientManager: DENIED
+ Allowed screens for Customer: Array(4)
+ Management item IngredientManager (IngredientManager) - Access: NO
+ Checking access for role: Customer to screen: OrderDetailManager
+AuthContext.js:220 Role Customer access to OrderDetailManager: DENIED
+AuthContext.js:221 Allowed screens for Customer: Array(4)
+AuthContext.js:259 Management item OrderDetailManager (OrderDetailManager) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: UserManagement
+AuthContext.js:220 Role Customer access to UserManagement: DENIED
+AuthContext.js:221 Allowed screens for Customer: Array(4)
+AuthContext.js:259 Management item UserManagement (UserManagement) - Access: NO
+AuthContext.js:263 Final accessible items - Main: 4, Management: 0
+App.js:355 CustomSidebarMenu - Current user role: Customer
+App.js:356 CustomSidebarMenu - Accessible main menu items: 4
+App.js:357 CustomSidebarMenu - Accessible management menu items: 0
+index.js:24  TouchableWithoutFeedback is deprecated. Please use Pressable.
+warnOnce @ index.js:24
+AuthContext.js:228 Getting accessible menu items for role: Customer
+AuthContext.js:196 Checking access for role: Customer to screen: Home
+AuthContext.js:220 Role Customer access to Home: GRANTED
+AuthContext.js:221 Allowed screens for Customer: Array(4)
+AuthContext.js:253 Menu item Home (Home) - Access: YES
+AuthContext.js:196 Checking access for role: Customer to screen: Menu
+AuthContext.js:220 Role Customer access to Menu: GRANTED
+AuthContext.js:221 Allowed screens for Customer: Array(4)
+AuthContext.js:253 Menu item Menu (Menu) - Access: YES
+AuthContext.js:196 Checking access for role: Customer to screen: Orders
+AuthContext.js:220 Role Customer access to Orders: DENIED
+AuthContext.js:221 Allowed screens for Customer: Array(4)
+AuthContext.js:253 Menu item Orders (Orders) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: Favorites
+AuthContext.js:220 Role Customer access to Favorites: GRANTED
+AuthContext.js:221 Allowed screens for Customer: Array(4)
+AuthContext.js:253 Menu item Favorites (Favorites) - Access: YES
+AuthContext.js:196 Checking access for role: Customer to screen: OrderDetail
+AuthContext.js:220 Role Customer access to OrderDetail: DENIED
+AuthContext.js:221 Allowed screens for Customer: Array(4)
+AuthContext.js:253 Menu item OrderDetail (OrderDetail) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: Table
+AuthContext.js:220 Role Customer access to Table: DENIED
+AuthContext.js:221 Allowed screens for Customer: Array(4)
+AuthContext.js:253 Menu item Table (Table) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: Bill
+AuthContext.js:220 Role Customer access to Bill: DENIED
+AuthContext.js:221 Allowed screens for Customer: Array(4)
+AuthContext.js:253 Menu item Bill (Bill) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: BillManager
+AuthContext.js:220 Role Customer access to BillManager: DENIED
+AuthContext.js:221 Allowed screens for Customer: Array(4)
+AuthContext.js:253 Menu item BillManager (BillManager) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: Report
+AuthContext.js:220 Role Customer access to Report: DENIED
+AuthContext.js:221 Allowed screens for Customer: Array(4)
+AuthContext.js:253 Menu item Report (Report) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: Profile
+AuthContext.js:220 Role Customer access to Profile: GRANTED
+AuthContext.js:221 Allowed screens for Customer: Array(4)
+AuthContext.js:253 Menu item Profile (Profile) - Access: YES
+AuthContext.js:196 Checking access for role: Customer to screen: MenuManager
+AuthContext.js:220 Role Customer access to MenuManager: DENIED
+AuthContext.js:221 Allowed screens for Customer: Array(4)
+AuthContext.js:259 Management item MenuManager (MenuManager) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: IngredientManager
+AuthContext.js:220 Role Customer access to IngredientManager: DENIED
+AuthContext.js:221 Allowed screens for Customer: Array(4)
+AuthContext.js:259 Management item IngredientManager (IngredientManager) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: OrderDetailManager
+AuthContext.js:220 Role Customer access to OrderDetailManager: DENIED
+AuthContext.js:221 Allowed screens for Customer: Array(4)
+AuthContext.js:259 Management item OrderDetailManager (OrderDetailManager) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: UserManagement
+AuthContext.js:220 Role Customer access to UserManagement: DENIED
+AuthContext.js:221 Allowed screens for Customer: Array(4)
+AuthContext.js:259 Management item UserManagement (UserManagement) - Access: NO
+AuthContext.js:263 Final accessible items - Main: 4, Management: 0
+App.js:355 CustomSidebarMenu - Current user role: Customer
+App.js:356 CustomSidebarMenu - Accessible main menu items: 4
+App.js:357 CustomSidebarMenu - Accessible management menu items: 0
+AuthContext.js:196 Checking access for role: Customer to screen: Favorites
+AuthContext.js:220 Role Customer access to Favorites: GRANTED
+AuthContext.js:221 Allowed screens for Customer: Array(4)
+apiService.js:1709 Fetching user favorites...
+AuthContext.js:196 Checking access for role: Customer to screen: Favorites
+AuthContext.js:220 Role Customer access to Favorites: GRANTED
+AuthContext.js:221 Allowed screens for Customer: Array(4)
+apiService.js:32 🚀 Making GET request to: /api/Favorites
+46.250.231.129:8080/api/Favorites:1   Failed to load resource: the server responded with a status of 401 (Unauthorized)
+apiService.js:60  ❌ HTTP Error: 401 Unauthorized
+(anonymous) @ apiService.js:60
+apiService.js:61  Response data: 
+(anonymous) @ apiService.js:61
+apiService.js:1714  Error fetching favorites: AxiosError
+(anonymous) @ apiService.js:1714
+FavoritesScreen.js:55  Error loading favorites: AxiosError
+(anonymous) @ FavoritesScreen.js:55
+BaseNavigationContainer.tsx:420  The action 'NAVIGATE' with payload {"name":"MenuScreen"} was not handled by any navigator.
 
-    at SceneView (http://localhost:19006/static/js/bundle.js:4225:21)
-    at div
-    at http://localhost:19006/static/js/bundle.js:65557:25
-    at div
-    at http://localhost:19006/static/js/bundle.js:65557:25
-    at div
-    at http://localhost:19006/static/js/bundle.js:65557:25
-    at CardSheet (http://localhost:19006/static/js/bundle.js:12870:22)
-    at div
-    at http://localhost:19006/static/js/bundle.js:65557:25
-    at http://localhost:19006/static/js/bundle.js:71612:90
-    at Dummy (http://localhost:19006/static/js/bundle.js:11535:23)
-    at div
-    at http://localhost:19006/static/js/bundle.js:65557:25
-    at http://localhost:19006/static/js/bundle.js:71612:90
-    at div
-    at http://localhost:19006/static/js/bundle.js:65557:25
-    at Card (http://localhost:19006/static/js/bundle.js:12164:86)
-    at CardContainer (http://localhost:19006/static/js/bundle.js:12609:33)
-    at div
-    at http://localhost:19006/static/js/bundle.js:65557:25
-    at NativeScreen (http://localhost:19006/static/js/bundle.js:60073:86)
-    at http://localhost:19006/static/js/bundle.js:71612:90
-    at MaybeScreen (http://localhost:19006/static/js/bundle.js:12057:23)
-    at div
-    at http://localhost:19006/static/js/bundle.js:65557:25
-    at MaybeScreenContainer (http://localhost:19006/static/js/bundle.js:12047:22)
-    at div
-    at http://localhost:19006/static/js/bundle.js:65557:25
-    at Background (http://localhost:19006/static/js/bundle.js:7610:20)
-    at CardStack (http://localhost:19006/static/js/bundle.js:13038:86)
-    at SafeAreaFrameProvider (http://localhost:19006/static/js/bundle.js:8561:30)
-    at div
-    at http://localhost:19006/static/js/bundle.js:65557:25
-    at NativeSafeAreaProvider (http://localhost:19006/static/js/bundle.js:59722:23)
-    at SafeAreaProvider (http://localhost:19006/static/js/bundle.js:59880:23)
-    at SafeAreaProviderCompat (http://localhost:19006/static/js/bundle.js:8542:23)
-    at div
-    at http://localhost:19006/static/js/bundle.js:65557:25
-    at StackView (http://localhost:19006/static/js/bundle.js:13436:86)
-    at PreventRemoveProvider (http://localhost:19006/static/js/bundle.js:4135:24)
-    at NavigationContent (http://localhost:19006/static/js/bundle.js:5563:21)
-    at http://localhost:19006/static/js/bundle.js:5574:26
-    at StackNavigator (http://localhost:19006/static/js/bundle.js:11169:17)
-    at MainAppStack (http://localhost:19006/static/js/bundle.js:155:27)
-    at AppContainer (http://localhost:19006/static/js/bundle.js:685:66)
-    at EnsureSingleNavigator (http://localhost:19006/static/js/bundle.js:3892:23)
-    at BaseNavigationContainer (http://localhost:19006/static/js/bundle.js:3554:27)
-    at ThemeProvider (http://localhost:19006/static/js/bundle.js:9086:20)
-    at NavigationContainerInner (http://localhost:19006/static/js/bundle.js:8753:25)
-    at ToastProvider (http://localhost:19006/static/js/bundle.js:1499:23)
-    at AuthProvider (http://localhost:19006/static/js/bundle.js:1159:23)
-    at App
-    at withDevTools(App)
+Do you have a screen named 'MenuScreen'?
 
-Consider adding an error boundary to your tree to customize error handling behavior.
-Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
-logCapturedError @ react-dom.development.js:18687
-react-dom.development.js:26923  Uncaught ReferenceError: OrderDetailScreen is not defined
-    at Object.children (App.js:213:1)
-    at SceneView (SceneView.tsx:132:1)
-    at renderWithHooks (react-dom.development.js:16305:1)
-    at mountIndeterminateComponent (react-dom.development.js:20074:1)
-    at beginWork (react-dom.development.js:21587:1)
-    at beginWork$1 (react-dom.development.js:27426:1)
-    at performUnitOfWork (react-dom.development.js:26560:1)
-    at workLoopSync (react-dom.development.js:26466:1)
-    at renderRootSync (react-dom.development.js:26434:1)
-    at recoverFromConcurrentError (react-dom.development.js:25850:1)
+If you're trying to navigate to a screen in a nested navigator, see https://reactnavigation.org/docs/nesting-navigators#navigating-to-a-screen-in-a-nested-navigator.
+
+This is a development-only warning and won't be shown in production.
+(anonymous) @ BaseNavigationContainer.tsx:420
+AuthContext.js:196 Checking access for role: Customer to screen: Favorites
+AuthContext.js:220 Role Customer access to Favorites: GRANTED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:228 Getting accessible menu items for role: Customer
+AuthContext.js:196 Checking access for role: Customer to screen: Home
+AuthContext.js:220 Role Customer access to Home: GRANTED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:253 Menu item Home (Home) - Access: YES
+AuthContext.js:196 Checking access for role: Customer to screen: Menu
+AuthContext.js:220 Role Customer access to Menu: GRANTED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:253 Menu item Menu (Menu) - Access: YES
+AuthContext.js:196 Checking access for role: Customer to screen: Orders
+AuthContext.js:220 Role Customer access to Orders: DENIED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:253 Menu item Orders (Orders) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: Favorites
+AuthContext.js:220 Role Customer access to Favorites: GRANTED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:253 Menu item Favorites (Favorites) - Access: YES
+AuthContext.js:196 Checking access for role: Customer to screen: OrderDetail
+AuthContext.js:220 Role Customer access to OrderDetail: DENIED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:253 Menu item OrderDetail (OrderDetail) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: Table
+AuthContext.js:220 Role Customer access to Table: DENIED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:253 Menu item Table (Table) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: Bill
+AuthContext.js:220 Role Customer access to Bill: DENIED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:253 Menu item Bill (Bill) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: BillManager
+AuthContext.js:220 Role Customer access to BillManager: DENIED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:253 Menu item BillManager (BillManager) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: Report
+AuthContext.js:220 Role Customer access to Report: DENIED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:253 Menu item Report (Report) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: Profile
+AuthContext.js:220 Role Customer access to Profile: GRANTED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:253 Menu item Profile (Profile) - Access: YES
+AuthContext.js:196 Checking access for role: Customer to screen: MenuManager
+AuthContext.js:220 Role Customer access to MenuManager: DENIED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:259 Management item MenuManager (MenuManager) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: IngredientManager
+AuthContext.js:220 Role Customer access to IngredientManager: DENIED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:259 Management item IngredientManager (IngredientManager) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: OrderDetailManager
+AuthContext.js:220 Role Customer access to OrderDetailManager: DENIED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:259 Management item OrderDetailManager (OrderDetailManager) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: UserManagement
+AuthContext.js:220 Role Customer access to UserManagement: DENIED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:259 Management item UserManagement (UserManagement) - Access: NO
+AuthContext.js:263 Final accessible items - Main: 4, Management: 0
+App.js:355 CustomSidebarMenu - Current user role: Customer
+App.js:356 CustomSidebarMenu - Accessible main menu items: 4
+App.js:357 CustomSidebarMenu - Accessible management menu items: 0
+AuthContext.js:196 Checking access for role: Customer to screen: Favorites
+AuthContext.js:220 Role Customer access to Favorites: GRANTED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:228 Getting accessible menu items for role: Customer
+AuthContext.js:196 Checking access for role: Customer to screen: Home
+AuthContext.js:220 Role Customer access to Home: GRANTED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:253 Menu item Home (Home) - Access: YES
+AuthContext.js:196 Checking access for role: Customer to screen: Menu
+AuthContext.js:220 Role Customer access to Menu: GRANTED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:253 Menu item Menu (Menu) - Access: YES
+AuthContext.js:196 Checking access for role: Customer to screen: Orders
+AuthContext.js:220 Role Customer access to Orders: DENIED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:253 Menu item Orders (Orders) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: Favorites
+AuthContext.js:220 Role Customer access to Favorites: GRANTED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:253 Menu item Favorites (Favorites) - Access: YES
+AuthContext.js:196 Checking access for role: Customer to screen: OrderDetail
+AuthContext.js:220 Role Customer access to OrderDetail: DENIED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:253 Menu item OrderDetail (OrderDetail) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: Table
+AuthContext.js:220 Role Customer access to Table: DENIED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:253 Menu item Table (Table) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: Bill
+AuthContext.js:220 Role Customer access to Bill: DENIED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:253 Menu item Bill (Bill) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: BillManager
+AuthContext.js:220 Role Customer access to BillManager: DENIED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:253 Menu item BillManager (BillManager) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: Report
+AuthContext.js:220 Role Customer access to Report: DENIED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:253 Menu item Report (Report) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: Profile
+AuthContext.js:220 Role Customer access to Profile: GRANTED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:253 Menu item Profile (Profile) - Access: YES
+AuthContext.js:196 Checking access for role: Customer to screen: MenuManager
+AuthContext.js:220 Role Customer access to MenuManager: DENIED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:259 Management item MenuManager (MenuManager) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: IngredientManager
+AuthContext.js:220 Role Customer access to IngredientManager: DENIED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:259 Management item IngredientManager (IngredientManager) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: OrderDetailManager
+AuthContext.js:220 Role Customer access to OrderDetailManager: DENIED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:259 Management item OrderDetailManager (OrderDetailManager) - Access: NO
+AuthContext.js:196 Checking access for role: Customer to screen: UserManagement
+AuthContext.js:220 Role Customer access to UserManagement: DENIED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+AuthContext.js:259 Management item UserManagement (UserManagement) - Access: NO
+AuthContext.js:263 Final accessible items - Main: 4, Management: 0
+App.js:355 CustomSidebarMenu - Current user role: Customer
+App.js:356 CustomSidebarMenu - Accessible main menu items: 4
+App.js:357 CustomSidebarMenu - Accessible management menu items: 0
+AuthContext.js:196 Checking access for role: Customer to screen: Menu
+AuthContext.js:220 Role Customer access to Menu: GRANTED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+MenuScreen.js:18 MenuScreen - Current user role: Customer Is Customer: true
+MenuScreen.js:123 === STARTING CONNECTION TESTS ===
+MenuScreen.js:126 Testing with axios...
+apiService.js:403 Testing API connection to: http://46.250.231.129:8080
+apiService.js:404 Full URL being tested: http://46.250.231.129:8080api/Category
+MenuScreen.js:325 Fetching user favorites for userId: 3292731962
+apiService.js:1709 Fetching user favorites...
+AuthContext.js:196 Checking access for role: Customer to screen: Menu
+AuthContext.js:220 Role Customer access to Menu: GRANTED
+AuthContext.js:221 Allowed screens for Customer: (4) ['Home', 'Menu', 'Favorites', 'Profile']
+apiService.js:32 🚀 Making GET request to: /api/Category
+apiService.js:32 🚀 Making GET request to: /api/Favorites
+apiService.js:1710   GET http://46.250.231.129:8080/api/Favorites 401 (Unauthorized)
+dispatchXhrRequest @ xhr.js:198
+xhr @ xhr.js:15
+dispatchRequest @ dispatchRequest.js:51
+Promise.then
+_request @ Axios.js:163
+request @ Axios.js:40
+(anonymous) @ Axios.js:211
+wrap @ bind.js:5
+(anonymous) @ apiService.js:1710
+asyncGeneratorStep @ asyncToGenerator.js:3
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+getFavorites @ apiService.js:1707
+(anonymous) @ MenuScreen.js:326
+asyncGeneratorStep @ asyncToGenerator.js:3
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+(anonymous) @ MenuScreen.js:86
+commitHookEffectListMount @ react-dom.development.js:23150
+commitPassiveMountOnFiber @ react-dom.development.js:24931
+commitPassiveMountEffects_complete @ react-dom.development.js:24891
+commitPassiveMountEffects_begin @ react-dom.development.js:24878
+commitPassiveMountEffects @ react-dom.development.js:24866
+flushPassiveEffectsImpl @ react-dom.development.js:27039
+flushPassiveEffects @ react-dom.development.js:26984
+performSyncWorkOnRoot @ react-dom.development.js:26076
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26959
+commitRoot @ react-dom.development.js:26682
+finishConcurrentRender @ react-dom.development.js:25981
+performConcurrentWorkOnRoot @ react-dom.development.js:25809
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+apiService.js:60  ❌ HTTP Error: 401 Unauthorized
+(anonymous) @ apiService.js:60
+Promise.then
+_request @ Axios.js:163
+request @ Axios.js:40
+(anonymous) @ Axios.js:211
+wrap @ bind.js:5
+(anonymous) @ apiService.js:1710
+asyncGeneratorStep @ asyncToGenerator.js:3
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+getFavorites @ apiService.js:1707
+(anonymous) @ MenuScreen.js:326
+asyncGeneratorStep @ asyncToGenerator.js:3
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+(anonymous) @ MenuScreen.js:86
+commitHookEffectListMount @ react-dom.development.js:23150
+commitPassiveMountOnFiber @ react-dom.development.js:24931
+commitPassiveMountEffects_complete @ react-dom.development.js:24891
+commitPassiveMountEffects_begin @ react-dom.development.js:24878
+commitPassiveMountEffects @ react-dom.development.js:24866
+flushPassiveEffectsImpl @ react-dom.development.js:27039
+flushPassiveEffects @ react-dom.development.js:26984
+performSyncWorkOnRoot @ react-dom.development.js:26076
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26959
+commitRoot @ react-dom.development.js:26682
+finishConcurrentRender @ react-dom.development.js:25981
+performConcurrentWorkOnRoot @ react-dom.development.js:25809
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+apiService.js:61  Response data: 
+(anonymous) @ apiService.js:61
+Promise.then
+_request @ Axios.js:163
+request @ Axios.js:40
+(anonymous) @ Axios.js:211
+wrap @ bind.js:5
+(anonymous) @ apiService.js:1710
+asyncGeneratorStep @ asyncToGenerator.js:3
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+getFavorites @ apiService.js:1707
+(anonymous) @ MenuScreen.js:326
+asyncGeneratorStep @ asyncToGenerator.js:3
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+(anonymous) @ MenuScreen.js:86
+commitHookEffectListMount @ react-dom.development.js:23150
+commitPassiveMountOnFiber @ react-dom.development.js:24931
+commitPassiveMountEffects_complete @ react-dom.development.js:24891
+commitPassiveMountEffects_begin @ react-dom.development.js:24878
+commitPassiveMountEffects @ react-dom.development.js:24866
+flushPassiveEffectsImpl @ react-dom.development.js:27039
+flushPassiveEffects @ react-dom.development.js:26984
+performSyncWorkOnRoot @ react-dom.development.js:26076
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26959
+commitRoot @ react-dom.development.js:26682
+finishConcurrentRender @ react-dom.development.js:25981
+performConcurrentWorkOnRoot @ react-dom.development.js:25809
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+apiService.js:1714  Error fetching favorites: AxiosError {message: 'Request failed with status code 401', name: 'AxiosError', code: 'ERR_BAD_REQUEST', config: {…}, request: XMLHttpRequest, …}
+(anonymous) @ apiService.js:1714
+asyncGeneratorStep @ asyncToGenerator.js:3
+_throw @ asyncToGenerator.js:20
+Promise.then
+asyncGeneratorStep @ asyncToGenerator.js:8
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+getFavorites @ apiService.js:1707
+(anonymous) @ MenuScreen.js:326
+asyncGeneratorStep @ asyncToGenerator.js:3
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+(anonymous) @ MenuScreen.js:86
+commitHookEffectListMount @ react-dom.development.js:23150
+commitPassiveMountOnFiber @ react-dom.development.js:24931
+commitPassiveMountEffects_complete @ react-dom.development.js:24891
+commitPassiveMountEffects_begin @ react-dom.development.js:24878
+commitPassiveMountEffects @ react-dom.development.js:24866
+flushPassiveEffectsImpl @ react-dom.development.js:27039
+flushPassiveEffects @ react-dom.development.js:26984
+performSyncWorkOnRoot @ react-dom.development.js:26076
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26959
+commitRoot @ react-dom.development.js:26682
+finishConcurrentRender @ react-dom.development.js:25981
+performConcurrentWorkOnRoot @ react-dom.development.js:25809
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+MenuScreen.js:336  Error fetching user favorites: AxiosError {message: 'Request failed with status code 401', name: 'AxiosError', code: 'ERR_BAD_REQUEST', config: {…}, request: XMLHttpRequest, …}
+(anonymous) @ MenuScreen.js:336
+asyncGeneratorStep @ asyncToGenerator.js:3
+_throw @ asyncToGenerator.js:20
+Promise.then
+asyncGeneratorStep @ asyncToGenerator.js:8
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+(anonymous) @ MenuScreen.js:86
+commitHookEffectListMount @ react-dom.development.js:23150
+commitPassiveMountOnFiber @ react-dom.development.js:24931
+commitPassiveMountEffects_complete @ react-dom.development.js:24891
+commitPassiveMountEffects_begin @ react-dom.development.js:24878
+commitPassiveMountEffects @ react-dom.development.js:24866
+flushPassiveEffectsImpl @ react-dom.development.js:27039
+flushPassiveEffects @ react-dom.development.js:26984
+performSyncWorkOnRoot @ react-dom.development.js:26076
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26959
+commitRoot @ react-dom.development.js:26682
+finishConcurrentRender @ react-dom.development.js:25981
+performConcurrentWorkOnRoot @ react-dom.development.js:25809
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+MenuScreen.js:18 MenuScreen - Current user role: Customer Is Customer: true
+apiService.js:407   GET http://46.250.231.129:8080/api/Category 500 (Internal Server Error)
+dispatchXhrRequest @ xhr.js:198
+xhr @ xhr.js:15
+dispatchRequest @ dispatchRequest.js:51
+Promise.then
+_request @ Axios.js:163
+request @ Axios.js:40
+(anonymous) @ Axios.js:211
+wrap @ bind.js:5
+(anonymous) @ apiService.js:407
+asyncGeneratorStep @ asyncToGenerator.js:3
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+testConnection @ apiService.js:401
+(anonymous) @ MenuScreen.js:127
+asyncGeneratorStep @ asyncToGenerator.js:3
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+fetchCategories @ MenuScreen.js:118
+(anonymous) @ MenuScreen.js:73
+commitHookEffectListMount @ react-dom.development.js:23150
+commitPassiveMountOnFiber @ react-dom.development.js:24931
+commitPassiveMountEffects_complete @ react-dom.development.js:24891
+commitPassiveMountEffects_begin @ react-dom.development.js:24878
+commitPassiveMountEffects @ react-dom.development.js:24866
+flushPassiveEffectsImpl @ react-dom.development.js:27039
+flushPassiveEffects @ react-dom.development.js:26984
+performSyncWorkOnRoot @ react-dom.development.js:26076
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26959
+commitRoot @ react-dom.development.js:26682
+finishConcurrentRender @ react-dom.development.js:25981
+performConcurrentWorkOnRoot @ react-dom.development.js:25809
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+apiService.js:60  ❌ HTTP Error: 500 Internal Server Error
+(anonymous) @ apiService.js:60
+Promise.then
+_request @ Axios.js:163
+request @ Axios.js:40
+(anonymous) @ Axios.js:211
+wrap @ bind.js:5
+(anonymous) @ apiService.js:407
+asyncGeneratorStep @ asyncToGenerator.js:3
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+testConnection @ apiService.js:401
+(anonymous) @ MenuScreen.js:127
+asyncGeneratorStep @ asyncToGenerator.js:3
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+fetchCategories @ MenuScreen.js:118
+(anonymous) @ MenuScreen.js:73
+commitHookEffectListMount @ react-dom.development.js:23150
+commitPassiveMountOnFiber @ react-dom.development.js:24931
+commitPassiveMountEffects_complete @ react-dom.development.js:24891
+commitPassiveMountEffects_begin @ react-dom.development.js:24878
+commitPassiveMountEffects @ react-dom.development.js:24866
+flushPassiveEffectsImpl @ react-dom.development.js:27039
+flushPassiveEffects @ react-dom.development.js:26984
+performSyncWorkOnRoot @ react-dom.development.js:26076
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26959
+commitRoot @ react-dom.development.js:26682
+finishConcurrentRender @ react-dom.development.js:25981
+performConcurrentWorkOnRoot @ react-dom.development.js:25809
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+apiService.js:61  Response data: {error: 'Internal server error', message: 'A connection was successfully established with the…ake. (provider: TCP Provider, error: 0 - Success)'}
+(anonymous) @ apiService.js:61
+Promise.then
+_request @ Axios.js:163
+request @ Axios.js:40
+(anonymous) @ Axios.js:211
+wrap @ bind.js:5
+(anonymous) @ apiService.js:407
+asyncGeneratorStep @ asyncToGenerator.js:3
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+testConnection @ apiService.js:401
+(anonymous) @ MenuScreen.js:127
+asyncGeneratorStep @ asyncToGenerator.js:3
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+fetchCategories @ MenuScreen.js:118
+(anonymous) @ MenuScreen.js:73
+commitHookEffectListMount @ react-dom.development.js:23150
+commitPassiveMountOnFiber @ react-dom.development.js:24931
+commitPassiveMountEffects_complete @ react-dom.development.js:24891
+commitPassiveMountEffects_begin @ react-dom.development.js:24878
+commitPassiveMountEffects @ react-dom.development.js:24866
+flushPassiveEffectsImpl @ react-dom.development.js:27039
+flushPassiveEffects @ react-dom.development.js:26984
+performSyncWorkOnRoot @ react-dom.development.js:26076
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26959
+commitRoot @ react-dom.development.js:26682
+finishConcurrentRender @ react-dom.development.js:25981
+performConcurrentWorkOnRoot @ react-dom.development.js:25809
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+apiService.js:413  Connection test failed - Full error: AxiosError {message: 'Request failed with status code 500', name: 'AxiosError', code: 'ERR_BAD_RESPONSE', config: {…}, request: XMLHttpRequest, …}
+(anonymous) @ apiService.js:413
+asyncGeneratorStep @ asyncToGenerator.js:3
+_throw @ asyncToGenerator.js:20
+Promise.then
+asyncGeneratorStep @ asyncToGenerator.js:8
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+testConnection @ apiService.js:401
+(anonymous) @ MenuScreen.js:127
+asyncGeneratorStep @ asyncToGenerator.js:3
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+fetchCategories @ MenuScreen.js:118
+(anonymous) @ MenuScreen.js:73
+commitHookEffectListMount @ react-dom.development.js:23150
+commitPassiveMountOnFiber @ react-dom.development.js:24931
+commitPassiveMountEffects_complete @ react-dom.development.js:24891
+commitPassiveMountEffects_begin @ react-dom.development.js:24878
+commitPassiveMountEffects @ react-dom.development.js:24866
+flushPassiveEffectsImpl @ react-dom.development.js:27039
+flushPassiveEffects @ react-dom.development.js:26984
+performSyncWorkOnRoot @ react-dom.development.js:26076
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26959
+commitRoot @ react-dom.development.js:26682
+finishConcurrentRender @ react-dom.development.js:25981
+performConcurrentWorkOnRoot @ react-dom.development.js:25809
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+apiService.js:414  Error message: Request failed with status code 500
+(anonymous) @ apiService.js:414
+asyncGeneratorStep @ asyncToGenerator.js:3
+_throw @ asyncToGenerator.js:20
+Promise.then
+asyncGeneratorStep @ asyncToGenerator.js:8
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+testConnection @ apiService.js:401
+(anonymous) @ MenuScreen.js:127
+asyncGeneratorStep @ asyncToGenerator.js:3
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+fetchCategories @ MenuScreen.js:118
+(anonymous) @ MenuScreen.js:73
+commitHookEffectListMount @ react-dom.development.js:23150
+commitPassiveMountOnFiber @ react-dom.development.js:24931
+commitPassiveMountEffects_complete @ react-dom.development.js:24891
+commitPassiveMountEffects_begin @ react-dom.development.js:24878
+commitPassiveMountEffects @ react-dom.development.js:24866
+flushPassiveEffectsImpl @ react-dom.development.js:27039
+flushPassiveEffects @ react-dom.development.js:26984
+performSyncWorkOnRoot @ react-dom.development.js:26076
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26959
+commitRoot @ react-dom.development.js:26682
+finishConcurrentRender @ react-dom.development.js:25981
+performConcurrentWorkOnRoot @ react-dom.development.js:25809
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+apiService.js:415  Error code: ERR_BAD_RESPONSE
+(anonymous) @ apiService.js:415
+asyncGeneratorStep @ asyncToGenerator.js:3
+_throw @ asyncToGenerator.js:20
+Promise.then
+asyncGeneratorStep @ asyncToGenerator.js:8
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+testConnection @ apiService.js:401
+(anonymous) @ MenuScreen.js:127
+asyncGeneratorStep @ asyncToGenerator.js:3
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+fetchCategories @ MenuScreen.js:118
+(anonymous) @ MenuScreen.js:73
+commitHookEffectListMount @ react-dom.development.js:23150
+commitPassiveMountOnFiber @ react-dom.development.js:24931
+commitPassiveMountEffects_complete @ react-dom.development.js:24891
+commitPassiveMountEffects_begin @ react-dom.development.js:24878
+commitPassiveMountEffects @ react-dom.development.js:24866
+flushPassiveEffectsImpl @ react-dom.development.js:27039
+flushPassiveEffects @ react-dom.development.js:26984
+performSyncWorkOnRoot @ react-dom.development.js:26076
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26959
+commitRoot @ react-dom.development.js:26682
+finishConcurrentRender @ react-dom.development.js:25981
+performConcurrentWorkOnRoot @ react-dom.development.js:25809
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+apiService.js:416  Error status: 500
+(anonymous) @ apiService.js:416
+asyncGeneratorStep @ asyncToGenerator.js:3
+_throw @ asyncToGenerator.js:20
+Promise.then
+asyncGeneratorStep @ asyncToGenerator.js:8
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+testConnection @ apiService.js:401
+(anonymous) @ MenuScreen.js:127
+asyncGeneratorStep @ asyncToGenerator.js:3
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+fetchCategories @ MenuScreen.js:118
+(anonymous) @ MenuScreen.js:73
+commitHookEffectListMount @ react-dom.development.js:23150
+commitPassiveMountOnFiber @ react-dom.development.js:24931
+commitPassiveMountEffects_complete @ react-dom.development.js:24891
+commitPassiveMountEffects_begin @ react-dom.development.js:24878
+commitPassiveMountEffects @ react-dom.development.js:24866
+flushPassiveEffectsImpl @ react-dom.development.js:27039
+flushPassiveEffects @ react-dom.development.js:26984
+performSyncWorkOnRoot @ react-dom.development.js:26076
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26959
+commitRoot @ react-dom.development.js:26682
+finishConcurrentRender @ react-dom.development.js:25981
+performConcurrentWorkOnRoot @ react-dom.development.js:25809
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+apiService.js:417  Error response: {error: 'Internal server error', message: 'A connection was successfully established with the…ake. (provider: TCP Provider, error: 0 - Success)'}
+(anonymous) @ apiService.js:417
+asyncGeneratorStep @ asyncToGenerator.js:3
+_throw @ asyncToGenerator.js:20
+Promise.then
+asyncGeneratorStep @ asyncToGenerator.js:8
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+testConnection @ apiService.js:401
+(anonymous) @ MenuScreen.js:127
+asyncGeneratorStep @ asyncToGenerator.js:3
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+fetchCategories @ MenuScreen.js:118
+(anonymous) @ MenuScreen.js:73
+commitHookEffectListMount @ react-dom.development.js:23150
+commitPassiveMountOnFiber @ react-dom.development.js:24931
+commitPassiveMountEffects_complete @ react-dom.development.js:24891
+commitPassiveMountEffects_begin @ react-dom.development.js:24878
+commitPassiveMountEffects @ react-dom.development.js:24866
+flushPassiveEffectsImpl @ react-dom.development.js:27039
+flushPassiveEffects @ react-dom.development.js:26984
+performSyncWorkOnRoot @ react-dom.development.js:26076
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26959
+commitRoot @ react-dom.development.js:26682
+finishConcurrentRender @ react-dom.development.js:25981
+performConcurrentWorkOnRoot @ react-dom.development.js:25809
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+apiService.js:425  Server responded with status: 500
+(anonymous) @ apiService.js:425
+asyncGeneratorStep @ asyncToGenerator.js:3
+_throw @ asyncToGenerator.js:20
+Promise.then
+asyncGeneratorStep @ asyncToGenerator.js:8
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+testConnection @ apiService.js:401
+(anonymous) @ MenuScreen.js:127
+asyncGeneratorStep @ asyncToGenerator.js:3
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+fetchCategories @ MenuScreen.js:118
+(anonymous) @ MenuScreen.js:73
+commitHookEffectListMount @ react-dom.development.js:23150
+commitPassiveMountOnFiber @ react-dom.development.js:24931
+commitPassiveMountEffects_complete @ react-dom.development.js:24891
+commitPassiveMountEffects_begin @ react-dom.development.js:24878
+commitPassiveMountEffects @ react-dom.development.js:24866
+flushPassiveEffectsImpl @ react-dom.development.js:27039
+flushPassiveEffects @ react-dom.development.js:26984
+performSyncWorkOnRoot @ react-dom.development.js:26076
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26959
+commitRoot @ react-dom.development.js:26682
+finishConcurrentRender @ react-dom.development.js:25981
+performConcurrentWorkOnRoot @ react-dom.development.js:25809
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+MenuScreen.js:128 Axios test result: false
+MenuScreen.js:131 Testing with fetch...
+apiService.js:359 Testing with native fetch API...
+apiService.js:361 Fetch URL: http://46.250.231.129:8080api/Category
+apiService.js:389  Fetch test failed: TypeError: Failed to execute 'fetch' on 'Window': Failed to parse URL from http://46.250.231.129:8080api/Category
+    at Object.<anonymous> (apiService.js:363:1)
+    at Generator.next (<anonymous>)
+    at asyncGeneratorStep (asyncToGenerator.js:3:1)
+    at _next (asyncToGenerator.js:17:1)
+    at asyncToGenerator.js:22:1
+    at new Promise (<anonymous>)
+    at Object.<anonymous> (asyncToGenerator.js:14:1)
+    at Object.testWithFetch (apiService.js:357:1)
+    at MenuScreen.js:132:1
+    at Generator.next (<anonymous>)
+(anonymous) @ apiService.js:389
+asyncGeneratorStep @ asyncToGenerator.js:3
+_throw @ asyncToGenerator.js:20
+Promise.then
+asyncGeneratorStep @ asyncToGenerator.js:8
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+testWithFetch @ apiService.js:357
+(anonymous) @ MenuScreen.js:132
+asyncGeneratorStep @ asyncToGenerator.js:3
+_next @ asyncToGenerator.js:17
+Promise.then
+asyncGeneratorStep @ asyncToGenerator.js:8
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+fetchCategories @ MenuScreen.js:118
+(anonymous) @ MenuScreen.js:73
+commitHookEffectListMount @ react-dom.development.js:23150
+commitPassiveMountOnFiber @ react-dom.development.js:24931
+commitPassiveMountEffects_complete @ react-dom.development.js:24891
+commitPassiveMountEffects_begin @ react-dom.development.js:24878
+commitPassiveMountEffects @ react-dom.development.js:24866
+flushPassiveEffectsImpl @ react-dom.development.js:27039
+flushPassiveEffects @ react-dom.development.js:26984
+performSyncWorkOnRoot @ react-dom.development.js:26076
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26959
+commitRoot @ react-dom.development.js:26682
+finishConcurrentRender @ react-dom.development.js:25981
+performConcurrentWorkOnRoot @ react-dom.development.js:25809
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+MenuScreen.js:133 Fetch test result: {success: false, error: 'CORS or Network Error: Unable to connect to server'}
+MenuScreen.js:207  Error in fetchCategories: Error: Cannot connect to server with either method
+    at MenuScreen.js:167:1
+    at Generator.next (<anonymous>)
+    at asyncGeneratorStep (asyncToGenerator.js:3:1)
+    at _next (asyncToGenerator.js:17:1)
+(anonymous) @ MenuScreen.js:207
+asyncGeneratorStep @ asyncToGenerator.js:3
+_next @ asyncToGenerator.js:17
+Promise.then
+asyncGeneratorStep @ asyncToGenerator.js:8
+_next @ asyncToGenerator.js:17
+Promise.then
+asyncGeneratorStep @ asyncToGenerator.js:8
+_next @ asyncToGenerator.js:17
+(anonymous) @ asyncToGenerator.js:22
+(anonymous) @ asyncToGenerator.js:14
+fetchCategories @ MenuScreen.js:118
+(anonymous) @ MenuScreen.js:73
+commitHookEffectListMount @ react-dom.development.js:23150
+commitPassiveMountOnFiber @ react-dom.development.js:24931
+commitPassiveMountEffects_complete @ react-dom.development.js:24891
+commitPassiveMountEffects_begin @ react-dom.development.js:24878
+commitPassiveMountEffects @ react-dom.development.js:24866
+flushPassiveEffectsImpl @ react-dom.development.js:27039
+flushPassiveEffects @ react-dom.development.js:26984
+performSyncWorkOnRoot @ react-dom.development.js:26076
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26959
+commitRoot @ react-dom.development.js:26682
+finishConcurrentRender @ react-dom.development.js:25981
+performConcurrentWorkOnRoot @ react-dom.development.js:25809
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+MenuScreen.js:18 MenuScreen - Current user role: Customer Is Customer: true

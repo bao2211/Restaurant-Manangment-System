@@ -1,14 +1,21 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useMemo, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Alert, Image, TextInput, Modal } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { apiService, getCategoryIcon, formatPrice } from '../services/apiService';
 import { AuthContext } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 import ScreenHeader from '../components/ScreenHeader';
 
 export default function MenuScreen({ navigation, route }) {
   const { user, getUserRole } = useContext(AuthContext);
-  const userRole = getUserRole();
-  const isCustomer = userRole === 'Customer' || userRole === 'customer' || userRole === 'CUSTOMER';
+  const { addToCart, isInCart, getItemQuantity, increaseQuantity, decreaseQuantity, getTotalItems } = useCart();
+  
+  // Memoize user role calculation to prevent unnecessary re-renders
+  const userRole = useMemo(() => getUserRole(), [user]);
+  const isCustomer = useMemo(() => {
+    const role = userRole;
+    return role === 'Customer' || role === 'customer' || role === 'CUSTOMER';
+  }, [userRole]);
   
   console.log('MenuScreen - Current user role:', userRole, 'Is Customer:', isCustomer);
   
@@ -19,6 +26,7 @@ export default function MenuScreen({ navigation, route }) {
   const [loadingItems, setLoadingItems] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [imageErrors, setImageErrors] = useState({}); // Track failed image loads
+  const [userFavorites, setUserFavorites] = useState([]); // Track user's favorite items
   
   // Order form state - only initialize if not a customer
   const [orderItems, setOrderItems] = useState([]);
@@ -65,14 +73,21 @@ export default function MenuScreen({ navigation, route }) {
   // Fetch categories on component mount and initialize order
   useEffect(() => {
     fetchCategories();
-
+    
     // Only initialize order for non-customer users
     if (!isCustomer) {
       const initialOrderId = generateValidOrderId();
       console.log('Initialized order with ID:', initialOrderId);
       setOrderId(initialOrderId);
     }
-  }, [isCustomer]);
+  }, [isCustomer]); // Include isCustomer as dependency
+  
+  // Separate effect for loading user favorites
+  useEffect(() => {
+    if (user && user.userId) {
+      fetchUserFavorites();
+    }
+  }, [user, fetchUserFavorites]); // Include fetchUserFavorites dependency
 
   useEffect(() => {
     // Only handle table selection for non-customer users
@@ -86,14 +101,14 @@ export default function MenuScreen({ navigation, route }) {
       setOrderItems([]);
       setOrderId(newOrderId);
 
+      // Clear the selectedTable param to prevent infinite loops
       if (navigation?.setParams) {
         navigation.setParams({
-          ...route.params,
           selectedTable: null
         });
       }
     }
-  }, [route?.params?.lastUpdated]);
+  }, [route?.params?.selectedTable, isCustomer, navigation]); // More specific dependencies
 
   // Fetch food items when category changes
   useEffect(() => {
@@ -142,7 +157,8 @@ export default function MenuScreen({ navigation, route }) {
         const finalCategories = [allCategory, ...transformedCategories];
         
         setCategories(finalCategories);
-        if (finalCategories.length > 0) {
+        // Only set selectedCategory if it's not already set
+        if (finalCategories.length > 0 && !selectedCategory) {
           setSelectedCategory(finalCategories[0].id);
         }
         return;
@@ -183,7 +199,8 @@ export default function MenuScreen({ navigation, route }) {
       console.log('Transformed categories:', finalCategories);
       setCategories(finalCategories);
       
-      if (finalCategories.length > 0) {
+      // Only set selectedCategory if it's not already set
+      if (finalCategories.length > 0 && !selectedCategory) {
         console.log('Setting selected category to:', finalCategories[0].id);
         setSelectedCategory(finalCategories[0].id);
       }
@@ -300,6 +317,58 @@ export default function MenuScreen({ navigation, route }) {
     return '🍽️'; // Default food emoji
   };
 
+  const fetchUserFavorites = useCallback(async () => {
+    try {
+      if (!user || !user.userId) {
+        console.log('No user or userId available for fetching favorites');
+        return;
+      }
+
+      console.log('Fetching user favorites for userId:', user.userId);
+      const favorites = await apiService.getFavorites();
+      
+      // Extract and trim food IDs from favorites to match menu item IDs
+      const favoriteIds = favorites
+        .map(fav => (fav.foodId ?? '').toString().trim())
+        .filter(id => id);
+      console.log('User favorite food IDs:', favoriteIds);
+      
+      setUserFavorites(favoriteIds);
+    } catch (error) {
+      console.error('Error fetching user favorites:', error);
+      // Don't show alert for favorites error - it's not critical
+      setUserFavorites([]);
+    }
+  }, [user]);
+
+  // Toggle favorite function
+  const toggleFavorite = async (foodId) => {
+    try {
+      if (!user || !user.userId) {
+        Alert.alert('Login Required', 'Please login to add favorites');
+        return;
+      }
+
+      const isFavorite = userFavorites.includes(foodId);
+      console.log(`Toggling favorite for food ${foodId}. Currently favorite: ${isFavorite}`);
+      
+      if (isFavorite) {
+        // Remove from favorites
+        await apiService.removeFavorite(foodId);
+        setUserFavorites(prev => prev.filter(id => id !== foodId));
+        console.log(`Removed ${foodId} from favorites`);
+      } else {
+        // Add to favorites
+        await apiService.addFavorite(foodId);
+        setUserFavorites(prev => [...prev, foodId]);
+        console.log(`Added ${foodId} to favorites`);
+      }
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+      Alert.alert('Error', 'Failed to update favorites. Please try again.');
+    }
+  };
+
   // Refresh function to reload both categories and food items
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -308,6 +377,10 @@ export default function MenuScreen({ navigation, route }) {
       // If a category is selected, also refresh its food items
       if (selectedCategory) {
         await fetchFoodItemsByCategory(selectedCategory);
+      }
+      // Also refresh favorites
+      if (user && user.userId) {
+        await fetchUserFavorites();
       }
     } catch (error) {
       console.error('Error refreshing menu data:', error);
@@ -319,6 +392,9 @@ export default function MenuScreen({ navigation, route }) {
   const renderMenuItem = (item) => {
     const hasImageError = imageErrors[item.id];
     const shouldShowImage = item.imageUrl && !hasImageError;
+    const isFavorite = userFavorites.includes(item.id);
+    const itemInCart = isInCart(item.id);
+    const cartQuantity = getItemQuantity(item.id);
 
     return (
       <TouchableOpacity key={item.id} style={styles.menuItem}>
@@ -341,18 +417,55 @@ export default function MenuScreen({ navigation, route }) {
               <Text style={styles.emojiImage}>{item.emojiFallback}</Text>
             </View>
           )}
+          {/* Favorite button - only show for customers */}
+          {isCustomer && (
+            <TouchableOpacity 
+              style={styles.favoriteButton}
+              onPress={() => toggleFavorite(item.id)}
+            >
+              <MaterialCommunityIcons 
+                name={isFavorite ? "heart" : "heart-outline"} 
+                size={24} 
+                color={isFavorite ? "#ff6b6b" : "#666"}
+              />
+            </TouchableOpacity>
+          )}
+          {/* Cart quantity badge */}
+          {cartQuantity > 0 && (
+            <View style={styles.cartBadge}>
+              <Text style={styles.cartBadgeText}>{cartQuantity}</Text>
+            </View>
+          )}
         </View>
         <View style={styles.menuItemContent}>
           <Text style={styles.menuItemName}>{item.name}</Text>
           <Text style={styles.menuItemDescription}>{item.description}</Text>
           <View style={styles.menuItemFooter}>
             <Text style={styles.menuItemPrice}>{item.price}</Text>
-            {!isCustomer && (
+            
+            {/* Cart controls */}
+            {itemInCart ? (
+              <View style={styles.cartControls}>
+                <TouchableOpacity 
+                  style={styles.cartButton}
+                  onPress={() => decreaseQuantity(item.id)}
+                >
+                  <MaterialCommunityIcons name="minus" size={16} color="white" />
+                </TouchableOpacity>
+                <Text style={styles.cartQuantityText}>{cartQuantity}</Text>
+                <TouchableOpacity 
+                  style={styles.cartButton}
+                  onPress={() => increaseQuantity(item.id)}
+                >
+                  <MaterialCommunityIcons name="plus" size={16} color="white" />
+                </TouchableOpacity>
+              </View>
+            ) : (
               <TouchableOpacity 
                 style={styles.addButton}
                 onPress={() => handleAddToCart(item)}
               >
-                <MaterialCommunityIcons name="plus" size={20} color="white" />
+                <MaterialCommunityIcons name="cart-plus" size={20} color="white" />
               </TouchableOpacity>
             )}
           </View>
@@ -362,39 +475,26 @@ export default function MenuScreen({ navigation, route }) {
   };
 
   const handleAddToCart = (item) => {
-    // Prevent customers from adding items to cart
-    if (isCustomer) {
-      console.log('Customer users cannot add items to cart');
-      return;
-    }
-    
-    console.log('=== ADD TO CART DEBUG ===');
-    console.log('Adding item:', item);
-    
-    // Check if item already exists in order
-    const existingItemIndex = orderItems.findIndex(orderItem => orderItem.id === item.id);
-    
-    if (existingItemIndex !== -1) {
-      // If item exists, increase quantity
-      const updatedItems = [...orderItems];
-      updatedItems[existingItemIndex].quantity += 1;
-      console.log('Item already exists, increased quantity:', updatedItems[existingItemIndex]);
-      setOrderItems(updatedItems);
-    } else {
-      // If item doesn't exist, add new item
-      const newOrderItem = {
+    try {
+      // Add to cart using CartContext
+      addToCart({
         id: item.id,
         name: item.name,
+        foodName: item.name,
+        unitPrice: item.unitPrice,
         price: item.unitPrice,
-        quantity: 1,
-        formattedPrice: item.price
-      };
-      console.log('Adding new item to order:', newOrderItem);
-      setOrderItems([...orderItems, newOrderItem]);
+        foodImage: item.imageUrl,
+        imageUrl: item.imageUrl,
+        description: item.description,
+        categoryId: item.categoryId
+      });
+      
+      Alert.alert('Thành công', `Đã thêm "${item.name}" vào giỏ hàng!`);
+      console.log('Item added to cart:', item.name);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      Alert.alert('Lỗi', 'Không thể thêm món vào giỏ hàng');
     }
-    
-    console.log('Current order items after addition:', [...orderItems]);
-    Alert.alert('Success', `${item.name} added to order!`);
   };
 
   const updateQuantity = (itemId, change) => {
@@ -911,6 +1011,25 @@ export default function MenuScreen({ navigation, route }) {
         </View>
       </Modal>
       )}
+      
+      {/* Floating Cart Button - Only show for customers with items in cart */}
+      {isCustomer && (
+        <TouchableOpacity 
+          style={styles.floatingCartButton}
+          onPress={() => navigation.navigate('Cart')}
+        >
+          <View style={styles.floatingCartContent}>
+            <MaterialCommunityIcons name="cart" size={24} color="white" />
+            {getTotalItems && getTotalItems() > 0 && (
+              <View style={styles.floatingCartBadge}>
+                <Text style={styles.floatingCartBadgeText}>
+                  {getTotalItems() > 99 ? '99+' : getTotalItems()}
+                </Text>
+              </View>
+            )}
+          </View>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
@@ -1206,6 +1325,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 15,
     overflow: 'hidden', // Ensure images don't overflow the rounded corners
+    position: 'relative', // For favorite button positioning
+  },
+  favoriteButton: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
   },
   foodImage: {
     width: '100%',
@@ -1348,6 +1484,45 @@ const styles = StyleSheet.create({
   secondaryButton: {
     backgroundColor: '#ECF0F1',
   },
+  // Cart-related styles
+  cartBadge: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    backgroundColor: '#FF6B35',
+    borderRadius: 12,
+    minWidth: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
+  },
+  cartBadgeText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  cartControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f8f9fa',
+    borderRadius: 20,
+    paddingHorizontal: 4,
+  },
+  cartButton: {
+    backgroundColor: '#FF6B35',
+    borderRadius: 15,
+    width: 30,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cartQuantityText: {
+    marginHorizontal: 12,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+  },
   modalButtonText: {
     color: 'white',
     fontWeight: '600',
@@ -1363,5 +1538,45 @@ const styles = StyleSheet.create({
   },
   menuSectionFullWidth: {
     flex: 1, // Take full available space
+  },
+  // Floating Cart Button
+  floatingCartButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#FF6B35',
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  floatingCartContent: {
+    position: 'relative',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  floatingCartBadge: {
+    position: 'absolute',
+    top: -12,
+    right: -12,
+    backgroundColor: '#E74C3C',
+    borderRadius: 10,
+    minWidth: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'white',
+  },
+  floatingCartBadgeText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
 });
