@@ -9,9 +9,11 @@ import {
   ActivityIndicator,
   Alert,
   Modal,
-  ScrollView 
+  ScrollView,
+  Image
 } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { apiService, formatPrice } from '../services/apiService';
 
 export default function BillScreen() {
@@ -155,25 +157,44 @@ export default function BillScreen() {
 
   const renderBillItem = ({ item }) => (
     <TouchableOpacity style={styles.billCard} activeOpacity={0.7}>
+      {/* Icon Badge */}
+      <View style={styles.billIconBadge}>
+        <LinearGradient
+          colors={['#9B59B6', '#8E44AD']}
+          style={styles.iconGradient}
+        >
+          <MaterialCommunityIcons name="receipt-text" size={24} color="white" />
+        </LinearGradient>
+      </View>
+
       <View style={styles.billHeader}>
         <View style={styles.billIdContainer}>
-          <MaterialCommunityIcons name="receipt" size={20} color="#3498DB" />
+          <Text style={styles.billIdLabel}>HÓA ĐơN</Text>
           <Text style={styles.billId}>#{item.billId?.substring(0, 8) || 'N/A'}</Text>
         </View>
         <View style={styles.paymentContainer}>
-          <MaterialCommunityIcons 
-            name={getPaymentMethodIcon(item.payment)} 
-            size={16} 
-            color="#7F8C8D" 
-          />
-          <Text style={styles.paymentMethod}>{item.payment || 'N/A'}</Text>
+          <LinearGradient
+            colors={['#9B59B6', '#8E44AD']}
+            style={styles.paymentBadge}
+          >
+            <MaterialCommunityIcons 
+              name={getPaymentMethodIcon(item.payment)} 
+              size={14} 
+              color="white" 
+            />
+            <Text style={styles.paymentMethod}>{item.payment || 'N/A'}</Text>
+          </LinearGradient>
         </View>
       </View>
 
+      {/* Amount Section with Modern Design */}
       <View style={styles.billContent}>
         <View style={styles.amountSection}>
           <View style={styles.amountRow}>
-            <Text style={styles.amountLabel}>Subtotal:</Text>
+            <View style={styles.amountLabelContainer}>
+              <Ionicons name="document-text-outline" size={16} color="#7F8C8D" />
+              <Text style={styles.amountLabel}>Tạm tính</Text>
+            </View>
             <Text style={styles.amountValue}>
               {item.total ? formatPrice(item.total) : '0₫'}
             </Text>
@@ -181,7 +202,10 @@ export default function BillScreen() {
           
           {item.discount && item.discount > 0 && (
             <View style={styles.amountRow}>
-              <Text style={styles.discountLabel}>Discount:</Text>
+              <View style={styles.amountLabelContainer}>
+                <Ionicons name="pricetag-outline" size={16} color="#E74C3C" />
+                <Text style={styles.discountLabel}>Giảm giá</Text>
+              </View>
               <Text style={styles.discountValue}>
                 -{formatPrice(item.discount)}
               </Text>
@@ -189,23 +213,31 @@ export default function BillScreen() {
           )}
           
           <View style={[styles.amountRow, styles.totalRow]}>
-            <Text style={styles.totalLabel}>Total:</Text>
+            <View style={styles.amountLabelContainer}>
+              <Ionicons name="wallet" size={18} color="#9B59B6" />
+              <Text style={styles.totalLabel}>Tổng cộng</Text>
+            </View>
             <Text style={styles.totalValue}>
               {item.totalFinal ? formatPrice(item.totalFinal) : formatPrice(item.total || 0)}
             </Text>
           </View>
         </View>
 
+        {/* Info Section with Icons */}
         <View style={styles.billInfo}>
           <View style={styles.infoRow}>
-            <MaterialCommunityIcons name="calendar" size={16} color="#7F8C8D" />
+            <View style={styles.infoIconContainer}>
+              <Ionicons name="calendar-outline" size={16} color="#9B59B6" />
+            </View>
             <Text style={styles.infoText}>{formatDate(item.createdTime)}</Text>
           </View>
           
           {item.orderId && (
             <View style={styles.infoRow}>
-              <MaterialCommunityIcons name="clipboard-list" size={16} color="#7F8C8D" />
-              <Text style={styles.infoText}>Order: {item.orderId.substring(0, 8)}</Text>
+              <View style={styles.infoIconContainer}>
+                <Ionicons name="list-outline" size={16} color="#9B59B6" />
+              </View>
+              <Text style={styles.infoText}>Đơn hàng: {item.orderId.substring(0, 8)}</Text>
             </View>
           )}
         </View>
@@ -296,8 +328,9 @@ export default function BillScreen() {
           style={[styles.filterChip, filterPayment === 'all' && styles.activeFilterChip]}
           onPress={() => setFilterPayment('all')}
         >
+          <Ionicons name="apps" size={16} color={filterPayment === 'all' ? '#FFFFFF' : '#7F8C8D'} />
           <Text style={[styles.filterChipText, filterPayment === 'all' && styles.activeFilterChipText]}>
-            All
+            Tất cả
           </Text>
         </TouchableOpacity>
         
@@ -305,9 +338,9 @@ export default function BillScreen() {
           style={[styles.filterChip, filterPayment === 'cash' && styles.activeFilterChip]}
           onPress={() => setFilterPayment('cash')}
         >
-          <MaterialCommunityIcons name="cash" size={16} color={filterPayment === 'cash' ? '#FFFFFF' : '#7F8C8D'} />
+          <Ionicons name="cash" size={16} color={filterPayment === 'cash' ? '#FFFFFF' : '#7F8C8D'} />
           <Text style={[styles.filterChipText, filterPayment === 'cash' && styles.activeFilterChipText]}>
-            Cash
+            Tiền mặt
           </Text>
         </TouchableOpacity>
         
@@ -315,9 +348,9 @@ export default function BillScreen() {
           style={[styles.filterChip, filterPayment === 'card' && styles.activeFilterChip]}
           onPress={() => setFilterPayment('card')}
         >
-          <MaterialCommunityIcons name="credit-card" size={16} color={filterPayment === 'card' ? '#FFFFFF' : '#7F8C8D'} />
+          <Ionicons name="card" size={16} color={filterPayment === 'card' ? '#FFFFFF' : '#7F8C8D'} />
           <Text style={[styles.filterChipText, filterPayment === 'card' && styles.activeFilterChipText]}>
-            Card
+            Thẻ
           </Text>
         </TouchableOpacity>
         
@@ -325,9 +358,9 @@ export default function BillScreen() {
           style={[styles.filterChip, filterPayment === 'transfer' && styles.activeFilterChip]}
           onPress={() => setFilterPayment('transfer')}
         >
-          <MaterialCommunityIcons name="bank-transfer" size={16} color={filterPayment === 'transfer' ? '#FFFFFF' : '#7F8C8D'} />
+          <Ionicons name="swap-horizontal" size={16} color={filterPayment === 'transfer' ? '#FFFFFF' : '#7F8C8D'} />
           <Text style={[styles.filterChipText, filterPayment === 'transfer' && styles.activeFilterChipText]}>
-            Transfer
+            Chuyển khoản
           </Text>
         </TouchableOpacity>
       </ScrollView>
@@ -336,12 +369,19 @@ export default function BillScreen() {
 
   const renderEmptyState = () => (
     <View style={styles.emptyState}>
-      <MaterialCommunityIcons name="receipt-outline" size={80} color="#BDC3C7" />
-      <Text style={styles.emptyTitle}>No Bills Found</Text>
+      <View style={styles.emptyIconContainer}>
+        <LinearGradient
+          colors={['#9B59B6', '#8E44AD']}
+          style={styles.emptyIconGradient}
+        >
+          <MaterialCommunityIcons name="receipt-text-outline" size={60} color="white" />
+        </LinearGradient>
+      </View>
+      <Text style={styles.emptyTitle}>Chưa Có Hóa Đơn</Text>
       <Text style={styles.emptySubtitle}>
         {filterPayment !== 'all' ? 
-          `No bills found with ${filterPayment} payment method` :
-          'Bills will appear here once orders are completed and paid'
+          `Không tìm thấy hóa đơn với phương thức ${filterPayment}` :
+          'Hóa đơn sẽ xuất hiện khi đơn hàng được thanh toán'
         }
       </Text>
     </View>
@@ -358,22 +398,46 @@ export default function BillScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      {/* Background Image */}
+      <View style={styles.backgroundContainer}>
+        <View style={styles.backgroundImageContainer}>
+          <Image 
+            source={{
+              uri: 'https://images.unsplash.com/photo-1554224311-beee4479d0ed?w=1200'
+            }}
+            style={styles.backgroundImage}
+            resizeMode="cover"
+          />
+        </View>
+      </View>
+
+      {/* Header with Gradient */}
+      <LinearGradient
+        colors={['#9B59B6', '#8E44AD', '#7D3C98']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
+        <View style={styles.decorativeCircle1} />
+        <View style={styles.decorativeCircle2} />
         <View style={styles.headerContent}>
-          <View>
-            <Text style={styles.headerTitle}>Bills</Text>
+          <View style={styles.logoContainer}>
+            <MaterialCommunityIcons name="file-document-outline" size={60} color="white" />
+          </View>
+          <View style={styles.headerTextContainer}>
+            <Text style={styles.headerTitle}>Hóa Đơn</Text>
             <Text style={styles.headerSubtitle}>
-              {filteredBills.length} of {bills.length} {bills.length === 1 ? 'bill' : 'bills'}
+              {filteredBills.length} / {bills.length} hóa đơn
             </Text>
           </View>
           <TouchableOpacity 
             style={styles.sortButton}
             onPress={() => setShowSortModal(true)}
           >
-            <MaterialCommunityIcons name="sort" size={24} color="#3498DB" />
+            <Ionicons name="options" size={24} color="#9B59B6" />
           </TouchableOpacity>
         </View>
-      </View>
+      </LinearGradient>
 
       {renderFilterBar()}
       
@@ -397,11 +461,33 @@ export default function BillScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#F5F6FA',
+  },
+  backgroundContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 0,
+  },
+  backgroundImageContainer: {
+    flex: 1,
+    position: 'relative',
+    opacity: 0.25,
+  },
+  backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
   },
   loadingContainer: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#F5F6FA',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -411,42 +497,81 @@ const styles = StyleSheet.create({
     color: '#7F8C8D',
   },
   header: {
-    backgroundColor: '#FFFFFF',
-    paddingVertical: 20,
+    paddingTop: 60,
+    paddingBottom: 30,
     paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E8E8E8',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+    position: 'relative',
+    overflow: 'hidden',
+    zIndex: 1,
+  },
+  decorativeCircle1: {
+    position: 'absolute',
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    top: -50,
+    right: -50,
+  },
+  decorativeCircle2: {
+    position: 'absolute',
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    backgroundColor: 'rgba(255,255,255,0.03)',
+    bottom: -30,
+    left: -30,
   },
   headerContent: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    zIndex: 2,
+  },
+  logoContainer: {
+    marginRight: 20,
+    padding: 10,
+    borderRadius: 40,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    shadowColor: '#9B59B6',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 15,
+    elevation: 10,
+  },
+  headerTextContainer: {
+    flex: 1,
   },
   headerTitle: {
     fontSize: 28,
-    fontWeight: 'bold',
-    color: '#2C3E50',
-    marginBottom: 4,
+    fontWeight: '800',
+    color: 'white',
+    marginBottom: 6,
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   headerSubtitle: {
-    fontSize: 14,
-    color: '#7F8C8D',
+    fontSize: 15,
+    color: 'rgba(255,255,255,0.9)',
+    lineHeight: 20,
+    fontWeight: '400',
   },
   sortButton: {
-    padding: 8,
-    borderRadius: 8,
-    backgroundColor: '#F8F9FA',
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 8,
   },
   listContainer: {
     padding: 16,
+    paddingBottom: 30,
   },
   emptyContainer: {
     flex: 1,
@@ -458,9 +583,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 40,
   },
+  emptyIconContainer: {
+    marginBottom: 20,
+  },
+  emptyIconGradient: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 8,
+    shadowColor: '#9B59B6',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+  },
   emptyTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: '800',
     color: '#2C3E50',
     marginTop: 20,
     marginBottom: 10,
@@ -473,108 +613,161 @@ const styles = StyleSheet.create({
     maxWidth: 280,
   },
   billCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
+    backgroundColor: 'rgba(255, 255, 255, 0.98)',
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#9B59B6',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 4,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 3,
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(155, 89, 182, 0.1)',
+    position: 'relative',
+    overflow: 'visible',
+  },
+  billIconBadge: {
+    position: 'absolute',
+    top: -15,
+    right: 20,
+    zIndex: 10,
+  },
+  iconGradient: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 8,
+    shadowColor: '#9B59B6',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
   },
   billHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
-    paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
+    marginBottom: 16,
+    paddingBottom: 16,
+    borderBottomWidth: 2,
+    borderBottomColor: 'rgba(155, 89, 182, 0.1)',
   },
   billIdContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flex: 1,
+  },
+  billIdLabel: {
+    fontSize: 11,
+    color: '#9B59B6',
+    fontWeight: '700',
+    letterSpacing: 1,
+    marginBottom: 4,
   },
   billId: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#2C3E50',
-    marginLeft: 6,
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#7D3C98',
+    letterSpacing: 0.5,
   },
   paymentContainer: {
+    alignItems: 'flex-end',
+  },
+  paymentBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F8F9FA',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    gap: 6,
   },
   paymentMethod: {
     fontSize: 12,
-    color: '#7F8C8D',
-    marginLeft: 4,
+    color: 'white',
+    fontWeight: '700',
     textTransform: 'capitalize',
   },
   billContent: {
-    gap: 12,
+    gap: 16,
   },
   amountSection: {
-    gap: 6,
+    gap: 10,
+    backgroundColor: 'rgba(155, 89, 182, 0.03)',
+    padding: 14,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(155, 89, 182, 0.1)',
   },
   amountRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  amountLabelContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
   amountLabel: {
     fontSize: 14,
     color: '#7F8C8D',
+    fontWeight: '500',
   },
   amountValue: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#2C3E50',
-    fontWeight: '500',
+    fontWeight: '700',
   },
   discountLabel: {
     fontSize: 14,
     color: '#E74C3C',
+    fontWeight: '600',
   },
   discountValue: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#E74C3C',
-    fontWeight: '500',
+    fontWeight: '700',
   },
   totalRow: {
-    marginTop: 6,
-    paddingTop: 8,
-    borderTopWidth: 1,
-    borderTopColor: '#F0F0F0',
+    marginTop: 8,
+    paddingTop: 12,
+    borderTopWidth: 2,
+    borderTopColor: 'rgba(155, 89, 182, 0.2)',
   },
   totalLabel: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#2C3E50',
+    fontWeight: '800',
+    color: '#9B59B6',
   },
   totalValue: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontWeight: '800',
     color: '#27AE60',
   },
   billInfo: {
-    gap: 6,
+    gap: 10,
   },
   infoRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 8,
+  },
+  infoIconContainer: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: 'rgba(155, 89, 182, 0.08)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   infoText: {
     fontSize: 13,
-    color: '#7F8C8D',
-    marginLeft: 6,
+    color: '#5D6D7E',
+    fontWeight: '500',
+    flex: 1,
   },
   // Sort Modal Styles
   modalOverlay: {
@@ -625,37 +818,40 @@ const styles = StyleSheet.create({
   },
   // Filter Bar Styles
   filterBar: {
-    backgroundColor: '#FFFFFF',
-    paddingVertical: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    paddingVertical: 16,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
+    borderBottomColor: 'rgba(155, 89, 182, 0.1)',
+    zIndex: 1,
   },
   filterScrollContainer: {
     paddingRight: 16,
+    gap: 10,
   },
   filterChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    marginRight: 8,
-    borderRadius: 16,
-    backgroundColor: '#F8F9FA',
-    borderWidth: 1,
-    borderColor: '#E8E8E8',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    marginRight: 10,
+    borderRadius: 20,
+    backgroundColor: 'rgba(155, 89, 182, 0.08)',
+    borderWidth: 2,
+    borderColor: 'rgba(155, 89, 182, 0.2)',
+    gap: 6,
   },
   activeFilterChip: {
-    backgroundColor: '#3498DB',
-    borderColor: '#3498DB',
+    backgroundColor: '#9B59B6',
+    borderColor: '#9B59B6',
   },
   filterChipText: {
     fontSize: 14,
     color: '#7F8C8D',
-    marginLeft: 4,
+    fontWeight: '600',
   },
   activeFilterChipText: {
     color: '#FFFFFF',
-    fontWeight: '500',
+    fontWeight: '700',
   },
 });

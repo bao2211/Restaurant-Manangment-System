@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl, TextInput, TouchableOpacity } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl, TextInput, TouchableOpacity, Image } from 'react-native';
+import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { apiService, formatPrice } from '../services/apiService';
-import ScreenHeader from '../components/ScreenHeader';
 
 export default function OrdersScreen() {
   const [orders, setOrders] = useState([]);
@@ -222,6 +222,19 @@ export default function OrdersScreen() {
 
   return (
     <View style={styles.container}>
+      {/* Background Image */}
+      <View style={styles.backgroundContainer}>
+        <View style={styles.backgroundImageContainer}>
+          <Image 
+            source={{
+              uri: 'https://gaophuongnam.vn/upload/ckfinder/images/%E1%BA%A3nh%20tin%20t%E1%BB%A9c/320211736-689662439425355-4861645986957870390-n-853.jpeg'
+            }}
+            style={[styles.backgroundImage, { opacity: 0.3 }]}
+            resizeMode="cover"
+          />
+        </View>
+      </View>
+
       {loading ? (
         <ActivityIndicator size="large" color="#2C3E50" style={styles.loader} />
       ) : orders.length === 0 ? (
@@ -234,11 +247,39 @@ export default function OrdersScreen() {
         </View>
       ) : (
         <View style={styles.content}>
-          <ScreenHeader
-            title="Your Orders"
-            onRefresh={onRefresh}
-            refreshing={refreshing}
-          />
+          {/* Welcome Section with Logo */}
+          <LinearGradient
+            colors={['#4A90E2', '#357ABD', '#2E5F8C']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.welcomeSection}
+          >
+            <View style={styles.decorativeCircle1} />
+            <View style={styles.decorativeCircle2} />
+            <View style={styles.welcomeContent}>
+              <View style={styles.logoContainer}>
+                <MaterialCommunityIcons name="clipboard-text" size={32} color="white" />
+              </View>
+              <View style={styles.welcomeTextContainer}>
+                <Text style={styles.welcomeTitle}>My Orders</Text>
+                <Text style={styles.welcomeSubtitle}>
+                  Theo dõi và quản lý đơn hàng của bạn
+                </Text>
+              </View>
+              <TouchableOpacity 
+                style={styles.refreshButtonHeader}
+                onPress={onRefresh}
+                disabled={refreshing}
+              >
+                {refreshing ? (
+                  <ActivityIndicator size="small" color="white" />
+                ) : (
+                  <Ionicons name="refresh" size={20} color="white" />
+                )}
+              </TouchableOpacity>
+            </View>
+          </LinearGradient>
+
           {renderSearchBar()}
           <FlatList
             data={filteredOrders}
@@ -543,30 +584,127 @@ const OrderDetailItem = ({ detail, index }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#2C3E50',
+  },
+  backgroundContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 0,
+  },
+  backgroundImageContainer: {
+    flex: 1,
+    position: 'relative',
+  },
+  backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
+  },
+  welcomeSection: {
+    paddingTop: 60,
+    paddingBottom: 30,
+    paddingHorizontal: 20,
+    position: 'relative',
+    overflow: 'hidden',
+    zIndex: 1,
+  },
+  welcomeContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    zIndex: 2,
+  },
+  logoContainer: {
+    marginRight: 16,
+    padding: 10,
+    borderRadius: 40,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    shadowColor: '#fff',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 8,
+  },
+  welcomeTextContainer: {
+    flex: 1,
+  },
+  welcomeTitle: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: 'white',
+    marginBottom: 6,
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+  welcomeSubtitle: {
+    fontSize: 15,
+    color: 'rgba(255,255,255,0.9)',
+    lineHeight: 20,
+    fontWeight: '400',
+  },
+  refreshButtonHeader: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#fff',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  decorativeCircle1: {
+    position: 'absolute',
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    top: -50,
+    right: -50,
+  },
+  decorativeCircle2: {
+    position: 'absolute',
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    backgroundColor: 'rgba(255,255,255,0.03)',
+    bottom: -30,
+    left: -30,
   },
   content: {
     flex: 1,
     width: '100%',
+    zIndex: 1,
   },
   searchContainer: {
     paddingHorizontal: 16,
-    paddingBottom: 8,
-    backgroundColor: '#F5F5F5',
+    paddingTop: 16,
+    paddingBottom: 12,
+    backgroundColor: 'transparent',
+    zIndex: 1,
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
-    borderRadius: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 8,
-    marginBottom: 8,
-    elevation: 2,
+    marginBottom: 10,
+    elevation: 4,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
   },
   searchInput: {
     flex: 1,
@@ -586,19 +724,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: '#ECF0F1',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     marginHorizontal: 4,
+    borderWidth: 2,
+    borderColor: '#4A90E2',
+    elevation: 3,
+    shadowColor: '#4A90E2',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   filterButtonActive: {
-    backgroundColor: '#3498DB',
+    backgroundColor: '#4A90E2',
+    borderColor: '#4A90E2',
+    elevation: 6,
+    shadowOpacity: 0.4,
   },
   filterButtonText: {
     fontSize: 14,
-    color: '#7F8C8D',
-    fontWeight: '500',
+    color: '#4A90E2',
+    fontWeight: '600',
   },
   filterButtonTextActive: {
     color: 'white',
+    fontWeight: 'bold',
   },
   loader: {
     flex: 1,
@@ -630,87 +779,99 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   orderCard: {
-    backgroundColor: 'white',
+    backgroundColor: 'rgba(255, 255, 255, 0.98)',
     marginHorizontal: 16,
     marginVertical: 8,
-    borderRadius: 12,
-    padding: 16,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    borderRadius: 20,
+    overflow: 'hidden',
+    elevation: 8,
+    shadowColor: '#4A90E2',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(74, 144, 226, 0.1)',
   },
   orderHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    backgroundColor: 'rgba(74, 144, 226, 0.05)',
     borderBottomWidth: 1,
-    borderBottomColor: '#F5F5F5',
-    paddingBottom: 12,
+    borderBottomColor: 'rgba(74, 144, 226, 0.1)',
   },
   orderIdContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 10,
+    flex: 1,
   },
   orderId: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#2C3E50',
+    fontSize: 17,
+    fontWeight: '800',
+    color: '#2E5F8C',
+    letterSpacing: 0.5,
   },
   orderStatus: {
-    fontSize: 14,
-    fontWeight: '600',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
+    fontSize: 13,
+    fontWeight: '700',
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 20,
+    overflow: 'hidden',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   orderDetails: {
-    marginVertical: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    backgroundColor: 'white',
   },
   detailSection: {
-    marginBottom: 8,
+    marginBottom: 10,
   },
   detailRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 4,
+    marginVertical: 6,
+    paddingVertical: 4,
   },
   detailText: {
     fontSize: 14,
-    color: '#34495E',
-    marginLeft: 8,
+    color: '#5A6C7D',
+    marginLeft: 10,
     flex: 1,
+    fontWeight: '500',
   },
   orderFooter: {
-    marginTop: 12,
-    paddingTop: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    backgroundColor: 'rgba(74, 144, 226, 0.03)',
     borderTopWidth: 1,
-    borderTopColor: '#F5F5F5',
+    borderTopColor: 'rgba(74, 144, 226, 0.1)',
   },
   footerContent: {
-    flexDirection: 'column',
-    paddingVertical: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   amountRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 4,
   },
   footerLabel: {
-    fontSize: 14,
-    color: '#2C3E50',
+    fontSize: 15,
+    color: '#5A6C7D',
     marginLeft: 8,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   totalAmount: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontWeight: '800',
     color: '#27AE60',
-    marginTop: 4,
-    textAlign: 'right',
+    letterSpacing: 0.5,
   },
   calculatingText: {
     fontSize: 14,
@@ -720,113 +881,129 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   highlightText: {
-    color: '#3498DB',
-    fontWeight: '500',
+    color: '#4A90E2',
+    fontWeight: '700',
   },
   staffId: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#95A5A6',
     marginLeft: 8,
+    fontStyle: 'italic',
   },
   // Order Details Dropdown Styles
   expandButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 10,
+    paddingVertical: 12,
+    marginHorizontal: 16,
     marginTop: 8,
-    backgroundColor: '#F8F9FA',
-    borderRadius: 8,
+    marginBottom: 8,
+    backgroundColor: 'rgba(74, 144, 226, 0.08)',
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: 'rgba(74, 144, 226, 0.2)',
   },
   expandButtonText: {
     fontSize: 14,
-    color: '#3498DB',
-    fontWeight: '600',
+    color: '#4A90E2',
+    fontWeight: '700',
     marginRight: 8,
   },
   orderDetailsList: {
-    marginTop: 12,
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+    backgroundColor: 'rgba(74, 144, 226, 0.02)',
     borderTopWidth: 1,
-    borderTopColor: '#F5F5F5',
-    paddingTop: 12,
+    borderTopColor: 'rgba(74, 144, 226, 0.1)',
   },
   detailsLoader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 16,
+    padding: 20,
   },
   loadingDetailsText: {
-    marginLeft: 8,
+    marginLeft: 10,
     fontSize: 14,
-    color: '#7F8C8D',
+    color: '#4A90E2',
+    fontWeight: '500',
   },
   orderDetailItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 8,
-    backgroundColor: '#F8F9FA',
-    borderRadius: 8,
-    marginBottom: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    backgroundColor: 'white',
+    borderRadius: 12,
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(74, 144, 226, 0.1)',
+    elevation: 2,
+    shadowColor: '#4A90E2',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
   },
   orderDetailInfo: {
     flex: 1,
     marginRight: 12,
   },
   dishName: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#2C3E50',
-    fontWeight: '500',
-    marginBottom: 4,
+    fontWeight: '700',
+    marginBottom: 6,
+    letterSpacing: 0.2,
   },
   priceContainer: {
     marginTop: 4,
   },
   dishPrice: {
-    fontSize: 12,
+    fontSize: 13,
     color: '#FF6B35',
     fontWeight: '600',
-    marginBottom: 2,
+    marginBottom: 3,
   },
   totalPrice: {
-    fontSize: 13,
+    fontSize: 14,
     color: '#27AE60',
-    fontWeight: 'bold',
+    fontWeight: '700',
   },
   foodIdText: {
     fontSize: 11,
     color: '#95A5A6',
     fontStyle: 'italic',
-    marginTop: 2,
+    marginTop: 3,
   },
   loadingPriceText: {
-    fontSize: 10,
-    color: '#3498DB',
+    fontSize: 11,
+    color: '#4A90E2',
     fontStyle: 'italic',
-    marginTop: 2,
+    marginTop: 3,
   },
   quantityBadge: {
-    backgroundColor: '#E8F6F3',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 12,
-    borderWidth: 1,
+    backgroundColor: '#E8F5E9',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 2,
     borderColor: '#27AE60',
+    minWidth: 50,
+    alignItems: 'center',
   },
   quantityText: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#27AE60',
-    fontWeight: '600',
+    fontWeight: '800',
+    letterSpacing: 0.5,
   },
   noDetailsText: {
     textAlign: 'center',
     color: '#95A5A6',
     fontStyle: 'italic',
-    padding: 16,
+    padding: 20,
     fontSize: 14,
   },
 });
