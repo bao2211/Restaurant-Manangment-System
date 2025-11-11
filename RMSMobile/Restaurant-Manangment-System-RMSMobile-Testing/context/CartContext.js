@@ -75,12 +75,23 @@ export const CartProvider = ({ children }) => {
 
   // Remove item from cart
   const removeFromCart = (itemId) => {
-    setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
+    console.log('🗑️ CartContext.removeFromCart called with itemId:', itemId);
+    console.log('📦 Current cart before removal:', cartItems);
+    
+    setCartItems(prevItems => {
+      const newItems = prevItems.filter(item => item.id !== itemId);
+      console.log('📦 Cart after removal:', newItems);
+      console.log('✅ Item removed. Items count changed from', prevItems.length, 'to', newItems.length);
+      return newItems;
+    });
   };
 
   // Update item quantity
   const updateQuantity = (itemId, newQuantity) => {
+    console.log('🔢 CartContext.updateQuantity called:', { itemId, newQuantity });
+    
     if (newQuantity <= 0) {
+      console.log('⚠️ Quantity is 0 or less, removing item');
       removeFromCart(itemId);
       return;
     }
@@ -92,10 +103,13 @@ export const CartProvider = ({ children }) => {
           : item
       )
     );
+    console.log('✅ Quantity updated');
   };
 
   // Increase quantity by 1
   const increaseQuantity = (itemId) => {
+    console.log('➕ CartContext.increaseQuantity called for itemId:', itemId);
+    
     setCartItems(prevItems => 
       prevItems.map(item => 
         item.id === itemId 
@@ -107,18 +121,27 @@ export const CartProvider = ({ children }) => {
 
   // Decrease quantity by 1
   const decreaseQuantity = (itemId) => {
-    setCartItems(prevItems => 
-      prevItems.map(item => 
+    console.log('➖ CartContext.decreaseQuantity called for itemId:', itemId);
+    
+    setCartItems(prevItems => {
+      const newItems = prevItems.map(item => 
         item.id === itemId && item.quantity > 1
           ? { ...item, quantity: item.quantity - 1 }
           : item
-      ).filter(item => item.quantity > 0)
-    );
+      ).filter(item => item.quantity > 0);
+      
+      console.log('📦 Cart after decrease:', newItems);
+      return newItems;
+    });
   };
 
   // Clear entire cart
   const clearCart = () => {
+    console.log('🧹 CartContext.clearCart called');
+    console.log('📦 Clearing', cartItems.length, 'items from cart');
+    
     setCartItems([]);
+    console.log('✅ Cart cleared');
   };
 
   // Get total items count

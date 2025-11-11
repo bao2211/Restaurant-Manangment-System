@@ -1875,7 +1875,7 @@ export const getCategoryIcon = (categoryName) => {
   
   // Vietnamese category mappings
   if (name.includes('cơm')) { // Rice
-    return 'rice';
+    return 'bowl-mix-outline';
   } else if (name.includes('canh')) { // Soup
     return 'bowl-mix';
   } else if (name.includes('súp')) { // Soup
@@ -1897,13 +1897,13 @@ export const getCategoryIcon = (categoryName) => {
   } else if (name.includes('main') || name.includes('course') || name.includes('entree')) {
     return 'food';
   } else if (name.includes('dessert') || name.includes('sweet')) {
-    return 'cake';
+    return 'cake-variant';
   } else if (name.includes('salad')) {
-    return 'food-variant';
+    return 'salad';
   } else if (name.includes('soup')) {
     return 'bowl-mix';
   } else {
-    return 'food-fork-drink'; // Default icon
+    return 'silverware-fork-knife'; // Default icon
   }
 };
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,8 @@ import {
   Image,
   Alert,
   Dimensions,
+  Modal,
+  Platform,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -26,6 +28,10 @@ const CartScreen = ({ navigation }) => {
     getTotalPrice,
   } = useCart();
 
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(null);
+  const [confirmMessage, setConfirmMessage] = useState('');
+
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
@@ -33,57 +39,99 @@ const CartScreen = ({ navigation }) => {
     }).format(price || 0);
   };
 
+  // Generic confirmation handler
+  const showConfirmation = (message, action) => {
+    setConfirmMessage(message);
+    setConfirmAction(() => action);
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirm = () => {
+    if (confirmAction) {
+      confirmAction();
+    }
+    setShowConfirmModal(false);
+    setConfirmAction(null);
+  };
+
+  const handleCancel = () => {
+    setShowConfirmModal(false);
+    setConfirmAction(null);
+  };
+
   const handleRemoveItem = (item) => {
-    Alert.alert(
-      'Xác nhận',
+    console.log('=== HANDLE REMOVE ITEM ===');
+    console.log('Item to remove:', item);
+    console.log('Item ID:', item.id);
+    console.log('Current cart items before removal:', cartItems);
+    
+    showConfirmation(
       `Bạn có muốn xóa "${item.name}" khỏi giỏ hàng?`,
-      [
-        { text: 'Hủy', style: 'cancel' },
-        {
-          text: 'Xóa',
-          style: 'destructive',
-          onPress: () => removeFromCart(item.id)
+      () => {
+        console.log('✅ User confirmed removal');
+        console.log('Calling removeFromCart with ID:', item.id);
+        try {
+          removeFromCart(item.id);
+          console.log('✅ removeFromCart called successfully');
+        } catch (error) {
+          console.error('❌ Error calling removeFromCart:', error);
         }
-      ]
+      }
     );
   };
 
   const handleClearCart = () => {
-    Alert.alert(
-      'Xác nhận',
+    console.log('=== HANDLE CLEAR CART ===');
+    console.log('Current cart items count:', cartItems.length);
+    console.log('Current cart items:', cartItems);
+    
+    showConfirmation(
       'Bạn có muốn xóa tất cả món ăn khỏi giỏ hàng?',
-      [
-        { text: 'Hủy', style: 'cancel' },
-        {
-          text: 'Xóa tất cả',
-          style: 'destructive',
-          onPress: clearCart
+      () => {
+        console.log('✅ User confirmed clear all');
+        console.log('Calling clearCart');
+        try {
+          clearCart();
+          console.log('✅ clearCart called successfully');
+        } catch (error) {
+          console.error('❌ Error calling clearCart:', error);
         }
-      ]
+      }
     );
   };
 
   const handleCheckout = () => {
+    console.log('=== HANDLE CHECKOUT ===');
+    console.log('Cart items count:', cartItems.length);
+    console.log('Total price:', getTotalPrice());
+    
     if (cartItems.length === 0) {
       Alert.alert('Thông báo', 'Giỏ hàng trống. Vui lòng thêm món ăn vào giỏ hàng.');
       return;
     }
 
-    Alert.alert(
-      'Đặt hàng',
+    showConfirmation(
       `Tổng cộng: ${formatPrice(getTotalPrice())}\n\nBạn có muốn đặt hàng?`,
-      [
-        { text: 'Hủy', style: 'cancel' },
-        {
-          text: 'Đặt hàng',
-          onPress: () => {
-            // TODO: Implement actual order placement
+      () => {
+        console.log('✅ User confirmed checkout');
+        try {
+          // TODO: Implement actual order placement
+          clearCart();
+          console.log('✅ Cart cleared after checkout');
+          
+          // Show success message
+          if (Platform.OS === 'web') {
+            alert('Đơn hàng đã được đặt thành công!');
+          } else {
             Alert.alert('Thành công', 'Đơn hàng đã được đặt thành công!');
-            clearCart();
-            navigation.goBack();
           }
+          
+          navigation.goBack();
+          console.log('✅ Navigation back successful');
+        } catch (error) {
+          console.error('❌ Error during checkout:', error);
         }
-      ]
+      }
     );
   };
 
@@ -171,7 +219,7 @@ const CartScreen = ({ navigation }) => {
             style={styles.backButton}
             onPress={() => navigation.goBack()}
           >
-            <MaterialCommunityIcons name="arrow-back" size={24} color="white" />
+            <MaterialCommunityIcons name="arrow-left" size={24} color="white" />
           </TouchableOpacity>
           
           <Text style={styles.headerTitle}>Giỏ Hàng</Text>
@@ -234,6 +282,46 @@ const CartScreen = ({ navigation }) => {
           </View>
         </>
       )}
+
+      {/* Confirmation Modal */}
+      <Modal
+        visible={showConfirmModal}
+        transparent
+        animationType="fade"
+        onRequestClose={handleCancel}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalHeader}>
+              <MaterialCommunityIcons name="alert-circle-outline" size={48} color="#ff6b6b" />
+              <Text style={styles.modalTitle}>Xác nhận</Text>
+            </View>
+            
+            <Text style={styles.modalMessage}>{confirmMessage}</Text>
+            
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={handleCancel}
+              >
+                <Text style={styles.cancelButtonText}>Hủy</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={[styles.modalButton, styles.confirmButton]}
+                onPress={handleConfirm}
+              >
+                <LinearGradient
+                  colors={['#E74C3C', '#C0392B']}
+                  style={styles.confirmButtonGradient}
+                >
+                  <Text style={styles.confirmButtonText}>Xác nhận</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -306,9 +394,9 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   itemImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 80,
+    height: 80,
+    borderRadius: 12,
   },
   placeholderImage: {
     backgroundColor: '#f5f5f5',
@@ -450,6 +538,82 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 8,
+  },
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalContainer: {
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 24,
+    width: '90%',
+    maxWidth: 400,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  modalHeader: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 12,
+  },
+  modalMessage: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 24,
+    lineHeight: 24,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  modalButton: {
+    flex: 1,
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  cancelButton: {
+    backgroundColor: '#f5f5f5',
+    paddingVertical: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cancelButtonText: {
+    color: '#666',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  confirmButton: {
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  confirmButtonGradient: {
+    paddingVertical: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 12,
+  },
+  confirmButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
