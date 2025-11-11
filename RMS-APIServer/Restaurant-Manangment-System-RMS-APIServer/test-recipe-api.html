@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Recipe API</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        .section {
+            padding: 30px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .section:last-child {
+            border-bottom: none;
+        }
+        .section h2 {
+            color: #FF6B35;
+            margin-bottom: 20px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #FF6B35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        button {
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .output {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        .ingredient-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: end;
+        }
+        .remove-btn {
+            background: #dc3545;
+            padding: 10px 16px;
+            font-size: 14px;
+        }
+        .add-btn {
+            background: #28a745;
+            margin-top: 10px;
+        }
+        .icon {
+            font-size: 24px;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍽️ Recipe API Testing Tool</h1>
+            <p>Test CRUD operations for Recipe Management System</p>
+        </div>
+
+        <!-- API Configuration -->
+        <div class="section">
+            <h2><span class="icon">⚙️</span> API Configuration</h2>
+            <div class="form-group">
+                <label>API Base URL:</label>
+                <input type="text" id="apiUrl" value="http://localhost:5000" placeholder="http://localhost:5000">
+            </div>
+            <button onclick="testConnection()">🔍 Test Connection</button>
+            <div id="connectionOutput" class="output" style="display: none;"></div>
+        </div>
+
+        <!-- Get All Recipes -->
+        <div class="section">
+            <h2><span class="icon">📋</span> Get All Recipes</h2>
+            <button onclick="getAllRecipes()">Get All Recipes</button>
+            <button onclick="getAllIngredients()">Get All Ingredients</button>
+            <button onclick="getAllFoods()">Get All Foods</button>
+            <div id="getAllOutput" class="output" style="display: none;"></div>
+        </div>
+
+        <!-- Get Recipe by Food ID -->
+        <div class="section">
+            <h2><span class="icon">🔎</span> Get Recipe by Food ID</h2>
+            <div class="form-group">
+                <label>Food ID:</label>
+                <input type="text" id="getFoodId" placeholder="F001">
+            </div>
+            <button onclick="getRecipeByFood()">Get Recipe</button>
+            <div id="getByFoodOutput" class="output" style="display: none;"></div>
+        </div>
+
+        <!-- Create New Recipe -->
+        <div class="section">
+            <h2><span class="icon">➕</span> Create New Recipe</h2>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Recipe ID:</label>
+                    <input type="text" id="createRecipeId" placeholder="RC001">
+                </div>
+                <div class="form-group">
+                    <label>Food ID:</label>
+                    <input type="text" id="createFoodId" placeholder="F001">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Recipe Description:</label>
+                <textarea id="createDescription" placeholder="Mô tả cách làm món ăn..."></textarea>
+            </div>
+            
+            <h3 style="margin: 20px 0 10px 0;">Ingredients:</h3>
+            <div id="ingredientsContainer">
+                <div class="ingredient-row">
+                    <input type="text" placeholder="Ingredient ID (e.g., I001)" class="ingredientId">
+                    <input type="number" placeholder="Quantity" class="quantity">
+                    <input type="text" placeholder="Unit (g, kg, ml)" class="unit">
+                    <button class="remove-btn" onclick="removeIngredient(this)">❌</button>
+                </div>
+            </div>
+            <button class="add-btn" onclick="addIngredientRow()">➕ Add Ingredient</button>
+            
+            <div style="margin-top: 20px;">
+                <button onclick="createRecipe()">💾 Create Recipe</button>
+            </div>
+            <div id="createOutput" class="output" style="display: none;"></div>
+        </div>
+
+        <!-- Update Recipe -->
+        <div class="section">
+            <h2><span class="icon">✏️</span> Update Recipe</h2>
+            <div class="form-group">
+                <label>Recipe ID to Update:</label>
+                <input type="text" id="updateRecipeId" placeholder="RC001">
+            </div>
+            <div class="form-group">
+                <label>Food ID:</label>
+                <input type="text" id="updateFoodId" placeholder="F001">
+            </div>
+            <div class="form-group">
+                <label>New Recipe Description:</label>
+                <textarea id="updateDescription" placeholder="Mô tả công thức mới..."></textarea>
+            </div>
+            <button onclick="updateRecipe()">💾 Update Recipe</button>
+            <div id="updateOutput" class="output" style="display: none;"></div>
+        </div>
+
+        <!-- Delete Recipe -->
+        <div class="section">
+            <h2><span class="icon">🗑️</span> Delete Recipe</h2>
+            <div class="form-group">
+                <label>Recipe ID to Delete:</label>
+                <input type="text" id="deleteRecipeId" placeholder="RC001">
+            </div>
+            <button onclick="deleteRecipe()" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">🗑️ Delete Recipe</button>
+            <div id="deleteOutput" class="output" style="display: none;"></div>
+        </div>
+
+        <!-- Recipe Details Management -->
+        <div class="section">
+            <h2><span class="icon">📝</span> Recipe Details Management</h2>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Recipe ID:</label>
+                    <input type="text" id="detailRecipeId" placeholder="RC001">
+                </div>
+                <div class="form-group">
+                    <label>Ingredient ID:</label>
+                    <input type="text" id="detailIngreId" placeholder="I001">
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Quantity:</label>
+                    <input type="number" id="detailQuantity" placeholder="500">
+                </div>
+                <div class="form-group">
+                    <label>Unit:</label>
+                    <input type="text" id="detailUnit" placeholder="g">
+                </div>
+            </div>
+            <div class="button-group">
+                <button onclick="createRecipeDetail()">➕ Add Detail</button>
+                <button onclick="deleteRecipeDetail()" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">❌ Delete Detail</button>
+                <button onclick="getRecipeDetails()">📋 Get Details</button>
+            </div>
+            <div id="detailOutput" class="output" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        function getApiUrl() {
+            return document.getElementById('apiUrl').value.trim();
+        }
+
+        function showOutput(elementId, content, status = 'info') {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.innerHTML = content + `<div class="status ${status}">${status.toUpperCase()}</div>`;
+        }
+
+        async function testConnection() {
+            const output = document.getElementById('connectionOutput');
+            output.style.display = 'block';
+            output.innerHTML = 'Testing connection...';
+            
+            try {
+                const response = await fetch(`${getApiUrl()}/api/Recipe`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                });
+                
+                if (response.ok) {
+                    showOutput('connectionOutput', `✅ Connection successful!\nStatus: ${response.status}\nAPI is reachable.`, 'success');
+                } else {
+                    showOutput('connectionOutput', `⚠️ Connection returned status: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                showOutput('connectionOutput', `❌ Connection failed!\n${error.message}`, 'error');
+            }
+        }
+
+        async function getAllRecipes() {
+            try {
+                const response = await fetch(`${getApiUrl()}/api/Recipe`);
+                const data = await response.json();
+                showOutput('getAllOutput', JSON.stringify(data, null, 2), 'success');
+            } catch (error) {
+                showOutput('getAllOutput', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function getAllIngredients() {
+            try {
+                const response = await fetch(`${getApiUrl()}/api/Ingredient`);
+                const data = await response.json();
+                showOutput('getAllOutput', JSON.stringify(data, null, 2), 'success');
+            } catch (error) {
+                showOutput('getAllOutput', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function getAllFoods() {
+            try {
+                const response = await fetch(`${getApiUrl()}/api/FoodInfo`);
+                const data = await response.json();
+                showOutput('getAllOutput', JSON.stringify(data, null, 2), 'success');
+            } catch (error) {
+                showOutput('getAllOutput', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function getRecipeByFood() {
+            const foodId = document.getElementById('getFoodId').value.trim();
+            if (!foodId) {
+                alert('Please enter Food ID');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiUrl()}/api/Recipe/food/${foodId}`);
+                const data = await response.json();
+                showOutput('getByFoodOutput', JSON.stringify(data, null, 2), 'success');
+            } catch (error) {
+                showOutput('getByFoodOutput', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function createRecipe() {
+            const recipeId = document.getElementById('createRecipeId').value.trim();
+            const foodId = document.getElementById('createFoodId').value.trim();
+            const description = document.getElementById('createDescription').value.trim();
+
+            if (!recipeId || !foodId || !description) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            try {
+                // First, create the recipe
+                const recipeData = {
+                    recipeId: recipeId,
+                    foodId: foodId,
+                    recipeDescription: description
+                };
+
+                console.log('Creating recipe:', recipeData);
+                const recipeResponse = await fetch(`${getApiUrl()}/api/Recipe`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(recipeData)
+                });
+
+                if (!recipeResponse.ok) {
+                    const errorText = await recipeResponse.text();
+                    throw new Error(`Recipe creation failed: ${errorText}`);
+                }
+
+                const recipeResult = await recipeResponse.json();
+                console.log('Recipe created:', recipeResult);
+
+                // Now create recipe details
+                const ingredientRows = document.querySelectorAll('#ingredientsContainer .ingredient-row');
+                const results = [];
+                
+                for (const row of ingredientRows) {
+                    const ingredientId = row.querySelector('.ingredientId').value.trim();
+                    const quantity = row.querySelector('.quantity').value.trim();
+                    const unit = row.querySelector('.unit').value.trim();
+
+                    if (ingredientId && quantity && unit) {
+                        const detailData = {
+                            recipeId: recipeId,
+                            ingreId: ingredientId,
+                            quantity: parseInt(quantity),
+                            unitMeasurement: unit
+                        };
+
+                        console.log('Creating detail:', detailData);
+                        const detailResponse = await fetch(`${getApiUrl()}/api/RecipeDetail`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(detailData)
+                        });
+
+                        if (detailResponse.ok) {
+                            const detailResult = await detailResponse.json();
+                            results.push(`✅ Added: ${ingredientId} - ${quantity}${unit}`);
+                        } else {
+                            const errorText = await detailResponse.text();
+                            results.push(`❌ Failed: ${ingredientId} - ${errorText}`);
+                        }
+                    }
+                }
+
+                const output = `Recipe Created Successfully!\n\nRecipe: ${JSON.stringify(recipeResult, null, 2)}\n\nDetails:\n${results.join('\n')}`;
+                showOutput('createOutput', output, 'success');
+
+                // Clear form
+                document.getElementById('createRecipeId').value = '';
+                document.getElementById('createFoodId').value = '';
+                document.getElementById('createDescription').value = '';
+                document.getElementById('ingredientsContainer').innerHTML = `
+                    <div class="ingredient-row">
+                        <input type="text" placeholder="Ingredient ID (e.g., I001)" class="ingredientId">
+                        <input type="number" placeholder="Quantity" class="quantity">
+                        <input type="text" placeholder="Unit (g, kg, ml)" class="unit">
+                        <button class="remove-btn" onclick="removeIngredient(this)">❌</button>
+                    </div>
+                `;
+            } catch (error) {
+                showOutput('createOutput', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function updateRecipe() {
+            const recipeId = document.getElementById('updateRecipeId').value.trim();
+            const foodId = document.getElementById('updateFoodId').value.trim();
+            const description = document.getElementById('updateDescription').value.trim();
+
+            if (!recipeId || !foodId || !description) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiUrl()}/api/Recipe/${recipeId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        recipeId: recipeId,
+                        foodId: foodId,
+                        recipeDescription: description
+                    })
+                });
+
+                if (response.ok || response.status === 204) {
+                    showOutput('updateOutput', `✅ Recipe ${recipeId} updated successfully!`, 'success');
+                } else {
+                    const errorText = await response.text();
+                    showOutput('updateOutput', `Error: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                showOutput('updateOutput', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function deleteRecipe() {
+            const recipeId = document.getElementById('deleteRecipeId').value.trim();
+            if (!recipeId) {
+                alert('Please enter Recipe ID');
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to delete recipe ${recipeId}?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiUrl()}/api/Recipe/${recipeId}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await response.json();
+                showOutput('deleteOutput', JSON.stringify(data, null, 2), response.ok ? 'success' : 'error');
+            } catch (error) {
+                showOutput('deleteOutput', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function createRecipeDetail() {
+            const recipeId = document.getElementById('detailRecipeId').value.trim();
+            const ingreId = document.getElementById('detailIngreId').value.trim();
+            const quantity = document.getElementById('detailQuantity').value.trim();
+            const unit = document.getElementById('detailUnit').value.trim();
+
+            if (!recipeId || !ingreId || !quantity || !unit) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiUrl()}/api/RecipeDetail`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        recipeId: recipeId,
+                        ingreId: ingreId,
+                        quantity: parseInt(quantity),
+                        unitMeasurement: unit
+                    })
+                });
+
+                const data = await response.json();
+                showOutput('detailOutput', JSON.stringify(data, null, 2), response.ok ? 'success' : 'error');
+            } catch (error) {
+                showOutput('detailOutput', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function deleteRecipeDetail() {
+            const recipeId = document.getElementById('detailRecipeId').value.trim();
+            const ingreId = document.getElementById('detailIngreId').value.trim();
+
+            if (!recipeId || !ingreId) {
+                alert('Please enter Recipe ID and Ingredient ID');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiUrl()}/api/RecipeDetail/${recipeId}/${ingreId}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await response.json();
+                showOutput('detailOutput', JSON.stringify(data, null, 2), response.ok ? 'success' : 'error');
+            } catch (error) {
+                showOutput('detailOutput', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function getRecipeDetails() {
+            const recipeId = document.getElementById('detailRecipeId').value.trim();
+            if (!recipeId) {
+                alert('Please enter Recipe ID');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiUrl()}/api/RecipeDetail/recipe/${recipeId}`);
+                const data = await response.json();
+                showOutput('detailOutput', JSON.stringify(data, null, 2), 'success');
+            } catch (error) {
+                showOutput('detailOutput', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        function addIngredientRow() {
+            const container = document.getElementById('ingredientsContainer');
+            const row = document.createElement('div');
+            row.className = 'ingredient-row';
+            row.innerHTML = `
+                <input type="text" placeholder="Ingredient ID (e.g., I001)" class="ingredientId">
+                <input type="number" placeholder="Quantity" class="quantity">
+                <input type="text" placeholder="Unit (g, kg, ml)" class="unit">
+                <button class="remove-btn" onclick="removeIngredient(this)">❌</button>
+            `;
+            container.appendChild(row);
+        }
+
+        function removeIngredient(button) {
+            const container = document.getElementById('ingredientsContainer');
+            if (container.children.length > 1) {
+                button.parentElement.remove();
+            } else {
+                alert('Must have at least one ingredient row');
+            }
+        }
+    </script>
+</body>
+</html>

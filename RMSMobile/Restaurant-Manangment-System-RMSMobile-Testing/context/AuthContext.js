@@ -243,6 +243,7 @@ export const AuthProvider = ({ children }) => {
     const managementItems = [
       { name: 'MenuManager', icon: 'silverware-fork-knife', title: 'Quản Lý Món Ăn', screen: 'MenuManager' },
       { name: 'IngredientManager', icon: 'package-variant', title: 'Quản Lý Nguyên Liệu', screen: 'IngredientManager' },
+      { name: 'RecipeManager', icon: 'book-open-variant', title: 'Quản Lý Công Thức', screen: 'RecipeManager' },
       { name: 'OrderDetailManager', icon: 'food-fork-drink', title: 'Trạng Thái Món Ăn', screen: 'OrderDetailManager' },
       { name: 'UserManagement', icon: 'account-group', title: 'Quản Lý Người Dùng', screen: 'UserManagement' },
     ];

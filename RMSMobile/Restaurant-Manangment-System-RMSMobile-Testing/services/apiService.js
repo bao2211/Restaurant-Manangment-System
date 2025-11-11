@@ -1542,6 +1542,42 @@ export const apiService = {
     }
   },
 
+  createRecipeDetail: async (recipeDetailData) => {
+    try {
+      console.log('Creating recipe detail:', recipeDetailData);
+      const response = await api.post('/api/RecipeDetail', recipeDetailData);
+      console.log('Create recipe detail response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating recipe detail:', error);
+      throw error;
+    }
+  },
+
+  updateRecipeDetail: async (recipeId, ingredientId, recipeDetailData) => {
+    try {
+      console.log('Updating recipe detail:', recipeId, ingredientId, recipeDetailData);
+      const response = await api.put(`/api/RecipeDetail/${recipeId}/${ingredientId}`, recipeDetailData);
+      console.log('Update recipe detail response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating recipe detail:', error);
+      throw error;
+    }
+  },
+
+  deleteRecipeDetail: async (recipeId, ingredientId) => {
+    try {
+      console.log('Deleting recipe detail:', recipeId, ingredientId);
+      const response = await api.delete(`/api/RecipeDetail/${recipeId}/${ingredientId}`);
+      console.log('Delete recipe detail response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting recipe detail:', error);
+      throw error;
+    }
+  },
+
   // Ingredient Management
   getAllIngredients: async () => {
     try {

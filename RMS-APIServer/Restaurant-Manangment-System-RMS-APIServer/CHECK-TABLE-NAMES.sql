@@ -1,0 +1,19 @@
+-- Check actual table names in database
+USE [webQLQuanAn]
+GO
+
+-- Find tables with 'Recipe' or 'Detail' in name
+SELECT 
+    TABLE_SCHEMA,
+    TABLE_NAME
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_TYPE = 'BASE TABLE'
+    AND (TABLE_NAME LIKE '%Recipe%' OR TABLE_NAME LIKE '%Detail%')
+ORDER BY TABLE_NAME;
+
+-- Also check all tables
+SELECT 
+    TABLE_NAME
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_TYPE = 'BASE TABLE'
+ORDER BY TABLE_NAME;
