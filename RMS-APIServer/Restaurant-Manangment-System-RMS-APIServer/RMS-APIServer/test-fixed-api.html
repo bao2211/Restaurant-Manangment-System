@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RMS API Test - Fixed Order History</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        button { padding: 10px 20px; margin: 5px; }
+        textarea { width: 100%; height: 200px; }
+    </style>
+</head>
+<body>
+    <h1>🍽️ Restaurant Management System - API Test</h1>
+    <p class="info">Testing the fixed Order History API logic</p>
+
+    <div class="section">
+        <h3>1. Login & Get Token</h3>
+        <button onclick="login()">Login as Admin</button>
+        <div id="loginResult"></div>
+    </div>
+
+    <div class="section">
+        <h3>2. Test Order History (Fixed Logic)</h3>
+        <button onclick="testOrderHistory()">Create Order History</button>
+        <button onclick="getOrderHistory()">Get Order History</button>
+        <div id="orderResult"></div>
+    </div>
+
+    <div class="section">
+        <h3>3. Test User Favorites</h3>
+        <button onclick="testFavorites()">Test Favorites</button>
+        <div id="favoritesResult"></div>
+    </div>
+
+    <div class="section">
+        <h3>4. Test Table Reservations</h3>
+        <button onclick="testReservations()">Test Reservations</button>
+        <div id="reservationResult"></div>
+    </div>
+
+    <div class="section">
+        <h3>Debug Output</h3>
+        <textarea id="debugOutput" readonly></textarea>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080';
+        let authToken = '';
+        let userId = '';
+
+        function log(message) {
+            const debug = document.getElementById('debugOutput');
+            debug.value += new Date().toLocaleTimeString() + ': ' + message + '\n';
+            debug.scrollTop = debug.scrollHeight;
+        }
+
+        async function apiCall(endpoint, method = 'GET', body = null) {
+            try {
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+                
+                if (authToken) {
+                    headers['Authorization'] = `Bearer ${authToken}`;
+                }
+
+                const config = {
+                    method,
+                    headers,
+                    mode: 'cors'
+                };
+
+                if (body) {
+                    config.body = JSON.stringify(body);
+                }
+
+                log(`${method} ${endpoint} - Sending request...`);
+                const response = await fetch(`${API_BASE}${endpoint}`, config);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                log(`${method} ${endpoint} - Success!`);
+                return data;
+            } catch (error) {
+                log(`${method} ${endpoint} - Error: ${error.message}`);
+                throw error;
+            }
+        }
+
+        async function login() {
+            try {
+                const result = await apiCall('/api/User/login', 'POST', {
+                    userName: 'admin',
+                    password: 'admin123'
+                });
+
+                authToken = result.token;
+                userId = result.userId;
+                
+                document.getElementById('loginResult').innerHTML = 
+                    `<div class="success">✓ Login successful!<br>
+                     User ID: ${userId}<br>
+                     Token: ${authToken.substring(0, 20)}...</div>`;
+                
+                log('Login successful - Token received');
+            } catch (error) {
+                document.getElementById('loginResult').innerHTML = 
+                    `<div class="error">✗ Login failed: ${error.message}</div>`;
+            }
+        }
+
+        async function testOrderHistory() {
+            if (!authToken) {
+                alert('Please login first');
+                return;
+            }
+
+            try {
+                // Test with various Order IDs - the fixed logic should handle non-existent orders
+                const testOrderIds = ['O001', 'O002', 'TEST001', 'ORDER123'];
+                
+                for (const orderId of testOrderIds) {
+                    try {
+                        log(`Testing Order History with Order ID: ${orderId}`);
+                        const result = await apiCall('/api/OrderHistory', 'POST', { orderId });
+                        
+                        document.getElementById('orderResult').innerHTML = 
+                            `<div class="success">✓ Order History created successfully!<br>
+                             Order ID: ${orderId}<br>
+                             Response: ${JSON.stringify(result, null, 2)}</div>`;
+                        
+                        log(`Order History created for ${orderId}`);
+                        break; // Success, exit loop
+                    } catch (error) {
+                        log(`Failed for Order ID ${orderId}: ${error.message}`);
+                        continue; // Try next ID
+                    }
+                }
+            } catch (error) {
+                document.getElementById('orderResult').innerHTML = 
+                    `<div class="error">✗ Order History test failed: ${error.message}</div>`;
+            }
+        }
+
+        async function getOrderHistory() {
+            if (!authToken) {
+                alert('Please login first');
+                return;
+            }
+
+            try {
+                const result = await apiCall('/api/OrderHistory?page=1&pageSize=10');
+                
+                document.getElementById('orderResult').innerHTML += 
+                    `<br><div class="info">📋 Order History Retrieved:<br>
+                     Count: ${result.data ? result.data.length : 'N/A'}<br>
+                     <pre>${JSON.stringify(result, null, 2)}</pre></div>`;
+                
+                log(`Retrieved ${result.data ? result.data.length : 0} order history entries`);
+            } catch (error) {
+                document.getElementById('orderResult').innerHTML += 
+                    `<br><div class="error">✗ Get Order History failed: ${error.message}</div>`;
+            }
+        }
+
+        async function testFavorites() {
+            if (!authToken) {
+                alert('Please login first');
+                return;
+            }
+
+            try {
+                // Test adding favorite
+                const testFoodIds = ['F001', 'FOOD001', '10        '];
+                
+                for (const foodId of testFoodIds) {
+                    try {
+                        log(`Testing Favorites with Food ID: ${foodId}`);
+                        const result = await apiCall(`/api/Favorites/${encodeURIComponent(foodId)}`, 'POST');
+                        
+                        document.getElementById('favoritesResult').innerHTML = 
+                            `<div class="success">✓ Favorite added successfully!<br>
+                             Food ID: ${foodId}<br>
+                             Response: ${JSON.stringify(result, null, 2)}</div>`;
+                        
+                        // Get favorites
+                        const favorites = await apiCall('/api/Favorites');
+                        document.getElementById('favoritesResult').innerHTML += 
+                            `<br><div class="info">📋 Current Favorites:<br>
+                             <pre>${JSON.stringify(favorites, null, 2)}</pre></div>`;
+                        
+                        log(`Favorites test completed for ${foodId}`);
+                        break;
+                    } catch (error) {
+                        log(`Failed for Food ID ${foodId}: ${error.message}`);
+                        continue;
+                    }
+                }
+            } catch (error) {
+                document.getElementById('favoritesResult').innerHTML = 
+                    `<div class="error">✗ Favorites test failed: ${error.message}</div>`;
+            }
+        }
+
+        async function testReservations() {
+            if (!authToken) {
+                alert('Please login first');
+                return;
+            }
+
+            try {
+                const reservationData = {
+                    tableId: 'T001',
+                    reservationDate: '2024-12-15T00:00:00Z',
+                    reservationTime: '18:30:00',
+                    partySize: 4,
+                    note: 'Test reservation from HTML'
+                };
+
+                const result = await apiCall('/api/ReservationHistory', 'POST', reservationData);
+                
+                document.getElementById('reservationResult').innerHTML = 
+                    `<div class="success">✓ Reservation created successfully!<br>
+                     Response: ${JSON.stringify(result, null, 2)}</div>`;
+                
+                // Get reservations
+                const reservations = await apiCall('/api/ReservationHistory?page=1&pageSize=10');
+                document.getElementById('reservationResult').innerHTML += 
+                    `<br><div class="info">📋 Current Reservations:<br>
+                     <pre>${JSON.stringify(reservations, null, 2)}</pre></div>`;
+                
+                log('Reservation test completed successfully');
+            } catch (error) {
+                document.getElementById('reservationResult').innerHTML = 
+                    `<div class="error">✗ Reservation test failed: ${error.message}</div>`;
+            }
+        }
+
+        // Initialize
+        log('API Test page loaded - Server should be running on localhost:8080');
+    </script>
+</body>
+</html>

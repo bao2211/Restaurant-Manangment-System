@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RMS API Authentication Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .success { background-color: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; color: #0c5460; }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background-color: #0056b3; }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        .token-display {
+            word-break: break-all;
+            max-height: 100px;
+            overflow-y: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 RMS API Authentication Test</h1>
+        <p>Test JWT authentication and auxiliary features APIs</p>
+
+        <!-- Server Status -->
+        <div class="test-section info">
+            <h3>📡 Server Status</h3>
+            <p><strong>Base URL:</strong> <span id="baseUrl">http://localhost:8080</span></p>
+            <button onclick="testServerStatus()">Test Server Connection</button>
+            <div id="serverStatus"></div>
+        </div>
+
+        <!-- Authentication Test -->
+        <div class="test-section">
+            <h3>🔑 Authentication Test</h3>
+            <div>
+                <label>Username: <input type="text" id="username" value="admin"></label><br><br>
+                <label>Password: <input type="password" id="password" value="admin123"></label><br><br>
+                <button onclick="testLogin()">Login & Get JWT Token</button>
+            </div>
+            <div id="authResult"></div>
+            <div id="tokenDisplay" class="token-display"></div>
+        </div>
+
+        <!-- API Tests -->
+        <div class="test-section">
+            <h3>🧪 API Endpoint Tests</h3>
+            <p><em>Note: Login first to get JWT token</em></p>
+            <button onclick="testFavorites()">Test Favorites API</button>
+            <button onclick="testOrderHistory()">Test Order History API</button>
+            <button onclick="testReservations()">Test Reservations API</button>
+            <div id="apiResults"></div>
+        </div>
+
+        <!-- Error Handling -->
+        <div class="test-section">
+            <h3>⚠️ Error Handling Tests</h3>
+            <button onclick="testUnauthorized()">Test Unauthorized Access</button>
+            <button onclick="testInvalidData()">Test Invalid Data</button>
+            <div id="errorResults"></div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://localhost:8080';
+        let authToken = null;
+        let currentUserId = null;
+
+        document.getElementById('baseUrl').textContent = BASE_URL;
+
+        async function makeRequest(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(authToken && { 'Authorization': `Bearer ${authToken}` }),
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                const data = await response.json();
+                return { status: response.status, data, ok: response.ok };
+            } catch (error) {
+                return { status: 0, error: error.message, ok: false };
+            }
+        }
+
+        function displayResult(elementId, title, result, isSuccess = null) {
+            const element = document.getElementById(elementId);
+            const statusClass = isSuccess === null 
+                ? (result.ok ? 'success' : 'error')
+                : (isSuccess ? 'success' : 'error');
+            
+            const statusText = result.ok ? '✅ SUCCESS' : '❌ FAILED';
+            
+            element.innerHTML = `
+                <div class="${statusClass}" style="margin-top: 10px; padding: 10px; border-radius: 4px;">
+                    <strong>${statusText}: ${title}</strong><br>
+                    <strong>Status:</strong> ${result.status}<br>
+                    <strong>Response:</strong>
+                    <pre>${JSON.stringify(result.data || result.error, null, 2)}</pre>
+                </div>
+            `;
+        }
+
+        async function testServerStatus() {
+            const result = await makeRequest(`${BASE_URL}/api`);
+            displayResult('serverStatus', 'Server Connection', result);
+        }
+
+        async function testLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            const result = await makeRequest(`${BASE_URL}/api/User/login`, {
+                method: 'POST',
+                body: JSON.stringify({ userName: username, password })
+            });
+
+            if (result.ok && result.data.token) {
+                authToken = result.data.token;
+                currentUserId = result.data.userId;
+                
+                document.getElementById('tokenDisplay').innerHTML = `
+                    <div class="success" style="padding: 10px; margin-top: 10px;">
+                        <strong>🎉 JWT Token Obtained!</strong><br>
+                        <strong>User ID:</strong> ${currentUserId}<br>
+                        <strong>Token:</strong><br>
+                        <div style="font-size: 10px; word-break: break-all;">${authToken}</div>
+                    </div>
+                `;
+            }
+
+            displayResult('authResult', 'Login Authentication', result);
+        }
+
+        async function testFavorites() {
+            if (!authToken) {
+                alert('Please login first to get authentication token!');
+                return;
+            }
+
+            const results = [];
+            
+            // Test 1: Get favorites (should be empty initially)
+            let result = await makeRequest(`${BASE_URL}/api/Favorites`);
+            results.push(`<strong>Get Favorites:</strong> ${result.status} - ${JSON.stringify(result.data)}`);
+
+            // Test 2: Add favorite
+            result = await makeRequest(`${BASE_URL}/api/Favorites/F001`, { method: 'POST' });
+            results.push(`<strong>Add Favorite:</strong> ${result.status} - ${JSON.stringify(result.data)}`);
+
+            // Test 3: Check favorite status
+            result = await makeRequest(`${BASE_URL}/api/Favorites/F001/status`);
+            results.push(`<strong>Check Status:</strong> ${result.status} - ${JSON.stringify(result.data)}`);
+
+            // Test 4: Remove favorite
+            result = await makeRequest(`${BASE_URL}/api/Favorites/F001`, { method: 'DELETE' });
+            results.push(`<strong>Remove Favorite:</strong> ${result.status} - ${JSON.stringify(result.data)}`);
+
+            document.getElementById('apiResults').innerHTML = `
+                <div class="info" style="margin-top: 10px; padding: 10px;">
+                    <strong>🍽️ Favorites API Tests:</strong><br>
+                    ${results.join('<br>')}
+                </div>
+            `;
+        }
+
+        async function testOrderHistory() {
+            if (!authToken) {
+                alert('Please login first to get authentication token!');
+                return;
+            }
+
+            const results = [];
+            
+            // Test 1: Get order history
+            let result = await makeRequest(`${BASE_URL}/api/OrderHistory?page=1&pageSize=10`);
+            results.push(`<strong>Get Order History:</strong> ${result.status} - ${JSON.stringify(result.data)}`);
+
+            // Test 2: Create order history
+            result = await makeRequest(`${BASE_URL}/api/OrderHistory`, {
+                method: 'POST',
+                body: JSON.stringify({ orderId: 'O001' })
+            });
+            results.push(`<strong>Create Order History:</strong> ${result.status} - ${JSON.stringify(result.data)}`);
+
+            document.getElementById('apiResults').innerHTML += `
+                <div class="info" style="margin-top: 10px; padding: 10px;">
+                    <strong>📋 Order History API Tests:</strong><br>
+                    ${results.join('<br>')}
+                </div>
+            `;
+        }
+
+        async function testReservations() {
+            if (!authToken) {
+                alert('Please login first to get authentication token!');
+                return;
+            }
+
+            const results = [];
+            
+            // Test 1: Get reservations
+            let result = await makeRequest(`${BASE_URL}/api/ReservationHistory?page=1&pageSize=10`);
+            results.push(`<strong>Get Reservations:</strong> ${result.status} - ${JSON.stringify(result.data)}`);
+
+            // Test 2: Create reservation
+            const reservationData = {
+                tableId: 'T001',
+                reservationDate: '2024-12-15T00:00:00Z',
+                reservationTime: '18:30:00',
+                partySize: 4,
+                note: 'HTML test reservation'
+            };
+            
+            result = await makeRequest(`${BASE_URL}/api/ReservationHistory`, {
+                method: 'POST',
+                body: JSON.stringify(reservationData)
+            });
+            results.push(`<strong>Create Reservation:</strong> ${result.status} - ${JSON.stringify(result.data)}`);
+
+            document.getElementById('apiResults').innerHTML += `
+                <div class="info" style="margin-top: 10px; padding: 10px;">
+                    <strong>🪑 Reservation API Tests:</strong><br>
+                    ${results.join('<br>')}
+                </div>
+            `;
+        }
+
+        async function testUnauthorized() {
+            // Test without token
+            const originalToken = authToken;
+            authToken = null;
+            
+            const result = await makeRequest(`${BASE_URL}/api/Favorites`);
+            
+            authToken = originalToken; // Restore token
+            
+            displayResult('errorResults', 'Unauthorized Access (Expected 401)', result, !result.ok && result.status === 401);
+        }
+
+        async function testInvalidData() {
+            if (!authToken) {
+                alert('Please login first!');
+                return;
+            }
+
+            const result = await makeRequest(`${BASE_URL}/api/Favorites/INVALID_FOOD_ID`, { method: 'POST' });
+            
+            document.getElementById('errorResults').innerHTML += `
+                <div class="error" style="margin-top: 10px; padding: 10px;">
+                    <strong>Invalid Data Test:</strong><br>
+                    Status: ${result.status}<br>
+                    Response: <pre>${JSON.stringify(result.data || result.error, null, 2)}</pre>
+                </div>
+            `;
+        }
+
+        // Auto-test server status on page load
+        window.onload = () => {
+            testServerStatus();
+        };
+    </script>
+</body>
+</html>

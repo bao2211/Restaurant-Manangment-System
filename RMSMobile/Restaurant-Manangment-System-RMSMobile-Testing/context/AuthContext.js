@@ -14,7 +14,15 @@ export const AuthProvider = ({ children }) => {
       try {
         const storedUser = await AsyncStorage.getItem('user');
         if (storedUser) {
-          setUser(JSON.parse(storedUser));
+          const userData = JSON.parse(storedUser);
+          
+          // Set auth token if available
+          if (userData.token) {
+            apiService.setAuthToken(userData.token);
+            console.log('🔑 JWT token restored from storage');
+          }
+          
+          setUser(userData);
         }
       } catch (error) {
         console.log('Load user error:', error);
@@ -29,6 +37,12 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await apiService.login({ username, password });
       if (response && response.userId) {
+        // Set auth token if provided
+        if (response.token) {
+          apiService.setAuthToken(response.token);
+          console.log('🔑 JWT token set for authenticated requests');
+        }
+        
         setUser(response);
         await AsyncStorage.setItem('user', JSON.stringify(response)); // Save user
         return true;
@@ -44,6 +58,10 @@ export const AuthProvider = ({ children }) => {
 
   // Logout function
   const logout = async () => {
+    // Remove auth token
+    apiService.setAuthToken(null);
+    console.log('🚪 Auth token removed on logout');
+    
     setUser(null);
     await AsyncStorage.removeItem('user'); // xóa user khi logout
   };
@@ -177,9 +195,9 @@ export const AuthProvider = ({ children }) => {
     const userRole = getUserRole();
     console.log('Checking access for role:', userRole, 'to screen:', screenName);
     
-    // Admin has access to everything
+    // Admin has access to everything except Favorites
     if (userRole === 'Admin' || userRole === 'admin' || userRole === 'ADMIN') {
-      return true;
+      return screenName !== 'Favorites';
     }
 
     // Define role permissions based on the requirements
@@ -188,12 +206,12 @@ export const AuthProvider = ({ children }) => {
       'nv': ['Home', 'Table', 'Menu', 'Orders', 'OrderDetail', 'Profile'], // lowercase variant
       'TN': ['Home', 'Orders', 'Bill', 'BillManager', 'Profile'],
       'tn': ['Home', 'Orders', 'Bill', 'BillManager', 'Profile'], // lowercase variant
-      'Bep': ['Home', 'Menu', 'OrderDetailManager', 'Profile'],  
+      'Bep': ['Home', 'Menu', 'OrderDetailManager', 'Profile'],
       'bep': ['Home', 'Menu', 'OrderDetailManager', 'Profile'], // lowercase variant
       'BEP': ['Home', 'Menu', 'OrderDetailManager', 'Profile'], // uppercase variant
-      'Customer': ['Home', 'Menu', 'Profile'],
-      'customer': ['Home', 'Menu', 'Profile'], // lowercase variant
-      'CUSTOMER': ['Home', 'Menu', 'Profile'], // uppercase variant
+      'Customer': ['Home', 'Menu', 'Favorites', 'Profile'],
+      'customer': ['Home', 'Menu', 'Favorites', 'Profile'], // lowercase variant
+      'CUSTOMER': ['Home', 'Menu', 'Favorites', 'Profile'], // uppercase variant
     };
 
     const allowedScreens = rolePermissions[userRole] || ['Home', 'Profile']; // Default fallback
@@ -213,6 +231,7 @@ export const AuthProvider = ({ children }) => {
       { name: 'Home', icon: 'home', title: 'Home', screen: 'Home' },
       { name: 'Menu', icon: 'food', title: 'Our Menu', screen: 'Menu' },
       { name: 'Orders', icon: 'clipboard-list', title: 'My Orders', screen: 'Orders' },
+      { name: 'Favorites', icon: 'heart', title: 'Món Yêu Thích', screen: 'Favorites' },
       { name: 'OrderDetail', icon: 'clipboard-text', title: 'Order Details', screen: 'OrderDetail' },
       { name: 'Table', icon: 'table-chair', title: 'Our Table', screen: 'Table' },
       { name: 'Bill', icon: 'file-document', title: 'Our Bill', screen: 'Bill' },

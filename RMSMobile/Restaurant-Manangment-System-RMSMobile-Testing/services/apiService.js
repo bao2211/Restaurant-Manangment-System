@@ -1700,6 +1700,173 @@ export const apiService = {
       throw error;
     }
   },
+
+  // ============= USER FAVORITES API METHODS =============
+  
+  // Get user's favorite foods
+  getFavorites: async () => {
+    try {
+      console.log('Fetching user favorites...');
+      const response = await api.get('/api/Favorites');
+      console.log('Favorites response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching favorites:', error);
+      throw error;
+    }
+  },
+
+  // Add food to favorites
+  addFavorite: async (foodId) => {
+    try {
+      console.log('Adding favorite:', foodId);
+      const response = await api.post(`/api/Favorites/${foodId}`);
+      console.log('Add favorite response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error adding favorite:', error);
+      throw error;
+    }
+  },
+
+  // Remove food from favorites
+  removeFavorite: async (foodId) => {
+    try {
+      console.log('Removing favorite:', foodId);
+      const response = await api.delete(`/api/Favorites/${foodId}`);
+      console.log('Remove favorite response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error removing favorite:', error);
+      throw error;
+    }
+  },
+
+  // Check if food is favorited
+  getFavoriteStatus: async (foodId) => {
+    try {
+      console.log('Checking favorite status:', foodId);
+      const response = await api.get(`/api/Favorites/${foodId}/status`);
+      console.log('Favorite status response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error checking favorite status:', error);
+      throw error;
+    }
+  },
+
+  // ============= ORDER HISTORY API METHODS =============
+  
+  // Get user's order history with pagination
+  getOrderHistory: async (page = 1, pageSize = 20) => {
+    try {
+      console.log('Fetching order history...', { page, pageSize });
+      const response = await api.get(`/api/OrderHistory?page=${page}&pageSize=${pageSize}`);
+      console.log('Order history response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching order history:', error);
+      throw error;
+    }
+  },
+
+  // Get specific order history by ID
+  getOrderHistoryById: async (historyId) => {
+    try {
+      console.log('Fetching order history by ID:', historyId);
+      const response = await api.get(`/api/OrderHistory/${historyId}`);
+      console.log('Order history by ID response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching order history by ID:', error);
+      throw error;
+    }
+  },
+
+  // Create order history entry
+  createOrderHistory: async (orderId) => {
+    try {
+      console.log('Creating order history entry:', orderId);
+      const response = await api.post('/api/OrderHistory', { orderId });
+      console.log('Create order history response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating order history:', error);
+      throw error;
+    }
+  },
+
+  // ============= TABLE RESERVATION HISTORY API METHODS =============
+  
+  // Get user's reservation history with pagination
+  getReservationHistory: async (page = 1, pageSize = 20) => {
+    try {
+      console.log('Fetching reservation history...', { page, pageSize });
+      const response = await api.get(`/api/ReservationHistory?page=${page}&pageSize=${pageSize}`);
+      console.log('Reservation history response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching reservation history:', error);
+      throw error;
+    }
+  },
+
+  // Get specific reservation history by ID
+  getReservationHistoryById: async (reservationId) => {
+    try {
+      console.log('Fetching reservation history by ID:', reservationId);
+      const response = await api.get(`/api/ReservationHistory/${reservationId}`);
+      console.log('Reservation history by ID response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching reservation history by ID:', error);
+      throw error;
+    }
+  },
+
+  // Create a new table reservation
+  createReservation: async (reservationData) => {
+    try {
+      console.log('Creating reservation:', reservationData);
+      const response = await api.post('/api/ReservationHistory', reservationData);
+      console.log('Create reservation response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating reservation:', error);
+      throw error;
+    }
+  },
+
+  // Cancel a reservation
+  cancelReservation: async (reservationId) => {
+    try {
+      console.log('Cancelling reservation:', reservationId);
+      const response = await api.put(`/api/ReservationHistory/${reservationId}/cancel`);
+      console.log('Cancel reservation response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error cancelling reservation:', error);
+      throw error;
+    }
+  },
+
+  // ============= AUTHENTICATION UTILITIES =============
+  
+  // Set JWT token for authenticated requests
+  setAuthToken: (token) => {
+    if (token) {
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      console.log('✅ Auth token set in API headers');
+    } else {
+      delete api.defaults.headers.common['Authorization'];
+      console.log('🚫 Auth token removed from API headers');
+    }
+  },
+
+  // Get current auth token
+  getAuthToken: () => {
+    return api.defaults.headers.common['Authorization'];
+  },
 };
 
 // Helper function to generate category icons based on category name

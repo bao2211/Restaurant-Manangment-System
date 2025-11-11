@@ -21,6 +21,8 @@ import MenuScreen from "./screens/MenuScreen";
 import OrdersScreen from "./screens/OrdersScreen";
 import OrderDetailScreen from "./screens/OrderDetailScreen";
 import ProfileScreen from "./screens/ProfileScreen";
+import FavoritesScreen from "./screens/FavoritesScreen";
+import CartScreen from "./screens/CartScreen";
 import LoginScreen from "./screens/LoginScreen";
 import ChangePasswordScreen from "./screens/ChangePasswordScreen";
 import UpdateInformationScreen from "./screens/UpdateInformationScreen";
@@ -29,6 +31,7 @@ import RegisterScreen from "./screens/RegisterScreen";
 // context
 import { AuthProvider, AuthContext } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
+import { CartProvider, useCart } from "./context/CartContext";
 import TableScreen from './screens/TableScreen';
 import BillScreen from './screens/BillScreen';
 import BillManagerScreen from './screens/BillManagerScreen';
@@ -95,11 +98,33 @@ function ProtectedScreen({ children, screenName, fallbackScreen = 'Home' }) {
   return children;
 }
 
+// Cart Header Button Component
+function CartHeaderButton({ navigation }) {
+  const { getTotalItems } = useCart();
+  const totalItems = getTotalItems();
+
+  return (
+    <TouchableOpacity
+      style={styles.cartButton}
+      onPress={() => navigation.navigate('Cart')}
+    >
+      <MaterialCommunityIcons name="cart" size={24} color="white" />
+      {totalItems > 0 && (
+        <View style={styles.cartBadge}>
+          <Text style={styles.cartBadgeText}>
+            {totalItems > 99 ? '99+' : totalItems}
+          </Text>
+        </View>
+      )}
+    </TouchableOpacity>
+  );
+}
+
 // Main App Stack with Hamburger Menu
 function MainAppStack({ openSidebar }) {
   return (
     <Stack.Navigator
-      screenOptions={{
+      screenOptions={({ navigation }) => ({
         headerStyle: {
           backgroundColor: '#2C3E50',
         },
@@ -116,7 +141,8 @@ function MainAppStack({ openSidebar }) {
             <MaterialCommunityIcons name="menu" size={24} color="white" />
           </TouchableOpacity>
         ),
-      }}
+        headerRight: () => <CartHeaderButton navigation={navigation} />,
+      })}
     >
       <Stack.Screen 
         name="Home" 
@@ -217,6 +243,26 @@ function MainAppStack({ openSidebar }) {
         )}
       </Stack.Screen>
       <Stack.Screen 
+        name="Favorites" 
+        options={{ 
+          headerTitle: 'Món Yêu Thích',
+        }}
+      >
+        {(props) => (
+          <ProtectedScreen screenName="Favorites">
+            <FavoritesScreen {...props} />
+          </ProtectedScreen>
+        )}
+      </Stack.Screen>
+      <Stack.Screen 
+        name="Cart" 
+        component={CartScreen}
+        options={{ 
+          headerTitle: 'Giỏ Hàng',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen 
         name="MenuManager" 
         options={{ 
           headerTitle: 'Quản Lý Món Ăn',
@@ -294,6 +340,8 @@ function MainAppStack({ openSidebar }) {
 function CustomSidebarMenu({ visible, onClose }) {
   const slideAnim = React.useRef(new Animated.Value(-SIDEBAR_WIDTH)).current;
   const { user, getUserRole, getAccessibleMenuItems } = useContext(AuthContext);
+  const { getTotalItems } = useCart();
+  const totalItems = getTotalItems();
 
   React.useEffect(() => {
     if (visible) {
@@ -323,7 +371,9 @@ function CustomSidebarMenu({ visible, onClose }) {
   const menuItems = [
     { name: 'Home', icon: 'home', title: 'Home', screen: 'Home' },
     { name: 'Menu', icon: 'food', title: 'Our Menu', screen: 'Menu' },
+    { name: 'Cart', icon: 'cart', title: 'Giỏ Hàng', screen: 'Cart' },
     { name: 'Orders', icon: 'clipboard-list', title: 'My Orders', screen: 'Orders' },
+    { name: 'Favorites', icon: 'heart', title: 'Món Yêu Thích', screen: 'Favorites' },
     { name: 'OrderDetail', icon: 'clipboard-text', title: 'Order Details', screen: 'OrderDetail' },
     { name: 'Table', icon: 'table-chair', title: 'Our Table', screen: 'Table' },
     { name: 'Bill', icon: 'file-document', title: 'Our Bill', screen: 'Bill' },
@@ -384,7 +434,16 @@ function CustomSidebarMenu({ visible, onClose }) {
                         style={styles.sidebarItem}
                         onPress={() => handleMenuItemPress(item.screen)}
                       >
-                        <MaterialCommunityIcons name={item.icon} size={24} color="#2C3E50" />
+                        <View style={{ position: 'relative' }}>
+                          <MaterialCommunityIcons name={item.icon} size={24} color="#2C3E50" />
+                          {item.name === 'Cart' && totalItems > 0 && (
+                            <View style={styles.sidebarCartBadge}>
+                              <Text style={styles.sidebarCartBadgeText}>
+                                {totalItems > 99 ? '99+' : totalItems}
+                              </Text>
+                            </View>
+                          )}
+                        </View>
                         <Text style={styles.sidebarItemText}>{item.title}</Text>
                         <MaterialCommunityIcons name="chevron-right" size={20} color="#BDC3C7" />
                       </TouchableOpacity>
@@ -522,6 +581,45 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     padding: 5,
   },
+  cartButton: {
+    marginRight: 15,
+    padding: 5,
+    position: 'relative',
+  },
+  cartBadge: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    backgroundColor: '#E74C3C',
+    borderRadius: 10,
+    minWidth: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'white',
+  },
+  cartBadgeText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  sidebarCartBadge: {
+    position: 'absolute',
+    top: -8,
+    right: -8,
+    backgroundColor: '#E74C3C',
+    borderRadius: 8,
+    minWidth: 16,
+    height: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  sidebarCartBadgeText: {
+    color: 'white',
+    fontSize: 10,
+    fontWeight: 'bold',
+  },
   userRoleText: {
     color: '#BDC3C7',
     fontSize: 12,
@@ -590,12 +688,14 @@ function AppContainer() {
 export default function App() {
   return (
     <AuthProvider>
-      <ToastProvider>
-        <NavigationContainer>
-          <StatusBar style="auto" />
-          <AppContainer />
-        </NavigationContainer>
-      </ToastProvider>
+      <CartProvider>
+        <ToastProvider>
+          <NavigationContainer>
+            <StatusBar style="auto" />
+            <AppContainer />
+          </NavigationContainer>
+        </ToastProvider>
+      </CartProvider>
     </AuthProvider>
   );
 }
