@@ -1,199 +1,282 @@
 "shadow*" style props are deprecated. Use "boxShadow". <anonymous code>:1:147461
 "textShadow*" style props are deprecated. Use "textShadow". <anonymous code>:1:147461
 props.pointerEvents is deprecated. Use style.pointerEvents Component Stack: 
-    Choo 4
+    View Choo
+    NativeScreen bundle.js:60343
+    createAnimatedComponent bundle.js:71882
+    MaybeScreen bundle.js:12327
     div unknown:0
-    Choo 2
+    View Choo
+    MaybeScreenContainer bundle.js:12317
     div unknown:0
-    Choo 4
+    View Choo
+    Background bundle.js:7880
+    CardStack bundle.js:13308
+    SafeAreaFrameProvider bundle.js:8831
     div unknown:0
-    Choo 4
+    View Choo
+    NativeSafeAreaProvider bundle.js:59992
+    SafeAreaProvider bundle.js:60150
+    SafeAreaProviderCompat bundle.js:8812
     div unknown:0
-    Choo 4
-    node_modules bundle.js:5574
-    Choo 9
+    View Choo
+    StackView bundle.js:13706
+    PreventRemoveProvider bundle.js:4405
+    NavigationContent bundle.js:5833
+    node_modules bundle.js:5844
+    StackNavigator bundle.js:11439
+    MainAppStack bundle.js:157
+    Choo 7
     App unknown:0
     withDevTools(App) unknown:0
 <anonymous code>:1:147461
-Getting accessible menu items for role: Customer bundle.js:1357:13
-Checking access for role: Customer to screen: Home bundle.js:1333:13
-Role Customer access to Home: GRANTED bundle.js:1351:13
+Getting accessible menu items for role: Customer bundle.js:1373:13
+Checking access for role: Customer to screen: Home bundle.js:1349:13
+Role Customer access to Home: GRANTED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Home (Home) - Access: YES bundle.js:1427:15
-Checking access for role: Customer to screen: Menu bundle.js:1333:13
-Role Customer access to Menu: GRANTED bundle.js:1351:13
+bundle.js:1368:13
+Menu item Home (Home) - Access: YES bundle.js:1443:15
+Checking access for role: Customer to screen: Menu bundle.js:1349:13
+Role Customer access to Menu: GRANTED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Menu (Menu) - Access: YES bundle.js:1427:15
-Checking access for role: Customer to screen: Orders bundle.js:1333:13
-Role Customer access to Orders: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Menu item Menu (Menu) - Access: YES bundle.js:1443:15
+Checking access for role: Customer to screen: Orders bundle.js:1349:13
+Role Customer access to Orders: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Orders (Orders) - Access: NO bundle.js:1427:15
-Checking access for role: Customer to screen: OrderDetail bundle.js:1333:13
-Role Customer access to OrderDetail: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Menu item Orders (Orders) - Access: NO bundle.js:1443:15
+Checking access for role: Customer to screen: OrderDetail bundle.js:1349:13
+Role Customer access to OrderDetail: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item OrderDetail (OrderDetail) - Access: NO bundle.js:1427:15
-Checking access for role: Customer to screen: Table bundle.js:1333:13
-Role Customer access to Table: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Menu item OrderDetail (OrderDetail) - Access: NO bundle.js:1443:15
+Checking access for role: Customer to screen: Table bundle.js:1349:13
+Role Customer access to Table: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Table (Table) - Access: NO bundle.js:1427:15
-Checking access for role: Customer to screen: Bill bundle.js:1333:13
-Role Customer access to Bill: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Menu item Table (Table) - Access: NO bundle.js:1443:15
+Checking access for role: Customer to screen: Bill bundle.js:1349:13
+Role Customer access to Bill: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Bill (Bill) - Access: NO bundle.js:1427:15
-Checking access for role: Customer to screen: BillManager bundle.js:1333:13
-Role Customer access to BillManager: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Menu item Bill (Bill) - Access: NO bundle.js:1443:15
+Checking access for role: Customer to screen: BillManager bundle.js:1349:13
+Role Customer access to BillManager: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item BillManager (BillManager) - Access: NO bundle.js:1427:15
-Checking access for role: Customer to screen: Report bundle.js:1333:13
-Role Customer access to Report: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Menu item BillManager (BillManager) - Access: NO bundle.js:1443:15
+Checking access for role: Customer to screen: Report bundle.js:1349:13
+Role Customer access to Report: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Report (Report) - Access: NO bundle.js:1427:15
-Checking access for role: Customer to screen: Profile bundle.js:1333:13
-Role Customer access to Profile: GRANTED bundle.js:1351:13
+bundle.js:1368:13
+Menu item Report (Report) - Access: NO bundle.js:1443:15
+Checking access for role: Customer to screen: Profile bundle.js:1349:13
+Role Customer access to Profile: GRANTED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Profile (Profile) - Access: YES bundle.js:1427:15
-Checking access for role: Customer to screen: MenuManager bundle.js:1333:13
-Role Customer access to MenuManager: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Menu item Profile (Profile) - Access: YES bundle.js:1443:15
+Checking access for role: Customer to screen: MenuManager bundle.js:1349:13
+Role Customer access to MenuManager: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Management item MenuManager (MenuManager) - Access: NO bundle.js:1432:15
-Checking access for role: Customer to screen: IngredientManager bundle.js:1333:13
-Role Customer access to IngredientManager: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Management item MenuManager (MenuManager) - Access: NO bundle.js:1448:15
+Checking access for role: Customer to screen: IngredientManager bundle.js:1349:13
+Role Customer access to IngredientManager: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Management item IngredientManager (IngredientManager) - Access: NO bundle.js:1432:15
-Checking access for role: Customer to screen: OrderDetailManager bundle.js:1333:13
-Role Customer access to OrderDetailManager: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Management item IngredientManager (IngredientManager) - Access: NO bundle.js:1448:15
+Checking access for role: Customer to screen: OrderDetailManager bundle.js:1349:13
+Role Customer access to OrderDetailManager: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Management item OrderDetailManager (OrderDetailManager) - Access: NO bundle.js:1432:15
-Checking access for role: Customer to screen: UserManagement bundle.js:1333:13
-Role Customer access to UserManagement: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Management item OrderDetailManager (OrderDetailManager) - Access: NO bundle.js:1448:15
+Checking access for role: Customer to screen: UserManagement bundle.js:1349:13
+Role Customer access to UserManagement: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Management item UserManagement (UserManagement) - Access: NO bundle.js:1432:15
-Final accessible items - Main: 3, Management: 0 bundle.js:1435:13
-CustomSidebarMenu - Current user role: Customer bundle.js:425:11
-CustomSidebarMenu - Accessible main menu items: 3 bundle.js:426:11
-CustomSidebarMenu - Accessible management menu items: 0 bundle.js:427:11
+bundle.js:1368:13
+Management item UserManagement (UserManagement) - Access: NO bundle.js:1448:15
+Final accessible items - Main: 3, Management: 0 bundle.js:1451:13
+CustomSidebarMenu - Current user role: Customer bundle.js:430:11
+CustomSidebarMenu - Accessible main menu items: 3 bundle.js:431:11
+CustomSidebarMenu - Accessible management menu items: 0 bundle.js:432:11
+🔄 Fetching dashboard data... bundle.js:90292:17
+❌ Error fetching dashboard data: TypeError: can't access property "getAllOrders", _services_apiService__WEBPACK_IMPORTED_MODULE_15__.apiService.orders is undefined
+    _ref2 bundle.js:90293
+    asyncGeneratorStep bundle.js:1932
+    _next bundle.js:1946
+    node_modules bundle.js:1951
+    node_modules bundle.js:1943
+    fetchDashboardData bundle.js:90393
+    HomeScreen bundle.js:90487
+    commitHookEffectListMount bundle.js:52284
+    commitPassiveMountOnFiber bundle.js:54060
+    commitPassiveMountEffects_complete bundle.js:54025
+    commitPassiveMountEffects_begin bundle.js:54012
+    commitPassiveMountEffects bundle.js:54000
+    flushPassiveEffectsImpl bundle.js:56173
+    flushPassiveEffects bundle.js:56118
+    performSyncWorkOnRoot bundle.js:55210
+    flushSyncCallbacks bundle.js:41180
+    commitRootImpl bundle.js:56093
+    commitRoot bundle.js:55816
+    finishConcurrentRender bundle.js:55115
+    performConcurrentWorkOnRoot bundle.js:54943
+    React 3
+ Component Stack: 
+    HomeScreen bundle.js:90189
+    StaticContainer bundle.js:4605
+    EnsureSingleNavigator Choo
+    SceneView bundle.js:4495
+    div unknown:0
+    View Choo
+    div unknown:0
+    View Choo
+    div unknown:0
+    View Choo
+    CardSheet bundle.js:13140
+    div unknown:0
+    View Choo
+    createAnimatedComponent bundle.js:71882
+    Dummy bundle.js:11805
+    div unknown:0
+    View Choo
+    createAnimatedComponent bundle.js:71882
+    div unknown:0
+    View Choo
+    Card bundle.js:12434
+    CardContainer bundle.js:12879
+    div unknown:0
+    View Choo
+    NativeScreen bundle.js:60343
+    createAnimatedComponent bundle.js:71882
+    MaybeScreen bundle.js:12327
+    div unknown:0
+    View Choo
+    MaybeScreenContainer bundle.js:12317
+    div unknown:0
+    View Choo
+    Background bundle.js:7880
+    CardStack bundle.js:13308
+    SafeAreaFrameProvider bundle.js:8831
+    div unknown:0
+    View Choo
+    NativeSafeAreaProvider bundle.js:59992
+    SafeAreaProvider bundle.js:60150
+    SafeAreaProviderCompat bundle.js:8812
+    div unknown:0
+    View Choo
+    StackView bundle.js:13706
+    PreventRemoveProvider bundle.js:4405
+    NavigationContent bundle.js:5833
+    node_modules bundle.js:5844
+    StackNavigator bundle.js:11439
+    MainAppStack bundle.js:157
+    Choo 7
+    App unknown:0
+    withDevTools(App) unknown:0
+<anonymous code>:1:147461
 Animated: `useNativeDriver` is not supported because the native animated module is missing. Falling back to JS-based animation. To resolve this, add `RCTAnimation` module to this app, or remove `useNativeDriver`. Make sure to run `bundle exec pod install` first. Read more about autolinking: https://github.com/react-native-community/cli/blob/master/docs/autolinking.md Component Stack: 
     Choo 8
     App unknown:0
     withDevTools(App) unknown:0
 <anonymous code>:1:147461
-Source map error: Error: JSON.parse: unexpected character at line 1 column 1 of the JSON data
-Stack in the worker:parseSourceMapInput@resource://devtools/client/shared/vendor/source-map/lib/util.js:163:15
-_factory@resource://devtools/client/shared/vendor/source-map/lib/source-map-consumer.js:1069:22
-SourceMapConsumer@resource://devtools/client/shared/vendor/source-map/lib/source-map-consumer.js:26:12
-_fetch@resource://devtools/client/shared/source-map-loader/utils/fetchSourceMap.js:83:19
-
-Resource URL: http://localhost:19006/%3Canonymous%20code%3E
-Source Map URL: installHook.js.map
-Getting accessible menu items for role: Customer bundle.js:1357:13
-Checking access for role: Customer to screen: Home bundle.js:1333:13
-Role Customer access to Home: GRANTED bundle.js:1351:13
+Getting accessible menu items for role: Customer bundle.js:1373:13
+Checking access for role: Customer to screen: Home bundle.js:1349:13
+Role Customer access to Home: GRANTED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Home (Home) - Access: YES bundle.js:1427:15
-Checking access for role: Customer to screen: Menu bundle.js:1333:13
-Role Customer access to Menu: GRANTED bundle.js:1351:13
+bundle.js:1368:13
+Menu item Home (Home) - Access: YES bundle.js:1443:15
+Checking access for role: Customer to screen: Menu bundle.js:1349:13
+Role Customer access to Menu: GRANTED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Menu (Menu) - Access: YES bundle.js:1427:15
-Checking access for role: Customer to screen: Orders bundle.js:1333:13
-Role Customer access to Orders: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Menu item Menu (Menu) - Access: YES bundle.js:1443:15
+Checking access for role: Customer to screen: Orders bundle.js:1349:13
+Role Customer access to Orders: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Orders (Orders) - Access: NO bundle.js:1427:15
-Checking access for role: Customer to screen: OrderDetail bundle.js:1333:13
-Role Customer access to OrderDetail: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Menu item Orders (Orders) - Access: NO bundle.js:1443:15
+Checking access for role: Customer to screen: OrderDetail bundle.js:1349:13
+Role Customer access to OrderDetail: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item OrderDetail (OrderDetail) - Access: NO bundle.js:1427:15
-Checking access for role: Customer to screen: Table bundle.js:1333:13
-Role Customer access to Table: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Menu item OrderDetail (OrderDetail) - Access: NO bundle.js:1443:15
+Checking access for role: Customer to screen: Table bundle.js:1349:13
+Role Customer access to Table: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Table (Table) - Access: NO bundle.js:1427:15
-Checking access for role: Customer to screen: Bill bundle.js:1333:13
-Role Customer access to Bill: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Menu item Table (Table) - Access: NO bundle.js:1443:15
+Checking access for role: Customer to screen: Bill bundle.js:1349:13
+Role Customer access to Bill: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Bill (Bill) - Access: NO bundle.js:1427:15
-Checking access for role: Customer to screen: BillManager bundle.js:1333:13
-Role Customer access to BillManager: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Menu item Bill (Bill) - Access: NO bundle.js:1443:15
+Checking access for role: Customer to screen: BillManager bundle.js:1349:13
+Role Customer access to BillManager: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item BillManager (BillManager) - Access: NO bundle.js:1427:15
-Checking access for role: Customer to screen: Report bundle.js:1333:13
-Role Customer access to Report: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Menu item BillManager (BillManager) - Access: NO bundle.js:1443:15
+Checking access for role: Customer to screen: Report bundle.js:1349:13
+Role Customer access to Report: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Report (Report) - Access: NO bundle.js:1427:15
-Checking access for role: Customer to screen: Profile bundle.js:1333:13
-Role Customer access to Profile: GRANTED bundle.js:1351:13
+bundle.js:1368:13
+Menu item Report (Report) - Access: NO bundle.js:1443:15
+Checking access for role: Customer to screen: Profile bundle.js:1349:13
+Role Customer access to Profile: GRANTED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Profile (Profile) - Access: YES bundle.js:1427:15
-Checking access for role: Customer to screen: MenuManager bundle.js:1333:13
-Role Customer access to MenuManager: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Menu item Profile (Profile) - Access: YES bundle.js:1443:15
+Checking access for role: Customer to screen: MenuManager bundle.js:1349:13
+Role Customer access to MenuManager: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Management item MenuManager (MenuManager) - Access: NO bundle.js:1432:15
-Checking access for role: Customer to screen: IngredientManager bundle.js:1333:13
-Role Customer access to IngredientManager: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Management item MenuManager (MenuManager) - Access: NO bundle.js:1448:15
+Checking access for role: Customer to screen: IngredientManager bundle.js:1349:13
+Role Customer access to IngredientManager: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Management item IngredientManager (IngredientManager) - Access: NO bundle.js:1432:15
-Checking access for role: Customer to screen: OrderDetailManager bundle.js:1333:13
-Role Customer access to OrderDetailManager: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Management item IngredientManager (IngredientManager) - Access: NO bundle.js:1448:15
+Checking access for role: Customer to screen: OrderDetailManager bundle.js:1349:13
+Role Customer access to OrderDetailManager: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Management item OrderDetailManager (OrderDetailManager) - Access: NO bundle.js:1432:15
-Checking access for role: Customer to screen: UserManagement bundle.js:1333:13
-Role Customer access to UserManagement: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Management item OrderDetailManager (OrderDetailManager) - Access: NO bundle.js:1448:15
+Checking access for role: Customer to screen: UserManagement bundle.js:1349:13
+Role Customer access to UserManagement: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Management item UserManagement (UserManagement) - Access: NO bundle.js:1432:15
-Final accessible items - Main: 3, Management: 0 bundle.js:1435:13
-CustomSidebarMenu - Current user role: Customer bundle.js:425:11
-CustomSidebarMenu - Accessible main menu items: 3 bundle.js:426:11
-CustomSidebarMenu - Accessible management menu items: 0 bundle.js:427:11
+bundle.js:1368:13
+Management item UserManagement (UserManagement) - Access: NO bundle.js:1448:15
+Final accessible items - Main: 3, Management: 0 bundle.js:1451:13
+CustomSidebarMenu - Current user role: Customer bundle.js:430:11
+CustomSidebarMenu - Accessible main menu items: 3 bundle.js:431:11
+CustomSidebarMenu - Accessible management menu items: 0 bundle.js:432:11
 TouchableWithoutFeedback is deprecated. Please use Pressable. Component Stack: 
     TouchableWithoutFeedback Choo
     div unknown:0
@@ -207,453 +290,179 @@ TouchableWithoutFeedback is deprecated. Please use Pressable. Component Stack:
     App unknown:0
     withDevTools(App) unknown:0
 <anonymous code>:1:147461
-Getting accessible menu items for role: Customer bundle.js:1357:13
-Checking access for role: Customer to screen: Home bundle.js:1333:13
-Role Customer access to Home: GRANTED bundle.js:1351:13
+Getting accessible menu items for role: Customer bundle.js:1373:13
+Checking access for role: Customer to screen: Home bundle.js:1349:13
+Role Customer access to Home: GRANTED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Home (Home) - Access: YES bundle.js:1427:15
-Checking access for role: Customer to screen: Menu bundle.js:1333:13
-Role Customer access to Menu: GRANTED bundle.js:1351:13
+bundle.js:1368:13
+Menu item Home (Home) - Access: YES bundle.js:1443:15
+Checking access for role: Customer to screen: Menu bundle.js:1349:13
+Role Customer access to Menu: GRANTED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Menu (Menu) - Access: YES bundle.js:1427:15
-Checking access for role: Customer to screen: Orders bundle.js:1333:13
-Role Customer access to Orders: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Menu item Menu (Menu) - Access: YES bundle.js:1443:15
+Checking access for role: Customer to screen: Orders bundle.js:1349:13
+Role Customer access to Orders: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Orders (Orders) - Access: NO bundle.js:1427:15
-Checking access for role: Customer to screen: OrderDetail bundle.js:1333:13
-Role Customer access to OrderDetail: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Menu item Orders (Orders) - Access: NO bundle.js:1443:15
+Checking access for role: Customer to screen: OrderDetail bundle.js:1349:13
+Role Customer access to OrderDetail: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item OrderDetail (OrderDetail) - Access: NO bundle.js:1427:15
-Checking access for role: Customer to screen: Table bundle.js:1333:13
-Role Customer access to Table: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Menu item OrderDetail (OrderDetail) - Access: NO bundle.js:1443:15
+Checking access for role: Customer to screen: Table bundle.js:1349:13
+Role Customer access to Table: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Table (Table) - Access: NO bundle.js:1427:15
-Checking access for role: Customer to screen: Bill bundle.js:1333:13
-Role Customer access to Bill: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Menu item Table (Table) - Access: NO bundle.js:1443:15
+Checking access for role: Customer to screen: Bill bundle.js:1349:13
+Role Customer access to Bill: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Bill (Bill) - Access: NO bundle.js:1427:15
-Checking access for role: Customer to screen: BillManager bundle.js:1333:13
-Role Customer access to BillManager: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Menu item Bill (Bill) - Access: NO bundle.js:1443:15
+Checking access for role: Customer to screen: BillManager bundle.js:1349:13
+Role Customer access to BillManager: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item BillManager (BillManager) - Access: NO bundle.js:1427:15
-Checking access for role: Customer to screen: Report bundle.js:1333:13
-Role Customer access to Report: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Menu item BillManager (BillManager) - Access: NO bundle.js:1443:15
+Checking access for role: Customer to screen: Report bundle.js:1349:13
+Role Customer access to Report: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Report (Report) - Access: NO bundle.js:1427:15
-Checking access for role: Customer to screen: Profile bundle.js:1333:13
-Role Customer access to Profile: GRANTED bundle.js:1351:13
+bundle.js:1368:13
+Menu item Report (Report) - Access: NO bundle.js:1443:15
+Checking access for role: Customer to screen: Profile bundle.js:1349:13
+Role Customer access to Profile: GRANTED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Profile (Profile) - Access: YES bundle.js:1427:15
-Checking access for role: Customer to screen: MenuManager bundle.js:1333:13
-Role Customer access to MenuManager: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Menu item Profile (Profile) - Access: YES bundle.js:1443:15
+Checking access for role: Customer to screen: MenuManager bundle.js:1349:13
+Role Customer access to MenuManager: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Management item MenuManager (MenuManager) - Access: NO bundle.js:1432:15
-Checking access for role: Customer to screen: IngredientManager bundle.js:1333:13
-Role Customer access to IngredientManager: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Management item MenuManager (MenuManager) - Access: NO bundle.js:1448:15
+Checking access for role: Customer to screen: IngredientManager bundle.js:1349:13
+Role Customer access to IngredientManager: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Management item IngredientManager (IngredientManager) - Access: NO bundle.js:1432:15
-Checking access for role: Customer to screen: OrderDetailManager bundle.js:1333:13
-Role Customer access to OrderDetailManager: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Management item IngredientManager (IngredientManager) - Access: NO bundle.js:1448:15
+Checking access for role: Customer to screen: OrderDetailManager bundle.js:1349:13
+Role Customer access to OrderDetailManager: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Management item OrderDetailManager (OrderDetailManager) - Access: NO bundle.js:1432:15
-Checking access for role: Customer to screen: UserManagement bundle.js:1333:13
-Role Customer access to UserManagement: DENIED bundle.js:1351:13
+bundle.js:1368:13
+Management item OrderDetailManager (OrderDetailManager) - Access: NO bundle.js:1448:15
+Checking access for role: Customer to screen: UserManagement bundle.js:1349:13
+Role Customer access to UserManagement: DENIED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Management item UserManagement (UserManagement) - Access: NO bundle.js:1432:15
-Final accessible items - Main: 3, Management: 0 bundle.js:1435:13
-CustomSidebarMenu - Current user role: Customer bundle.js:425:11
-CustomSidebarMenu - Accessible main menu items: 3 bundle.js:426:11
-CustomSidebarMenu - Accessible management menu items: 0 bundle.js:427:11
-Image: style.resizeMode is deprecated. Please use props.resizeMode. Component Stack: 
-    Image Choo
-    button unknown:0
-    Choo 5
-    div unknown:0
+bundle.js:1368:13
+Management item UserManagement (UserManagement) - Access: NO bundle.js:1448:15
+Final accessible items - Main: 3, Management: 0 bundle.js:1451:13
+CustomSidebarMenu - Current user role: Customer bundle.js:430:11
+CustomSidebarMenu - Accessible main menu items: 3 bundle.js:431:11
+CustomSidebarMenu - Accessible management menu items: 0 bundle.js:432:11
+Checking access for role: Customer to screen: Menu bundle.js:1349:13
+Role Customer access to Menu: GRANTED bundle.js:1367:13
+Allowed screens for Customer: 
+Array(3) [ "Home", "Menu", "Profile" ]
+bundle.js:1368:13
+Uncaught Error: useCart must be used within a CartProvider
     Choo 2
-    div unknown:0
-    View Choo
-    div unknown:0
-    Choo 5
-    div unknown:0
-    View Choo
-    div unknown:0
-    Choo 3
-    div unknown:0
-    View Choo
-    div unknown:0
-    Choo 2
-    div unknown:0
-    Choo 3
-    div unknown:0
-    Choo 2
-    div unknown:0
-    Choo 3
-    div unknown:0
-    Choo 4
-    div unknown:0
-    Choo 2
-    div unknown:0
-    Choo 3
-    div unknown:0
-    Choo 2
-    div unknown:0
-    Choo 4
-    node_modules bundle.js:5574
-    StackNavigator Choo
-    ProfileStack unknown:0
-    Choo 3
-    div unknown:0
-    View Choo
-    div unknown:0
-    View Choo
-    div unknown:0
-    Choo 2
-    div unknown:0
-    Choo 3
-    div unknown:0
-    Choo 2
-    div unknown:0
-    Choo 3
-    div unknown:0
-    Choo 4
-    div unknown:0
-    Choo 2
-    div unknown:0
-    Choo 4
-    div unknown:0
-    Choo 4
-    div unknown:0
-    Choo 4
-    node_modules bundle.js:5574
-    Choo 9
-    App unknown:0
-    withDevTools(App) unknown:0
-<anonymous code>:1:147461
-Image: style.tintColor is deprecated. Please use props.tintColor. Component Stack: 
-    Image Choo
-    button unknown:0
-    Choo 5
-    div unknown:0
-    Choo 2
-    div unknown:0
-    View Choo
-    div unknown:0
-    Choo 5
-    div unknown:0
-    View Choo
-    div unknown:0
-    Choo 3
-    div unknown:0
-    View Choo
-    div unknown:0
-    Choo 2
-    div unknown:0
-    Choo 3
-    div unknown:0
-    Choo 2
-    div unknown:0
-    Choo 3
-    div unknown:0
-    Choo 4
-    div unknown:0
-    Choo 2
-    div unknown:0
-    Choo 3
-    div unknown:0
-    Choo 2
-    div unknown:0
-    Choo 4
-    node_modules bundle.js:5574
-    StackNavigator Choo
-    ProfileStack unknown:0
-    Choo 3
-    div unknown:0
-    View Choo
-    div unknown:0
-    View Choo
-    div unknown:0
-    Choo 2
-    div unknown:0
-    Choo 3
-    div unknown:0
-    Choo 2
-    div unknown:0
-    Choo 3
-    div unknown:0
-    Choo 4
-    div unknown:0
-    Choo 2
-    div unknown:0
-    Choo 4
-    div unknown:0
-    Choo 4
-    div unknown:0
-    Choo 4
-    node_modules bundle.js:5574
-    Choo 9
-    App unknown:0
-    withDevTools(App) unknown:0
-<anonymous code>:1:147461
-Layout was forced before the page was fully loaded. If stylesheets are not yet loaded this may cause a flash of unstyled content. 3 menu.html
-Layout was forced before the page was fully loaded. If stylesheets are not yet loaded this may cause a flash of unstyled content. menu-list.html
-Layout was forced before the page was fully loaded. If stylesheets are not yet loaded this may cause a flash of unstyled content. menu.html
-Layout was forced before the page was fully loaded. If stylesheets are not yet loaded this may cause a flash of unstyled content. menu-list.html
-Attempting login: 
-Object { userName: undefined }
-bundle.js:103109:17
-Getting accessible menu items for role: Customer bundle.js:1357:13
-Checking access for role: Customer to screen: Home bundle.js:1333:13
-Role Customer access to Home: GRANTED bundle.js:1351:13
+    React 14
+bundle.js:1510:11
+Checking access for role: Customer to screen: Menu bundle.js:1349:13
+Role Customer access to Menu: GRANTED bundle.js:1367:13
 Allowed screens for Customer: 
 Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Home (Home) - Access: YES bundle.js:1427:15
-Checking access for role: Customer to screen: Menu bundle.js:1333:13
-Role Customer access to Menu: GRANTED bundle.js:1351:13
-Allowed screens for Customer: 
-Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Menu (Menu) - Access: YES bundle.js:1427:15
-Checking access for role: Customer to screen: Orders bundle.js:1333:13
-Role Customer access to Orders: DENIED bundle.js:1351:13
-Allowed screens for Customer: 
-Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Orders (Orders) - Access: NO bundle.js:1427:15
-Checking access for role: Customer to screen: OrderDetail bundle.js:1333:13
-Role Customer access to OrderDetail: DENIED bundle.js:1351:13
-Allowed screens for Customer: 
-Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item OrderDetail (OrderDetail) - Access: NO bundle.js:1427:15
-Checking access for role: Customer to screen: Table bundle.js:1333:13
-Role Customer access to Table: DENIED bundle.js:1351:13
-Allowed screens for Customer: 
-Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Table (Table) - Access: NO bundle.js:1427:15
-Checking access for role: Customer to screen: Bill bundle.js:1333:13
-Role Customer access to Bill: DENIED bundle.js:1351:13
-Allowed screens for Customer: 
-Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Bill (Bill) - Access: NO bundle.js:1427:15
-Checking access for role: Customer to screen: BillManager bundle.js:1333:13
-Role Customer access to BillManager: DENIED bundle.js:1351:13
-Allowed screens for Customer: 
-Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item BillManager (BillManager) - Access: NO bundle.js:1427:15
-Checking access for role: Customer to screen: Report bundle.js:1333:13
-Role Customer access to Report: DENIED bundle.js:1351:13
-Allowed screens for Customer: 
-Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Report (Report) - Access: NO bundle.js:1427:15
-Checking access for role: Customer to screen: Profile bundle.js:1333:13
-Role Customer access to Profile: GRANTED bundle.js:1351:13
-Allowed screens for Customer: 
-Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Menu item Profile (Profile) - Access: YES bundle.js:1427:15
-Checking access for role: Customer to screen: MenuManager bundle.js:1333:13
-Role Customer access to MenuManager: DENIED bundle.js:1351:13
-Allowed screens for Customer: 
-Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Management item MenuManager (MenuManager) - Access: NO bundle.js:1432:15
-Checking access for role: Customer to screen: IngredientManager bundle.js:1333:13
-Role Customer access to IngredientManager: DENIED bundle.js:1351:13
-Allowed screens for Customer: 
-Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Management item IngredientManager (IngredientManager) - Access: NO bundle.js:1432:15
-Checking access for role: Customer to screen: OrderDetailManager bundle.js:1333:13
-Role Customer access to OrderDetailManager: DENIED bundle.js:1351:13
-Allowed screens for Customer: 
-Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Management item OrderDetailManager (OrderDetailManager) - Access: NO bundle.js:1432:15
-Checking access for role: Customer to screen: UserManagement bundle.js:1333:13
-Role Customer access to UserManagement: DENIED bundle.js:1351:13
-Allowed screens for Customer: 
-Array(3) [ "Home", "Menu", "Profile" ]
-bundle.js:1352:13
-Management item UserManagement (UserManagement) - Access: NO bundle.js:1432:15
-Final accessible items - Main: 3, Management: 0 bundle.js:1435:13
-CustomSidebarMenu - Current user role: Customer bundle.js:425:11
-CustomSidebarMenu - Accessible main menu items: 3 bundle.js:426:11
-CustomSidebarMenu - Accessible management menu items: 0 bundle.js:427:11
-🚀 Making POST request to: /api/User/login bundle.js:102016:11
-✅ Response received: 200 OK bundle.js:102023:11
-Login successful: 
-Object { userId: "4         ", userName: "VAnh", password: "VAnh123", role: "Admin", fullName: "VAnh", phone: 12345678, email: "ádasdas", bills: [], orders: [] }
-bundle.js:103113:17
-Getting accessible menu items for role: Admin bundle.js:1357:13
-Checking access for role: Admin to screen: Home bundle.js:1333:13
-Menu item Home (Home) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: Menu bundle.js:1333:13
-Menu item Menu (Menu) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: Orders bundle.js:1333:13
-Menu item Orders (Orders) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: OrderDetail bundle.js:1333:13
-Menu item OrderDetail (OrderDetail) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: Table bundle.js:1333:13
-Menu item Table (Table) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: Bill bundle.js:1333:13
-Menu item Bill (Bill) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: BillManager bundle.js:1333:13
-Menu item BillManager (BillManager) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: Report bundle.js:1333:13
-Menu item Report (Report) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: Profile bundle.js:1333:13
-Menu item Profile (Profile) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: MenuManager bundle.js:1333:13
-Management item MenuManager (MenuManager) - Access: YES bundle.js:1432:15
-Checking access for role: Admin to screen: IngredientManager bundle.js:1333:13
-Management item IngredientManager (IngredientManager) - Access: YES bundle.js:1432:15
-Checking access for role: Admin to screen: OrderDetailManager bundle.js:1333:13
-Management item OrderDetailManager (OrderDetailManager) - Access: YES bundle.js:1432:15
-Checking access for role: Admin to screen: UserManagement bundle.js:1333:13
-Management item UserManagement (UserManagement) - Access: YES bundle.js:1432:15
-Final accessible items - Main: 9, Management: 4 bundle.js:1435:13
-CustomSidebarMenu - Current user role: Admin bundle.js:425:11
-CustomSidebarMenu - Accessible main menu items: 9 bundle.js:426:11
-CustomSidebarMenu - Accessible management menu items: 4 bundle.js:427:11
-Getting accessible menu items for role: Admin bundle.js:1357:13
-Checking access for role: Admin to screen: Home bundle.js:1333:13
-Menu item Home (Home) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: Menu bundle.js:1333:13
-Menu item Menu (Menu) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: Orders bundle.js:1333:13
-Menu item Orders (Orders) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: OrderDetail bundle.js:1333:13
-Menu item OrderDetail (OrderDetail) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: Table bundle.js:1333:13
-Menu item Table (Table) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: Bill bundle.js:1333:13
-Menu item Bill (Bill) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: BillManager bundle.js:1333:13
-Menu item BillManager (BillManager) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: Report bundle.js:1333:13
-Menu item Report (Report) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: Profile bundle.js:1333:13
-Menu item Profile (Profile) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: MenuManager bundle.js:1333:13
-Management item MenuManager (MenuManager) - Access: YES bundle.js:1432:15
-Checking access for role: Admin to screen: IngredientManager bundle.js:1333:13
-Management item IngredientManager (IngredientManager) - Access: YES bundle.js:1432:15
-Checking access for role: Admin to screen: OrderDetailManager bundle.js:1333:13
-Management item OrderDetailManager (OrderDetailManager) - Access: YES bundle.js:1432:15
-Checking access for role: Admin to screen: UserManagement bundle.js:1333:13
-Management item UserManagement (UserManagement) - Access: YES bundle.js:1432:15
-Final accessible items - Main: 9, Management: 4 bundle.js:1435:13
-CustomSidebarMenu - Current user role: Admin bundle.js:425:11
-CustomSidebarMenu - Accessible main menu items: 9 bundle.js:426:11
-CustomSidebarMenu - Accessible management menu items: 4 bundle.js:427:11
-Getting accessible menu items for role: Admin bundle.js:1357:13
-Checking access for role: Admin to screen: Home bundle.js:1333:13
-Menu item Home (Home) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: Menu bundle.js:1333:13
-Menu item Menu (Menu) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: Orders bundle.js:1333:13
-Menu item Orders (Orders) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: OrderDetail bundle.js:1333:13
-Menu item OrderDetail (OrderDetail) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: Table bundle.js:1333:13
-Menu item Table (Table) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: Bill bundle.js:1333:13
-Menu item Bill (Bill) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: BillManager bundle.js:1333:13
-Menu item BillManager (BillManager) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: Report bundle.js:1333:13
-Menu item Report (Report) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: Profile bundle.js:1333:13
-Menu item Profile (Profile) - Access: YES bundle.js:1427:15
-Checking access for role: Admin to screen: MenuManager bundle.js:1333:13
-Management item MenuManager (MenuManager) - Access: YES bundle.js:1432:15
-Checking access for role: Admin to screen: IngredientManager bundle.js:1333:13
-Management item IngredientManager (IngredientManager) - Access: YES bundle.js:1432:15
-Checking access for role: Admin to screen: OrderDetailManager bundle.js:1333:13
-Management item OrderDetailManager (OrderDetailManager) - Access: YES bundle.js:1432:15
-Checking access for role: Admin to screen: UserManagement bundle.js:1333:13
-Management item UserManagement (UserManagement) - Access: YES bundle.js:1432:15
-Final accessible items - Main: 9, Management: 4 bundle.js:1435:13
-CustomSidebarMenu - Current user role: Admin bundle.js:425:11
-CustomSidebarMenu - Accessible main menu items: 9 bundle.js:426:11
-CustomSidebarMenu - Accessible management menu items: 4 bundle.js:427:11
-Checking access for role: Admin to screen: IngredientManager bundle.js:1333:13
-=== FETCHING INGREDIENTS === bundle.js:89886:17
-Fetching all ingredients from API... bundle.js:103571:17
-Checking access for role: Admin to screen: IngredientManager bundle.js:1333:13
-🚀 Making GET request to: /api/Ingredient bundle.js:102016:11
-✅ Response received: 200 OK bundle.js:102023:11
-Raw ingredients response: 
-Array(9) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…} ]
-bundle.js:103573:17
-extractApiData - Input data: 
-Array(9) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…} ]
-bundle.js:102183:11
-Found direct array with length: 9 bundle.js:102185:13
-Filtering out invalid item after normalization: 
-Object { ingreId: "1         ", ingreName: "Gạo", stock: 30, unitMeasurement: "kg", recipeDetails: [] }
-bundle.js:102197:17
-Filtering out invalid item after normalization: 
-Object { ingreId: "2         ", ingreName: "Gà", stock: 10, unitMeasurement: "con", recipeDetails: [] }
-bundle.js:102197:17
-Filtering out invalid item after normalization: 
-Object { ingreId: "3         ", ingreName: "Cà rốt", stock: 100, unitMeasurement: "củ", recipeDetails: [] }
-bundle.js:102197:17
-Filtering out invalid item after normalization: 
-Object { ingreId: "4         ", ingreName: "Hành tây", stock: 1000, unitMeasurement: "củ", recipeDetails: [] }
-bundle.js:102197:17
-Filtering out invalid item after normalization: 
-Object { ingreId: "5         ", ingreName: "Nghệ", stock: 1000, unitMeasurement: "củ", recipeDetails: [] }
-bundle.js:102197:17
-Filtering out invalid item after normalization: 
-Object { ingreId: "6         ", ingreName: "Gừng", stock: 1000, unitMeasurement: "củ", recipeDetails: [] }
-bundle.js:102197:17
-Filtering out invalid item after normalization: 
-Object { ingreId: "7         ", ingreName: "Tỏi", stock: 1000, unitMeasurement: "củ", recipeDetails: [] }
-bundle.js:102197:17
-Filtering out invalid item after normalization: 
-Object { ingreId: "8         ", ingreName: "Sườn", stock: 10, unitMeasurement: "kg", recipeDetails: [] }
-bundle.js:102197:17
-Filtering out invalid item after normalization: 
-Object { ingreId: "9         ", ingreName: "test delete", stock: 4, unitMeasurement: "kg", recipeDetails: [] }
-bundle.js:102197:17
-extractApiData - Processed items: 0 bundle.js:102201:13
-extractApiData - Sample processed item: undefined bundle.js:102202:13
-Extracted ingredients data: 
-Array []
-bundle.js:103575:17
-API Response: 
-Array []
-bundle.js:89889:19
-API Error: No valid ingredient data from API bundle.js:89909:19
+bundle.js:1368:13
+Uncaught Error: useCart must be used within a CartProvider
+    Choo 2
+    React 15
+bundle.js:1510:11
+The above error occurred in the <MenuScreen> component:
+
+MenuScreen@http://localhost:19006/static/js/bundle.js:94981:20
+ProtectedScreen@http://localhost:19006/static/js/bundle.js:125:18
+StaticContainer@http://localhost:19006/static/js/bundle.js:4605:3
+EnsureSingleNavigator@http://localhost:19006/static/js/bundle.js:4162:18
+SceneView@http://localhost:19006/static/js/bundle.js:4495:16
+div
+./node_modules/react-native-web/dist/exports/View/index.js/View<@http://localhost:19006/static/js/bundle.js:65827:19
+div
+./node_modules/react-native-web/dist/exports/View/index.js/View<@http://localhost:19006/static/js/bundle.js:65827:19
+div
+./node_modules/react-native-web/dist/exports/View/index.js/View<@http://localhost:19006/static/js/bundle.js:65827:19
+CardSheet@http://localhost:19006/static/js/bundle.js:13140:17
+div
+./node_modules/react-native-web/dist/exports/View/index.js/View<@http://localhost:19006/static/js/bundle.js:65827:19
+./node_modules/react-native-web/dist/vendor/react-native/Animated/createAnimatedComponent.js/createAnimatedComponent/<@http://localhost:19006/static/js/bundle.js:71882:90
+Dummy@http://localhost:19006/static/js/bundle.js:11805:18
+div
+./node_modules/react-native-web/dist/exports/View/index.js/View<@http://localhost:19006/static/js/bundle.js:65827:19
+./node_modules/react-native-web/dist/vendor/react-native/Animated/createAnimatedComponent.js/createAnimatedComponent/<@http://localhost:19006/static/js/bundle.js:71882:90
+div
+./node_modules/react-native-web/dist/exports/View/index.js/View<@http://localhost:19006/static/js/bundle.js:65827:19
+Card@http://localhost:19006/static/js/bundle.js:12434:86
+CardContainer@http://localhost:19006/static/js/bundle.js:12879:28
+div
+./node_modules/react-native-web/dist/exports/View/index.js/View<@http://localhost:19006/static/js/bundle.js:65827:19
+NativeScreen@http://localhost:19006/static/js/bundle.js:60343:86
+./node_modules/react-native-web/dist/vendor/react-native/Animated/createAnimatedComponent.js/createAnimatedComponent/<@http://localhost:19006/static/js/bundle.js:71882:90
+MaybeScreen@http://localhost:19006/static/js/bundle.js:12327:17
+div
+./node_modules/react-native-web/dist/exports/View/index.js/View<@http://localhost:19006/static/js/bundle.js:65827:19
+MaybeScreenContainer@http://localhost:19006/static/js/bundle.js:12317:17
+div
+./node_modules/react-native-web/dist/exports/View/index.js/View<@http://localhost:19006/static/js/bundle.js:65827:19
+Background@http://localhost:19006/static/js/bundle.js:7880:15
+CardStack@http://localhost:19006/static/js/bundle.js:13308:86
+SafeAreaFrameProvider@http://localhost:19006/static/js/bundle.js:8831:24
+div
+./node_modules/react-native-web/dist/exports/View/index.js/View<@http://localhost:19006/static/js/bundle.js:65827:19
+NativeSafeAreaProvider@http://localhost:19006/static/js/bundle.js:59992:18
+SafeAreaProvider@http://localhost:19006/static/js/bundle.js:60150:18
+SafeAreaProviderCompat@http://localhost:19006/static/js/bundle.js:8812:18
+div
+./node_modules/react-native-web/dist/exports/View/index.js/View<@http://localhost:19006/static/js/bundle.js:65827:19
+StackView@http://localhost:19006/static/js/bundle.js:13706:86
+PreventRemoveProvider@http://localhost:19006/static/js/bundle.js:4405:18
+NavigationContent@http://localhost:19006/static/js/bundle.js:5833:16
+./node_modules/@react-navigation/core/lib/module/useComponent.js/useComponent/<@http://localhost:19006/static/js/bundle.js:5844:20
+StackNavigator@http://localhost:19006/static/js/bundle.js:11439:12
+MainAppStack@http://localhost:19006/static/js/bundle.js:157:21
+AppContainer@http://localhost:19006/static/js/bundle.js:690:66
+EnsureSingleNavigator@http://localhost:19006/static/js/bundle.js:4162:18
+BaseNavigationContainer@http://localhost:19006/static/js/bundle.js:3824:22
+ThemeProvider@http://localhost:19006/static/js/bundle.js:9356:15
+NavigationContainerInner@http://localhost:19006/static/js/bundle.js:9023:20
+ToastProvider@http://localhost:19006/static/js/bundle.js:1726:18
+AuthProvider@http://localhost:19006/static/js/bundle.js:1164:18
+App
+withDevTools(App)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. <anonymous code>:1:147461
+Uncaught Error: useCart must be used within a CartProvider
+    Choo 2
+    React 12
+bundle.js:1510:11
+Source map error: Error: JSON.parse: unexpected character at line 1 column 1 of the JSON data
+Stack in the worker:parseSourceMapInput@resource://devtools/client/shared/vendor/source-map/lib/util.js:163:15
+_factory@resource://devtools/client/shared/vendor/source-map/lib/source-map-consumer.js:1069:22
+SourceMapConsumer@resource://devtools/client/shared/vendor/source-map/lib/source-map-consumer.js:26:12
+_fetch@resource://devtools/client/shared/source-map-loader/utils/fetchSourceMap.js:83:19
+
+Resource URL: http://localhost:19006/%3Canonymous%20code%3E
+Source Map URL: installHook.js.map

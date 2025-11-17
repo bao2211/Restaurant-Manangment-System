@@ -94,6 +94,8 @@ function ProtectedScreen({ children, screenName, fallbackScreen = 'Home' }) {
   return children;
 }
 
+
+
 // Main App Stack with Hamburger Menu
 function MainAppStack({ openSidebar }) {
   return (
@@ -115,7 +117,7 @@ function MainAppStack({ openSidebar }) {
             <MaterialCommunityIcons name="menu" size={24} color="white" />
           </TouchableOpacity>
         ),
-      }}
+      })}
     >
       <Stack.Screen 
         name="Home" 
