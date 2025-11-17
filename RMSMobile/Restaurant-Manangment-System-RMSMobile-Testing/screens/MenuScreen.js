@@ -7,10 +7,6 @@ import ScreenHeader from '../components/ScreenHeader';
 
 export default function MenuScreen({ navigation, route }) {
   const { user, getUserRole } = useContext(AuthContext);
-<<<<<<< Updated upstream
-  const userRole = getUserRole();
-  const isCustomer = userRole === 'Customer' || userRole === 'customer' || userRole === 'CUSTOMER';
-=======
   
   // Memoize user role calculation to prevent unnecessary re-renders
   const userRole = useMemo(() => getUserRole(), [user]);
@@ -18,7 +14,6 @@ export default function MenuScreen({ navigation, route }) {
     const role = userRole;
     return role === 'Customer' || role === 'customer' || role === 'CUSTOMER';
   }, [userRole]);
->>>>>>> Stashed changes
   
   console.log('MenuScreen - Current user role:', userRole, 'Is Customer:', isCustomer);
   
@@ -329,14 +324,11 @@ export default function MenuScreen({ navigation, route }) {
   const renderMenuItem = (item) => {
     const hasImageError = imageErrors[item.id];
     const shouldShowImage = item.imageUrl && !hasImageError;
-<<<<<<< Updated upstream
-=======
     const isFavorite = userFavorites.includes(item.id);
     
     // Check if item is already in order (for staff/admin)
     const itemInOrder = orderItems.find(orderItem => orderItem.id === item.id);
     const orderQuantity = itemInOrder ? itemInOrder.quantity : 0;
->>>>>>> Stashed changes
 
     return (
       <TouchableOpacity key={item.id} style={styles.menuItem}>
@@ -359,8 +351,6 @@ export default function MenuScreen({ navigation, route }) {
               <Text style={styles.emojiImage}>{item.emojiFallback}</Text>
             </View>
           )}
-<<<<<<< Updated upstream
-=======
           {/* Favorite button - only show for customers */}
           {isCustomer && (
             <TouchableOpacity 
@@ -380,26 +370,19 @@ export default function MenuScreen({ navigation, route }) {
               <Text style={styles.orderQuantityBadgeText}>{orderQuantity}</Text>
             </View>
           )}
->>>>>>> Stashed changes
         </View>
         <View style={styles.menuItemContent}>
           <Text style={styles.menuItemName}>{item.name}</Text>
           <Text style={styles.menuItemDescription}>{item.description}</Text>
           <View style={styles.menuItemFooter}>
             <Text style={styles.menuItemPrice}>{item.price}</Text>
-<<<<<<< Updated upstream
-=======
             
             {/* Add to Order button - only show for staff/admin */}
->>>>>>> Stashed changes
             {!isCustomer && (
               <TouchableOpacity 
                 style={styles.addToOrderButton}
                 onPress={() => handleAddToOrder(item)}
               >
-<<<<<<< Updated upstream
-                <MaterialCommunityIcons name="plus" size={20} color="white" />
-=======
                 <LinearGradient
                   colors={['#27AE60', '#229954']}
                   style={styles.addToOrderButtonGradient}
@@ -407,7 +390,6 @@ export default function MenuScreen({ navigation, route }) {
                   <MaterialCommunityIcons name="plus" size={20} color="white" />
                   <Text style={styles.addToOrderButtonText}>Thêm</Text>
                 </LinearGradient>
->>>>>>> Stashed changes
               </TouchableOpacity>
             )}
           </View>
@@ -416,36 +398,15 @@ export default function MenuScreen({ navigation, route }) {
     );
   };
 
-<<<<<<< Updated upstream
-  const handleAddToCart = (item) => {
-    // Prevent customers from adding items to cart
-    if (isCustomer) {
-      console.log('Customer users cannot add items to cart');
-      return;
-    }
-    
-    console.log('=== ADD TO CART DEBUG ===');
-    console.log('Adding item:', item);
-=======
   const handleAddToOrder = (item) => {
     console.log('=== ADD TO ORDER DEBUG ===');
     console.log('Adding item:', item.name);
     console.log('Current order items:', orderItems);
->>>>>>> Stashed changes
     
     // Check if item already exists in order
     const existingItemIndex = orderItems.findIndex(orderItem => orderItem.id === item.id);
     
     if (existingItemIndex !== -1) {
-<<<<<<< Updated upstream
-      // If item exists, increase quantity
-      const updatedItems = [...orderItems];
-      updatedItems[existingItemIndex].quantity += 1;
-      console.log('Item already exists, increased quantity:', updatedItems[existingItemIndex]);
-      setOrderItems(updatedItems);
-    } else {
-      // If item doesn't exist, add new item
-=======
       // Item exists, increase quantity
       const updatedItems = [...orderItems];
       updatedItems[existingItemIndex].quantity += 1;
@@ -453,31 +414,21 @@ export default function MenuScreen({ navigation, route }) {
       setOrderItems(updatedItems);
     } else {
       // Item doesn't exist, add new item with quantity 1
->>>>>>> Stashed changes
       const newOrderItem = {
         id: item.id,
         name: item.name,
         price: item.unitPrice,
         quantity: 1,
-<<<<<<< Updated upstream
-        formattedPrice: item.price
-=======
         imageUrl: item.imageUrl,
         description: item.description,
         categoryId: item.categoryId
->>>>>>> Stashed changes
       };
       console.log('Adding new item to order:', newOrderItem);
       setOrderItems([...orderItems, newOrderItem]);
     }
     
-<<<<<<< Updated upstream
-    console.log('Current order items after addition:', [...orderItems]);
-    Alert.alert('Success', `${item.name} added to order!`);
-=======
     // Show success feedback
     Alert.alert('Đã thêm', `Đã thêm "${item.name}" vào đơn hàng!`, [{ text: 'OK' }]);
->>>>>>> Stashed changes
   };
 
   const updateQuantity = (itemId, change) => {
@@ -1431,8 +1382,6 @@ const styles = StyleSheet.create({
   secondaryButton: {
     backgroundColor: '#ECF0F1',
   },
-<<<<<<< Updated upstream
-=======
   // Cart-related styles
   favoriteButton: {
     position: 'absolute',
@@ -1451,7 +1400,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
->>>>>>> Stashed changes
   modalButtonText: {
     color: 'white',
     fontWeight: '600',
