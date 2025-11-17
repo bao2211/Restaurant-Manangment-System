@@ -311,14 +311,24 @@ export default function TableScreen({ navigation }) {
         
         if (Array.isArray(tablesData) && tablesData.length > 0) {
           console.log('✓ Setting tables from API response (array)');
+          // Filter out table ID 8 (Online orders table)
+          const filteredTables = tablesData.filter(table => {
+            const tableId = table.tableId || table.TableID;
+            return tableId && tableId.toString().trim() !== '8';
+          });
           // Update table status based on existing orders
-          const updatedTables = await updateTableStatusBasedOnOrders(tablesData);
+          const updatedTables = await updateTableStatusBasedOnOrders(filteredTables);
           setTables(updatedTables);
           return;
         } else if (tablesData && typeof tablesData === 'object' && !Array.isArray(tablesData)) {
           console.log('✓ API returned single object, converting to array');
           const singleTableArray = [tablesData];
-          const updatedTables = await updateTableStatusBasedOnOrders(singleTableArray);
+          // Filter out table ID 8 (Online orders table)
+          const filteredTables = singleTableArray.filter(table => {
+            const tableId = table.tableId || table.TableID;
+            return tableId && tableId.toString().trim() !== '8';
+          });
+          const updatedTables = await updateTableStatusBasedOnOrders(filteredTables);
           setTables(updatedTables);
           return;
         } else {
@@ -346,13 +356,18 @@ export default function TableScreen({ navigation }) {
         // Fallback to mock data
         console.log('🔄 Using mock data as fallback');
         Alert.alert('Info', 'Cannot connect to server. Showing sample data.');
+        // Filter out table ID 8 from mock data too
+        const filteredMockTables = mockTables.filter(table => {
+          const tableId = table.tableId || table.TableID;
+          return tableId && tableId.toString().trim() !== '8';
+        });
         // Try to update mock data status based on orders if possible
         try {
-          const updatedMockTables = await updateTableStatusBasedOnOrders(mockTables);
+          const updatedMockTables = await updateTableStatusBasedOnOrders(filteredMockTables);
           setTables(updatedMockTables);
         } catch (statusError) {
           console.log('Could not update mock table status:', statusError.message);
-          setTables(mockTables);
+          setTables(filteredMockTables);
         }
       }
       

@@ -24,4 +24,6 @@ public partial class User
     public virtual ICollection<Bill> Bills { get; set; } = new List<Bill>();
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
+    public virtual ICollection<UserFavorite> UserFavorites { get; set; } = new List<UserFavorite>();
 }

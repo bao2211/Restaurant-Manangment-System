@@ -38,6 +38,7 @@ export default function BillManagerScreen() {
   const [filterPayment, setFilterPayment] = useState('all'); // 'all', 'cash', 'card', 'transfer', 'wallet', 'unpaid'
   const [showSortModal, setShowSortModal] = useState(false);
   const [filteredBills, setFilteredBills] = useState([]);
+  const [sortOrder, setSortOrder] = useState('newest'); // 'newest' or 'oldest'
 
   // Bill form state
   const [billForm, setBillForm] = useState({
@@ -56,7 +57,7 @@ export default function BillManagerScreen() {
   useFocusEffect(
     useCallback(() => {
       fetchData();
-    }, [])
+    }, [sortOrder])
   );
 
   const fetchData = async () => {
@@ -100,7 +101,14 @@ export default function BillManagerScreen() {
         })
       );
       
-      setCompletedOrders(ordersWithTotals);
+      // Sort orders by date like OrdersScreen
+      const sortedOrders = ordersWithTotals.sort((a, b) => {
+        const dateA = new Date(a.createDate || a.createdTime || a.createdAt || a.orderDate || 0);
+        const dateB = new Date(b.createDate || b.createdTime || b.createdAt || b.orderDate || 0);
+        return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+      });
+      
+      setCompletedOrders(sortedOrders);
     } catch (error) {
       console.error('Error fetching completed orders:', error);
       throw error;
@@ -111,8 +119,26 @@ export default function BillManagerScreen() {
     try {
       const billsData = await apiService.getAllBills();
       console.log('Fetched bills:', billsData);
-      setBills(billsData || []);
-      setFilteredBills(billsData || []);
+      
+      // Enrich bills with order information to determine online/dine-in
+      const enrichedBills = await Promise.all(
+        (billsData || []).map(async bill => {
+          try {
+            const orders = await apiService.getAllOrders();
+            const order = orders.find(o => (o.id || o.orderId)?.trim() === bill.orderId?.trim());
+            return {
+              ...bill,
+              tableId: order?.tableId || 'N/A'
+            };
+          } catch (error) {
+            console.error(`Error fetching order ${bill.orderId}:`, error);
+            return { ...bill, tableId: 'N/A' };
+          }
+        })
+      );
+      
+      setBills(enrichedBills);
+      setFilteredBills(enrichedBills);
     } catch (error) {
       console.error('Error fetching bills:', error);
       throw error;
@@ -498,24 +524,40 @@ export default function BillManagerScreen() {
     setShowEditModal(true);
   };
 
-  const renderOrderItem = ({ item }) => (
-    <View style={styles.card}>
-      <View style={styles.cardHeader}>
-        <View style={styles.orderIdContainer}>
-          <MaterialCommunityIcons name="receipt" size={20} color="#3498DB" />
-          <Text style={styles.orderId}>#{(item.id || item.orderId)?.substring(0, 10)}</Text>
+  const renderOrderItem = ({ item }) => {
+    const isOnline = item.tableId?.toString().trim() === '8';
+    
+    return (
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <View style={styles.orderIdContainer}>
+            <MaterialCommunityIcons name="receipt" size={20} color="#3498DB" />
+            <Text style={styles.orderId}>#{(item.id || item.orderId)?.substring(0, 10)}</Text>
+          </View>
+          <View style={styles.headerBadges}>
+            {isOnline ? (
+              <View style={styles.orderTypeBadge}>
+                <MaterialCommunityIcons name="truck-delivery" size={14} color="#FF6B35" />
+                <Text style={styles.orderTypeText}>Online</Text>
+              </View>
+            ) : (
+              <View style={[styles.orderTypeBadge, styles.dineInBadge]}>
+                <MaterialCommunityIcons name="silverware-fork-knife" size={14} color="#10B981" />
+                <Text style={[styles.orderTypeText, styles.dineInText]}>Dine-in</Text>
+              </View>
+            )}
+            <View style={styles.statusBadge}>
+              <MaterialCommunityIcons name="check-circle" size={16} color="#27AE60" />
+              <Text style={styles.statusText}>{item.status}</Text>
+            </View>
+          </View>
         </View>
-        <View style={styles.statusBadge}>
-          <MaterialCommunityIcons name="check-circle" size={16} color="#27AE60" />
-          <Text style={styles.statusText}>{item.status}</Text>
-        </View>
-      </View>
 
-      <View style={styles.cardBody}>
-        <View style={styles.infoRow}>
-          <MaterialCommunityIcons name="table-furniture" size={16} color="#7F8C8D" />
-          <Text style={styles.infoText}>Table: {item.tableId}</Text>
-        </View>
+        <View style={styles.cardBody}>
+          <View style={styles.infoRow}>
+            <MaterialCommunityIcons name="table-furniture" size={16} color="#7F8C8D" />
+            <Text style={styles.infoText}>Table: {item.tableId}</Text>
+          </View>
         <View style={styles.infoRow}>
           <MaterialCommunityIcons name="clock-outline" size={16} color="#7F8C8D" />
           <Text style={styles.infoText}>
@@ -536,30 +578,47 @@ export default function BillManagerScreen() {
         <Text style={styles.createButtonText}>Create Bill</Text>
       </TouchableOpacity>
     </View>
-  );
+    );
+  };
 
-  const renderBillItem = ({ item }) => (
-    <View style={styles.card}>
-      <View style={styles.cardHeader}>
-        <View style={styles.orderIdContainer}>
-          <MaterialCommunityIcons name="file-document" size={20} color="#E74C3C" />
-          <Text style={styles.orderId}>#{item.billId?.substring(0, 10)}</Text>
+  const renderBillItem = ({ item }) => {
+    const isOnline = item.tableId?.toString().trim() === '8';
+    
+    return (
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <View style={styles.orderIdContainer}>
+            <MaterialCommunityIcons name="file-document" size={20} color="#E74C3C" />
+            <Text style={styles.orderId}>#{item.billId?.substring(0, 10)}</Text>
+          </View>
+          <View style={styles.headerBadges}>
+            {isOnline ? (
+              <View style={styles.orderTypeBadge}>
+                <MaterialCommunityIcons name="truck-delivery" size={14} color="#FF6B35" />
+                <Text style={styles.orderTypeText}>Online</Text>
+              </View>
+            ) : (
+              <View style={[styles.orderTypeBadge, styles.dineInBadge]}>
+                <MaterialCommunityIcons name="silverware-fork-knife" size={14} color="#10B981" />
+                <Text style={[styles.orderTypeText, styles.dineInText]}>Dine-in</Text>
+              </View>
+            )}
+            <View style={[styles.paymentBadge, getPaymentBadgeStyle(item.payment)]}>
+              <MaterialCommunityIcons 
+                name={getPaymentIcon(item.payment)} 
+                size={14} 
+                color="#FFFFFF" 
+              />
+              <Text style={styles.paymentText}>{item.payment}</Text>
+            </View>
+          </View>
         </View>
-        <View style={[styles.paymentBadge, getPaymentBadgeStyle(item.payment)]}>
-          <MaterialCommunityIcons 
-            name={getPaymentIcon(item.payment)} 
-            size={14} 
-            color="#FFFFFF" 
-          />
-          <Text style={styles.paymentText}>{item.payment}</Text>
-        </View>
-      </View>
 
-      <View style={styles.cardBody}>
-        <View style={styles.infoRow}>
-          <MaterialCommunityIcons name="receipt" size={16} color="#7F8C8D" />
-          <Text style={styles.infoText}>Order: {item.orderId?.substring(0, 10)}</Text>
-        </View>
+        <View style={styles.cardBody}>
+          <View style={styles.infoRow}>
+            <MaterialCommunityIcons name="receipt" size={16} color="#7F8C8D" />
+            <Text style={styles.infoText}>Order: {item.orderId?.substring(0, 10)}</Text>
+          </View>
         <View style={styles.infoRow}>
           <MaterialCommunityIcons name="clock-outline" size={16} color="#7F8C8D" />
           <Text style={styles.infoText}>
@@ -602,7 +661,8 @@ export default function BillManagerScreen() {
         </TouchableOpacity>
       </View>
     </View>
-  );
+    );
+  };
 
   const getPaymentIcon = (payment) => {
     const method = payment?.toLowerCase() || '';
@@ -1061,22 +1121,54 @@ export default function BillManagerScreen() {
       </View>
 
       {activeTab === 'orders' ? (
-        <FlatList
-          data={completedOrders}
-          renderItem={renderOrderItem}
-          keyExtractor={(item) => item.id || item.orderId}
-          contentContainerStyle={styles.listContainer}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-          ListEmptyComponent={
-            <View style={styles.emptyState}>
-              <MaterialCommunityIcons name="clipboard-check-outline" size={80} color="#BDC3C7" />
-              <Text style={styles.emptyTitle}>No Completed Orders</Text>
-              <Text style={styles.emptySubtitle}>
-                Completed orders ready for billing will appear here
-              </Text>
+        <>
+          <View style={styles.ordersHeader}>
+            <View style={styles.sortOrderButtons}>
+              <TouchableOpacity
+                style={[styles.sortOrderButton, sortOrder === 'newest' && styles.sortOrderButtonActive]}
+                onPress={() => setSortOrder('newest')}
+              >
+                <MaterialCommunityIcons 
+                  name="sort-clock-descending" 
+                  size={18} 
+                  color={sortOrder === 'newest' ? '#FFFFFF' : '#3498DB'} 
+                />
+                <Text style={[styles.sortOrderButtonText, sortOrder === 'newest' && styles.sortOrderButtonTextActive]}>
+                  Newest First
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.sortOrderButton, sortOrder === 'oldest' && styles.sortOrderButtonActive]}
+                onPress={() => setSortOrder('oldest')}
+              >
+                <MaterialCommunityIcons 
+                  name="sort-clock-ascending" 
+                  size={18} 
+                  color={sortOrder === 'oldest' ? '#FFFFFF' : '#3498DB'} 
+                />
+                <Text style={[styles.sortOrderButtonText, sortOrder === 'oldest' && styles.sortOrderButtonTextActive]}>
+                  Oldest First
+                </Text>
+              </TouchableOpacity>
             </View>
-          }
-        />
+          </View>
+          <FlatList
+            data={completedOrders}
+            renderItem={renderOrderItem}
+            keyExtractor={(item) => item.id || item.orderId}
+            contentContainerStyle={styles.listContainer}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            ListEmptyComponent={
+              <View style={styles.emptyState}>
+                <MaterialCommunityIcons name="clipboard-check-outline" size={80} color="#BDC3C7" />
+                <Text style={styles.emptyTitle}>No Completed Orders</Text>
+                <Text style={styles.emptySubtitle}>
+                  Completed orders ready for billing will appear here
+                </Text>
+              </View>
+            }
+          />
+        </>
       ) : (
         <>
           <View style={styles.billsHeader}>
@@ -1666,5 +1758,75 @@ const styles = StyleSheet.create({
   activeFilterChipText: {
     color: '#FFFFFF',
     fontWeight: '700',
+  },
+  // Order Type Badge Styles
+  headerBadges: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  orderTypeBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 107, 53, 0.1)',
+    borderWidth: 1,
+    borderColor: '#FF6B35',
+  },
+  dineInBadge: {
+    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+    borderColor: '#10B981',
+  },
+  orderTypeText: {
+    fontSize: 11,
+    color: '#FF6B35',
+    fontWeight: '700',
+  },
+  dineInText: {
+    color: '#10B981',
+  },
+  // Orders Header Styles
+  ordersHeader: {
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E8E8E8',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  sortOrderButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  sortOrderButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#3498DB',
+    backgroundColor: '#FFFFFF',
+  },
+  sortOrderButtonActive: {
+    backgroundColor: '#3498DB',
+    shadowColor: '#3498DB',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  sortOrderButtonText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#3498DB',
+  },
+  sortOrderButtonTextActive: {
+    color: '#FFFFFF',
   },
 });

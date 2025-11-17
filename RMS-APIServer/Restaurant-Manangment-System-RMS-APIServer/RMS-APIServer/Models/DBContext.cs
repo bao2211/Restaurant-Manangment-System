@@ -37,6 +37,8 @@ public partial class DBContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<UserFavorite> UserFavorites { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
@@ -341,6 +343,37 @@ public partial class DBContext : DbContext
             entity.Property(e => e.UserName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<UserFavorite>(entity =>
+        {
+            entity.HasKey(e => e.UserFavoriteId).HasName("PK_User_Favorite");
+
+            entity.ToTable("[User_Favorite]");
+
+            entity.Property(e => e.UserFavoriteId)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("UserFavoriteID");
+            entity.Property(e => e.UserId)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("UserID");
+            entity.Property(e => e.FoodId)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("FoodID");
+
+            entity.HasOne(d => d.User).WithMany(p => p.UserFavorites)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_User_Favorite_User");
+
+            entity.HasOne(d => d.Food).WithMany(p => p.UserFavorites)
+                .HasForeignKey(d => d.FoodId)
+                .HasConstraintName("FK_User_Favorite_Food_Info");
         });
 
         OnModelCreatingPartial(modelBuilder);

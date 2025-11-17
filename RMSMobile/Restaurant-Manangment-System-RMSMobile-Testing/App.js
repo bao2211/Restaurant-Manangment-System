@@ -30,7 +30,6 @@ import RegisterScreen from "./screens/RegisterScreen";
 import { AuthProvider, AuthContext } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
 import TableScreen from './screens/TableScreen';
-import BillScreen from './screens/BillScreen';
 import BillManagerScreen from './screens/BillManagerScreen';
 import ReportScreen from './screens/ReportScreen';
 import MenuManagerScreen from './screens/MenuManagerScreen';
@@ -160,18 +159,6 @@ function MainAppStack({ openSidebar }) {
         {(props) => (
           <ProtectedScreen screenName="Table">
             <TableScreen {...props} />
-          </ProtectedScreen>
-        )}
-      </Stack.Screen>
-      <Stack.Screen 
-        name="Bill" 
-        options={{ 
-          headerTitle: 'Our Bill',
-        }}
-      >
-        {(props) => (
-          <ProtectedScreen screenName="Bill">
-            <BillScreen {...props} />
           </ProtectedScreen>
         )}
       </Stack.Screen>
@@ -328,7 +315,6 @@ function CustomSidebarMenu({ visible, onClose }) {
     { name: 'Orders', icon: 'clipboard-list', title: 'My Orders', screen: 'Orders' },
     { name: 'OrderDetail', icon: 'clipboard-text', title: 'Order Details', screen: 'OrderDetail' },
     { name: 'Table', icon: 'table-chair', title: 'Our Table', screen: 'Table' },
-    { name: 'Bill', icon: 'file-document', title: 'Our Bill', screen: 'Bill' },
     { name: 'Report', icon: 'file-chart', title: 'Our Report', screen: 'Report' },
     { name: 'Profile', icon: 'account', title: 'My Profile', screen: 'Profile' },
   ];

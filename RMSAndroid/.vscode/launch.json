@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug Android App",
+            "request": "attach",
+            "hostName": "localhost",
+            "port": 8700,
+            "sourcePaths": [
+                "${workspaceFolder}/app/src/main/java"
+            ]
+        },
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        }
+    ]
+}

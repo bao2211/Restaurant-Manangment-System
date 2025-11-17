@@ -403,6 +403,18 @@ const OrderItem = ({ order }) => {
         <View style={styles.orderIdContainer}>
           <MaterialCommunityIcons name="receipt" size={20} color="#2C3E50" />
           <Text style={styles.orderId}>Order #{order.orderId}</Text>
+          {/* Online/Dine-in Indicator */}
+          {order.tableId && order.tableId.toString().trim() === '8' ? (
+            <View style={styles.orderTypeBadge}>
+              <MaterialCommunityIcons name="truck-delivery" size={14} color="#FF6B35" />
+              <Text style={styles.orderTypeText}>Online</Text>
+            </View>
+          ) : (
+            <View style={[styles.orderTypeBadge, styles.dineInBadge]}>
+              <MaterialCommunityIcons name="silverware-fork-knife" size={14} color="#10B981" />
+              <Text style={[styles.orderTypeText, styles.dineInText]}>Dine-in</Text>
+            </View>
+          )}
         </View>
         <Text style={[styles.orderStatus, { 
           color: getStatusColor(order.status),
@@ -807,12 +819,38 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
     flex: 1,
+    flexWrap: 'wrap',
   },
   orderId: {
     fontSize: 17,
     fontWeight: '800',
     color: '#2E5F8C',
     letterSpacing: 0.5,
+  },
+  orderTypeBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 107, 53, 0.1)',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#FF6B35',
+    gap: 4,
+  },
+  dineInBadge: {
+    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+    borderColor: '#10B981',
+  },
+  orderTypeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#FF6B35',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  dineInText: {
+    color: '#10B981',
   },
   orderStatus: {
     fontSize: 13,
