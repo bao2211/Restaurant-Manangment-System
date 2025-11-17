@@ -4,12 +4,10 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { apiService, getCategoryIcon, formatPrice } from '../services/apiService';
 import { AuthContext } from '../context/AuthContext';
-import { useCart } from '../context/CartContext';
 import ScreenHeader from '../components/ScreenHeader';
 
 export default function MenuScreen({ navigation, route }) {
   const { user, getUserRole } = useContext(AuthContext);
-  const { addToCart, isInCart, getItemQuantity, increaseQuantity, decreaseQuantity, getTotalItems } = useCart();
   
   // Memoize user role calculation to prevent unnecessary re-renders
   const userRole = useMemo(() => getUserRole(), [user]);
@@ -394,8 +392,10 @@ export default function MenuScreen({ navigation, route }) {
     const hasImageError = imageErrors[item.id];
     const shouldShowImage = item.imageUrl && !hasImageError;
     const isFavorite = userFavorites.includes(item.id);
-    const itemInCart = isInCart(item.id);
-    const cartQuantity = getItemQuantity(item.id);
+    
+    // Check if item is already in order (for staff/admin)
+    const itemInOrder = orderItems.find(orderItem => orderItem.id === item.id);
+    const orderQuantity = itemInOrder ? itemInOrder.quantity : 0;
 
     return (
       <TouchableOpacity key={item.id} style={styles.menuItem}>
@@ -431,10 +431,10 @@ export default function MenuScreen({ navigation, route }) {
               />
             </TouchableOpacity>
           )}
-          {/* Cart quantity badge */}
-          {cartQuantity > 0 && (
-            <View style={styles.cartBadge}>
-              <Text style={styles.cartBadgeText}>{cartQuantity}</Text>
+          {/* Order quantity badge - only show for staff/admin if item is in order */}
+          {!isCustomer && orderQuantity > 0 && (
+            <View style={styles.orderQuantityBadge}>
+              <Text style={styles.orderQuantityBadgeText}>{orderQuantity}</Text>
             </View>
           )}
         </View>
@@ -444,29 +444,19 @@ export default function MenuScreen({ navigation, route }) {
           <View style={styles.menuItemFooter}>
             <Text style={styles.menuItemPrice}>{item.price}</Text>
             
-            {/* Cart controls */}
-            {itemInCart ? (
-              <View style={styles.cartControls}>
-                <TouchableOpacity 
-                  style={styles.cartButton}
-                  onPress={() => decreaseQuantity(item.id)}
-                >
-                  <MaterialCommunityIcons name="minus" size={16} color="white" />
-                </TouchableOpacity>
-                <Text style={styles.cartQuantityText}>{cartQuantity}</Text>
-                <TouchableOpacity 
-                  style={styles.cartButton}
-                  onPress={() => increaseQuantity(item.id)}
-                >
-                  <MaterialCommunityIcons name="plus" size={16} color="white" />
-                </TouchableOpacity>
-              </View>
-            ) : (
+            {/* Add to Order button - only show for staff/admin */}
+            {!isCustomer && (
               <TouchableOpacity 
-                style={styles.addButton}
-                onPress={() => handleAddToCart(item)}
+                style={styles.addToOrderButton}
+                onPress={() => handleAddToOrder(item)}
               >
-                <MaterialCommunityIcons name="cart-plus" size={20} color="white" />
+                <LinearGradient
+                  colors={['#27AE60', '#229954']}
+                  style={styles.addToOrderButtonGradient}
+                >
+                  <MaterialCommunityIcons name="plus" size={20} color="white" />
+                  <Text style={styles.addToOrderButtonText}>Thêm</Text>
+                </LinearGradient>
               </TouchableOpacity>
             )}
           </View>
@@ -475,27 +465,37 @@ export default function MenuScreen({ navigation, route }) {
     );
   };
 
-  const handleAddToCart = (item) => {
-    try {
-      // Add to cart using CartContext
-      addToCart({
+  const handleAddToOrder = (item) => {
+    console.log('=== ADD TO ORDER DEBUG ===');
+    console.log('Adding item:', item.name);
+    console.log('Current order items:', orderItems);
+    
+    // Check if item already exists in order
+    const existingItemIndex = orderItems.findIndex(orderItem => orderItem.id === item.id);
+    
+    if (existingItemIndex !== -1) {
+      // Item exists, increase quantity
+      const updatedItems = [...orderItems];
+      updatedItems[existingItemIndex].quantity += 1;
+      console.log(`Increased quantity of ${item.name} to ${updatedItems[existingItemIndex].quantity}`);
+      setOrderItems(updatedItems);
+    } else {
+      // Item doesn't exist, add new item with quantity 1
+      const newOrderItem = {
         id: item.id,
         name: item.name,
-        foodName: item.name,
-        unitPrice: item.unitPrice,
         price: item.unitPrice,
-        foodImage: item.imageUrl,
+        quantity: 1,
         imageUrl: item.imageUrl,
         description: item.description,
         categoryId: item.categoryId
-      });
-      
-      Alert.alert('Thành công', `Đã thêm "${item.name}" vào giỏ hàng!`);
-      console.log('Item added to cart:', item.name);
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-      Alert.alert('Lỗi', 'Không thể thêm món vào giỏ hàng');
+      };
+      console.log('Adding new item to order:', newOrderItem);
+      setOrderItems([...orderItems, newOrderItem]);
     }
+    
+    // Show success feedback
+    Alert.alert('Đã thêm', `Đã thêm "${item.name}" vào đơn hàng!`, [{ text: 'OK' }]);
   };
 
   const updateQuantity = (itemId, change) => {
@@ -1173,25 +1173,6 @@ export default function MenuScreen({ navigation, route }) {
           </View>
         </View>
       </Modal>
-      )}
-      
-      {/* Floating Cart Button - Only show for customers with items in cart */}
-      {isCustomer && (
-        <TouchableOpacity 
-          style={styles.floatingCartButton}
-          onPress={() => navigation.navigate('Cart')}
-        >
-          <View style={styles.floatingCartContent}>
-            <MaterialCommunityIcons name="cart" size={24} color="white" />
-            {getTotalItems && getTotalItems() > 0 && (
-              <View style={styles.floatingCartBadge}>
-                <Text style={styles.floatingCartBadgeText}>
-                  {getTotalItems() > 99 ? '99+' : getTotalItems()}
-                </Text>
-              </View>
-            )}
-          </View>
-        </TouchableOpacity>
       )}
     </View>
   );
@@ -2057,44 +2038,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
-  cartBadge: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    backgroundColor: '#FF6B35',
-    borderRadius: 12,
-    minWidth: 24,
-    height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1,
-  },
-  cartBadgeText: {
-    color: 'white',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  cartControls: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f8f9fa',
-    borderRadius: 20,
-    paddingHorizontal: 4,
-  },
-  cartButton: {
-    backgroundColor: '#FF6B35',
-    borderRadius: 15,
-    width: 30,
-    height: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  cartQuantityText: {
-    marginHorizontal: 12,
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#2C3E50',
-  },
   modalButtonText: {
     color: 'white',
     fontWeight: '600',
@@ -2104,51 +2047,54 @@ const styles = StyleSheet.create({
     color: '#2C3E50',
     marginLeft: 0,
   },
+  // Add to Order button styles (for staff/admin)
+  addToOrderButton: {
+    borderRadius: 20,
+    elevation: 4,
+    shadowColor: '#27AE60',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  addToOrderButtonGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  addToOrderButtonText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginLeft: 6,
+  },
+  // Order quantity badge (for staff/admin)
+  orderQuantityBadge: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    backgroundColor: '#27AE60',
+    borderRadius: 12,
+    minWidth: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
+    borderWidth: 2,
+    borderColor: 'white',
+  },
+  orderQuantityBadgeText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
   // Customer-specific styles for full-width menu
   mainContentFullWidth: {
     flexDirection: 'column', // Stack vertically instead of side-by-side
   },
   menuSectionFullWidth: {
     flex: 1, // Take full available space
-  },
-  // Floating Cart Button
-  floatingCartButton: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#FF6B35',
-    elevation: 6,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4.65,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  floatingCartContent: {
-    position: 'relative',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  floatingCartBadge: {
-    position: 'absolute',
-    top: -12,
-    right: -12,
-    backgroundColor: '#E74C3C',
-    borderRadius: 10,
-    minWidth: 20,
-    height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'white',
-  },
-  floatingCartBadgeText: {
-    color: 'white',
-    fontSize: 12,
-    fontWeight: 'bold',
   },
 });

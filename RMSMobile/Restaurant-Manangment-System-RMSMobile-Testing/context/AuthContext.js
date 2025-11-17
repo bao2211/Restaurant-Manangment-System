@@ -195,9 +195,9 @@ export const AuthProvider = ({ children }) => {
     const userRole = getUserRole();
     console.log('Checking access for role:', userRole, 'to screen:', screenName);
     
-    // Admin has access to everything except Favorites
+    // Admin has access to everything
     if (userRole === 'Admin' || userRole === 'admin' || userRole === 'ADMIN') {
-      return screenName !== 'Favorites';
+      return true;
     }
 
     // Define role permissions based on the requirements
@@ -209,9 +209,9 @@ export const AuthProvider = ({ children }) => {
       'Bep': ['Home', 'Menu', 'OrderDetailManager', 'Profile'],
       'bep': ['Home', 'Menu', 'OrderDetailManager', 'Profile'], // lowercase variant
       'BEP': ['Home', 'Menu', 'OrderDetailManager', 'Profile'], // uppercase variant
-      'Customer': ['Home', 'Menu', 'Favorites', 'Profile'],
-      'customer': ['Home', 'Menu', 'Favorites', 'Profile'], // lowercase variant
-      'CUSTOMER': ['Home', 'Menu', 'Favorites', 'Profile'], // uppercase variant
+      'Customer': ['Home', 'Menu', 'Profile'],
+      'customer': ['Home', 'Menu', 'Profile'], // lowercase variant
+      'CUSTOMER': ['Home', 'Menu', 'Profile'], // uppercase variant
     };
 
     const allowedScreens = rolePermissions[userRole] || ['Home', 'Profile']; // Default fallback
@@ -231,7 +231,6 @@ export const AuthProvider = ({ children }) => {
       { name: 'Home', icon: 'home', title: 'Home', screen: 'Home' },
       { name: 'Menu', icon: 'food', title: 'Our Menu', screen: 'Menu' },
       { name: 'Orders', icon: 'clipboard-list', title: 'My Orders', screen: 'Orders' },
-      { name: 'Favorites', icon: 'heart', title: 'Món Yêu Thích', screen: 'Favorites' },
       { name: 'OrderDetail', icon: 'clipboard-text', title: 'Order Details', screen: 'OrderDetail' },
       { name: 'Table', icon: 'table-chair', title: 'Our Table', screen: 'Table' },
       { name: 'Bill', icon: 'file-document', title: 'Our Bill', screen: 'Bill' },
