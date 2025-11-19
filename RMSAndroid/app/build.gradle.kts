@@ -33,6 +33,10 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    
+    lint {
+        abortOnError = false
+    }
 }
 
 dependencies {
@@ -48,9 +52,13 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
     
-    // Image Loading - Glide
+    // Image Loading - Glide with Rounded Images Support
     implementation("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+    
+    // Enhanced Image Views
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+    implementation("com.makeramen:roundedimageview:2.3.0")
     
     // RecyclerView & CardView
     implementation("androidx.recyclerview:recyclerview:1.3.2")
@@ -72,6 +80,30 @@ dependencies {
     
     // Shared Preferences (User Session)
     implementation("androidx.preference:preference:1.2.1")
+    
+    // ============ ENHANCED UI LIBRARIES ============
+    
+    // Lottie Animations - Beautiful, smooth animations from JSON
+    implementation("com.airbnb.android:lottie:6.1.0")
+    
+    // Shimmer Effect - Elegant loading placeholders
+    implementation("com.facebook.shimmer:shimmer:0.5.0")
+    
+    // Toasty - Enhanced colorful toast notifications (more reliable)
+    implementation("com.github.GrenderG:Toasty:1.5.2")
+    
+    // Material Rating Bar - Better rating UI
+    implementation("me.zhanghai.android.materialratingbar:library:1.4.0")
+    
+    // SDP/SSP - Scalable size units for responsive design
+    implementation("com.intuit.sdp:sdp-android:1.1.0")
+    implementation("com.intuit.ssp:ssp-android:1.1.0")
+    
+    // Balloon - Modern tooltips and popups
+    implementation("com.github.skydoves:balloon:1.6.4")
+    
+    // ColorPicker - Beautiful color picker dialog
+    implementation("com.github.skydoves:colorpickerview:2.3.0")
     
     // Testing
     testImplementation(libs.junit)

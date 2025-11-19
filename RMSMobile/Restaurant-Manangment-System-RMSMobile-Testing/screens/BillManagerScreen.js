@@ -72,6 +72,76 @@ export default function BillManagerScreen() {
     }
   };
 
+  // Extract payment method from order note
+  const extractPaymentMethodFromNote = (note) => {
+    if (!note) return null;
+    
+    // Look for "Thanh toán: [Method]" pattern in the note
+    const paymentRegex = /Thanh toán:\s*(.+?)(?:\n|$)/i;
+    const match = note.match(paymentRegex);
+    
+    if (match && match[1]) {
+      const payment = match[1].trim();
+      console.log('Extracted payment method:', payment);
+      return payment;
+    }
+    
+    return null;
+  };
+
+  // Auto-create bill for completed orders with payment method in note
+  const autoCreateBillIfNeeded = async (order) => {
+    try {
+      const paymentMethod = extractPaymentMethodFromNote(order.note);
+      
+      if (!paymentMethod) {
+        console.log(`Order ${order.id || order.orderId} has no payment method in note, skipping auto-bill`);
+        return false;
+      }
+      
+      console.log(`Auto-creating bill for order ${order.id || order.orderId} with payment: ${paymentMethod}`);
+      
+      const orderId = order.id || order.orderId;
+      const total = await calculateOrderTotal(orderId);
+      const billId = Math.random().toString(36).substr(2, 10);
+      
+      const billData = {
+        billId: billId,
+        orderId: orderId,
+        userId: (order.userId || user?.userId)?.toString().trim(),
+        userName: order.userName || user?.fullName || user?.userName || 'System',
+        total: total,
+        discount: 0,
+        totalFinal: total,
+        payment: paymentMethod,
+        createdTime: new Date().toISOString(),
+      };
+      
+      console.log('Auto-creating bill:', billData);
+      await apiService.createBill(billData);
+      
+      // Update order status to indicate bill created
+      const orderUpdateData = {
+        orderId: orderId,
+        tableId: order.tableId,
+        userId: order.userId,
+        createdTime: order.createDate || order.orderDate || order.createdTime,
+        status: 'Đã tạo bill',
+        total: order.total,
+        discount: order.discount || 0,
+        note: order.note || null,
+        reservationId: order.reservationId || null
+      };
+      await apiService.updateOrder(orderId, orderUpdateData);
+      
+      console.log(`✓ Auto-created bill ${billId} for order ${orderId}`);
+      return true;
+    } catch (error) {
+      console.error('Error auto-creating bill:', error);
+      return false;
+    }
+  };
+
   const fetchCompletedOrders = async () => {
     try {
       const ordersData = await apiService.getAllOrders();
@@ -92,9 +162,30 @@ export default function BillManagerScreen() {
       
       console.log('Completed orders without bills:', completed.length);
       
-      // Calculate totals for each order
+      // Auto-create bills for orders with payment method in note
+      console.log('=== AUTO-CREATING BILLS FOR ORDERS WITH PAYMENT METHOD ===');
+      for (const order of completed) {
+        await autoCreateBillIfNeeded(order);
+      }
+      
+      // Re-fetch to get updated list after auto-bill creation
+      const updatedOrdersData = await apiService.getAllOrders();
+      const updatedBills = await apiService.getAllBills();
+      const updatedBillOrderIds = new Set(updatedBills.map(bill => bill.orderId?.trim()));
+      
+      const remainingCompleted = updatedOrdersData.filter(order => {
+        const status = (order.status || '').toLowerCase().trim();
+        const orderId = (order.id || order.orderId)?.trim();
+        const isCompleted = status === 'hoàn tất' || status === 'complete' || status === 'completed';
+        const hasNoBill = !updatedBillOrderIds.has(orderId);
+        return isCompleted && hasNoBill;
+      });
+      
+      console.log('Remaining completed orders without bills:', remainingCompleted.length);
+      
+      // Calculate totals for remaining orders
       const ordersWithTotals = await Promise.all(
-        completed.map(async order => {
+        remainingCompleted.map(async order => {
           const orderId = order.id || order.orderId;
           const total = await calculateOrderTotal(orderId);
           return { ...order, totalAmount: total };

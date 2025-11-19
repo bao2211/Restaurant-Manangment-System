@@ -5,6 +5,6 @@
     <item
         android:id="@+id/action_cart"
         android:title="Giỏ hàng"
-        android:icon="@android:drawable/ic_menu_save"
+        android:icon="@drawable/ic_shopping_cart"
         app:showAsAction="always"/>
 </menu>

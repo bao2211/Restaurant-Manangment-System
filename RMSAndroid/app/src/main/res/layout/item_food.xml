@@ -3,24 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    android:layout_margin="@dimen/spacing_small"
+    app:cardCornerRadius="@dimen/radius_large"
+    app:cardElevation="@dimen/elevation_high"
+    android:foreground="?android:attr/selectableItemBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="12dp">
+        android:padding="@dimen/spacing_normal"
+        android:background="@android:color/white">
 
-        <!-- Food Image -->
-        <ImageView
+        <!-- Rounded Food Image -->
+        <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/iv_food_image"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="@dimen/image_large"
+            android:layout_height="@dimen/image_large"
             android:scaleType="centerCrop"
             android:background="#EEEEEE"
-            android:src="@android:drawable/ic_menu_gallery"/>
+            android:src="@android:drawable/ic_menu_gallery"
+            app:riv_corner_radius="@dimen/radius_normal"
+            app:riv_border_width="0dp"/>
 
         <!-- Food Info -->
         <LinearLayout
@@ -28,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="@dimen/spacing_normal"
             android:layout_marginEnd="8dp">
 
             <TextView
@@ -36,42 +40,59 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tên món ăn"
-                android:textSize="16sp"
+                android:textSize="@dimen/text_large"
                 android:textStyle="bold"
-                android:textColor="#333333"
+                android:textColor="#222222"
                 android:maxLines="2"
-                android:ellipsize="end"/>
+                android:ellipsize="end"
+                android:letterSpacing="0.01"/>
 
             <TextView
                 android:id="@+id/tv_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Mô tả"
-                android:textSize="12sp"
-                android:textColor="#666666"
+                android:textSize="@dimen/text_normal"
+                android:textColor="#777777"
                 android:maxLines="2"
                 android:ellipsize="end"
-                android:layout_marginTop="4dp"/>
+                android:layout_marginTop="@dimen/spacing_tiny"
+                android:lineSpacingMultiplier="1.2"/>
 
-            <TextView
-                android:id="@+id/tv_price"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="100,000đ"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="#FF6B35"
-                android:layout_marginTop="8dp"/>
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:gravity="center_vertical">
+                
+                <TextView
+                    android:id="@+id/tv_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="100,000đ"
+                    android:textSize="@dimen/text_large"
+                    android:textStyle="bold"
+                    android:textColor="#FF6B35"/>
+                    
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+            </LinearLayout>
         </LinearLayout>
 
-        <!-- Favorite Button -->
+        <!-- Animated Favorite Button -->
         <ImageView
             android:id="@+id/iv_favorite"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="center_vertical"
-            android:src="@android:drawable/star_big_off"
-            android:clickable="true"/>
+            android:src="@drawable/ic_favorite_border"
+            android:padding="6dp"
+            android:clickable="true"
+            android:contentDescription="Add to favorites"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"/>
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

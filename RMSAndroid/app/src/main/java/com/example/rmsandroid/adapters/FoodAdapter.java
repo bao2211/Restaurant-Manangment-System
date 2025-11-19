@@ -34,6 +34,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     
     public void setFoodList(List<FoodInfo> foodList) {
         this.foodList = foodList != null ? foodList : new ArrayList<>();
+        android.util.Log.d("FoodAdapter", "setFoodList called with size=" + this.foodList.size());
         notifyDataSetChanged();
     }
     
@@ -59,6 +60,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     @Override
     public void onBindViewHolder(@NonNull FoodViewHolder holder, int position) {
         holder.bind(foodList.get(position));
+        android.util.Log.d("FoodAdapter", "onBindViewHolder position=" + position + " foodId=" + (foodList.get(position).getFoodId()));
     }
     
     @Override
@@ -95,10 +97,10 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
                 ivFoodImage.setImageResource(android.R.drawable.ic_menu_gallery);
             }
             
-            // Set favorite icon
+            // Set favorite icon (heart)
             ivFavorite.setImageResource(food.isFavorite() ? 
-                    android.R.drawable.star_big_on : 
-                    android.R.drawable.star_big_off);
+                    R.drawable.ic_favorite_filled : 
+                    R.drawable.ic_favorite_border);
             
             // Click listeners
             itemView.setOnClickListener(v -> {

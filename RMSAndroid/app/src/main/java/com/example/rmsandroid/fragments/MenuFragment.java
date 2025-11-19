@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +17,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.rmsandroid.utils.ToastUtils;
+import com.facebook.shimmer.ShimmerFrameLayout;
 
 import com.example.rmsandroid.R;
 import com.example.rmsandroid.adapters.FoodAdapter;
@@ -36,8 +40,9 @@ public class MenuFragment extends Fragment implements FoodAdapter.OnFoodClickLis
     
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
-    private TextView tvEmpty;
+    private LinearLayout tvEmpty;
     private EditText etSearch;
+    private ShimmerFrameLayout shimmerLayout;
     
     private FoodAdapter adapter;
     private ApiService apiService;
@@ -66,6 +71,7 @@ public class MenuFragment extends Fragment implements FoodAdapter.OnFoodClickLis
         progressBar = view.findViewById(R.id.progress_bar);
         tvEmpty = view.findViewById(R.id.tv_empty);
         etSearch = view.findViewById(R.id.et_search);
+        shimmerLayout = view.findViewById(R.id.shimmer_layout);
         
         apiService = RetrofitClient.getApiService();
         sessionManager = new SessionManager(requireContext());
@@ -93,13 +99,17 @@ public class MenuFragment extends Fragment implements FoodAdapter.OnFoodClickLis
     }
     
     private void loadFoodItems() {
-        progressBar.setVisibility(View.VISIBLE);
+        // Show shimmer loading
+        shimmerLayout.startShimmer();
+        shimmerLayout.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
         tvEmpty.setVisibility(View.GONE);
         
         apiService.getAllFoods().enqueue(new Callback<List<FoodInfo>>() {
             @Override
             public void onResponse(Call<List<FoodInfo>> call, Response<List<FoodInfo>> response) {
-                progressBar.setVisibility(View.GONE);
+                shimmerLayout.stopShimmer();
+                shimmerLayout.setVisibility(View.GONE);
                 
                 if (response.isSuccessful() && response.body() != null) {
                     allFoods = response.body();
@@ -111,15 +121,16 @@ public class MenuFragment extends Fragment implements FoodAdapter.OnFoodClickLis
                     }
                 } else {
                     tvEmpty.setVisibility(View.VISIBLE);
-                    Toast.makeText(getContext(), "Không thể tải danh sách món ăn", Toast.LENGTH_SHORT).show();
+                    ToastUtils.showError(getContext(), "Không thể tải danh sách món ăn");
                 }
             }
             
             @Override
             public void onFailure(Call<List<FoodInfo>> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
+                shimmerLayout.stopShimmer();
+                shimmerLayout.setVisibility(View.GONE);
                 tvEmpty.setVisibility(View.VISIBLE);
-                Toast.makeText(getContext(), "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                ToastUtils.showError(getContext(), "Lỗi kết nối: " + t.getMessage());
             }
         });
     }
@@ -145,12 +156,14 @@ public class MenuFragment extends Fragment implements FoodAdapter.OnFoodClickLis
                 }
                 
                 adapter.setFoodList(allFoods);
+                recyclerView.setVisibility(View.VISIBLE);
             }
             
             @Override
             public void onFailure(Call<List<UserFavorite>> call, Throwable t) {
                 // Still show foods even if favorites fail to load
                 adapter.setFoodList(allFoods);
+                recyclerView.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -203,9 +216,8 @@ public class MenuFragment extends Fragment implements FoodAdapter.OnFoodClickLis
                 new com.example.rmsandroid.utils.CartManager(requireContext());
             cartManager.addToCart(food, quantity);
             
-            Toast.makeText(getContext(), 
-                "Đã thêm " + quantity + " " + food.getFoodName() + " vào giỏ hàng", 
-                Toast.LENGTH_SHORT).show();
+            ToastUtils.showSuccess(getContext(), 
+                "Đã thêm " + quantity + " " + food.getFoodName() + " vào giỏ hàng");
         });
         
         builder.setNegativeButton("Hủy", null);
@@ -226,17 +238,17 @@ public class MenuFragment extends Fragment implements FoodAdapter.OnFoodClickLis
                     if (response.isSuccessful()) {
                         food.setFavorite(false);
                         adapter.updateFood(food);
-                        Toast.makeText(getContext(), "Đã xóa khỏi yêu thích", Toast.LENGTH_SHORT).show();
+                        ToastUtils.showSuccess(getContext(), "Đã xóa khỏi yêu thích");
                     } else {
                         android.util.Log.e("MenuFragment", "Remove favorite failed: " + response.code() + " - " + response.message());
-                        Toast.makeText(getContext(), "Không thể xóa: " + response.message(), Toast.LENGTH_SHORT).show();
+                        ToastUtils.showError(getContext(), "Không thể xóa: " + response.message());
                     }
                 }
                 
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
                     android.util.Log.e("MenuFragment", "Remove favorite error: " + t.getMessage(), t);
-                    Toast.makeText(getContext(), "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    ToastUtils.showError(getContext(), "Lỗi: " + t.getMessage());
                 }
             });
         } else {
@@ -249,15 +261,15 @@ public class MenuFragment extends Fragment implements FoodAdapter.OnFoodClickLis
                     if (response.isSuccessful()) {
                         food.setFavorite(true);
                         adapter.updateFood(food);
-                        Toast.makeText(getContext(), "Đã thêm vào yêu thích", Toast.LENGTH_SHORT).show();
+                        ToastUtils.showSuccess(getContext(), "Đã thêm vào yêu thích");
                     } else {
                         android.util.Log.e("MenuFragment", "Add favorite failed: " + response.code() + " - " + response.message());
                         try {
                             String errorBody = response.errorBody() != null ? response.errorBody().string() : "No error body";
                             android.util.Log.e("MenuFragment", "Error body: " + errorBody);
-                            Toast.makeText(getContext(), "Không thể thêm: " + response.message(), Toast.LENGTH_SHORT).show();
+                            ToastUtils.showError(getContext(), "Không thể thêm: " + response.message());
                         } catch (Exception e) {
-                            Toast.makeText(getContext(), "Không thể thêm vào yêu thích", Toast.LENGTH_SHORT).show();
+                            ToastUtils.showError(getContext(), "Không thể thêm vào yêu thích");
                         }
                     }
                 }
@@ -265,7 +277,7 @@ public class MenuFragment extends Fragment implements FoodAdapter.OnFoodClickLis
                 @Override
                 public void onFailure(Call<UserFavorite> call, Throwable t) {
                     android.util.Log.e("MenuFragment", "Add favorite error: " + t.getMessage(), t);
-                    Toast.makeText(getContext(), "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    ToastUtils.showError(getContext(), "Lỗi: " + t.getMessage());
                 }
             });
         }

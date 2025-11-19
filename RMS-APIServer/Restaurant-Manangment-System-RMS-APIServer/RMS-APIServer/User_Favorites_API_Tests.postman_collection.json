@@ -1,0 +1,580 @@
+{
+	"info": {
+		"_postman_id": "favorite-api-tests-001",
+		"name": "User Favorites API Tests",
+		"description": "Comprehensive test collection for User Favorites endpoints in RMS API Server",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Get User Favorites",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test status code",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Test response is JSON",
+							"pm.test(\"Response is JSON\", function () {",
+							"    pm.response.to.be.json;",
+							"});",
+							"",
+							"// Test response is an array",
+							"pm.test(\"Response is an array\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.be.an('array');",
+							"});",
+							"",
+							"// Test response structure if array is not empty",
+							"pm.test(\"Response has correct structure\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    if (jsonData.length > 0) {",
+							"        const firstItem = jsonData[0];",
+							"        pm.expect(firstItem).to.have.property('userFavoriteId');",
+							"        pm.expect(firstItem).to.have.property('userId');",
+							"        pm.expect(firstItem).to.have.property('foodId');",
+							"        pm.expect(firstItem).to.have.property('foodName');",
+							"        pm.expect(firstItem).to.have.property('unitPrice');",
+							"        pm.expect(firstItem).to.have.property('createdTime');",
+							"        ",
+							"        // Save a foodId for use in delete test",
+							"        if (firstItem.foodId) {",
+							"            pm.collectionVariables.set('test_food_id', firstItem.foodId);",
+							"        }",
+							"    }",
+							"});",
+							"",
+							"// Test response time",
+							"pm.test(\"Response time is less than 2000ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/UserFavorite/user/{{test_user_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"UserFavorite",
+						"user",
+						"{{test_user_id}}"
+					]
+				},
+				"description": "Get all favorites for a specific user. Returns an array of favorite items with food details."
+			},
+			"response": []
+		},
+		{
+			"name": "2. Get Favorites for Non-Existent User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test status code - should return 200 with empty array",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Test response is empty array",
+							"pm.test(\"Response is empty array for non-existent user\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.be.an('array');",
+							"    pm.expect(jsonData).to.have.lengthOf(0);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/UserFavorite/user/999999999",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"UserFavorite",
+						"user",
+						"999999999"
+					]
+				},
+				"description": "Test getting favorites for a user that doesn't exist. Should return empty array."
+			},
+			"response": []
+		},
+		{
+			"name": "3. Add Food to Favorites",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test status code",
+							"pm.test(\"Status code is 201 Created\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"// Test response structure",
+							"pm.test(\"Response has correct structure\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('userFavoriteId');",
+							"    pm.expect(jsonData).to.have.property('userId');",
+							"    pm.expect(jsonData).to.have.property('foodId');",
+							"    pm.expect(jsonData).to.have.property('foodName');",
+							"    pm.expect(jsonData).to.have.property('createdTime');",
+							"    pm.expect(jsonData).to.have.property('message');",
+							"});",
+							"",
+							"// Test values match request",
+							"pm.test(\"Response values match request\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData.userId).to.eql(pm.collectionVariables.get('test_user_id'));",
+							"    pm.expect(jsonData.foodId).to.eql(pm.collectionVariables.get('test_food_id'));",
+							"});",
+							"",
+							"// Test success message",
+							"pm.test(\"Success message is present\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData.message).to.include('successfully');",
+							"});",
+							"",
+							"// Save userFavoriteId for later use",
+							"pm.test(\"Save userFavoriteId\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    if (jsonData.userFavoriteId) {",
+							"        pm.collectionVariables.set('created_favorite_id', jsonData.userFavoriteId);",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userId\": \"{{test_user_id}}\",\n  \"foodId\": \"{{test_food_id}}\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/UserFavorite",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"UserFavorite"
+					]
+				},
+				"description": "Add a food item to user's favorites. Returns the created favorite with food details."
+			},
+			"response": []
+		},
+		{
+			"name": "4. Add Duplicate Favorite (Should Fail)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test status code",
+							"pm.test(\"Status code is 409 Conflict\", function () {",
+							"    pm.response.to.have.status(409);",
+							"});",
+							"",
+							"// Test error message",
+							"pm.test(\"Error message indicates duplicate\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('message');",
+							"    pm.expect(jsonData.message.toLowerCase()).to.include('already');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userId\": \"{{test_user_id}}\",\n  \"foodId\": \"{{test_food_id}}\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/UserFavorite",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"UserFavorite"
+					]
+				},
+				"description": "Try to add the same food to favorites again. Should fail with 409 Conflict."
+			},
+			"response": []
+		},
+		{
+			"name": "5. Add Favorite with Non-Existent User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test status code",
+							"pm.test(\"Status code is 404 Not Found\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"// Test error message",
+							"pm.test(\"Error message indicates user not found\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('message');",
+							"    pm.expect(jsonData.message.toLowerCase()).to.include('user');",
+							"    pm.expect(jsonData.message.toLowerCase()).to.include('not found');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userId\": \"999999999\",\n  \"foodId\": \"{{test_food_id}}\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/UserFavorite",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"UserFavorite"
+					]
+				},
+				"description": "Try to add favorite for non-existent user. Should fail with 404."
+			},
+			"response": []
+		},
+		{
+			"name": "6. Add Favorite with Non-Existent Food",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test status code",
+							"pm.test(\"Status code is 404 Not Found\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"// Test error message",
+							"pm.test(\"Error message indicates food not found\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('message');",
+							"    pm.expect(jsonData.message.toLowerCase()).to.include('food');",
+							"    pm.expect(jsonData.message.toLowerCase()).to.include('not found');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userId\": \"{{test_user_id}}\",\n  \"foodId\": \"INVALID999\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/UserFavorite",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"UserFavorite"
+					]
+				},
+				"description": "Try to add favorite with non-existent food. Should fail with 404."
+			},
+			"response": []
+		},
+		{
+			"name": "7. Delete Favorite",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test status code",
+							"pm.test(\"Status code is 200 OK\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Test success message",
+							"pm.test(\"Success message is present\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('message');",
+							"    pm.expect(jsonData.message.toLowerCase()).to.include('removed');",
+							"    pm.expect(jsonData.message.toLowerCase()).to.include('successfully');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/UserFavorite/user/{{test_user_id}}/food/{{test_food_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"UserFavorite",
+						"user",
+						"{{test_user_id}}",
+						"food",
+						"{{test_food_id}}"
+					]
+				},
+				"description": "Remove a food from user's favorites. Should return success message."
+			},
+			"response": []
+		},
+		{
+			"name": "8. Delete Non-Existent Favorite",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test status code",
+							"pm.test(\"Status code is 404 Not Found\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"// Test error message",
+							"pm.test(\"Error message indicates favorite not found\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('message');",
+							"    pm.expect(jsonData.message.toLowerCase()).to.include('favorite');",
+							"    pm.expect(jsonData.message.toLowerCase()).to.include('not found');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/UserFavorite/user/{{test_user_id}}/food/INVALID999",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"UserFavorite",
+						"user",
+						"{{test_user_id}}",
+						"food",
+						"INVALID999"
+					]
+				},
+				"description": "Try to delete a favorite that doesn't exist. Should fail with 404."
+			},
+			"response": []
+		},
+		{
+			"name": "9. Verify Favorite Was Deleted",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test status code",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"// Test that deleted favorite is not in the list",
+							"pm.test(\"Deleted favorite is not in the list\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    const deletedFoodId = pm.collectionVariables.get('test_food_id');",
+							"    ",
+							"    const found = jsonData.find(item => item.foodId === deletedFoodId);",
+							"    pm.expect(found).to.be.undefined;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/UserFavorite/user/{{test_user_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"UserFavorite",
+						"user",
+						"{{test_user_id}}"
+					]
+				},
+				"description": "Get user favorites to verify the deleted item is no longer present."
+			},
+			"response": []
+		},
+		{
+			"name": "10. CORS Preflight Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test status code",
+							"pm.test(\"Status code is 200 or 204\", function () {",
+							"    pm.expect([200, 204]).to.include(pm.response.code);",
+							"});",
+							"",
+							"// Test CORS headers",
+							"pm.test(\"CORS headers are present\", function () {",
+							"    pm.response.to.have.header('Access-Control-Allow-Origin');",
+							"    pm.response.to.have.header('Access-Control-Allow-Methods');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "OPTIONS",
+				"header": [
+					{
+						"key": "Origin",
+						"value": "http://localhost:3000"
+					},
+					{
+						"key": "Access-Control-Request-Method",
+						"value": "POST"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/UserFavorite",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"UserFavorite"
+					]
+				},
+				"description": "Test CORS preflight request to ensure the API supports cross-origin requests."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Set default values if not already set",
+					"if (!pm.collectionVariables.get('base_url')) {",
+					"    pm.collectionVariables.set('base_url', 'http://46.250.231.129:8080');",
+					"}",
+					"",
+					"if (!pm.collectionVariables.get('test_user_id')) {",
+					"    pm.collectionVariables.set('test_user_id', '3292731962');",
+					"}",
+					"",
+					"if (!pm.collectionVariables.get('test_food_id')) {",
+					"    pm.collectionVariables.set('test_food_id', '1         ');",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://46.250.231.129:8080",
+			"type": "string"
+		},
+		{
+			"key": "test_user_id",
+			"value": "3292731962",
+			"type": "string"
+		},
+		{
+			"key": "test_food_id",
+			"value": "1         ",
+			"type": "string"
+		},
+		{
+			"key": "created_favorite_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,11 +16,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.rmsandroid.R;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.example.rmsandroid.adapters.OrderAdapter;
 import com.example.rmsandroid.api.ApiService;
 import com.example.rmsandroid.api.RetrofitClient;
 import com.example.rmsandroid.models.Order;
 import com.example.rmsandroid.utils.SessionManager;
+import com.example.rmsandroid.utils.ToastUtils;
 
 import java.util.List;
 
@@ -31,7 +34,8 @@ public class OrdersFragment extends Fragment implements OrderAdapter.OnOrderClic
     
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
-    private TextView tvEmpty;
+    private LinearLayout tvEmpty;
+    private ShimmerFrameLayout shimmerLayout;
     
     private OrderAdapter adapter;
     private ApiService apiService;
@@ -58,6 +62,7 @@ public class OrdersFragment extends Fragment implements OrderAdapter.OnOrderClic
         recyclerView = view.findViewById(R.id.recycler_view);
         progressBar = view.findViewById(R.id.progress_bar);
         tvEmpty = view.findViewById(R.id.tv_empty);
+        shimmerLayout = view.findViewById(R.id.shimmer_layout);
         
         apiService = RetrofitClient.getApiService();
         sessionManager = new SessionManager(requireContext());
@@ -70,7 +75,10 @@ public class OrdersFragment extends Fragment implements OrderAdapter.OnOrderClic
     }
     
     private void loadOrders() {
-        progressBar.setVisibility(View.VISIBLE);
+        // Show shimmer loading
+        shimmerLayout.startShimmer();
+        shimmerLayout.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
         tvEmpty.setVisibility(View.GONE);
         
         String userId = String.valueOf(sessionManager.getUser().getUserId());
@@ -78,7 +86,8 @@ public class OrdersFragment extends Fragment implements OrderAdapter.OnOrderClic
         apiService.getUserOrders(userId).enqueue(new Callback<List<Order>>() {
             @Override
             public void onResponse(Call<List<Order>> call, Response<List<Order>> response) {
-                progressBar.setVisibility(View.GONE);
+                shimmerLayout.stopShimmer();
+                shimmerLayout.setVisibility(View.GONE);
                 
                 if (response.isSuccessful() && response.body() != null) {
                     List<Order> orders = response.body();
@@ -87,25 +96,27 @@ public class OrdersFragment extends Fragment implements OrderAdapter.OnOrderClic
                         tvEmpty.setVisibility(View.VISIBLE);
                     } else {
                         adapter.setOrderList(orders);
+                        recyclerView.setVisibility(View.VISIBLE);
                     }
                 } else {
                     tvEmpty.setVisibility(View.VISIBLE);
-                    Toast.makeText(getContext(), "Không thể tải đơn hàng", Toast.LENGTH_SHORT).show();
+                    ToastUtils.showError(getContext(), "Không thể tải đơn hàng");
                 }
             }
             
             @Override
             public void onFailure(Call<List<Order>> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
+                shimmerLayout.stopShimmer();
+                shimmerLayout.setVisibility(View.GONE);
                 tvEmpty.setVisibility(View.VISIBLE);
-                Toast.makeText(getContext(), "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                ToastUtils.showError(getContext(), "Lỗi kết nối: " + t.getMessage());
             }
         });
     }
     
     @Override
     public void onOrderClick(Order order) {
-        Toast.makeText(getContext(), "Đơn hàng #" + order.getOrderId(), Toast.LENGTH_SHORT).show();
+        ToastUtils.showInfo(getContext(), "Đơn hàng #" + order.getOrderId());
         // TODO: Show order details dialog or navigate to order detail screen
     }
     

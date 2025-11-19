@@ -50,6 +50,7 @@ public class CheckoutActivity extends AppCompatActivity {
     private CheckBox cbReserveTable;
     private LinearLayout layoutTableSelection;
     private Spinner spinnerTable;
+    private Button btnPaymentCash, btnPaymentCard, btnPaymentTransfer, btnPaymentWallet, btnPaymentUnpaid;
     
     private CartManager cartManager;
     private SessionManager sessionManager;
@@ -58,6 +59,7 @@ public class CheckoutActivity extends AppCompatActivity {
     private List<TableInfo> availableTables = new ArrayList<>();
     private TableInfo selectedTable = null;
     private Calendar selectedDateTime = Calendar.getInstance();
+    private String selectedPaymentMethod = "Tiền mặt"; // Default payment method
     
     private static final int ONLINE_TABLE_ID = 8; // Table ID for online orders
     
@@ -88,11 +90,19 @@ public class CheckoutActivity extends AppCompatActivity {
         layoutTableSelection = findViewById(R.id.layout_table_selection);
         spinnerTable = findViewById(R.id.spinner_table);
         
+        // Payment method buttons
+        btnPaymentCash = findViewById(R.id.btn_payment_cash);
+        btnPaymentCard = findViewById(R.id.btn_payment_card);
+        btnPaymentTransfer = findViewById(R.id.btn_payment_transfer);
+        btnPaymentWallet = findViewById(R.id.btn_payment_wallet);
+        btnPaymentUnpaid = findViewById(R.id.btn_payment_unpaid);
+        
         cartManager = new CartManager(this);
         sessionManager = new SessionManager(this);
         apiService = RetrofitClient.getApiService();
         
         setupTableReservation();
+        setupPaymentMethods();
     }
     
     private void setupTableReservation() {
@@ -132,6 +142,54 @@ public class CheckoutActivity extends AppCompatActivity {
                 selectedTable = null;
             }
         });
+    }
+    
+    private void setupPaymentMethods() {
+        // Set cash as default (already selected)
+        updatePaymentButtonSelection(btnPaymentCash);
+        
+        btnPaymentCash.setOnClickListener(v -> {
+            selectedPaymentMethod = "Tiền mặt";
+            updatePaymentButtonSelection(btnPaymentCash);
+        });
+        
+        btnPaymentCard.setOnClickListener(v -> {
+            selectedPaymentMethod = "Thẻ tín dụng";
+            updatePaymentButtonSelection(btnPaymentCard);
+        });
+        
+        btnPaymentTransfer.setOnClickListener(v -> {
+            selectedPaymentMethod = "Chuyển khoản";
+            updatePaymentButtonSelection(btnPaymentTransfer);
+        });
+        
+        btnPaymentWallet.setOnClickListener(v -> {
+            selectedPaymentMethod = "Ví điện tử";
+            updatePaymentButtonSelection(btnPaymentWallet);
+        });
+        
+        btnPaymentUnpaid.setOnClickListener(v -> {
+            selectedPaymentMethod = "Chưa thanh toán";
+            updatePaymentButtonSelection(btnPaymentUnpaid);
+        });
+    }
+    
+    private void updatePaymentButtonSelection(Button selectedButton) {
+        // Reset all buttons to unselected state
+        resetPaymentButton(btnPaymentCash);
+        resetPaymentButton(btnPaymentCard);
+        resetPaymentButton(btnPaymentTransfer);
+        resetPaymentButton(btnPaymentWallet);
+        resetPaymentButton(btnPaymentUnpaid);
+        
+        // Highlight selected button
+        selectedButton.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light));
+        selectedButton.setTextColor(getResources().getColor(android.R.color.white));
+    }
+    
+    private void resetPaymentButton(Button button) {
+        button.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+        button.setTextColor(getResources().getColor(android.R.color.black));
     }
     
     private void loadAvailableTables() {
@@ -304,7 +362,8 @@ public class CheckoutActivity extends AppCompatActivity {
             noteBuilder.append("SĐT: ").append(phone).append("\n");
             noteBuilder.append("Bàn: ").append(selectedTable.getTableName()).append("\n");
             noteBuilder.append("Ngày: ").append(reservationDate).append("\n");
-            noteBuilder.append("Giờ: ").append(reservationTime);
+            noteBuilder.append("Giờ: ").append(reservationTime).append("\n");
+            noteBuilder.append("Thanh toán: ").append(selectedPaymentMethod);
             
             if (!note.isEmpty()) {
                 noteBuilder.append("\nGhi chú: ").append(note);
@@ -327,7 +386,8 @@ public class CheckoutActivity extends AppCompatActivity {
             noteBuilder.append("=== ĐƠN HÀNG ONLINE ===\n");
             noteBuilder.append("Khách hàng: ").append(fullName).append("\n");
             noteBuilder.append("SĐT: ").append(phone).append("\n");
-            noteBuilder.append("Địa chỉ: ").append(address);
+            noteBuilder.append("Địa chỉ: ").append(address).append("\n");
+            noteBuilder.append("Thanh toán: ").append(selectedPaymentMethod);
             
             if (!note.isEmpty()) {
                 noteBuilder.append("\nGhi chú: ").append(note);

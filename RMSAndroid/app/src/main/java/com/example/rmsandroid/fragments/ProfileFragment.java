@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,9 +17,13 @@ import com.example.rmsandroid.R;
 import com.example.rmsandroid.activities.LoginActivity;
 import com.example.rmsandroid.models.User;
 import com.example.rmsandroid.utils.SessionManager;
+import com.example.rmsandroid.utils.ToastUtils;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileFragment extends Fragment {
     
+    private CircleImageView ivAvatar;
     private TextView tvFullName, tvUsername, tvEmail, tvPhone, tvRole;
     private Button btnLogout;
     
@@ -42,6 +47,7 @@ public class ProfileFragment extends Fragment {
     }
     
     private void initViews(View view) {
+        ivAvatar = view.findViewById(R.id.iv_avatar);
         tvFullName = view.findViewById(R.id.tv_full_name);
         tvUsername = view.findViewById(R.id.tv_username);
         tvEmail = view.findViewById(R.id.tv_email);
@@ -66,6 +72,9 @@ public class ProfileFragment extends Fragment {
     
     private void setupLogoutButton() {
         btnLogout.setOnClickListener(v -> {
+            // Show confirmation toast
+            ToastUtils.showWarningLong(getContext(), "Đang đăng xuất...");
+            
             // Logout
             sessionManager.logout();
             

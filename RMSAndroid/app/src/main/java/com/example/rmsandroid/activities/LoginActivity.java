@@ -17,6 +17,8 @@ import com.example.rmsandroid.api.RetrofitClient;
 import com.example.rmsandroid.models.User;
 import com.example.rmsandroid.utils.SessionManager;
 
+import com.example.rmsandroid.utils.ToastUtils;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -103,24 +105,21 @@ public class LoginActivity extends AppCompatActivity {
                     
                     // Check if user is a customer
                     if (!"Customer".equalsIgnoreCase(user.getRole())) {
-                        Toast.makeText(LoginActivity.this, 
-                            "Ứng dụng này chỉ dành cho khách hàng", 
-                            Toast.LENGTH_LONG).show();
+                        ToastUtils.showWarningLong(LoginActivity.this, 
+                            "Ứng dụng này chỉ dành cho khách hàng");
                         return;
                     }
                     
                     // Save session
                     sessionManager.saveUser(user);
                     
-                    Toast.makeText(LoginActivity.this, 
-                        "Đăng nhập thành công!", 
-                        Toast.LENGTH_SHORT).show();
+                    ToastUtils.showSuccess(LoginActivity.this, 
+                        "Đăng nhập thành công!");
                     
                     navigateToMain();
                 } else {
-                    Toast.makeText(LoginActivity.this, 
-                        "Tên đăng nhập hoặc mật khẩu không đúng", 
-                        Toast.LENGTH_SHORT).show();
+                    ToastUtils.showError(LoginActivity.this, 
+                        "Tên đăng nhập hoặc mật khẩu không đúng");
                 }
             }
             
@@ -128,9 +127,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onFailure(Call<User> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
                 btnLogin.setEnabled(true);
-                Toast.makeText(LoginActivity.this, 
-                    "Lỗi kết nối: " + t.getMessage(), 
-                    Toast.LENGTH_SHORT).show();
+                ToastUtils.showError(LoginActivity.this, 
+                    "Lỗi kết nối: " + t.getMessage());
             }
         });
     }

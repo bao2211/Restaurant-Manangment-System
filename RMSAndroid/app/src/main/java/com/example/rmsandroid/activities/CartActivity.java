@@ -18,6 +18,8 @@ import com.example.rmsandroid.models.CartItem;
 import com.example.rmsandroid.utils.CartManager;
 import com.example.rmsandroid.utils.FormatUtils;
 
+import com.example.rmsandroid.utils.ToastUtils;
+
 import java.util.List;
 
 public class CartActivity extends AppCompatActivity implements CartAdapter.OnCartItemListener {
@@ -93,7 +95,7 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.OnCar
                 .setPositiveButton("Xóa", (dialog, which) -> {
                     cartManager.removeFromCart(item.getFood().getFoodId());
                     loadCart();
-                    Toast.makeText(this, "Đã xóa khỏi giỏ hàng", Toast.LENGTH_SHORT).show();
+                    ToastUtils.showSuccess(this, "Đã xóa khỏi giỏ hàng");
                 })
                 .setNegativeButton("Hủy", null)
                 .show();
@@ -106,7 +108,7 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.OnCar
                 .setPositiveButton("Xóa", (dialog, which) -> {
                     cartManager.clearCart();
                     loadCart();
-                    Toast.makeText(this, "Đã xóa giỏ hàng", Toast.LENGTH_SHORT).show();
+                    ToastUtils.showSuccess(this, "Đã xóa giỏ hàng");
                 })
                 .setNegativeButton("Hủy", null)
                 .show();

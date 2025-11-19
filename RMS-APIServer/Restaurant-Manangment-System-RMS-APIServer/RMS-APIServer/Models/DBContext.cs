@@ -349,7 +349,8 @@ public partial class DBContext : DbContext
         {
             entity.HasKey(e => e.UserFavoriteId).HasName("PK_User_Favorite");
 
-            entity.ToTable("[User_Favorite]");
+            // Map to existing database table named 'UserFavorites'
+            entity.ToTable("UserFavorites");
 
             entity.Property(e => e.UserFavoriteId)
                 .HasMaxLength(10)
@@ -369,11 +370,11 @@ public partial class DBContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.UserFavorites)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK_User_Favorite_User");
+                .HasConstraintName("FK_UserFavorites_User");
 
             entity.HasOne(d => d.Food).WithMany(p => p.UserFavorites)
                 .HasForeignKey(d => d.FoodId)
-                .HasConstraintName("FK_User_Favorite_Food_Info");
+                .HasConstraintName("FK_UserFavorites_Food_Info");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.util.Log;
+
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +24,8 @@ import com.example.rmsandroid.api.RetrofitClient;
 import com.example.rmsandroid.models.FoodInfo;
 import com.example.rmsandroid.models.UserFavorite;
 import com.example.rmsandroid.utils.SessionManager;
+import com.example.rmsandroid.utils.ToastUtils;
+import com.facebook.shimmer.ShimmerFrameLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +38,8 @@ public class FavoritesFragment extends Fragment implements FoodAdapter.OnFoodCli
     
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
-    private TextView tvEmpty;
+    private LinearLayout tvEmpty;
+    private ShimmerFrameLayout shimmerLayout;
     
     private FoodAdapter adapter;
     private ApiService apiService;
@@ -61,6 +67,7 @@ public class FavoritesFragment extends Fragment implements FoodAdapter.OnFoodCli
         recyclerView = view.findViewById(R.id.recycler_view);
         progressBar = view.findViewById(R.id.progress_bar);
         tvEmpty = view.findViewById(R.id.tv_empty);
+        shimmerLayout = view.findViewById(R.id.shimmer_layout);
         
         apiService = RetrofitClient.getApiService();
         sessionManager = new SessionManager(requireContext());
@@ -74,10 +81,24 @@ public class FavoritesFragment extends Fragment implements FoodAdapter.OnFoodCli
     }
     
     private void loadFavorites() {
-        progressBar.setVisibility(View.VISIBLE);
+        // Show shimmer loading
+        shimmerLayout.startShimmer();
+        shimmerLayout.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
         tvEmpty.setVisibility(View.GONE);
         
-        String userId = String.valueOf(sessionManager.getUser().getUserId());
+        String userId = "";
+        if (sessionManager.getUser() != null) {
+            userId = String.valueOf(sessionManager.getUser().getUserId());
+        } else {
+            ToastUtils.showWarning(getContext(), "Vui lòng đăng nhập để xem yêu thích");
+            Log.d("FavoritesFragment", "No logged in user found");
+            shimmerLayout.stopShimmer();
+            shimmerLayout.setVisibility(View.GONE);
+            tvEmpty.setVisibility(View.VISIBLE);
+            return;
+        }
+        Log.d("FavoritesFragment", "Loading favorites for user: " + userId);
         
         // Get user favorites
         apiService.getUserFavorites(userId).enqueue(new Callback<List<UserFavorite>>() {
@@ -85,24 +106,29 @@ public class FavoritesFragment extends Fragment implements FoodAdapter.OnFoodCli
             public void onResponse(Call<List<UserFavorite>> call, Response<List<UserFavorite>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<UserFavorite> favorites = response.body();
+                    Log.d("FavoritesFragment", "getUserFavorites returned: " + favorites.size());
                     
                     if (favorites.isEmpty()) {
-                        progressBar.setVisibility(View.GONE);
+                        shimmerLayout.stopShimmer();
+                        shimmerLayout.setVisibility(View.GONE);
                         tvEmpty.setVisibility(View.VISIBLE);
                     } else {
                         loadFavoriteFoodDetails(favorites);
                     }
                 } else {
-                    progressBar.setVisibility(View.GONE);
+                    shimmerLayout.stopShimmer();
+                    shimmerLayout.setVisibility(View.GONE);
                     tvEmpty.setVisibility(View.VISIBLE);
+                    Log.d("FavoritesFragment", "getUserFavorites response failed: " + response.code());
                 }
             }
             
             @Override
             public void onFailure(Call<List<UserFavorite>> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
+                shimmerLayout.stopShimmer();
+                shimmerLayout.setVisibility(View.GONE);
                 tvEmpty.setVisibility(View.VISIBLE);
-                Toast.makeText(getContext(), "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                ToastUtils.showError(getContext(), "Lỗi kết nối: " + t.getMessage());
             }
         });
     }
@@ -112,42 +138,55 @@ public class FavoritesFragment extends Fragment implements FoodAdapter.OnFoodCli
         apiService.getAllFoods().enqueue(new Callback<List<FoodInfo>>() {
             @Override
             public void onResponse(Call<List<FoodInfo>> call, Response<List<FoodInfo>> response) {
-                progressBar.setVisibility(View.GONE);
+                shimmerLayout.stopShimmer();
+                shimmerLayout.setVisibility(View.GONE);
                 
                 if (response.isSuccessful() && response.body() != null) {
                     List<FoodInfo> allFoods = response.body();
                     favoriteFoods.clear();
+
+                    // Debug logging
+                    Log.d("FavoritesFragment", "Favorites returned: " + favorites.size());
+                    Log.d("FavoritesFragment", "All foods returned: " + allFoods.size());
                     
                     // Filter favorite foods
                     for (FoodInfo food : allFoods) {
                         for (UserFavorite fav : favorites) {
-                            if (food.getFoodId() == fav.getFoodId()) {
+                            String foodId = food.getFoodId();
+                            String favId = fav.getFoodId();
+
+                            if (foodId != null && favId != null && foodId.trim().equals(favId.trim())) {
                                 food.setFavorite(true);
                                 favoriteFoods.add(food);
+                                Log.d("FavoritesFragment", "Matched favorite food: " + foodId.trim());
                                 break;
                             }
                         }
                     }
                     
                     adapter.setFoodList(favoriteFoods);
+                    Log.d("FavoritesFragment", "Adapter set with favorites size: " + favoriteFoods.size());
                     
                     if (favoriteFoods.isEmpty()) {
                         tvEmpty.setVisibility(View.VISIBLE);
+                    } else {
+                        recyclerView.setVisibility(View.VISIBLE);
                     }
                 }
             }
             
             @Override
             public void onFailure(Call<List<FoodInfo>> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
-                Toast.makeText(getContext(), "Lỗi tải chi tiết món ăn", Toast.LENGTH_SHORT).show();
+                shimmerLayout.stopShimmer();
+                shimmerLayout.setVisibility(View.GONE);
+                ToastUtils.showError(getContext(), "Lỗi tải chi tiết món ăn");
             }
         });
     }
     
     @Override
     public void onFoodClick(FoodInfo food) {
-        Toast.makeText(getContext(), "Chọn: " + food.getFoodName(), Toast.LENGTH_SHORT).show();
+        ToastUtils.showInfo(getContext(), "Chọn: " + food.getFoodName());
     }
     
     @Override
@@ -167,13 +206,13 @@ public class FavoritesFragment extends Fragment implements FoodAdapter.OnFoodCli
                         tvEmpty.setVisibility(View.VISIBLE);
                     }
                     
-                    Toast.makeText(getContext(), "Đã xóa khỏi yêu thích", Toast.LENGTH_SHORT).show();
+                    ToastUtils.showSuccess(getContext(), "Đã xóa khỏi yêu thích");
                 }
             }
             
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(getContext(), "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                ToastUtils.showError(getContext(), "Lỗi: " + t.getMessage());
             }
         });
     }

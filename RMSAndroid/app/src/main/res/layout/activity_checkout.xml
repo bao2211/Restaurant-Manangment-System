@@ -85,6 +85,114 @@
                 android:maxLines="3"/>
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Payment Method Selection -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardElevation="2dp"
+            app:cardCornerRadius="8dp"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Phương thức thanh toán *"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Payment method buttons in a grid -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Row 1 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_payment_cash"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="4dp"
+                            android:text="💵 Tiền mặt"
+                            android:textSize="12sp"
+                            app:strokeColor="#FF6B35"
+                            app:strokeWidth="2dp"/>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_payment_card"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="4dp"
+                            android:text="💳 Thẻ"
+                            android:textSize="12sp"
+                            app:strokeColor="#CCCCCC"
+                            app:strokeWidth="2dp"/>
+                    </LinearLayout>
+
+                    <!-- Row 2 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_payment_transfer"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="4dp"
+                            android:text="🏦 Chuyển khoản"
+                            android:textSize="12sp"
+                            app:strokeColor="#CCCCCC"
+                            app:strokeWidth="2dp"/>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_payment_wallet"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="4dp"
+                            android:text="👛 Ví điện tử"
+                            android:textSize="12sp"
+                            app:strokeColor="#CCCCCC"
+                            app:strokeWidth="2dp"/>
+                    </LinearLayout>
+
+                    <!-- Row 3 -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_payment_unpaid"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="⏰ Chưa thanh toán"
+                        android:textSize="12sp"
+                        app:strokeColor="#CCCCCC"
+                        app:strokeWidth="2dp"/>
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
         <!-- Table Reservation Section -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
