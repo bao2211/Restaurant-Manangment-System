@@ -94,7 +94,32 @@ function ProtectedScreen({ children, screenName, fallbackScreen = 'Home' }) {
   return children;
 }
 
+// Cart Header Button Component
+function CartHeaderButton({ navigation }) {
+  const { getTotalItems } = useCart();
+  const { getUserRole } = useContext(AuthContext);
+  const totalItems = getTotalItems();
+  const userRole = getUserRole();
 
+  // Don't show cart button for Admin users
+  if (userRole === 'Admin' || userRole === 'admin' || userRole === 'ADMIN') {
+    return null;
+  }
+
+  return (
+    <TouchableOpacity
+      style={styles.cartButton}
+      onPress={() => navigation.navigate('Cart')}
+    >
+      <MaterialCommunityIcons name="cart" size={24} color="white" />
+      {totalItems > 0 && (
+        <View style={styles.cartBadge}>
+          <Text style={styles.cartBadgeText}>{totalItems}</Text>
+        </View>
+      )}
+    </TouchableOpacity>
+  );
+}
 
 // Main App Stack with Hamburger Menu
 function MainAppStack({ openSidebar }) {

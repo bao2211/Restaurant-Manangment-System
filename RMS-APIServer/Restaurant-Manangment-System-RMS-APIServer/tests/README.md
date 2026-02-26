@@ -1,22 +1,41 @@
-# Restaurant Management System - API Test Suite
+# Test Files
 
-This comprehensive test suite provides multiple ways to test all API endpoints in the Restaurant Management System. It includes special focus on the Order Detail endpoints to verify the status field fix.
+This folder contains all testing resources for the RMS API Server, including Postman collections, HTML tests, and automated test scripts.
+
+## 📁 Folder Structure
+
+```
+tests/
+├── postman/                      # Postman API test collections
+│   ├── Auxiliary_Features_API_Tests.postman_collection.json
+│   ├── BillManager_API_Tests.postman_collection.json
+│   └── Quick_API_Tests.postman_collection.json
+├── api-test.html                 # Generic API test page
+├── api-test-jwt-fix.html         # JWT authentication test
+├── test-fixed-api.html           # Fixed API endpoints test
+├── cors-test.html                # Basic CORS test
+├── cors-test-comprehensive.html  # Comprehensive CORS test
+├── cors-test-enhanced.html       # Enhanced CORS test
+├── cors-test-local.html          # Local CORS test
+├── cors-test-orders.html         # Orders endpoint CORS test
+└── README.md                     # This file
+```
 
 ## 🎯 Test Suite Components
 
-### 1. Node.js Command Line Tests (`tests/apiEndpointTests.js`)
+### 1. Postman Collections (in `postman/` folder)
 
-- **Purpose**: Automated testing from command line
-- **Features**: Comprehensive logging, JSON export, detailed status field analysis
-- **Best for**: CI/CD integration, automated testing, detailed debugging
+- **Purpose**: Professional API testing and documentation
+- **Features**: Organized test suites, environment variables, automated test scripts
+- **Best for**: API documentation, team collaboration, regression testing
 
-### 2. React Native Mobile Test Screen (`screens/APITestScreen.js`)
+### 2. HTML Browser Test Pages
 
-- **Purpose**: In-app testing for mobile developers
-- **Features**: Touch-friendly interface, real-time results, status field visualization
-- **Best for**: Mobile app integration, on-device testing
+- **Purpose**: Quick browser-based endpoint testing
+- **Features**: Real-time results in browser console, easy debugging
+- **Best for**: Development testing, CORS verification, quick checks
 
-### 3. HTML Browser Test Page (`tests/api-test.html`)
+### 3. Original Test Suite (below)
 
 - **Purpose**: Browser-based testing with visual interface
 - **Features**: Interactive UI, real-time updates, export functionality

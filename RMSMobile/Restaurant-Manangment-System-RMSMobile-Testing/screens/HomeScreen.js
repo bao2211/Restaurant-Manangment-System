@@ -79,17 +79,14 @@ export default function HomeScreen({ navigation }) {
     try {
       console.log('🔄 Fetching dashboard data...');
       
-      // Fetch recent orders
-      const ordersResponse = await apiService.orders.getAllOrders();
-      const orders = ordersResponse?.data || [];
+      // Fetch recent orders (apiService functions return data directly, not wrapped in .data)
+      const orders = await apiService.getAllOrders() || [];
       
       // Fetch recent bills for revenue calculation
-      const billsResponse = await apiService.bills.getAllBills();
-      const bills = billsResponse?.data || [];
+      const bills = await apiService.getAllBills() || [];
       
       // Fetch users for customer count
-      const usersResponse = await apiService.users.getAllUsers();
-      const users = usersResponse?.data || [];
+      const users = await apiService.getAllUsers() || [];
       
       // Calculate today's revenue
       const today = new Date().toISOString().split('T')[0];

@@ -1,0 +1,197 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.example.rmsandroid"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="24"
+9        android:targetSdkVersion="36" />
+10
+11    <!-- Internet permissions for API calls -->
+12    <uses-permission android:name="android.permission.INTERNET" />
+12-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:6:5-67
+12-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:6:22-64
+13    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+13-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:7:5-79
+13-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:7:22-76
+14
+15    <permission
+15-->[androidx.core:core:1.9.0] C:\Users\Admin\.gradle\caches\8.13\transforms\05f1d8fd7a369b3b3df7b1d9adad72ae\transformed\core-1.9.0\AndroidManifest.xml:22:5-24:47
+16        android:name="com.example.rmsandroid.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+16-->[androidx.core:core:1.9.0] C:\Users\Admin\.gradle\caches\8.13\transforms\05f1d8fd7a369b3b3df7b1d9adad72ae\transformed\core-1.9.0\AndroidManifest.xml:23:9-81
+17        android:protectionLevel="signature" />
+17-->[androidx.core:core:1.9.0] C:\Users\Admin\.gradle\caches\8.13\transforms\05f1d8fd7a369b3b3df7b1d9adad72ae\transformed\core-1.9.0\AndroidManifest.xml:24:9-44
+18
+19    <uses-permission android:name="com.example.rmsandroid.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+19-->[androidx.core:core:1.9.0] C:\Users\Admin\.gradle\caches\8.13\transforms\05f1d8fd7a369b3b3df7b1d9adad72ae\transformed\core-1.9.0\AndroidManifest.xml:26:5-97
+19-->[androidx.core:core:1.9.0] C:\Users\Admin\.gradle\caches\8.13\transforms\05f1d8fd7a369b3b3df7b1d9adad72ae\transformed\core-1.9.0\AndroidManifest.xml:26:22-94
+20
+21    <application
+21-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:9:5-55:19
+22        android:allowBackup="true"
+22-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:10:9-35
+23        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+23-->[androidx.core:core:1.9.0] C:\Users\Admin\.gradle\caches\8.13\transforms\05f1d8fd7a369b3b3df7b1d9adad72ae\transformed\core-1.9.0\AndroidManifest.xml:28:18-86
+24        android:dataExtractionRules="@xml/data_extraction_rules"
+24-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:11:9-65
+25        android:debuggable="true"
+26        android:extractNativeLibs="false"
+27        android:fullBackupContent="@xml/backup_rules"
+27-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:12:9-54
+28        android:icon="@mipmap/ic_launcher"
+28-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:13:9-43
+29        android:label="@string/app_name"
+29-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:14:9-41
+30        android:roundIcon="@mipmap/ic_launcher_round"
+30-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:15:9-54
+31        android:supportsRtl="true"
+31-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:16:9-35
+32        android:testOnly="true"
+33        android:theme="@style/Theme.RMSAndroid"
+33-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:17:9-48
+34        android:usesCleartextTraffic="true" >
+34-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:18:9-44
+35
+36        <!-- Login Activity - Launcher -->
+37        <activity
+37-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:21:9-29:20
+38            android:name="com.example.rmsandroid.activities.LoginActivity"
+38-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:22:13-53
+39            android:exported="true"
+39-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:23:13-36
+40            android:windowSoftInputMode="adjustResize" >
+40-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:24:13-55
+41            <intent-filter>
+41-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:25:13-28:29
+42                <action android:name="android.intent.action.MAIN" />
+42-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:26:17-69
+42-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:26:25-66
+43
+44                <category android:name="android.intent.category.LAUNCHER" />
+44-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:27:17-77
+44-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:27:27-74
+45            </intent-filter>
+46        </activity>
+47
+48        <!-- Register Activity -->
+49        <activity
+49-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:32:9-35:58
+50            android:name="com.example.rmsandroid.activities.RegisterActivity"
+50-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:33:13-56
+51            android:exported="false"
+51-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:34:13-37
+52            android:windowSoftInputMode="adjustResize" />
+52-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:35:13-55
+53
+54        <!-- Main Activity -->
+55        <activity
+55-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:38:9-40:40
+56            android:name="com.example.rmsandroid.activities.MainActivity"
+56-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:39:13-52
+57            android:exported="false" />
+57-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:40:13-37
+58
+59        <!-- Cart Activity -->
+60        <activity
+60-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:43:9-46:69
+61            android:name="com.example.rmsandroid.activities.CartActivity"
+61-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:44:13-52
+62            android:exported="false"
+62-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:45:13-37
+63            android:parentActivityName="com.example.rmsandroid.activities.MainActivity" />
+63-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:46:13-66
+64
+65        <!-- Checkout Activity -->
+66        <activity
+66-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:49:9-53:58
+67            android:name="com.example.rmsandroid.activities.CheckoutActivity"
+67-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:50:13-56
+68            android:exported="false"
+68-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:51:13-37
+69            android:parentActivityName="com.example.rmsandroid.activities.CartActivity"
+69-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:52:13-66
+70            android:windowSoftInputMode="adjustResize" />
+70-->C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMSAndroid\app\src\main\AndroidManifest.xml:53:13-55
+71
+72        <provider
+72-->[androidx.emoji2:emoji2:1.2.0] C:\Users\Admin\.gradle\caches\8.13\transforms\10c1246f53bd8acbfa4c5f17adece950\transformed\emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
+73            android:name="androidx.startup.InitializationProvider"
+73-->[androidx.emoji2:emoji2:1.2.0] C:\Users\Admin\.gradle\caches\8.13\transforms\10c1246f53bd8acbfa4c5f17adece950\transformed\emoji2-1.2.0\AndroidManifest.xml:25:13-67
+74            android:authorities="com.example.rmsandroid.androidx-startup"
+74-->[androidx.emoji2:emoji2:1.2.0] C:\Users\Admin\.gradle\caches\8.13\transforms\10c1246f53bd8acbfa4c5f17adece950\transformed\emoji2-1.2.0\AndroidManifest.xml:26:13-68
+75            android:exported="false" >
+75-->[androidx.emoji2:emoji2:1.2.0] C:\Users\Admin\.gradle\caches\8.13\transforms\10c1246f53bd8acbfa4c5f17adece950\transformed\emoji2-1.2.0\AndroidManifest.xml:27:13-37
+76            <meta-data
+76-->[androidx.emoji2:emoji2:1.2.0] C:\Users\Admin\.gradle\caches\8.13\transforms\10c1246f53bd8acbfa4c5f17adece950\transformed\emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
+77                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+77-->[androidx.emoji2:emoji2:1.2.0] C:\Users\Admin\.gradle\caches\8.13\transforms\10c1246f53bd8acbfa4c5f17adece950\transformed\emoji2-1.2.0\AndroidManifest.xml:30:17-75
+78                android:value="androidx.startup" />
+78-->[androidx.emoji2:emoji2:1.2.0] C:\Users\Admin\.gradle\caches\8.13\transforms\10c1246f53bd8acbfa4c5f17adece950\transformed\emoji2-1.2.0\AndroidManifest.xml:31:17-49
+79            <meta-data
+79-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\Admin\.gradle\caches\8.13\transforms\95a53fd49f4e841b95a35aee25344004\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:29:13-31:52
+80                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+80-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\Admin\.gradle\caches\8.13\transforms\95a53fd49f4e841b95a35aee25344004\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:30:17-78
+81                android:value="androidx.startup" />
+81-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\Admin\.gradle\caches\8.13\transforms\95a53fd49f4e841b95a35aee25344004\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:31:17-49
+82            <meta-data
+82-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Admin\.gradle\caches\8.13\transforms\37cefa70d61843ca86e8eea38356fead\transformed\profileinstaller-1.3.0\AndroidManifest.xml:29:13-31:52
+83                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+83-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Admin\.gradle\caches\8.13\transforms\37cefa70d61843ca86e8eea38356fead\transformed\profileinstaller-1.3.0\AndroidManifest.xml:30:17-85
+84                android:value="androidx.startup" />
+84-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Admin\.gradle\caches\8.13\transforms\37cefa70d61843ca86e8eea38356fead\transformed\profileinstaller-1.3.0\AndroidManifest.xml:31:17-49
+85        </provider>
+86
+87        <uses-library
+87-->[androidx.window:window:1.0.0] C:\Users\Admin\.gradle\caches\8.13\transforms\9fd998ddfaaeb92aecd4b5e74f6d9e0f\transformed\window-1.0.0\AndroidManifest.xml:25:9-27:40
+88            android:name="androidx.window.extensions"
+88-->[androidx.window:window:1.0.0] C:\Users\Admin\.gradle\caches\8.13\transforms\9fd998ddfaaeb92aecd4b5e74f6d9e0f\transformed\window-1.0.0\AndroidManifest.xml:26:13-54
+89            android:required="false" />
+89-->[androidx.window:window:1.0.0] C:\Users\Admin\.gradle\caches\8.13\transforms\9fd998ddfaaeb92aecd4b5e74f6d9e0f\transformed\window-1.0.0\AndroidManifest.xml:27:13-37
+90        <uses-library
+90-->[androidx.window:window:1.0.0] C:\Users\Admin\.gradle\caches\8.13\transforms\9fd998ddfaaeb92aecd4b5e74f6d9e0f\transformed\window-1.0.0\AndroidManifest.xml:28:9-30:40
+91            android:name="androidx.window.sidecar"
+91-->[androidx.window:window:1.0.0] C:\Users\Admin\.gradle\caches\8.13\transforms\9fd998ddfaaeb92aecd4b5e74f6d9e0f\transformed\window-1.0.0\AndroidManifest.xml:29:13-51
+92            android:required="false" />
+92-->[androidx.window:window:1.0.0] C:\Users\Admin\.gradle\caches\8.13\transforms\9fd998ddfaaeb92aecd4b5e74f6d9e0f\transformed\window-1.0.0\AndroidManifest.xml:30:13-37
+93
+94        <receiver
+94-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Admin\.gradle\caches\8.13\transforms\37cefa70d61843ca86e8eea38356fead\transformed\profileinstaller-1.3.0\AndroidManifest.xml:34:9-52:20
+95            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+95-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Admin\.gradle\caches\8.13\transforms\37cefa70d61843ca86e8eea38356fead\transformed\profileinstaller-1.3.0\AndroidManifest.xml:35:13-76
+96            android:directBootAware="false"
+96-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Admin\.gradle\caches\8.13\transforms\37cefa70d61843ca86e8eea38356fead\transformed\profileinstaller-1.3.0\AndroidManifest.xml:36:13-44
+97            android:enabled="true"
+97-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Admin\.gradle\caches\8.13\transforms\37cefa70d61843ca86e8eea38356fead\transformed\profileinstaller-1.3.0\AndroidManifest.xml:37:13-35
+98            android:exported="true"
+98-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Admin\.gradle\caches\8.13\transforms\37cefa70d61843ca86e8eea38356fead\transformed\profileinstaller-1.3.0\AndroidManifest.xml:38:13-36
+99            android:permission="android.permission.DUMP" >
+99-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Admin\.gradle\caches\8.13\transforms\37cefa70d61843ca86e8eea38356fead\transformed\profileinstaller-1.3.0\AndroidManifest.xml:39:13-57
+100            <intent-filter>
+100-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Admin\.gradle\caches\8.13\transforms\37cefa70d61843ca86e8eea38356fead\transformed\profileinstaller-1.3.0\AndroidManifest.xml:40:13-42:29
+101                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+101-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Admin\.gradle\caches\8.13\transforms\37cefa70d61843ca86e8eea38356fead\transformed\profileinstaller-1.3.0\AndroidManifest.xml:41:17-91
+101-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Admin\.gradle\caches\8.13\transforms\37cefa70d61843ca86e8eea38356fead\transformed\profileinstaller-1.3.0\AndroidManifest.xml:41:25-88
+102            </intent-filter>
+103            <intent-filter>
+103-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Admin\.gradle\caches\8.13\transforms\37cefa70d61843ca86e8eea38356fead\transformed\profileinstaller-1.3.0\AndroidManifest.xml:43:13-45:29
+104                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+104-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Admin\.gradle\caches\8.13\transforms\37cefa70d61843ca86e8eea38356fead\transformed\profileinstaller-1.3.0\AndroidManifest.xml:44:17-85
+104-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Admin\.gradle\caches\8.13\transforms\37cefa70d61843ca86e8eea38356fead\transformed\profileinstaller-1.3.0\AndroidManifest.xml:44:25-82
+105            </intent-filter>
+106            <intent-filter>
+106-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Admin\.gradle\caches\8.13\transforms\37cefa70d61843ca86e8eea38356fead\transformed\profileinstaller-1.3.0\AndroidManifest.xml:46:13-48:29
+107                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+107-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Admin\.gradle\caches\8.13\transforms\37cefa70d61843ca86e8eea38356fead\transformed\profileinstaller-1.3.0\AndroidManifest.xml:47:17-88
+107-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Admin\.gradle\caches\8.13\transforms\37cefa70d61843ca86e8eea38356fead\transformed\profileinstaller-1.3.0\AndroidManifest.xml:47:25-85
+108            </intent-filter>
+109            <intent-filter>
+109-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Admin\.gradle\caches\8.13\transforms\37cefa70d61843ca86e8eea38356fead\transformed\profileinstaller-1.3.0\AndroidManifest.xml:49:13-51:29
+110                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+110-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Admin\.gradle\caches\8.13\transforms\37cefa70d61843ca86e8eea38356fead\transformed\profileinstaller-1.3.0\AndroidManifest.xml:50:17-95
+110-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\Admin\.gradle\caches\8.13\transforms\37cefa70d61843ca86e8eea38356fead\transformed\profileinstaller-1.3.0\AndroidManifest.xml:50:25-92
+111            </intent-filter>
+112        </receiver>
+113    </application>
+114
+115</manifest>

@@ -11,9 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Add WebQlquanAnContext for the new auxiliary tables
+// Add WebQlquanAnContext for the new auxiliary tables - using same connection as DBContext
 builder.Services.AddDbContext<WebQlquanAnContext>(options =>
-    options.UseSqlServer("Server=46.250.231.129;Database=webQLQuanAn;User Id=sa;Password=yB7Y%0Q137cMe%;Encrypt=True;TrustServerCertificate=True;"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Register new services for auxiliary features
 builder.Services.AddScoped<RMS_APIServer.Services.IUserFavoritesService, RMS_APIServer.Services.UserFavoritesService>();

@@ -195,9 +195,9 @@ export const AuthProvider = ({ children }) => {
     const userRole = getUserRole();
     console.log('Checking access for role:', userRole, 'to screen:', screenName);
     
-    // Admin has access to everything
+    // Admin has access to everything except Favorites and Cart
     if (userRole === 'Admin' || userRole === 'admin' || userRole === 'ADMIN') {
-      return true;
+      return screenName !== 'Favorites' && screenName !== 'Cart';
     }
 
     // Define role permissions based on the requirements
@@ -209,9 +209,9 @@ export const AuthProvider = ({ children }) => {
       'Bep': ['Home', 'Menu', 'OrderDetailManager', 'Profile'],
       'bep': ['Home', 'Menu', 'OrderDetailManager', 'Profile'], // lowercase variant
       'BEP': ['Home', 'Menu', 'OrderDetailManager', 'Profile'], // uppercase variant
-      'Customer': ['Home', 'Menu', 'Profile'],
-      'customer': ['Home', 'Menu', 'Profile'], // lowercase variant
-      'CUSTOMER': ['Home', 'Menu', 'Profile'], // uppercase variant
+      'Customer': ['Home', 'Menu', 'Favorites', 'Cart', 'Profile'],
+      'customer': ['Home', 'Menu', 'Favorites', 'Cart', 'Profile'], // lowercase variant
+      'CUSTOMER': ['Home', 'Menu', 'Favorites', 'Cart', 'Profile'], // uppercase variant
     };
 
     const allowedScreens = rolePermissions[userRole] || ['Home', 'Profile']; // Default fallback

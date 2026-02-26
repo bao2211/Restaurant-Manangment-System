@@ -431,10 +431,18 @@ export default function MenuScreen({ navigation, route }) {
               />
             </TouchableOpacity>
           )}
-          {/* Order quantity badge - only show for staff/admin if item is in order */}
-          {!isCustomer && orderQuantity > 0 && (
-            <View style={styles.orderQuantityBadge}>
-              <Text style={styles.orderQuantityBadgeText}>{orderQuantity}</Text>
+          {/* Cart quantity badge - only show for customers */}
+          {isCustomer && cartQuantity > 0 && (
+            <View style={styles.cartBadge}>
+              <Text style={styles.cartBadgeText}>{cartQuantity}</Text>
+            </View>
+          )}
+          {/* Order quantity badge - only show for admin/staff */}
+          {!isCustomer && orderItems.find(orderItem => orderItem.id === item.id) && (
+            <View style={styles.cartBadge}>
+              <Text style={styles.cartBadgeText}>
+                {orderItems.find(orderItem => orderItem.id === item.id).quantity}
+              </Text>
             </View>
           )}
         </View>
@@ -444,6 +452,7 @@ export default function MenuScreen({ navigation, route }) {
           <View style={styles.menuItemFooter}>
             <Text style={styles.menuItemPrice}>{item.price}</Text>
             
+<<<<<<< HEAD
             {/* Add to Order button - only show for staff/admin */}
             {!isCustomer && (
               <TouchableOpacity 
@@ -458,6 +467,68 @@ export default function MenuScreen({ navigation, route }) {
                   <Text style={styles.addToOrderButtonText}>Thêm</Text>
                 </LinearGradient>
               </TouchableOpacity>
+=======
+            {/* For customers: Show cart controls */}
+            {isCustomer && (
+              <>
+                {itemInCart ? (
+                  <View style={styles.cartControls}>
+                    <TouchableOpacity 
+                      style={styles.cartButton}
+                      onPress={() => decreaseQuantity(item.id)}
+                    >
+                      <MaterialCommunityIcons name="minus" size={16} color="white" />
+                    </TouchableOpacity>
+                    <Text style={styles.cartQuantityText}>{cartQuantity}</Text>
+                    <TouchableOpacity 
+                      style={styles.cartButton}
+                      onPress={() => increaseQuantity(item.id)}
+                    >
+                      <MaterialCommunityIcons name="plus" size={16} color="white" />
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <TouchableOpacity 
+                    style={styles.addButton}
+                    onPress={() => handleAddToCart(item)}
+                  >
+                    <MaterialCommunityIcons name="cart-plus" size={20} color="white" />
+                  </TouchableOpacity>
+                )}
+              </>
+            )}
+            
+            {/* For admin/staff: Show order sidebar controls */}
+            {!isCustomer && (
+              <>
+                {orderItems.find(orderItem => orderItem.id === item.id) ? (
+                  <View style={styles.cartControls}>
+                    <TouchableOpacity 
+                      style={styles.cartButton}
+                      onPress={() => updateQuantity(item.id, -1)}
+                    >
+                      <MaterialCommunityIcons name="minus" size={16} color="white" />
+                    </TouchableOpacity>
+                    <Text style={styles.cartQuantityText}>
+                      {orderItems.find(orderItem => orderItem.id === item.id).quantity}
+                    </Text>
+                    <TouchableOpacity 
+                      style={styles.cartButton}
+                      onPress={() => updateQuantity(item.id, 1)}
+                    >
+                      <MaterialCommunityIcons name="plus" size={16} color="white" />
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <TouchableOpacity 
+                    style={styles.addButton}
+                    onPress={() => handleAddToOrder(item)}
+                  >
+                    <MaterialCommunityIcons name="plus-circle" size={20} color="white" />
+                  </TouchableOpacity>
+                )}
+              </>
+>>>>>>> db05865 (- Re-enable customer UI)
             )}
           </View>
         </View>
@@ -496,6 +567,47 @@ export default function MenuScreen({ navigation, route }) {
     
     // Show success feedback
     Alert.alert('Đã thêm', `Đã thêm "${item.name}" vào đơn hàng!`, [{ text: 'OK' }]);
+  };
+
+  // Admin function: Add item to order sidebar (not cart)
+  const handleAddToOrder = (item) => {
+    try {
+      // Check if item already exists in orderItems
+      const existingItem = orderItems.find(orderItem => orderItem.id === item.id);
+      
+      if (existingItem) {
+        // If item exists, increase quantity
+        const updatedItems = orderItems.map(orderItem => {
+          if (orderItem.id === item.id) {
+            return { ...orderItem, quantity: orderItem.quantity + 1 };
+          }
+          return orderItem;
+        });
+        setOrderItems(updatedItems);
+        Alert.alert('Thành công', `Đã tăng số lượng "${item.name}" trong đơn hàng!`);
+      } else {
+        // If item doesn't exist, add it with quantity 1
+        const newOrderItem = {
+          id: item.id,
+          name: item.name,
+          foodName: item.name,
+          price: item.unitPrice,
+          unitPrice: item.unitPrice,
+          foodImage: item.imageUrl,
+          imageUrl: item.imageUrl,
+          description: item.description,
+          categoryId: item.categoryId,
+          quantity: 1
+        };
+        setOrderItems([...orderItems, newOrderItem]);
+        Alert.alert('Thành công', `Đã thêm "${item.name}" vào đơn hàng!`);
+      }
+      
+      console.log('Item added to order:', item.name);
+    } catch (error) {
+      console.error('Error adding to order:', error);
+      Alert.alert('Lỗi', 'Không thể thêm món vào đơn hàng');
+    }
   };
 
   const updateQuantity = (itemId, change) => {
@@ -570,20 +682,30 @@ export default function MenuScreen({ navigation, route }) {
     
     if (orderItems.length === 0) {
       console.log('ERROR: No items in order');
-      Alert.alert('Error', 'Please add items to the order');
+      Alert.alert('Lỗi', 'Vui lòng thêm món vào đơn hàng trước khi gửi');
       return;
     }
 
     if (!selectedTable) {
       console.log('ERROR: No table selected');
-      Alert.alert('Error', 'No table selected');
+      Alert.alert(
+        'Chưa chọn bàn',
+        'Vui lòng chọn bàn từ màn hình Bàn trước khi tạo đơn hàng',
+        [
+          { text: 'Hủy', style: 'cancel' },
+          { 
+            text: 'Chọn bàn', 
+            onPress: () => navigation.navigate('Table')
+          }
+        ]
+      );
       return;
     }
 
     // Validate OrderID format
     if (!validateOrderId(orderId)) {
       console.log('ERROR: Invalid OrderID format');
-      Alert.alert('Error', 'Invalid Order ID format. Order ID must be 10 characters and start with "ORD"');
+      Alert.alert('Lỗi', 'Mã đơn hàng không hợp lệ. Mã đơn hàng phải có 10 ký tự và bắt đầu bằng "ORD"');
       return;
     }
 
@@ -597,7 +719,7 @@ export default function MenuScreen({ navigation, route }) {
       console.log('Connection test result:', connectionTest);
       
       if (!connectionTest) {
-        Alert.alert('Connection Error', 'Cannot connect to the API server. Please check your internet connection and try again.');
+        Alert.alert('Lỗi kết nối', 'Không thể kết nối đến máy chủ API. Vui lòng kiểm tra kết nối internet và thử lại.');
         return;
       }
 
@@ -609,7 +731,7 @@ export default function MenuScreen({ navigation, route }) {
       // Check if current user is available
       if (!user || !user.userId) {
         console.log('ERROR: No current user available');
-        Alert.alert('Error', 'You must be logged in to create an order. Please log in and try again.');
+        Alert.alert('Lỗi', 'Bạn phải đăng nhập để tạo đơn hàng. Vui lòng đăng nhập và thử lại.');
         return;
       }
 
@@ -817,15 +939,26 @@ export default function MenuScreen({ navigation, route }) {
             
             <View style={styles.orderInfoDivider} />
             
-            <View style={styles.orderInfoRow}>
+            <TouchableOpacity 
+              style={styles.orderInfoRow}
+              onPress={() => {
+                console.log('Table selection clicked, navigating to Table screen');
+                navigation.navigate('Table');
+              }}
+            >
               <MaterialCommunityIcons name="table-furniture" size={20} color="#667EEA" />
               <View style={styles.orderInfoContent}>
                 <Text style={styles.orderInfoLabel}>Bàn:</Text>
-                <Text style={styles.orderInfoValue}>
-                  {selectedTable ? `${selectedTable.tableName || selectedTable.tableId}` : 'Chưa chọn bàn'}
+                <Text style={[styles.orderInfoValue, !selectedTable && styles.orderInfoValueWarning]}>
+                  {selectedTable ? `${selectedTable.tableName || selectedTable.tableId}` : 'Chưa chọn bàn (Nhấn để chọn)'}
                 </Text>
               </View>
-            </View>
+              <MaterialCommunityIcons 
+                name="chevron-right" 
+                size={20} 
+                color={!selectedTable ? "#E74C3C" : "#667EEA"} 
+              />
+            </TouchableOpacity>
           </LinearGradient>
         </View>
         
@@ -1363,6 +1496,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#2C3E50',
     fontWeight: '500',
+  },
+  orderInfoValueWarning: {
+    color: '#E74C3C',
+    fontWeight: '600',
   },
   orderInfoDivider: {
     height: 1,

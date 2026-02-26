@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Base API configuration (no trailing slash to avoid double-slash when joining paths)
-const API_BASE_URL = 'http://46.250.231.129:8080'; // Remote server URL
+const API_BASE_URL = 'http://192.168.192.85:8080'; // Production server URL
 // For local testing use: 'https://localhost:7127/' or 'http://localhost:8080/'
 
 const api = axios.create({
@@ -38,13 +38,13 @@ api.interceptors.request.use(
   }
 );
 
-// Add response interceptor for CORS error handling
+// Add response interceptor for CORS error handling and token expiration
 api.interceptors.response.use(
   (response) => {
     console.log(`✅ Response received: ${response.status} ${response.statusText}`);
     return response;
   },
-  (error) => {
+  async (error) => {
     if (error.code === 'ERR_NETWORK' || error.message === 'Network Error') {
       console.error('🌐 Network/CORS Error - This might be a CORS issue');
       console.error('Error details:', {
@@ -59,6 +59,22 @@ api.interceptors.response.use(
     } else if (error.response) {
       console.error(`❌ HTTP Error: ${error.response.status} ${error.response.statusText}`);
       console.error('Response data:', error.response.data);
+      
+      // Handle 401 Unauthorized - token expired
+      if (error.response.status === 401) {
+        console.warn('🔒 Token expired or invalid - user needs to re-login');
+        // Clear stored token
+        delete api.defaults.headers.common['Authorization'];
+        
+        // Optionally clear AsyncStorage (requires import)
+        try {
+          const AsyncStorage = require('@react-native-async-storage/async-storage').default;
+          await AsyncStorage.removeItem('user');
+          console.log('🗑️ Cleared expired user session');
+        } catch (storageError) {
+          console.error('Error clearing storage:', storageError);
+        }
+      }
     } else {
       console.error('❌ Unknown error:', error.message);
     }

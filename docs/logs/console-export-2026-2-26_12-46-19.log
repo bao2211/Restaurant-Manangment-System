@@ -1,0 +1,1652 @@
+Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools bundle.js:59096:17
+"shadow*" style props are deprecated. Use "boxShadow". bundle.js:69718:13
+"textShadow*" style props are deprecated. Use "textShadow". bundle.js:69718:13
+props.pointerEvents is deprecated. Use style.pointerEvents bundle.js:69718:13
+Getting accessible menu items for role: Customer bundle.js:1490:13
+Checking access for role: Customer to screen: Home bundle.js:1466:13
+Role Customer access to Home: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Home (Home) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: Menu bundle.js:1466:13
+Role Customer access to Menu: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Menu (Menu) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: Orders bundle.js:1466:13
+Role Customer access to Orders: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Orders (Orders) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Favorites bundle.js:1466:13
+Role Customer access to Favorites: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Favorites (Favorites) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: OrderDetail bundle.js:1466:13
+Role Customer access to OrderDetail: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item OrderDetail (OrderDetail) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Table bundle.js:1466:13
+Role Customer access to Table: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Table (Table) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Bill bundle.js:1466:13
+Role Customer access to Bill: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Bill (Bill) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: BillManager bundle.js:1466:13
+Role Customer access to BillManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item BillManager (BillManager) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Report bundle.js:1466:13
+Role Customer access to Report: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Report (Report) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Profile bundle.js:1466:13
+Role Customer access to Profile: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Profile (Profile) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: MenuManager bundle.js:1466:13
+Role Customer access to MenuManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item MenuManager (MenuManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: IngredientManager bundle.js:1466:13
+Role Customer access to IngredientManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item IngredientManager (IngredientManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: OrderDetailManager bundle.js:1466:13
+Role Customer access to OrderDetailManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item OrderDetailManager (OrderDetailManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: UserManagement bundle.js:1466:13
+Role Customer access to UserManagement: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item UserManagement (UserManagement) - Access: NO bundle.js:1570:15
+Final accessible items - Main: 4, Management: 0 bundle.js:1573:13
+CustomSidebarMenu - Current user role: Customer bundle.js:495:11
+CustomSidebarMenu - Accessible main menu items: 4 bundle.js:496:11
+CustomSidebarMenu - Accessible management menu items: 0 bundle.js:497:11
+🔄 Fetching dashboard data... bundle.js:91797:17
+Fetching all orders from API... bundle.js:108984:17
+Animated: `useNativeDriver` is not supported because the native animated module is missing. Falling back to JS-based animation. To resolve this, add `RCTAnimation` module to this app, or remove `useNativeDriver`. Make sure to run `bundle exec pod install` first. Read more about autolinking: https://github.com/react-native-community/cli/blob/master/docs/autolinking.md bundle.js:71017:15
+🚀 Making GET request to: /api/Order bundle.js:108453:11
+Getting accessible menu items for role: Customer bundle.js:1490:13
+Checking access for role: Customer to screen: Home bundle.js:1466:13
+Role Customer access to Home: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Home (Home) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: Menu bundle.js:1466:13
+Role Customer access to Menu: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Menu (Menu) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: Orders bundle.js:1466:13
+Role Customer access to Orders: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Orders (Orders) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Favorites bundle.js:1466:13
+Role Customer access to Favorites: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Favorites (Favorites) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: OrderDetail bundle.js:1466:13
+Role Customer access to OrderDetail: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item OrderDetail (OrderDetail) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Table bundle.js:1466:13
+Role Customer access to Table: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Table (Table) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Bill bundle.js:1466:13
+Role Customer access to Bill: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Bill (Bill) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: BillManager bundle.js:1466:13
+Role Customer access to BillManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item BillManager (BillManager) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Report bundle.js:1466:13
+Role Customer access to Report: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Report (Report) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Profile bundle.js:1466:13
+Role Customer access to Profile: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Profile (Profile) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: MenuManager bundle.js:1466:13
+Role Customer access to MenuManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item MenuManager (MenuManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: IngredientManager bundle.js:1466:13
+Role Customer access to IngredientManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item IngredientManager (IngredientManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: OrderDetailManager bundle.js:1466:13
+Role Customer access to OrderDetailManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item OrderDetailManager (OrderDetailManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: UserManagement bundle.js:1466:13
+Role Customer access to UserManagement: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item UserManagement (UserManagement) - Access: NO bundle.js:1570:15
+Final accessible items - Main: 4, Management: 0 bundle.js:1573:13
+CustomSidebarMenu - Current user role: Customer bundle.js:495:11
+CustomSidebarMenu - Accessible main menu items: 4 bundle.js:496:11
+CustomSidebarMenu - Accessible management menu items: 0 bundle.js:497:11
+✅ Response received: 200 OK bundle.js:108460:11
+Raw orders response: 
+Array(81) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+bundle.js:108986:17
+extractApiData - Input data: 
+Array(81) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+bundle.js:108620:11
+Found direct array with length: 81 bundle.js:108622:13
+normalizeKeyName: status -> status 247 bundle.js:108500:13
+extractApiData - Processed items: 81 bundle.js:108638:13
+extractApiData - Sample processed item: 
+Object { id: "HD12D62804", tableId: "2", userId: "4", orderDate: "2025-07-05T18:42:05.943", status: "Đã tạo bill", total: 882005, discount: 0, orderDetails: (1) […] }
+bundle.js:108639:13
+Extracted orders data: 
+Array(81) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+bundle.js:108988:17
+Fetching all bills from API... bundle.js:109616:17
+🚀 Making GET request to: /api/Bill bundle.js:108453:11
+✅ Response received: 200 OK bundle.js:108460:11
+Raw bills response: 
+Array(49) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+bundle.js:109618:17
+extractApiData - Input data: 
+Array(49) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+bundle.js:108620:11
+Found direct array with length: 49 bundle.js:108622:13
+extractApiData - Processed items: 49 bundle.js:108638:13
+extractApiData - Sample processed item: 
+Object { billId: "486yrdza31", orderId: "ORD8419448", userId: "4", userName: "VAnh", total: 40000, discount: 0, totalFinal: 40000, payment: "Chưa thanh toán", createdTime: "2025-10-27T15:57:31.35" }
+bundle.js:108639:13
+Extracted bills data: 
+Array(49) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+bundle.js:109620:17
+Fetching all users from API... bundle.js:109493:17
+🚀 Making GET request to: /api/User bundle.js:108453:11
+✅ Response received: 200 OK bundle.js:108460:11
+Raw users response: 
+Array(5) [ {…}, {…}, {…}, {…}, {…} ]
+bundle.js:109495:17
+extractApiData - Input data: 
+Array(5) [ {…}, {…}, {…}, {…}, {…} ]
+bundle.js:108620:11
+Found direct array with length: 5 bundle.js:108622:13
+extractApiData - Processed items: 5 bundle.js:108638:13
+extractApiData - Sample processed item: 
+Object { userId: "1", userName: "abc", password: "abc1234", role: "NV", fullName: "Duong", phone: 12345, email: "duongcho@gmail.com", bills: [], orders: [] }
+bundle.js:108639:13
+Extracted users data: 
+Array(5) [ {…}, {…}, {…}, {…}, {…} ]
+bundle.js:109497:17
+✅ Dashboard data loaded successfully bundle.js:91853:17
+📊 Stats: 
+Object { todayRevenue: 0, totalOrders: 0, totalCustomers: 0 }
+bundle.js:91854:17
+Getting accessible menu items for role: Customer bundle.js:1490:13
+Checking access for role: Customer to screen: Home bundle.js:1466:13
+Role Customer access to Home: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Home (Home) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: Menu bundle.js:1466:13
+Role Customer access to Menu: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Menu (Menu) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: Orders bundle.js:1466:13
+Role Customer access to Orders: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Orders (Orders) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Favorites bundle.js:1466:13
+Role Customer access to Favorites: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Favorites (Favorites) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: OrderDetail bundle.js:1466:13
+Role Customer access to OrderDetail: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item OrderDetail (OrderDetail) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Table bundle.js:1466:13
+Role Customer access to Table: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Table (Table) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Bill bundle.js:1466:13
+Role Customer access to Bill: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Bill (Bill) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: BillManager bundle.js:1466:13
+Role Customer access to BillManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item BillManager (BillManager) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Report bundle.js:1466:13
+Role Customer access to Report: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Report (Report) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Profile bundle.js:1466:13
+Role Customer access to Profile: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Profile (Profile) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: MenuManager bundle.js:1466:13
+Role Customer access to MenuManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item MenuManager (MenuManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: IngredientManager bundle.js:1466:13
+Role Customer access to IngredientManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item IngredientManager (IngredientManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: OrderDetailManager bundle.js:1466:13
+Role Customer access to OrderDetailManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item OrderDetailManager (OrderDetailManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: UserManagement bundle.js:1466:13
+Role Customer access to UserManagement: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item UserManagement (UserManagement) - Access: NO bundle.js:1570:15
+Final accessible items - Main: 4, Management: 0 bundle.js:1573:13
+CustomSidebarMenu - Current user role: Customer bundle.js:495:11
+CustomSidebarMenu - Accessible main menu items: 4 bundle.js:496:11
+CustomSidebarMenu - Accessible management menu items: 0 bundle.js:497:11
+TouchableWithoutFeedback is deprecated. Please use Pressable. bundle.js:69718:13
+Getting accessible menu items for role: Customer bundle.js:1490:13
+Checking access for role: Customer to screen: Home bundle.js:1466:13
+Role Customer access to Home: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Home (Home) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: Menu bundle.js:1466:13
+Role Customer access to Menu: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Menu (Menu) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: Orders bundle.js:1466:13
+Role Customer access to Orders: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Orders (Orders) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Favorites bundle.js:1466:13
+Role Customer access to Favorites: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Favorites (Favorites) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: OrderDetail bundle.js:1466:13
+Role Customer access to OrderDetail: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item OrderDetail (OrderDetail) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Table bundle.js:1466:13
+Role Customer access to Table: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Table (Table) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Bill bundle.js:1466:13
+Role Customer access to Bill: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Bill (Bill) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: BillManager bundle.js:1466:13
+Role Customer access to BillManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item BillManager (BillManager) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Report bundle.js:1466:13
+Role Customer access to Report: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Report (Report) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Profile bundle.js:1466:13
+Role Customer access to Profile: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Profile (Profile) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: MenuManager bundle.js:1466:13
+Role Customer access to MenuManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item MenuManager (MenuManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: IngredientManager bundle.js:1466:13
+Role Customer access to IngredientManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item IngredientManager (IngredientManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: OrderDetailManager bundle.js:1466:13
+Role Customer access to OrderDetailManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item OrderDetailManager (OrderDetailManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: UserManagement bundle.js:1466:13
+Role Customer access to UserManagement: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item UserManagement (UserManagement) - Access: NO bundle.js:1570:15
+Final accessible items - Main: 4, Management: 0 bundle.js:1573:13
+CustomSidebarMenu - Current user role: Customer bundle.js:495:11
+CustomSidebarMenu - Accessible main menu items: 4 bundle.js:496:11
+CustomSidebarMenu - Accessible management menu items: 0 bundle.js:497:11
+Checking access for role: Customer to screen: Menu bundle.js:1466:13
+Role Customer access to Menu: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+MenuScreen - Current user role: Customer Is Customer: true bundle.js:96505:11
+=== STARTING CONNECTION TESTS === bundle.js:96623:17
+Testing with axios... bundle.js:96624:17
+Testing API connection to: http://192.168.192.85:8080 bundle.js:108711:17
+Full URL being tested: http://192.168.192.85:8080api/Category bundle.js:108712:17
+Checking access for role: Customer to screen: Menu bundle.js:1466:13
+Role Customer access to Menu: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+🚀 Making GET request to: /api/Category bundle.js:108453:11
+✅ Response received: 200 OK bundle.js:108460:11
+Connection test successful - Status: 200 bundle.js:108714:17
+Response headers: 
+Object { "content-type": "application/json; charset=utf-8" }
+bundle.js:108715:17
+Response data preview: [{"cateId":"1         ","cateName":"Cơm","foodInfos":[]},{"cateId":"2         ","cateName":"Canh","foodInfos":[]},{"cateId":"3         ","cateName":"Súp","foodInfos":[]},{"cateId":"4         ","cateNa bundle.js:108716:17
+Axios test result: true bundle.js:96626:17
+Testing with fetch... bundle.js:96627:17
+Testing with native fetch API... bundle.js:108657:17
+Fetch URL: http://192.168.192.85:8080api/Category bundle.js:108659:17
+Fetch test failed: TypeError: Window.fetch: http://192.168.192.85:8080api/Category is not a valid URL.
+    _testWithFetch apiService.js:363
+    Babel 2
+    node_modules bundle.js:2073
+    node_modules bundle.js:2065
+    testWithFetch apiService.js:357
+    _ref2 MenuScreen.js:135
+    Babel 4
+    node_modules bundle.js:2073
+    node_modules bundle.js:2065
+    fetchCategories MenuScreen.js:121
+    MenuScreen MenuScreen.js:76
+    React 18
+    Webpack 25
+bundle.js:108690:17
+Fetch test result: 
+Object { success: false, error: "CORS or Network Error: Unable to connect to server" }
+bundle.js:96629:17
+Fetching categories from API... bundle.js:108771:17
+🚀 Making GET request to: /api/Category bundle.js:108453:11
+✅ Response received: 200 OK bundle.js:108460:11
+Raw categories response: 
+Array(9) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…} ]
+bundle.js:108773:17
+extractApiData - Input data: 
+Array(9) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…} ]
+bundle.js:108620:11
+Found direct array with length: 9 bundle.js:108622:13
+extractApiData - Processed items: 9 bundle.js:108638:13
+extractApiData - Sample processed item: 
+Object { cateId: "1", cateName: "Cơm", foodInfos: [] }
+bundle.js:108639:13
+Extracted categories data: 
+Array(9) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…} ]
+bundle.js:108775:17
+Number of categories: 9 bundle.js:108776:17
+Categories fetched: 
+Array(9) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…} ]
+bundle.js:96659:17
+Transformed categories: 
+Array(10) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…} ]
+bundle.js:96681:17
+Setting selected category to: all bundle.js:96684:19
+MenuScreen - Current user role: Customer Is Customer: true bundle.js:96505:11
+Fetching all food items from all categories bundle.js:96711:19
+Fetching food items for category: 1 bundle.js:108854:17
+MenuScreen - Current user role: Customer Is Customer: true bundle.js:96505:11
+🚀 Making GET request to: /api/FoodInfo/category/1 bundle.js:108453:11
+✅ Response received: 200 OK bundle.js:108460:11
+Raw food items response for category: 
+Array(5) [ {…}, {…}, {…}, {…}, {…} ]
+bundle.js:108857:17
+extractApiData - Input data: 
+Array(5) [ {…}, {…}, {…}, {…}, {…} ]
+bundle.js:108620:11
+Found direct array with length: 5 bundle.js:108622:13
+extractApiData - Processed items: 5 bundle.js:108638:13
+extractApiData - Sample processed item: 
+Object { foodId: "1", foodName: "Cơm gà xối mỡ", unitPrice: 56000, cateId: "1", foodImage: "https://barona.vn/storage/meo-vat/83/com-ga-xoi-mo.jpg", categoryName: "Cơm" }
+bundle.js:108639:13
+Main extracted items: 
+Array(5) [ {…}, {…}, {…}, {…}, {…} ]
+bundle.js:108859:17
+Using main extracted items: 
+Array(5) [ {…}, {…}, {…}, {…}, {…} ]
+bundle.js:108876:17
+Number of main extracted items: 5 bundle.js:108877:17
+Fetching food items for category: 2 bundle.js:108854:17
+🚀 Making GET request to: /api/FoodInfo/category/2 bundle.js:108453:11
+✅ Response received: 200 OK bundle.js:108460:11
+Raw food items response for category: 
+Array(5) [ {…}, {…}, {…}, {…}, {…} ]
+bundle.js:108857:17
+extractApiData - Input data: 
+Array(5) [ {…}, {…}, {…}, {…}, {…} ]
+bundle.js:108620:11
+Found direct array with length: 5 bundle.js:108622:13
+extractApiData - Processed items: 5 bundle.js:108638:13
+extractApiData - Sample processed item: 
+Object { foodId: "19", foodName: "Canh Bí Đỏ", unitPrice: 55000, cateId: "2", foodImage: "https://beptruong.edu.vn/wp-content/uploads/2020/07/cach-nau-canh-bi-do-don-gian.jpg", categoryName: "Canh" }
+bundle.js:108639:13
+Main extracted items: 
+Array(5) [ {…}, {…}, {…}, {…}, {…} ]
+bundle.js:108859:17
+Using main extracted items: 
+Array(5) [ {…}, {…}, {…}, {…}, {…} ]
+bundle.js:108876:17
+Number of main extracted items: 5 bundle.js:108877:17
+Fetching food items for category: 3 bundle.js:108854:17
+🚀 Making GET request to: /api/FoodInfo/category/3 bundle.js:108453:11
+✅ Response received: 200 OK bundle.js:108460:11
+Raw food items response for category: 
+Array [ {…}, {…} ]
+bundle.js:108857:17
+extractApiData - Input data: 
+Array [ {…}, {…} ]
+bundle.js:108620:11
+Found direct array with length: 2 bundle.js:108622:13
+extractApiData - Processed items: 2 bundle.js:108638:13
+extractApiData - Sample processed item: 
+Object { foodId: "8", foodName: "Súp gà", unitPrice: 30000, cateId: "3", foodImage: "https://cdn.tgdd.vn/2021/10/CookRecipe/GalleryStep/thanh-pham-1640.jpg", categoryName: "Súp" }
+bundle.js:108639:13
+Main extracted items: 
+Array [ {…}, {…} ]
+bundle.js:108859:17
+Using main extracted items: 
+Array [ {…}, {…} ]
+bundle.js:108876:17
+Number of main extracted items: 2 bundle.js:108877:17
+Fetching food items for category: 4 bundle.js:108854:17
+🚀 Making GET request to: /api/FoodInfo/category/4 bundle.js:108453:11
+✅ Response received: 200 OK bundle.js:108460:11
+Raw food items response for category: 
+Array [ {…}, {…} ]
+bundle.js:108857:17
+extractApiData - Input data: 
+Array [ {…}, {…} ]
+bundle.js:108620:11
+Found direct array with length: 2 bundle.js:108622:13
+extractApiData - Processed items: 2 bundle.js:108638:13
+extractApiData - Sample processed item: 
+Object { foodId: "10", foodName: "Mì xào bò", unitPrice: 40000, cateId: "4", foodImage: "https://maisonmando.com/wp-content/uploads/2022/04/cach-lam-mi-xao-bo-1-1.jpg", categoryName: "Mì Xào" }
+bundle.js:108639:13
+Main extracted items: 
+Array [ {…}, {…} ]
+bundle.js:108859:17
+Using main extracted items: 
+Array [ {…}, {…} ]
+bundle.js:108876:17
+Number of main extracted items: 2 bundle.js:108877:17
+Fetching food items for category: 5 bundle.js:108854:17
+🚀 Making GET request to: /api/FoodInfo/category/5 bundle.js:108453:11
+✅ Response received: 200 OK bundle.js:108460:11
+Raw food items response for category: 
+Array(3) [ {…}, {…}, {…} ]
+bundle.js:108857:17
+extractApiData - Input data: 
+Array(3) [ {…}, {…}, {…} ]
+bundle.js:108620:11
+Found direct array with length: 3 bundle.js:108622:13
+extractApiData - Processed items: 3 bundle.js:108638:13
+extractApiData - Sample processed item: 
+Object { foodId: "12", foodName: "Rau muống xào tỏi", unitPrice: 30000, cateId: "5", foodImage: "https://cdn.tgdd.vn/2021/04/CookRecipe/GalleryStep/thanh-pham-1347.jpg", categoryName: "Rau" }
+bundle.js:108639:13
+Main extracted items: 
+Array(3) [ {…}, {…}, {…} ]
+bundle.js:108859:17
+Using main extracted items: 
+Array(3) [ {…}, {…}, {…} ]
+bundle.js:108876:17
+Number of main extracted items: 3 bundle.js:108877:17
+Fetching food items for category: 6 bundle.js:108854:17
+🚀 Making GET request to: /api/FoodInfo/category/6 bundle.js:108453:11
+✅ Response received: 200 OK bundle.js:108460:11
+Raw food items response for category: 
+Array [ {…}, {…} ]
+bundle.js:108857:17
+extractApiData - Input data: 
+Array [ {…}, {…} ]
+bundle.js:108620:11
+Found direct array with length: 2 bundle.js:108622:13
+extractApiData - Processed items: 2 bundle.js:108638:13
+extractApiData - Sample processed item: 
+Object { foodId: "15", foodName: "Gà quay", unitPrice: 120000, cateId: "6", foodImage: "https://cdn.tgdd.vn/2021/03/CookRecipe/GalleryStep/thanh-pham-287.jpg", categoryName: "Gà" }
+bundle.js:108639:13
+Main extracted items: 
+Array [ {…}, {…} ]
+bundle.js:108859:17
+Using main extracted items: 
+Array [ {…}, {…} ]
+bundle.js:108876:17
+Number of main extracted items: 2 bundle.js:108877:17
+Fetching food items for category: 7 bundle.js:108854:17
+🚀 Making GET request to: /api/FoodInfo/category/7 bundle.js:108453:11
+✅ Response received: 200 OK bundle.js:108460:11
+Raw food items response for category: 
+Array(4) [ {…}, {…}, {…}, {…} ]
+bundle.js:108857:17
+extractApiData - Input data: 
+Array(4) [ {…}, {…}, {…}, {…} ]
+bundle.js:108620:11
+Found direct array with length: 4 bundle.js:108622:13
+extractApiData - Processed items: 4 bundle.js:108638:13
+extractApiData - Sample processed item: 
+Object { foodId: "17", foodName: "Nước suối", unitPrice: 7000, cateId: "7", foodImage: "https://bizweb.dktcdn.net/100/333/628/files/nuoc-sach-giau-khoang.jpg?v=1601260428010", categoryName: "Thức Uống" }
+bundle.js:108639:13
+Main extracted items: 
+Array(4) [ {…}, {…}, {…}, {…} ]
+bundle.js:108859:17
+Using main extracted items: 
+Array(4) [ {…}, {…}, {…}, {…} ]
+bundle.js:108876:17
+Number of main extracted items: 4 bundle.js:108877:17
+Fetching food items for category: 8 bundle.js:108854:17
+🚀 Making GET request to: /api/FoodInfo/category/8 bundle.js:108453:11
+✅ Response received: 200 OK bundle.js:108460:11
+Raw food items response for category: 
+Array [ {…} ]
+bundle.js:108857:17
+extractApiData - Input data: 
+Array [ {…} ]
+bundle.js:108620:11
+Found direct array with length: 1 bundle.js:108622:13
+extractApiData - Processed items: 1 bundle.js:108638:13
+extractApiData - Sample processed item: 
+Object { foodId: "FD2FDC9982", foodName: "Cá lóc nướng chui", unitPrice: 120000, cateId: "8", foodImage: "https://toplistcantho.com/wp-content/uploads/2020/07/quan-ca-loc-nuong-ngon-o-can-tho-11.jpg", categoryName: "Cá" }
+bundle.js:108639:13
+Main extracted items: 
+Array [ {…} ]
+bundle.js:108859:17
+Using main extracted items: 
+Array [ {…} ]
+bundle.js:108876:17
+Number of main extracted items: 1 bundle.js:108877:17
+Fetching food items for category: 9 bundle.js:108854:17
+🚀 Making GET request to: /api/FoodInfo/category/9 bundle.js:108453:11
+✅ Response received: 200 OK bundle.js:108460:11
+Raw food items response for category: 
+Array []
+bundle.js:108857:17
+extractApiData - Input data: 
+Array []
+bundle.js:108620:11
+Found direct array with length: 0 bundle.js:108622:13
+extractApiData - Processed items: 0 bundle.js:108638:13
+extractApiData - Sample processed item: undefined bundle.js:108639:13
+Main extracted items: 
+Array []
+bundle.js:108859:17
+Using main extracted items: 
+Array []
+bundle.js:108876:17
+Number of main extracted items: 0 bundle.js:108877:17
+Food items fetched: 
+Array(24) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+bundle.js:96728:17
+MenuScreen - Current user role: Customer Is Customer: true bundle.js:96505:11
+Image: style.resizeMode is deprecated. Please use props.resizeMode. bundle.js:69718:13
+Failed to load image for Trà Vải: https://poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg bundle.js:96878:21
+MenuScreen - Current user role: Customer Is Customer: true 2 bundle.js:96505:11
+MenuScreen - Current user role: Customer Is Customer: true bundle.js:96505:11
+MenuScreen - Current user role: Customer Is Customer: true bundle.js:96505:11
+MenuScreen - Current user role: Customer Is Customer: true bundle.js:96505:11
+MenuScreen - Current user role: Customer Is Customer: true bundle.js:96505:11
+MenuScreen - Current user role: Customer Is Customer: true bundle.js:96505:11
+MenuScreen - Current user role: Customer Is Customer: true bundle.js:96505:11
+MenuScreen - Current user role: Customer Is Customer: true bundle.js:96505:11
+MenuScreen - Current user role: Customer Is Customer: true bundle.js:96505:11
+MenuScreen - Current user role: Customer Is Customer: true 5 bundle.js:96505:11
+Failed to load image for Cơm cháy kho quẹt: /Content/img/com-chay-kho-quet.jpg bundle.js:96878:21
+MenuScreen - Current user role: Customer Is Customer: true 2 bundle.js:96505:11
+Checking access for role: Customer to screen: Menu bundle.js:1466:13
+Role Customer access to Menu: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+MenuScreen - Current user role: Customer Is Customer: true bundle.js:96505:11
+Getting accessible menu items for role: Customer bundle.js:1490:13
+Checking access for role: Customer to screen: Home bundle.js:1466:13
+Role Customer access to Home: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Home (Home) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: Menu bundle.js:1466:13
+Role Customer access to Menu: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Menu (Menu) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: Orders bundle.js:1466:13
+Role Customer access to Orders: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Orders (Orders) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Favorites bundle.js:1466:13
+Role Customer access to Favorites: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Favorites (Favorites) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: OrderDetail bundle.js:1466:13
+Role Customer access to OrderDetail: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item OrderDetail (OrderDetail) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Table bundle.js:1466:13
+Role Customer access to Table: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Table (Table) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Bill bundle.js:1466:13
+Role Customer access to Bill: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Bill (Bill) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: BillManager bundle.js:1466:13
+Role Customer access to BillManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item BillManager (BillManager) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Report bundle.js:1466:13
+Role Customer access to Report: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Report (Report) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Profile bundle.js:1466:13
+Role Customer access to Profile: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Profile (Profile) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: MenuManager bundle.js:1466:13
+Role Customer access to MenuManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item MenuManager (MenuManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: IngredientManager bundle.js:1466:13
+Role Customer access to IngredientManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item IngredientManager (IngredientManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: OrderDetailManager bundle.js:1466:13
+Role Customer access to OrderDetailManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item OrderDetailManager (OrderDetailManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: UserManagement bundle.js:1466:13
+Role Customer access to UserManagement: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item UserManagement (UserManagement) - Access: NO bundle.js:1570:15
+Final accessible items - Main: 4, Management: 0 bundle.js:1573:13
+CustomSidebarMenu - Current user role: Customer bundle.js:495:11
+CustomSidebarMenu - Accessible main menu items: 4 bundle.js:496:11
+CustomSidebarMenu - Accessible management menu items: 0 bundle.js:497:11
+MenuScreen - Current user role: Customer Is Customer: true 7 bundle.js:96505:11
+MenuScreen - Current user role: Customer Is Customer: true 30 bundle.js:96505:11
+Checking access for role: Customer to screen: Menu bundle.js:1466:13
+Role Customer access to Menu: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+MenuScreen - Current user role: Customer Is Customer: true bundle.js:96505:11
+Getting accessible menu items for role: Customer bundle.js:1490:13
+Checking access for role: Customer to screen: Home bundle.js:1466:13
+Role Customer access to Home: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Home (Home) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: Menu bundle.js:1466:13
+Role Customer access to Menu: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Menu (Menu) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: Orders bundle.js:1466:13
+Role Customer access to Orders: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Orders (Orders) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Favorites bundle.js:1466:13
+Role Customer access to Favorites: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Favorites (Favorites) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: OrderDetail bundle.js:1466:13
+Role Customer access to OrderDetail: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item OrderDetail (OrderDetail) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Table bundle.js:1466:13
+Role Customer access to Table: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Table (Table) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Bill bundle.js:1466:13
+Role Customer access to Bill: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Bill (Bill) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: BillManager bundle.js:1466:13
+Role Customer access to BillManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item BillManager (BillManager) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Report bundle.js:1466:13
+Role Customer access to Report: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Report (Report) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Profile bundle.js:1466:13
+Role Customer access to Profile: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Profile (Profile) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: MenuManager bundle.js:1466:13
+Role Customer access to MenuManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item MenuManager (MenuManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: IngredientManager bundle.js:1466:13
+Role Customer access to IngredientManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item IngredientManager (IngredientManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: OrderDetailManager bundle.js:1466:13
+Role Customer access to OrderDetailManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item OrderDetailManager (OrderDetailManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: UserManagement bundle.js:1466:13
+Role Customer access to UserManagement: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item UserManagement (UserManagement) - Access: NO bundle.js:1570:15
+Final accessible items - Main: 4, Management: 0 bundle.js:1573:13
+CustomSidebarMenu - Current user role: Customer bundle.js:495:11
+CustomSidebarMenu - Accessible main menu items: 4 bundle.js:496:11
+CustomSidebarMenu - Accessible management menu items: 0 bundle.js:497:11
+MenuScreen - Current user role: Customer Is Customer: true 15 bundle.js:96505:11
+Checking access for role: Customer to screen: Favorites bundle.js:1466:13
+Role Customer access to Favorites: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Fetching user favorites... bundle.js:110215:17
+Checking access for role: Customer to screen: Favorites bundle.js:1466:13
+Role Customer access to Favorites: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+🚀 Making GET request to: /api/Favorites bundle.js:108453:11
+MenuScreen - Current user role: Customer Is Customer: true 9 bundle.js:96505:11
+MenuScreen - Current user role: Customer Is Customer: true bundle.js:96505:11
+MenuScreen - Current user role: Customer Is Customer: true bundle.js:96505:11
+MenuScreen - Current user role: Customer Is Customer: true bundle.js:96505:11
+XHRGET
+http://192.168.192.85:8080/api/Favorites
+[HTTP/1.1 401 Unauthorized 71ms]
+
+MenuScreen - Current user role: Customer Is Customer: true 3 bundle.js:96505:11
+MenuScreen - Current user role: Customer Is Customer: true 6 bundle.js:96505:11
+MenuScreen - Current user role: Customer Is Customer: true 14 bundle.js:96505:11
+❌ HTTP Error: 401 Unauthorized bundle.js:108476:13
+Response data: <empty string> bundle.js:108477:13
+Error fetching favorites: 
+Object { message: "Request failed with status code 401", name: "AxiosError", code: "ERR_BAD_REQUEST", config: {…}, request: XMLHttpRequest, response: {…}, status: 401, stack: "", … }
+bundle.js:110220:17
+Error loading favorites: 
+Object { message: "Request failed with status code 401", name: "AxiosError", code: "ERR_BAD_REQUEST", config: {…}, request: XMLHttpRequest, response: {…}, status: 401, stack: "", … }
+bundle.js:91059:17
+MenuScreen - Current user role: Customer Is Customer: true 50 bundle.js:96505:11
+Checking access for role: Customer to screen: Menu bundle.js:1466:13
+Role Customer access to Menu: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+MenuScreen - Current user role: Customer Is Customer: true bundle.js:96505:11
+Checking access for role: Customer to screen: Favorites bundle.js:1466:13
+Role Customer access to Favorites: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Getting accessible menu items for role: Customer bundle.js:1490:13
+Checking access for role: Customer to screen: Home bundle.js:1466:13
+Role Customer access to Home: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Home (Home) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: Menu bundle.js:1466:13
+Role Customer access to Menu: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Menu (Menu) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: Orders bundle.js:1466:13
+Role Customer access to Orders: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Orders (Orders) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Favorites bundle.js:1466:13
+Role Customer access to Favorites: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Favorites (Favorites) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: OrderDetail bundle.js:1466:13
+Role Customer access to OrderDetail: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item OrderDetail (OrderDetail) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Table bundle.js:1466:13
+Role Customer access to Table: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Table (Table) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Bill bundle.js:1466:13
+Role Customer access to Bill: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Bill (Bill) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: BillManager bundle.js:1466:13
+Role Customer access to BillManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item BillManager (BillManager) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Report bundle.js:1466:13
+Role Customer access to Report: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Report (Report) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Profile bundle.js:1466:13
+Role Customer access to Profile: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Profile (Profile) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: MenuManager bundle.js:1466:13
+Role Customer access to MenuManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item MenuManager (MenuManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: IngredientManager bundle.js:1466:13
+Role Customer access to IngredientManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item IngredientManager (IngredientManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: OrderDetailManager bundle.js:1466:13
+Role Customer access to OrderDetailManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item OrderDetailManager (OrderDetailManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: UserManagement bundle.js:1466:13
+Role Customer access to UserManagement: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item UserManagement (UserManagement) - Access: NO bundle.js:1570:15
+Final accessible items - Main: 4, Management: 0 bundle.js:1573:13
+CustomSidebarMenu - Current user role: Customer bundle.js:495:11
+CustomSidebarMenu - Accessible main menu items: 4 bundle.js:496:11
+CustomSidebarMenu - Accessible management menu items: 0 bundle.js:497:11
+MenuScreen - Current user role: Customer Is Customer: true 33 bundle.js:96505:11
+Checking access for role: Customer to screen: Menu bundle.js:1466:13
+Role Customer access to Menu: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+MenuScreen - Current user role: Customer Is Customer: true bundle.js:96505:11
+Checking access for role: Customer to screen: Favorites bundle.js:1466:13
+Role Customer access to Favorites: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Getting accessible menu items for role: Customer bundle.js:1490:13
+Checking access for role: Customer to screen: Home bundle.js:1466:13
+Role Customer access to Home: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Home (Home) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: Menu bundle.js:1466:13
+Role Customer access to Menu: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Menu (Menu) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: Orders bundle.js:1466:13
+Role Customer access to Orders: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Orders (Orders) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Favorites bundle.js:1466:13
+Role Customer access to Favorites: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Favorites (Favorites) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: OrderDetail bundle.js:1466:13
+Role Customer access to OrderDetail: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item OrderDetail (OrderDetail) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Table bundle.js:1466:13
+Role Customer access to Table: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Table (Table) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Bill bundle.js:1466:13
+Role Customer access to Bill: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Bill (Bill) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: BillManager bundle.js:1466:13
+Role Customer access to BillManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item BillManager (BillManager) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Report bundle.js:1466:13
+Role Customer access to Report: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Report (Report) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Profile bundle.js:1466:13
+Role Customer access to Profile: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Profile (Profile) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: MenuManager bundle.js:1466:13
+Role Customer access to MenuManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item MenuManager (MenuManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: IngredientManager bundle.js:1466:13
+Role Customer access to IngredientManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item IngredientManager (IngredientManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: OrderDetailManager bundle.js:1466:13
+Role Customer access to OrderDetailManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item OrderDetailManager (OrderDetailManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: UserManagement bundle.js:1466:13
+Role Customer access to UserManagement: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item UserManagement (UserManagement) - Access: NO bundle.js:1570:15
+Final accessible items - Main: 4, Management: 0 bundle.js:1573:13
+CustomSidebarMenu - Current user role: Customer bundle.js:495:11
+CustomSidebarMenu - Accessible main menu items: 4 bundle.js:496:11
+CustomSidebarMenu - Accessible management menu items: 0 bundle.js:497:11
+MenuScreen - Current user role: Customer Is Customer: true 15 bundle.js:96505:11
+Unexpected text node:           . A text node cannot be a child of a <View>. bundle.js:65971:17
+MenuScreen - Current user role: Customer Is Customer: true bundle.js:96505:11
+Unexpected text node:           . A text node cannot be a child of a <View>. bundle.js:65971:17
+MenuScreen - Current user role: Customer Is Customer: true 40 bundle.js:96505:11
+Image: style.tintColor is deprecated. Please use props.tintColor. bundle.js:69718:13
+MenuScreen - Current user role: Customer Is Customer: true bundle.js:96505:11
+Unexpected text node:           . A text node cannot be a child of a <View>. bundle.js:65971:17
+MenuScreen - Current user role: Customer Is Customer: true 67 bundle.js:96505:11
+Layout was forced before the page was fully loaded. If stylesheets are not yet loaded this may cause a flash of unstyled content. menu.html
+MenuScreen - Current user role: Customer Is Customer: true 2 bundle.js:96505:11
+Layout was forced before the page was fully loaded. If stylesheets are not yet loaded this may cause a flash of unstyled content. menu.html
+MenuScreen - Current user role: Customer Is Customer: true 6 bundle.js:96505:11
+Layout was forced before the page was fully loaded. If stylesheets are not yet loaded this may cause a flash of unstyled content. menu-list.html
+MenuScreen - Current user role: Customer Is Customer: true 172 bundle.js:96505:11
+Layout was forced before the page was fully loaded. If stylesheets are not yet loaded this may cause a flash of unstyled content. menu-list.html
+MenuScreen - Current user role: Customer Is Customer: true 275 bundle.js:96505:11
+Attempting login: 
+Object { userName: undefined }
+bundle.js:109546:17
+Checking access for role: Customer to screen: Menu bundle.js:1466:13
+Role Customer access to Menu: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+MenuScreen - Current user role: Customer Is Customer: true bundle.js:96505:11
+Checking access for role: Customer to screen: Favorites bundle.js:1466:13
+Role Customer access to Favorites: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Unexpected text node:           . A text node cannot be a child of a <View>. bundle.js:65971:17
+Getting accessible menu items for role: Customer bundle.js:1490:13
+Checking access for role: Customer to screen: Home bundle.js:1466:13
+Role Customer access to Home: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Home (Home) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: Menu bundle.js:1466:13
+Role Customer access to Menu: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Menu (Menu) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: Orders bundle.js:1466:13
+Role Customer access to Orders: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Orders (Orders) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Favorites bundle.js:1466:13
+Role Customer access to Favorites: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Favorites (Favorites) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: OrderDetail bundle.js:1466:13
+Role Customer access to OrderDetail: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item OrderDetail (OrderDetail) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Table bundle.js:1466:13
+Role Customer access to Table: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Table (Table) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Bill bundle.js:1466:13
+Role Customer access to Bill: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Bill (Bill) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: BillManager bundle.js:1466:13
+Role Customer access to BillManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item BillManager (BillManager) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Report bundle.js:1466:13
+Role Customer access to Report: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Report (Report) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Profile bundle.js:1466:13
+Role Customer access to Profile: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Profile (Profile) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: MenuManager bundle.js:1466:13
+Role Customer access to MenuManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item MenuManager (MenuManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: IngredientManager bundle.js:1466:13
+Role Customer access to IngredientManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item IngredientManager (IngredientManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: OrderDetailManager bundle.js:1466:13
+Role Customer access to OrderDetailManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item OrderDetailManager (OrderDetailManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: UserManagement bundle.js:1466:13
+Role Customer access to UserManagement: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item UserManagement (UserManagement) - Access: NO bundle.js:1570:15
+Final accessible items - Main: 4, Management: 0 bundle.js:1573:13
+CustomSidebarMenu - Current user role: Customer bundle.js:495:11
+CustomSidebarMenu - Accessible main menu items: 4 bundle.js:496:11
+CustomSidebarMenu - Accessible management menu items: 0 bundle.js:497:11
+Checking access for role: Customer to screen: Menu bundle.js:1466:13
+Role Customer access to Menu: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Checking access for role: Customer to screen: Favorites bundle.js:1466:13
+Role Customer access to Favorites: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+🚀 Making POST request to: /api/User/login bundle.js:108453:11
+MenuScreen - Current user role: Customer Is Customer: true bundle.js:96505:11
+MenuScreen - Current user role: Customer Is Customer: true 22 bundle.js:96505:11
+✅ Response received: 200 OK bundle.js:108460:11
+Login successful: 
+Object { userId: "3292731962", userName: "ngoc", fullName: "ngocngoc", email: "ngcc12@gmail.com", role: "Customer", token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjMyOTI3MzE5NjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoibmdvYyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6Im5nY2MxMkBnbWFpbC5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJDdXN0b21lciIsImZ1bGxOYW1lIjoibmdvY25nb2MiLCJleHAiOjE3NzI2ODk1NjAsImlzcyI6IlJNUy1BUElTZXJ2ZXIiLCJhdWQiOiJSTVMtVXNlcnMifQ.LEFfNAB6oujujKem9zjD6XWtLbNk3o_Y-TQ30dEK8_s" }
+bundle.js:109550:17
+✅ Auth token set in API headers bundle.js:110414:15
+🔑 JWT token set for authenticated requests bundle.js:1324:21
+Checking access for role: Customer to screen: Menu bundle.js:1466:13
+Role Customer access to Menu: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+MenuScreen - Current user role: Customer Is Customer: true bundle.js:96505:11
+Checking access for role: Customer to screen: Favorites bundle.js:1466:13
+Role Customer access to Favorites: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Unexpected text node:           . A text node cannot be a child of a <View>. bundle.js:65971:17
+Getting accessible menu items for role: Customer bundle.js:1490:13
+Checking access for role: Customer to screen: Home bundle.js:1466:13
+Role Customer access to Home: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Home (Home) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: Menu bundle.js:1466:13
+Role Customer access to Menu: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Menu (Menu) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: Orders bundle.js:1466:13
+Role Customer access to Orders: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Orders (Orders) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Favorites bundle.js:1466:13
+Role Customer access to Favorites: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Favorites (Favorites) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: OrderDetail bundle.js:1466:13
+Role Customer access to OrderDetail: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item OrderDetail (OrderDetail) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Table bundle.js:1466:13
+Role Customer access to Table: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Table (Table) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Bill bundle.js:1466:13
+Role Customer access to Bill: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Bill (Bill) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: BillManager bundle.js:1466:13
+Role Customer access to BillManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item BillManager (BillManager) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Report bundle.js:1466:13
+Role Customer access to Report: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Report (Report) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Profile bundle.js:1466:13
+Role Customer access to Profile: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Profile (Profile) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: MenuManager bundle.js:1466:13
+Role Customer access to MenuManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item MenuManager (MenuManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: IngredientManager bundle.js:1466:13
+Role Customer access to IngredientManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item IngredientManager (IngredientManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: OrderDetailManager bundle.js:1466:13
+Role Customer access to OrderDetailManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item OrderDetailManager (OrderDetailManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: UserManagement bundle.js:1466:13
+Role Customer access to UserManagement: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item UserManagement (UserManagement) - Access: NO bundle.js:1570:15
+Final accessible items - Main: 4, Management: 0 bundle.js:1573:13
+CustomSidebarMenu - Current user role: Customer bundle.js:495:11
+CustomSidebarMenu - Accessible main menu items: 4 bundle.js:496:11
+CustomSidebarMenu - Accessible management menu items: 0 bundle.js:497:11
+Fetching user favorites for userId: 3292731962 bundle.js:96793:15
+Fetching user favorites... bundle.js:110215:17
+Checking access for role: Customer to screen: Menu bundle.js:1466:13
+Role Customer access to Menu: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Checking access for role: Customer to screen: Favorites bundle.js:1466:13
+Role Customer access to Favorites: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Unexpected text node:         . A text node cannot be a child of a <View>. bundle.js:65971:17
+🚀 Making GET request to: /api/Favorites bundle.js:108453:11
+XHRGET
+http://192.168.192.85:8080/api/Favorites
+[HTTP/1.1 500 Internal Server Error 14684ms]
+
+🔄 Fetching dashboard data... bundle.js:91797:17
+Fetching all orders from API... bundle.js:108984:17
+🚀 Making GET request to: /api/Order bundle.js:108453:11
+✅ Response received: 200 OK bundle.js:108460:11
+Raw orders response: 
+Array(81) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+bundle.js:108986:17
+extractApiData - Input data: 
+Array(81) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+bundle.js:108620:11
+Found direct array with length: 81 bundle.js:108622:13
+normalizeKeyName: status -> status 247 bundle.js:108500:13
+extractApiData - Processed items: 81 bundle.js:108638:13
+extractApiData - Sample processed item: 
+Object { id: "HD12D62804", tableId: "2", userId: "4", orderDate: "2025-07-05T18:42:05.943", status: "Đã tạo bill", total: 882005, discount: 0, orderDetails: (1) […] }
+bundle.js:108639:13
+Extracted orders data: 
+Array(81) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+bundle.js:108988:17
+Fetching all bills from API... bundle.js:109616:17
+🚀 Making GET request to: /api/Bill bundle.js:108453:11
+✅ Response received: 200 OK bundle.js:108460:11
+Raw bills response: 
+Array(49) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+bundle.js:109618:17
+extractApiData - Input data: 
+Array(49) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+bundle.js:108620:11
+Found direct array with length: 49 bundle.js:108622:13
+extractApiData - Processed items: 49 bundle.js:108638:13
+extractApiData - Sample processed item: 
+Object { billId: "486yrdza31", orderId: "ORD8419448", userId: "4", userName: "VAnh", total: 40000, discount: 0, totalFinal: 40000, payment: "Chưa thanh toán", createdTime: "2025-10-27T15:57:31.35" }
+bundle.js:108639:13
+Extracted bills data: 
+Array(49) [ {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, … ]
+bundle.js:109620:17
+Fetching all users from API... bundle.js:109493:17
+🚀 Making GET request to: /api/User bundle.js:108453:11
+✅ Response received: 200 OK bundle.js:108460:11
+Raw users response: 
+Array(5) [ {…}, {…}, {…}, {…}, {…} ]
+bundle.js:109495:17
+extractApiData - Input data: 
+Array(5) [ {…}, {…}, {…}, {…}, {…} ]
+bundle.js:108620:11
+Found direct array with length: 5 bundle.js:108622:13
+extractApiData - Processed items: 5 bundle.js:108638:13
+extractApiData - Sample processed item: 
+Object { userId: "1", userName: "abc", password: "abc1234", role: "NV", fullName: "Duong", phone: 12345, email: "duongcho@gmail.com", bills: [], orders: [] }
+bundle.js:108639:13
+Extracted users data: 
+Array(5) [ {…}, {…}, {…}, {…}, {…} ]
+bundle.js:109497:17
+✅ Dashboard data loaded successfully bundle.js:91853:17
+📊 Stats: 
+Object { todayRevenue: 0, totalOrders: 0, totalCustomers: 0 }
+bundle.js:91854:17
+Getting accessible menu items for role: Customer bundle.js:1490:13
+Checking access for role: Customer to screen: Home bundle.js:1466:13
+Role Customer access to Home: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Home (Home) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: Menu bundle.js:1466:13
+Role Customer access to Menu: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Menu (Menu) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: Orders bundle.js:1466:13
+Role Customer access to Orders: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Orders (Orders) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Favorites bundle.js:1466:13
+Role Customer access to Favorites: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Favorites (Favorites) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: OrderDetail bundle.js:1466:13
+Role Customer access to OrderDetail: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item OrderDetail (OrderDetail) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Table bundle.js:1466:13
+Role Customer access to Table: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Table (Table) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Bill bundle.js:1466:13
+Role Customer access to Bill: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Bill (Bill) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: BillManager bundle.js:1466:13
+Role Customer access to BillManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item BillManager (BillManager) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Report bundle.js:1466:13
+Role Customer access to Report: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Report (Report) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Profile bundle.js:1466:13
+Role Customer access to Profile: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Profile (Profile) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: MenuManager bundle.js:1466:13
+Role Customer access to MenuManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item MenuManager (MenuManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: IngredientManager bundle.js:1466:13
+Role Customer access to IngredientManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item IngredientManager (IngredientManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: OrderDetailManager bundle.js:1466:13
+Role Customer access to OrderDetailManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item OrderDetailManager (OrderDetailManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: UserManagement bundle.js:1466:13
+Role Customer access to UserManagement: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item UserManagement (UserManagement) - Access: NO bundle.js:1570:15
+Final accessible items - Main: 4, Management: 0 bundle.js:1573:13
+CustomSidebarMenu - Current user role: Customer bundle.js:495:11
+CustomSidebarMenu - Accessible main menu items: 4 bundle.js:496:11
+CustomSidebarMenu - Accessible management menu items: 0 bundle.js:497:11
+Getting accessible menu items for role: Customer bundle.js:1490:13
+Checking access for role: Customer to screen: Home bundle.js:1466:13
+Role Customer access to Home: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Home (Home) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: Menu bundle.js:1466:13
+Role Customer access to Menu: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Menu (Menu) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: Orders bundle.js:1466:13
+Role Customer access to Orders: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Orders (Orders) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Favorites bundle.js:1466:13
+Role Customer access to Favorites: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Favorites (Favorites) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: OrderDetail bundle.js:1466:13
+Role Customer access to OrderDetail: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item OrderDetail (OrderDetail) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Table bundle.js:1466:13
+Role Customer access to Table: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Table (Table) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Bill bundle.js:1466:13
+Role Customer access to Bill: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Bill (Bill) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: BillManager bundle.js:1466:13
+Role Customer access to BillManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item BillManager (BillManager) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Report bundle.js:1466:13
+Role Customer access to Report: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Report (Report) - Access: NO bundle.js:1565:15
+Checking access for role: Customer to screen: Profile bundle.js:1466:13
+Role Customer access to Profile: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Menu item Profile (Profile) - Access: YES bundle.js:1565:15
+Checking access for role: Customer to screen: MenuManager bundle.js:1466:13
+Role Customer access to MenuManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item MenuManager (MenuManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: IngredientManager bundle.js:1466:13
+Role Customer access to IngredientManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item IngredientManager (IngredientManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: OrderDetailManager bundle.js:1466:13
+Role Customer access to OrderDetailManager: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item OrderDetailManager (OrderDetailManager) - Access: NO bundle.js:1570:15
+Checking access for role: Customer to screen: UserManagement bundle.js:1466:13
+Role Customer access to UserManagement: DENIED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Management item UserManagement (UserManagement) - Access: NO bundle.js:1570:15
+Final accessible items - Main: 4, Management: 0 bundle.js:1573:13
+CustomSidebarMenu - Current user role: Customer bundle.js:495:11
+CustomSidebarMenu - Accessible main menu items: 4 bundle.js:496:11
+CustomSidebarMenu - Accessible management menu items: 0 bundle.js:497:11
+Checking access for role: Customer to screen: Favorites bundle.js:1466:13
+Role Customer access to Favorites: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+Fetching user favorites... bundle.js:110215:17
+Checking access for role: Customer to screen: Favorites bundle.js:1466:13
+Role Customer access to Favorites: GRANTED bundle.js:1484:13
+Allowed screens for Customer: 
+Array(5) [ "Home", "Menu", "Favorites", "Cart", "Profile" ]
+bundle.js:1485:13
+🚀 Making GET request to: /api/Favorites bundle.js:108453:11
+XHRGET
+http://192.168.192.85:8080/api/Favorites
+[HTTP/1.1 500 Internal Server Error 12401ms]
+
+❌ HTTP Error: 500 Internal Server Error bundle.js:108476:13
+Response data: 
+Object { message: "Internal server error", error: "A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: TCP Provider, error: 40 - Could not open a connection to SQL Server)" }
+bundle.js:108477:13
+Error fetching favorites: 
+Object { message: "Request failed with status code 500", name: "AxiosError", code: "ERR_BAD_RESPONSE", config: {…}, request: XMLHttpRequest, response: {…}, status: 500, stack: "", … }
+bundle.js:110220:17
+Error fetching user favorites: 
+Object { message: "Request failed with status code 500", name: "AxiosError", code: "ERR_BAD_RESPONSE", config: {…}, request: XMLHttpRequest, response: {…}, status: 500, stack: "", … }
+bundle.js:96804:15
+❌ HTTP Error: 500 Internal Server Error bundle.js:108476:13
+Response data: 
+Object { message: "Internal server error", error: "A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: TCP Provider, error: 40 - Could not open a connection to SQL Server)" }
+bundle.js:108477:13
+Error fetching favorites: 
+Object { message: "Request failed with status code 500", name: "AxiosError", code: "ERR_BAD_RESPONSE", config: {…}, request: XMLHttpRequest, response: {…}, status: 500, stack: "", … }
+bundle.js:110220:17
+Error loading favorites: 
+Object { message: "Request failed with status code 500", name: "AxiosError", code: "ERR_BAD_RESPONSE", config: {…}, request: XMLHttpRequest, response: {…}, status: 500, stack: "", … }
+bundle.js:91059:17
