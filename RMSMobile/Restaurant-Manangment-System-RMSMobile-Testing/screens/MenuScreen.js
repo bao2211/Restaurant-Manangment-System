@@ -452,22 +452,6 @@ export default function MenuScreen({ navigation, route }) {
           <View style={styles.menuItemFooter}>
             <Text style={styles.menuItemPrice}>{item.price}</Text>
             
-<<<<<<< HEAD
-            {/* Add to Order button - only show for staff/admin */}
-            {!isCustomer && (
-              <TouchableOpacity 
-                style={styles.addToOrderButton}
-                onPress={() => handleAddToOrder(item)}
-              >
-                <LinearGradient
-                  colors={['#27AE60', '#229954']}
-                  style={styles.addToOrderButtonGradient}
-                >
-                  <MaterialCommunityIcons name="plus" size={20} color="white" />
-                  <Text style={styles.addToOrderButtonText}>Thêm</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-=======
             {/* For customers: Show cart controls */}
             {isCustomer && (
               <>
@@ -528,45 +512,11 @@ export default function MenuScreen({ navigation, route }) {
                   </TouchableOpacity>
                 )}
               </>
->>>>>>> db05865 (- Re-enable customer UI)
             )}
           </View>
         </View>
       </TouchableOpacity>
     );
-  };
-
-  const handleAddToOrder = (item) => {
-    console.log('=== ADD TO ORDER DEBUG ===');
-    console.log('Adding item:', item.name);
-    console.log('Current order items:', orderItems);
-    
-    // Check if item already exists in order
-    const existingItemIndex = orderItems.findIndex(orderItem => orderItem.id === item.id);
-    
-    if (existingItemIndex !== -1) {
-      // Item exists, increase quantity
-      const updatedItems = [...orderItems];
-      updatedItems[existingItemIndex].quantity += 1;
-      console.log(`Increased quantity of ${item.name} to ${updatedItems[existingItemIndex].quantity}`);
-      setOrderItems(updatedItems);
-    } else {
-      // Item doesn't exist, add new item with quantity 1
-      const newOrderItem = {
-        id: item.id,
-        name: item.name,
-        price: item.unitPrice,
-        quantity: 1,
-        imageUrl: item.imageUrl,
-        description: item.description,
-        categoryId: item.categoryId
-      };
-      console.log('Adding new item to order:', newOrderItem);
-      setOrderItems([...orderItems, newOrderItem]);
-    }
-    
-    // Show success feedback
-    Alert.alert('Đã thêm', `Đã thêm "${item.name}" vào đơn hàng!`, [{ text: 'OK' }]);
   };
 
   // Admin function: Add item to order sidebar (not cart)
