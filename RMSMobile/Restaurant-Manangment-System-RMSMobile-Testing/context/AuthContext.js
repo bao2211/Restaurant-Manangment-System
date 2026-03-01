@@ -195,6 +195,14 @@ export const AuthProvider = ({ children }) => {
     const userRole = getUserRole();
     console.log('Checking access for role:', userRole, 'to screen:', screenName);
     
+    // Favorites and Cart require login (user must not be null)
+    if (screenName === 'Favorites' || screenName === 'Cart') {
+      if (!user) {
+        console.log(`Access denied to ${screenName}: User not logged in`);
+        return false;
+      }
+    }
+    
     // Admin has access to everything except Favorites and Cart
     if (userRole === 'Admin' || userRole === 'admin' || userRole === 'ADMIN') {
       return screenName !== 'Favorites' && screenName !== 'Cart';
@@ -230,6 +238,8 @@ export const AuthProvider = ({ children }) => {
     const allMenuItems = [
       { name: 'Home', icon: 'home', title: 'Home', screen: 'Home' },
       { name: 'Menu', icon: 'food', title: 'Our Menu', screen: 'Menu' },
+      { name: 'Favorites', icon: 'heart', title: 'Yêu Thích', screen: 'Favorites' },
+      { name: 'Cart', icon: 'cart', title: 'Giỏ Hàng', screen: 'Cart' },
       { name: 'Orders', icon: 'clipboard-list', title: 'My Orders', screen: 'Orders' },
       { name: 'OrderDetail', icon: 'clipboard-text', title: 'Order Details', screen: 'OrderDetail' },
       { name: 'Table', icon: 'table-chair', title: 'Our Table', screen: 'Table' },
@@ -245,8 +255,13 @@ export const AuthProvider = ({ children }) => {
       { name: 'UserManagement', icon: 'account-group', title: 'Quản Lý Người Dùng', screen: 'UserManagement' },
     ];
 
-    // Filter menu items based on role permissions
-    const accessibleMainMenu = allMenuItems.filter(item => {
+    // Filter menu items based on role permissions and login status
+    // Exclude Favorites and Cart if user is not logged in
+    const mainMenuToCheck = user ? allMenuItems : allMenuItems.filter(item => 
+      item.screen !== 'Favorites' && item.screen !== 'Cart'
+    );
+    
+    const accessibleMainMenu = mainMenuToCheck.filter(item => {
       const hasAccess = hasAccessToScreen(item.screen);
       console.log(`Menu item ${item.name} (${item.screen}) - Access: ${hasAccess ? 'YES' : 'NO'}`);
       return hasAccess;

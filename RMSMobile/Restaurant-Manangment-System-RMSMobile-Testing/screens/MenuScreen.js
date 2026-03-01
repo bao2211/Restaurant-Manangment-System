@@ -4,10 +4,12 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { apiService, getCategoryIcon, formatPrice } from '../services/apiService';
 import { AuthContext } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 import ScreenHeader from '../components/ScreenHeader';
 
 export default function MenuScreen({ navigation, route }) {
   const { user, getUserRole } = useContext(AuthContext);
+  const { cartItems, addToCart, increaseQuantity, decreaseQuantity } = useCart();
   
   // Memoize user role calculation to prevent unnecessary re-renders
   const userRole = useMemo(() => getUserRole(), [user]);
@@ -397,6 +399,10 @@ export default function MenuScreen({ navigation, route }) {
     const itemInOrder = orderItems.find(orderItem => orderItem.id === item.id);
     const orderQuantity = itemInOrder ? itemInOrder.quantity : 0;
 
+    // Check if item is already in cart (for customers)
+    const itemInCart = cartItems.find(cartItem => cartItem.id === item.id);
+    const cartQuantity = itemInCart ? itemInCart.quantity : 0;
+
     return (
       <TouchableOpacity key={item.id} style={styles.menuItem}>
         <View style={styles.menuItemImage}>
@@ -418,8 +424,8 @@ export default function MenuScreen({ navigation, route }) {
               <Text style={styles.emojiImage}>{item.emojiFallback}</Text>
             </View>
           )}
-          {/* Favorite button - only show for customers */}
-          {isCustomer && (
+          {/* Favorite button - only show for customers who are logged in */}
+          {isCustomer && user && user.userId && (
             <TouchableOpacity 
               style={styles.favoriteButton}
               onPress={() => toggleFavorite(item.id)}
@@ -431,8 +437,8 @@ export default function MenuScreen({ navigation, route }) {
               />
             </TouchableOpacity>
           )}
-          {/* Cart quantity badge - only show for customers */}
-          {isCustomer && cartQuantity > 0 && (
+          {/* Cart quantity badge - only show for customers who are logged in */}
+          {isCustomer && user && user.userId && cartQuantity > 0 && (
             <View style={styles.cartBadge}>
               <Text style={styles.cartBadgeText}>{cartQuantity}</Text>
             </View>
@@ -452,8 +458,8 @@ export default function MenuScreen({ navigation, route }) {
           <View style={styles.menuItemFooter}>
             <Text style={styles.menuItemPrice}>{item.price}</Text>
             
-            {/* For customers: Show cart controls */}
-            {isCustomer && (
+            {/* For customers: Show cart controls (only when logged in) */}
+            {isCustomer && user && user.userId && (
               <>
                 {itemInCart ? (
                   <View style={styles.cartControls}>
@@ -517,6 +523,27 @@ export default function MenuScreen({ navigation, route }) {
         </View>
       </TouchableOpacity>
     );
+  };
+
+  // Customer function: Add item to cart
+  const handleAddToCart = (item) => {
+    try {
+      // Check if user is logged in
+      if (!user || !user.userId) {
+        Alert.alert('Đăng nhập yêu cầu', 'Vui lòng đăng nhập để thêm vào giỏ hàng', [
+          { text: 'Hủy', style: 'cancel' },
+          { text: 'Đăng nhập', onPress: () => navigation.navigate('Profile') }
+        ]);
+        return;
+      }
+      
+      addToCart(item);
+      Alert.alert('Thành công', `Đã thêm "${item.name}" vào giỏ hàng!`);
+      console.log('Item added to cart:', item.name);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      Alert.alert('Lỗi', 'Không thể thêm món vào giỏ hàng');
+    }
   };
 
   // Admin function: Add item to order sidebar (not cart)

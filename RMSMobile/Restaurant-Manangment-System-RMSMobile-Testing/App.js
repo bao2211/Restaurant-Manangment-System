@@ -25,10 +25,13 @@ import LoginScreen from "./screens/LoginScreen";
 import ChangePasswordScreen from "./screens/ChangePasswordScreen";
 import UpdateInformationScreen from "./screens/UpdateInformationScreen";
 import RegisterScreen from "./screens/RegisterScreen";
+import FavoritesScreen from "./screens/FavoritesScreen";
+import CartScreen from "./screens/CartScreen";
 
 // context
 import { AuthProvider, AuthContext } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
+import { CartProvider, useCart } from "./context/CartContext";
 import TableScreen from './screens/TableScreen';
 import BillManagerScreen from './screens/BillManagerScreen';
 import ReportScreen from './screens/ReportScreen';
@@ -219,6 +222,31 @@ function MainAppStack({ openSidebar }) {
         }}
       />
       <Stack.Screen 
+        name="Favorites" 
+        options={{ 
+          headerTitle: 'Yêu Thích',
+        }}
+      >
+        {(props) => (
+          <ProtectedScreen screenName="Favorites">
+            <FavoritesScreen {...props} />
+          </ProtectedScreen>
+        )}
+      </Stack.Screen>
+      <Stack.Screen 
+        name="Cart" 
+        options={({ navigation }) => ({ 
+          headerTitle: 'Giỏ Hàng',
+          headerRight: () => <CartHeaderButton navigation={navigation} />,
+        })}
+      >
+        {(props) => (
+          <ProtectedScreen screenName="Cart">
+            <CartScreen {...props} />
+          </ProtectedScreen>
+        )}
+      </Stack.Screen>
+      <Stack.Screen 
         name="OrderDetail" 
         options={{ 
           headerTitle: 'Order Details',
@@ -337,16 +365,21 @@ function CustomSidebarMenu({ visible, onClose }) {
   const menuItems = [
     { name: 'Home', icon: 'home', title: 'Home', screen: 'Home' },
     { name: 'Menu', icon: 'food', title: 'Our Menu', screen: 'Menu' },
+    { name: 'Favorites', icon: 'heart', title: 'Yêu Thích', screen: 'Favorites' },
+    { name: 'Cart', icon: 'cart', title: 'Giỏ Hàng', screen: 'Cart' },
     { name: 'Orders', icon: 'clipboard-list', title: 'My Orders', screen: 'Orders' },
     { name: 'OrderDetail', icon: 'clipboard-text', title: 'Order Details', screen: 'OrderDetail' },
     { name: 'Table', icon: 'table-chair', title: 'Our Table', screen: 'Table' },
+    { name: 'BillManager', icon: 'receipt', title: 'Bill Management', screen: 'BillManager' },
     { name: 'Report', icon: 'file-chart', title: 'Our Report', screen: 'Report' },
     { name: 'Profile', icon: 'account', title: 'My Profile', screen: 'Profile' },
   ];
 
   const managementItems = [
     { name: 'MenuManager', icon: 'silverware-fork-knife', title: 'Quản Lý Món Ăn', screen: 'MenuManager' },
+    { name: 'IngredientManager', icon: 'food-apple', title: 'Quản Lý Nguyên Liệu', screen: 'IngredientManager' },
     { name: 'OrderDetailManager', icon: 'food-fork-drink', title: 'Trạng Thái Món Ăn', screen: 'OrderDetailManager' },
+    { name: 'UserManagement', icon: 'account-group', title: 'Quản Lý Người Dùng', screen: 'UserManagement' },
   ];
 
   const { mainMenu, managementMenu } = getAccessibleMenuItems();
@@ -603,12 +636,14 @@ function AppContainer() {
 export default function App() {
   return (
     <AuthProvider>
-      <ToastProvider>
-        <NavigationContainer>
-          <StatusBar style="auto" />
-          <AppContainer />
-        </NavigationContainer>
-      </ToastProvider>
+      <CartProvider>
+        <ToastProvider>
+          <NavigationContainer>
+            <StatusBar style="auto" />
+            <AppContainer />
+          </NavigationContainer>
+        </ToastProvider>
+      </CartProvider>
     </AuthProvider>
   );
 }
