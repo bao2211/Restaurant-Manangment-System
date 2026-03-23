@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Base API configuration (no trailing slash to avoid double-slash when joining paths)
-const API_BASE_URL = 'http://192.168.192.85:8080'; // Production server URL
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || 'http://192.168.192.85:8080'; // Production server URL
 // For local testing use: 'https://localhost:7127/' or 'http://localhost:8080/'
 
 const api = axios.create({

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
@@ -11,6 +11,7 @@ import {
   Modal, 
   Animated, 
   Dimensions,
+  Platform,
   TouchableWithoutFeedback,
   ScrollView 
 } from "react-native";
@@ -634,6 +635,70 @@ function AppContainer() {
 }
 
 export default function App() {
+  useEffect(() => {
+    if (Platform.OS !== 'web' || typeof document === 'undefined') {
+      return undefined;
+    }
+
+    const { documentElement, body } = document;
+    const root = document.getElementById('root');
+
+    const previous = {
+      htmlOverflow: documentElement.style.overflow,
+      htmlHeight: documentElement.style.height,
+      bodyOverflow: body.style.overflow,
+      bodyHeight: body.style.height,
+      bodyMinHeight: body.style.minHeight,
+      bodyTouchAction: body.style.touchAction,
+      rootMinHeight: root ? root.style.minHeight : '',
+      rootHeight: root ? root.style.height : ''
+    };
+
+    documentElement.style.overflow = 'auto';
+    documentElement.style.height = 'auto';
+    body.style.overflow = 'auto';
+    body.style.height = 'auto';
+    body.style.minHeight = '100vh';
+    body.style.touchAction = 'pan-y';
+
+    if (root) {
+      root.style.minHeight = '100vh';
+      root.style.height = '100vh';
+    }
+
+    let current = root ? root.firstElementChild : null;
+    let depth = 0;
+    while (current && depth < 6) {
+      current.style.minHeight = '100vh';
+      current.style.height = '100vh';
+      current = current.firstElementChild;
+      depth += 1;
+    }
+
+    return () => {
+      documentElement.style.overflow = previous.htmlOverflow;
+      documentElement.style.height = previous.htmlHeight;
+      body.style.overflow = previous.bodyOverflow;
+      body.style.height = previous.bodyHeight;
+      body.style.minHeight = previous.bodyMinHeight;
+      body.style.touchAction = previous.bodyTouchAction;
+
+      if (root) {
+        root.style.minHeight = previous.rootMinHeight;
+        root.style.height = previous.rootHeight;
+      }
+
+      current = root ? root.firstElementChild : null;
+      depth = 0;
+      while (current && depth < 6) {
+        current.style.minHeight = '';
+        current.style.height = '';
+        current = current.firstElementChild;
+        depth += 1;
+      }
+    };
+  }, []);
+
   return (
     <AuthProvider>
       <CartProvider>

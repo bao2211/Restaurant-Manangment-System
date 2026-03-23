@@ -340,8 +340,6 @@ D:\Study\TLDH\Nam 3 - HK1\CNPMNC\Restaurant-Manangment-System-1\RMS-APIServer\Re
 D:\Study\TLDH\Nam 3 - HK1\CNPMNC\Restaurant-Manangment-System-1\RMS-APIServer\Restaurant-Manangment-System-RMS-APIServer\RMS-APIServer\bin\Debug\net8.0\Quick_API_Tests.postman_collection.json
 D:\Study\TLDH\Nam 3 - HK1\CNPMNC\Restaurant-Manangment-System-1\RMS-APIServer\Restaurant-Manangment-System-RMS-APIServer\RMS-APIServer\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMS-APIServer\Restaurant-Manangment-System-RMS-APIServer\RMS-APIServer\bin\Debug\net8.0\appsettings.Development.json
-C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMS-APIServer\Restaurant-Manangment-System-RMS-APIServer\RMS-APIServer\bin\Debug\net8.0\Auxiliary_Features_API_Tests.postman_collection.json
-C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMS-APIServer\Restaurant-Manangment-System-RMS-APIServer\RMS-APIServer\bin\Debug\net8.0\Quick_API_Tests.postman_collection.json
 C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMS-APIServer\Restaurant-Manangment-System-RMS-APIServer\RMS-APIServer\bin\Debug\net8.0\appsettings.json
 C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMS-APIServer\Restaurant-Manangment-System-RMS-APIServer\RMS-APIServer\bin\Debug\net8.0\RMS-APIServer.staticwebassets.endpoints.json
 C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMS-APIServer\Restaurant-Manangment-System-RMS-APIServer\RMS-APIServer\bin\Debug\net8.0\RMS-APIServer.exe
@@ -513,3 +511,4 @@ C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMS-APIS
 C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMS-APIServer\Restaurant-Manangment-System-RMS-APIServer\RMS-APIServer\obj\Debug\net8.0\RMS-APIServer.pdb
 C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMS-APIServer\Restaurant-Manangment-System-RMS-APIServer\RMS-APIServer\obj\Debug\net8.0\RMS-APIServer.genruntimeconfig.cache
 C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMS-APIServer\Restaurant-Manangment-System-RMS-APIServer\RMS-APIServer\obj\Debug\net8.0\ref\RMS-APIServer.dll
+C:\Users\Admin\Documents\School\CNPMNC\RMS\Restaurant-Manangment-System\RMS-APIServer\Restaurant-Manangment-System-RMS-APIServer\RMS-APIServer\bin\Debug\net8.0\User_Favorites_API_Tests.postman_collection.json

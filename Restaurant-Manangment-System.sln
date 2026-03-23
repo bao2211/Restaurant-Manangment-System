@@ -1,0 +1,32 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RMS-APIServer", "RMS-APIServer", "{05E56946-2990-7A67-3841-D753B3A64888}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Restaurant-Manangment-System-RMS-APIServer", "Restaurant-Manangment-System-RMS-APIServer", "{040CB1B6-1FD8-36D4-33FF-2773DB2AF548}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RMS-APIServer", "RMS-APIServer\Restaurant-Manangment-System-RMS-APIServer\RMS-APIServer\RMS-APIServer.csproj", "{697B7D60-2A0D-337D-1014-F96D31129CC0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{697B7D60-2A0D-337D-1014-F96D31129CC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{697B7D60-2A0D-337D-1014-F96D31129CC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{697B7D60-2A0D-337D-1014-F96D31129CC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{697B7D60-2A0D-337D-1014-F96D31129CC0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{040CB1B6-1FD8-36D4-33FF-2773DB2AF548} = {05E56946-2990-7A67-3841-D753B3A64888}
+		{697B7D60-2A0D-337D-1014-F96D31129CC0} = {040CB1B6-1FD8-36D4-33FF-2773DB2AF548}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7595EF9E-5795-41C4-BF56-F3366F55BB40}
+	EndGlobalSection
+EndGlobal

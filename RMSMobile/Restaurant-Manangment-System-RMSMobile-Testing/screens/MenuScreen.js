@@ -71,6 +71,28 @@ export default function MenuScreen({ navigation, route }) {
     setShowOrderNotification(false);
   };
 
+  const fetchUserFavorites = useCallback(async () => {
+    try {
+      if (!user || !user.userId) {
+        console.log('No user or userId available for fetching favorites');
+        return;
+      }
+
+      console.log('Fetching user favorites for userId:', user.userId);
+      const favorites = await apiService.getFavorites();
+
+      const favoriteIds = favorites
+        .map(fav => (fav.foodId ?? '').toString().trim())
+        .filter(id => id);
+      console.log('User favorite food IDs:', favoriteIds);
+
+      setUserFavorites(favoriteIds);
+    } catch (error) {
+      console.error('Error fetching user favorites:', error);
+      setUserFavorites([]);
+    }
+  }, [user]);
+
   // Fetch categories on component mount and initialize order
   useEffect(() => {
     fetchCategories();
@@ -317,30 +339,6 @@ export default function MenuScreen({ navigation, route }) {
     
     return '🍽️'; // Default food emoji
   };
-
-  const fetchUserFavorites = useCallback(async () => {
-    try {
-      if (!user || !user.userId) {
-        console.log('No user or userId available for fetching favorites');
-        return;
-      }
-
-      console.log('Fetching user favorites for userId:', user.userId);
-      const favorites = await apiService.getFavorites();
-      
-      // Extract and trim food IDs from favorites to match menu item IDs
-      const favoriteIds = favorites
-        .map(fav => (fav.foodId ?? '').toString().trim())
-        .filter(id => id);
-      console.log('User favorite food IDs:', favoriteIds);
-      
-      setUserFavorites(favoriteIds);
-    } catch (error) {
-      console.error('Error fetching user favorites:', error);
-      // Don't show alert for favorites error - it's not critical
-      setUserFavorites([]);
-    }
-  }, [user]);
 
   // Toggle favorite function
   const toggleFavorite = async (foodId) => {
