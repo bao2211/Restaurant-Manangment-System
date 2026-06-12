@@ -4,16 +4,19 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using RMS_APIServer.Models;
 using RMS_APIServer.Middleware;
+using Pomelo.EntityFrameworkCore.MySql;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddDbContext<DBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Add services to the container - MySQL via Pomelo
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var serverVersion = new MySqlServerVersion(new Version(8, 0, 36));
 
-// Add WebQlquanAnContext for the new auxiliary tables - using same connection as DBContext
+builder.Services.AddDbContext<DBContext>(options =>
+    options.UseMySql(connectionString, serverVersion));
+
 builder.Services.AddDbContext<WebQlquanAnContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseMySql(connectionString, serverVersion));
 
 // Register new services for auxiliary features
 builder.Services.AddScoped<RMS_APIServer.Services.IUserFavoritesService, RMS_APIServer.Services.UserFavoritesService>();

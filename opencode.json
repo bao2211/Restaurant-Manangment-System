@@ -1,0 +1,25 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "browseros": {
+      "type": "remote",
+      "url": "http://127.0.0.1:9000/mcp",
+      "enabled": true
+    },
+    "wordpress": {
+      "type": "local",
+      "command": ["node", "C:\\Users\\Admin\\Documents\\School\\CNPMNC\\RMS\\mcp-wordpress\\dist\\index.js"],
+      "environment": {
+        "WORDPRESS_URL": "http://192.168.192.85:8082/",
+        "WORDPRESS_USERNAME": "admin",
+        "WORDPRESS_PASSWORD": "CaoBao2211"
+      },
+      "enabled": true
+    },
+    "pdf-reader": {
+      "type": "local",
+      "command": ["node", "C:\\Users\\Admin\\Documents\\School\\CNPMNC\\RMS\\node_modules\\mcp-pdf\\dist\\server.js"],
+      "enabled": true
+    }
+  }
+}

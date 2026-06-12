@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: rms-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=webQLQuanAn
+      - MYSQL_CHARSET=utf8mb4
+      - MYSQL_COLLATION=utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./webQLQuanAn_mysql.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - rms-network
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password
+
+  rms-api:
+    build:
+      context: ./RMS-APIServer/Restaurant-Manangment-System-RMS-APIServer/RMS-APIServer
+      dockerfile: Dockerfile
+    container_name: rms-api-server
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - DOTNET_RUNNING_IN_CONTAINER=true
+      - ConnectionStrings__DefaultConnection=Server=db;Database=webQLQuanAn;User=root;Password=${MYSQL_ROOT_PASSWORD};AllowPublicKeyRetrieval=True;SslMode=None;
+      - Jwt__Key=${JWT_KEY}
+      - Jwt__Issuer=RMS-APIServer
+      - Jwt__Audience=RMS-Users
+      - Jwt__ExpireDays=7
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - rms-network
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
+
+networks:
+  rms-network:
+    driver: bridge
