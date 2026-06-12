@@ -146,7 +146,7 @@ public partial class DBContext : DbContext
         modelBuilder.Entity<Order>(entity =>
         {
             entity.HasKey(e => e.OrderId).HasName("PK_Order");
-            entity.ToTable("`Order`");
+            entity.ToTable("Order");
 
             entity.Property(e => e.OrderId)
                 .HasMaxLength(10)
@@ -245,7 +245,7 @@ public partial class DBContext : DbContext
         modelBuilder.Entity<Table>(entity =>
         {
             entity.HasKey(e => e.TableId).HasName("PK_Table");
-            entity.ToTable("`Table`");
+            entity.ToTable("Table");
 
             entity.HasIndex(e => e.TableName, "IX_Table").IsUnique();
 
@@ -259,7 +259,7 @@ public partial class DBContext : DbContext
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.UserId).HasName("PK_User");
-            entity.ToTable("`User`");
+            entity.ToTable("User");
 
             entity.HasIndex(e => e.UserName, "IX_User").IsUnique();
             entity.HasIndex(e => e.Phone, "IX_User_1").IsUnique();
