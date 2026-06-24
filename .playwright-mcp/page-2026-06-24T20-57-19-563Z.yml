@@ -1,0 +1,110 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e6]:
+      - link "R RMS Quản Lý Nhà Hàng" [ref=e7] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e9]: R
+        - generic [ref=e10]:
+          - heading "RMS" [level=1] [ref=e11]
+          - paragraph [ref=e12]: Quản Lý Nhà Hàng
+      - generic [ref=e14]:
+        - img [ref=e15]
+        - textbox "Tìm kiếm nhà hàng hoặc món ăn..." [ref=e18]
+      - generic [ref=e19]:
+        - button [ref=e20]:
+          - img [ref=e21]
+        - button [active] [ref=e25]:
+          - img [ref=e26]
+    - navigation [ref=e31]:
+      - link "🏠 Trang chủ" [ref=e32] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e33]: 🏠
+        - text: Trang chủ
+      - link "🍽️ Thực đơn" [ref=e34] [cursor=pointer]:
+        - /url: /menu
+        - generic [ref=e35]: 🍽️
+        - text: Thực đơn
+      - link "📋 Đơn hàng" [ref=e36] [cursor=pointer]:
+        - /url: /orders
+        - generic [ref=e37]: 📋
+        - text: Đơn hàng
+      - link "📅 Đặt bàn" [ref=e38] [cursor=pointer]:
+        - /url: /reservations
+        - generic [ref=e39]: 📅
+        - text: Đặt bàn
+  - generic [ref=e41]:
+    - img [ref=e42]
+    - paragraph [ref=e44]: Bạn không có quyền truy cập
+  - contentinfo [ref=e45]:
+    - generic [ref=e47]:
+      - generic [ref=e48]:
+        - generic [ref=e49]:
+          - generic [ref=e50]:
+            - generic [ref=e52]: R
+            - generic [ref=e53]:
+              - heading "RMS" [level=3] [ref=e54]
+              - paragraph [ref=e55]: Quản Lý Nhà Hàng
+          - paragraph [ref=e56]: Nhà hàng yêu thích của bạn, được giao hàng nhanh chóng. Đặt món trực tuyến và tận hưởng món ngon tại nhà.
+          - generic [ref=e57]:
+            - link "f" [ref=e58] [cursor=pointer]:
+              - /url: "#"
+              - generic [ref=e59]: f
+            - link "i" [ref=e60] [cursor=pointer]:
+              - /url: "#"
+              - generic [ref=e61]: i
+            - link "t" [ref=e62] [cursor=pointer]:
+              - /url: "#"
+              - generic [ref=e63]: t
+        - generic [ref=e64]:
+          - heading "Liên kết nhanh" [level=4] [ref=e65]
+          - list [ref=e66]:
+            - listitem [ref=e67]:
+              - link "Về chúng tôi" [ref=e68] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e69]:
+              - link "Thực đơn" [ref=e70] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e71]:
+              - link "Liên hệ" [ref=e72] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e73]:
+              - link "Blog" [ref=e74] [cursor=pointer]:
+                - /url: "#"
+        - generic [ref=e75]:
+          - heading "Hỗ trợ" [level=4] [ref=e76]
+          - list [ref=e77]:
+            - listitem [ref=e78]:
+              - link "Trung tâm trợ giúp" [ref=e79] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e80]:
+              - link "An toàn" [ref=e81] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e82]:
+              - link "Điều khoản dịch vụ" [ref=e83] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e84]:
+              - link "Chính sách riêng tư" [ref=e85] [cursor=pointer]:
+                - /url: "#"
+        - generic [ref=e86]:
+          - heading "Liên hệ" [level=4] [ref=e87]
+          - list [ref=e88]:
+            - listitem [ref=e89]:
+              - img [ref=e91]
+              - generic [ref=e93]: +84 123 456 789
+            - listitem [ref=e94]:
+              - img [ref=e96]
+              - generic [ref=e98]: support@rms.com
+            - listitem [ref=e99]:
+              - img [ref=e101]
+              - generic [ref=e104]: 123 Lê Lợi, Quận 1, TP.HCM
+      - generic [ref=e105]:
+        - paragraph [ref=e106]: © 2026 RMS - Hệ Thống Quản Lý Nhà Hàng. Tất cả quyền được bảo lưu.
+        - generic [ref=e107]:
+          - link "Chính sách" [ref=e108] [cursor=pointer]:
+            - /url: "#"
+          - generic [ref=e109]: ·
+          - link "Điều khoản" [ref=e110] [cursor=pointer]:
+            - /url: "#"
+          - generic [ref=e111]: ·
+          - link "Cookie" [ref=e112] [cursor=pointer]:
+            - /url: "#"

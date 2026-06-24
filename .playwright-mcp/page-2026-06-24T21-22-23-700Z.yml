@@ -1,0 +1,168 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e589]:
+    - banner [ref=e590]:
+      - generic [ref=e593]:
+        - link "R RMS Quản Lý Nhà Hàng" [ref=e594] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e596]: R
+          - generic [ref=e597]:
+            - heading "RMS" [level=1] [ref=e598]
+            - paragraph [ref=e599]: Quản Lý Nhà Hàng
+        - generic [ref=e601]:
+          - img [ref=e602]
+          - textbox "Tìm kiếm nhà hàng hoặc món ăn..." [ref=e605]
+        - generic [ref=e606]:
+          - button [ref=e607]:
+            - img [ref=e608]
+          - generic [ref=e612]:
+            - generic [ref=e613]: VAnh
+            - button "Đăng xuất" [ref=e614]:
+              - img [ref=e615]
+      - navigation [ref=e620]:
+        - link "🏠 Trang chủ" [ref=e621] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e622]: 🏠
+          - text: Trang chủ
+        - link "🍽️ Thực đơn" [ref=e623] [cursor=pointer]:
+          - /url: /menu
+          - generic [ref=e624]: 🍽️
+          - text: Thực đơn
+        - link "📋 Đơn hàng" [ref=e625] [cursor=pointer]:
+          - /url: /orders
+          - generic [ref=e626]: 📋
+          - text: Đơn hàng
+        - link "📅 Đặt bàn" [ref=e627] [cursor=pointer]:
+          - /url: /reservations
+          - generic [ref=e628]: 📅
+          - text: Đặt bàn
+        - link "🪑 Bàn" [ref=e629] [cursor=pointer]:
+          - /url: /table
+          - generic [ref=e630]: 🪑
+          - text: Bàn
+        - link "👨‍🍳 Bếp" [ref=e631] [cursor=pointer]:
+          - /url: /kitchen
+          - generic [ref=e632]: 👨‍🍳
+          - text: Bếp
+        - link "⚙️ Quản lý" [ref=e633] [cursor=pointer]:
+          - /url: /account
+          - generic [ref=e634]: ⚙️
+          - text: Quản lý
+    - generic [ref=e637]:
+      - heading "Đặt bàn trước" [level=1] [ref=e638]
+      - paragraph [ref=e639]: Đảm bảo chỗ ngồi cho bữa ăn của bạn
+    - generic [ref=e641]:
+      - generic [ref=e642]:
+        - generic [ref=e644]: "1"
+        - generic [ref=e647]: "2"
+        - generic [ref=e650]: "3"
+      - generic [ref=e651]:
+        - heading "Chọn thời gian" [level=2] [ref=e652]
+        - generic [ref=e653]:
+          - generic [ref=e654]:
+            - generic [ref=e655]: Ngày
+            - generic [ref=e656]:
+              - img [ref=e657]
+              - textbox [ref=e659]: 2026-06-24
+          - generic [ref=e660]:
+            - generic [ref=e661]: Giờ
+            - generic [ref=e662]:
+              - button "10:00" [ref=e663]
+              - button "10:30" [ref=e664]
+              - button "11:00" [ref=e665]
+              - button "11:30" [ref=e666]
+              - button "12:00" [ref=e667]
+              - button "12:30" [ref=e668]
+              - button "13:00" [ref=e669]
+              - button "13:30" [ref=e670]
+              - button "17:00" [ref=e671]
+              - button "17:30" [ref=e672]
+              - button "18:00" [ref=e673]
+              - button "18:30" [ref=e674]
+              - button "19:00" [ref=e675]
+              - button "19:30" [ref=e676]
+              - button "20:00" [ref=e677]
+              - button "20:30" [ref=e678]
+              - button "21:00" [ref=e679]
+          - generic [ref=e680]:
+            - generic [ref=e681]: Số khách
+            - generic [ref=e682]:
+              - button "-" [ref=e683]
+              - generic [ref=e684]:
+                - text: "2"
+                - paragraph [ref=e685]: khách
+              - button "+" [ref=e686]
+        - button "Tiếp tục" [disabled] [ref=e687]
+    - contentinfo [ref=e688]:
+      - generic [ref=e690]:
+        - generic [ref=e691]:
+          - generic [ref=e692]:
+            - generic [ref=e693]:
+              - generic [ref=e695]: R
+              - generic [ref=e696]:
+                - heading "RMS" [level=3] [ref=e697]
+                - paragraph [ref=e698]: Quản Lý Nhà Hàng
+            - paragraph [ref=e699]: Nhà hàng yêu thích của bạn, được giao hàng nhanh chóng. Đặt món trực tuyến và tận hưởng món ngon tại nhà.
+            - generic [ref=e700]:
+              - link "f" [ref=e701] [cursor=pointer]:
+                - /url: "#"
+                - generic [ref=e702]: f
+              - link "i" [ref=e703] [cursor=pointer]:
+                - /url: "#"
+                - generic [ref=e704]: i
+              - link "t" [ref=e705] [cursor=pointer]:
+                - /url: "#"
+                - generic [ref=e706]: t
+          - generic [ref=e707]:
+            - heading "Liên kết nhanh" [level=4] [ref=e708]
+            - list [ref=e709]:
+              - listitem [ref=e710]:
+                - link "Về chúng tôi" [ref=e711] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e712]:
+                - link "Thực đơn" [ref=e713] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e714]:
+                - link "Liên hệ" [ref=e715] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e716]:
+                - link "Blog" [ref=e717] [cursor=pointer]:
+                  - /url: "#"
+          - generic [ref=e718]:
+            - heading "Hỗ trợ" [level=4] [ref=e719]
+            - list [ref=e720]:
+              - listitem [ref=e721]:
+                - link "Trung tâm trợ giúp" [ref=e722] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e723]:
+                - link "An toàn" [ref=e724] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e725]:
+                - link "Điều khoản dịch vụ" [ref=e726] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e727]:
+                - link "Chính sách riêng tư" [ref=e728] [cursor=pointer]:
+                  - /url: "#"
+          - generic [ref=e729]:
+            - heading "Liên hệ" [level=4] [ref=e730]
+            - list [ref=e731]:
+              - listitem [ref=e732]:
+                - img [ref=e734]
+                - generic [ref=e736]: +84 123 456 789
+              - listitem [ref=e737]:
+                - img [ref=e739]
+                - generic [ref=e741]: support@rms.com
+              - listitem [ref=e742]:
+                - img [ref=e744]
+                - generic [ref=e747]: 123 Lê Lợi, Quận 1, TP.HCM
+        - generic [ref=e748]:
+          - paragraph [ref=e749]: © 2026 RMS - Hệ Thống Quản Lý Nhà Hàng. Tất cả quyền được bảo lưu.
+          - generic [ref=e750]:
+            - link "Chính sách" [ref=e751] [cursor=pointer]:
+              - /url: "#"
+            - generic [ref=e752]: ·
+            - link "Điều khoản" [ref=e753] [cursor=pointer]:
+              - /url: "#"
+            - generic [ref=e754]: ·
+            - link "Cookie" [ref=e755] [cursor=pointer]:
+              - /url: "#"
+  - alert [ref=e80]

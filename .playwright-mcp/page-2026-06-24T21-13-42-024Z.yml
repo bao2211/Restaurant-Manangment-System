@@ -1,0 +1,970 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e6]:
+        - link "R RMS Quản Lý Nhà Hàng" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e9]: R
+          - generic [ref=e10]:
+            - heading "RMS" [level=1] [ref=e11]
+            - paragraph [ref=e12]: Quản Lý Nhà Hàng
+        - generic [ref=e14]:
+          - img [ref=e15]
+          - textbox "Tìm kiếm nhà hàng hoặc món ăn..." [ref=e18]
+        - generic [ref=e19]:
+          - button [ref=e20]:
+            - img [ref=e21]
+          - generic [ref=e25]:
+            - generic [ref=e26]: VAnh
+            - button "Đăng xuất" [ref=e27]:
+              - img [ref=e28]
+      - navigation [ref=e33]:
+        - link "🏠 Trang chủ" [ref=e34] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e35]: 🏠
+          - text: Trang chủ
+        - link "🍽️ Thực đơn" [ref=e36] [cursor=pointer]:
+          - /url: /menu
+          - generic [ref=e37]: 🍽️
+          - text: Thực đơn
+        - link "📋 Đơn hàng" [ref=e38] [cursor=pointer]:
+          - /url: /orders
+          - generic [ref=e39]: 📋
+          - text: Đơn hàng
+        - link "📅 Đặt bàn" [ref=e40] [cursor=pointer]:
+          - /url: /reservations
+          - generic [ref=e41]: 📅
+          - text: Đặt bàn
+        - link "🪑 Bàn" [ref=e42] [cursor=pointer]:
+          - /url: /table
+          - generic [ref=e43]: 🪑
+          - text: Bàn
+        - link "👨‍🍳 Bếp" [ref=e44] [cursor=pointer]:
+          - /url: /kitchen
+          - generic [ref=e45]: 👨‍🍳
+          - text: Bếp
+        - link "⚙️ Quản lý" [ref=e46] [cursor=pointer]:
+          - /url: /account
+          - generic [ref=e47]: ⚙️
+          - text: Quản lý
+    - generic [ref=e121]:
+      - heading "👨‍🍳 Quản lý bếp" [level=1] [ref=e122]
+      - paragraph [ref=e123]: Theo dõi và cập nhật trạng thái món ăn
+    - generic [ref=e126]:
+      - generic [ref=e127]:
+        - img [ref=e128]
+        - textbox "Tìm theo mã đơn, bàn..." [ref=e131]
+      - generic [ref=e132]: 55 đơn chờ
+    - generic [ref=e134]:
+      - generic [ref=e135]:
+        - generic [ref=e138]:
+          - heading [level=3]
+          - paragraph [ref=e139]:
+            - generic [ref=e140]: ·
+            - img [ref=e141]
+            - text: Invalid Date
+        - generic [ref=e144]:
+          - generic [ref=e145]:
+            - generic [ref=e146]:
+              - generic [ref=e147]: "11"
+              - generic [ref=e148]: x1
+            - button "Hoàn tất" [ref=e149]:
+              - img [ref=e150]
+              - text: Hoàn tất
+          - generic [ref=e153]:
+            - generic [ref=e154]:
+              - generic [ref=e155]: FDD76BE992
+              - generic [ref=e156]: x1
+            - button "Hoàn tất" [ref=e157]:
+              - img [ref=e158]
+              - text: Hoàn tất
+      - generic [ref=e161]:
+        - generic [ref=e164]:
+          - heading [level=3]
+          - paragraph [ref=e165]:
+            - generic [ref=e166]: ·
+            - img [ref=e167]
+            - text: Invalid Date
+        - generic [ref=e170]:
+          - generic [ref=e171]:
+            - generic [ref=e172]:
+              - generic [ref=e173]: "19"
+              - generic [ref=e174]: x1
+            - button "Hoàn tất" [ref=e175]:
+              - img [ref=e176]
+              - text: Hoàn tất
+          - generic [ref=e179]:
+            - generic [ref=e180]:
+              - generic [ref=e181]: "5"
+              - generic [ref=e182]: x1
+            - button "Hoàn tất" [ref=e183]:
+              - img [ref=e184]
+              - text: Hoàn tất
+          - generic [ref=e187]:
+            - generic [ref=e188]:
+              - generic [ref=e189]: FD2FDC9982
+              - generic [ref=e190]: x1
+            - button "Hoàn tất" [ref=e191]:
+              - img [ref=e192]
+              - text: Hoàn tất
+      - generic [ref=e195]:
+        - generic [ref=e198]:
+          - heading [level=3]
+          - paragraph [ref=e199]:
+            - generic [ref=e200]: ·
+            - img [ref=e201]
+            - text: Invalid Date
+        - generic [ref=e204]:
+          - generic [ref=e205]:
+            - generic [ref=e206]:
+              - generic [ref=e207]: "1"
+              - generic [ref=e208]: x1
+            - button "Hoàn tất" [ref=e209]:
+              - img [ref=e210]
+              - text: Hoàn tất
+          - generic [ref=e213]:
+            - generic [ref=e214]:
+              - generic [ref=e215]: "9"
+              - generic [ref=e216]: x1
+            - button "Hoàn tất" [ref=e217]:
+              - img [ref=e218]
+              - text: Hoàn tất
+      - generic [ref=e221]:
+        - generic [ref=e224]:
+          - heading [level=3]
+          - paragraph [ref=e225]:
+            - generic [ref=e226]: ·
+            - img [ref=e227]
+            - text: Invalid Date
+        - generic [ref=e231]:
+          - generic [ref=e232]:
+            - generic [ref=e233]: OF00233488
+            - generic [ref=e234]: x1
+          - button "Hoàn tất" [ref=e235]:
+            - img [ref=e236]
+            - text: Hoàn tất
+      - generic [ref=e239]:
+        - generic [ref=e242]:
+          - heading [level=3]
+          - paragraph [ref=e243]:
+            - generic [ref=e244]: ·
+            - img [ref=e245]
+            - text: Invalid Date
+        - generic [ref=e249]:
+          - generic [ref=e250]:
+            - generic [ref=e251]: OF00233488
+            - generic [ref=e252]: x1
+          - button "Hoàn tất" [ref=e253]:
+            - img [ref=e254]
+            - text: Hoàn tất
+      - generic [ref=e257]:
+        - generic [ref=e260]:
+          - heading [level=3]
+          - paragraph [ref=e261]:
+            - generic [ref=e262]: ·
+            - img [ref=e263]
+            - text: Invalid Date
+        - generic [ref=e266]:
+          - generic [ref=e267]:
+            - generic [ref=e268]:
+              - generic [ref=e269]: "1"
+              - generic [ref=e270]: x1
+            - button "Hoàn tất" [ref=e271]:
+              - img [ref=e272]
+              - text: Hoàn tất
+          - generic [ref=e275]:
+            - generic [ref=e276]:
+              - generic [ref=e277]: "10"
+              - generic [ref=e278]: x1
+            - button "Hoàn tất" [ref=e279]:
+              - img [ref=e280]
+              - text: Hoàn tất
+          - generic [ref=e283]:
+            - generic [ref=e284]:
+              - generic [ref=e285]: "11"
+              - generic [ref=e286]: x1
+            - button "Hoàn tất" [ref=e287]:
+              - img [ref=e288]
+              - text: Hoàn tất
+          - generic [ref=e291]:
+            - generic [ref=e292]:
+              - generic [ref=e293]: "12"
+              - generic [ref=e294]: x1
+            - button "Hoàn tất" [ref=e295]:
+              - img [ref=e296]
+              - text: Hoàn tất
+      - generic [ref=e299]:
+        - generic [ref=e302]:
+          - heading [level=3]
+          - paragraph [ref=e303]:
+            - generic [ref=e304]: ·
+            - img [ref=e305]
+            - text: Invalid Date
+        - generic [ref=e308]:
+          - generic [ref=e309]:
+            - generic [ref=e310]:
+              - generic [ref=e311]: "1"
+              - generic [ref=e312]: x1
+            - button "Hoàn tất" [ref=e313]:
+              - img [ref=e314]
+              - text: Hoàn tất
+          - generic [ref=e317]:
+            - generic [ref=e318]:
+              - generic [ref=e319]: "2"
+              - generic [ref=e320]: x1
+            - button "Hoàn tất" [ref=e321]:
+              - img [ref=e322]
+              - text: Hoàn tất
+          - generic [ref=e325]:
+            - generic [ref=e326]:
+              - generic [ref=e327]: "3"
+              - generic [ref=e328]: x1
+            - button "Hoàn tất" [ref=e329]:
+              - img [ref=e330]
+              - text: Hoàn tất
+          - generic [ref=e333]:
+            - generic [ref=e334]:
+              - generic [ref=e335]: "4"
+              - generic [ref=e336]: x2
+            - button "Hoàn tất" [ref=e337]:
+              - img [ref=e338]
+              - text: Hoàn tất
+      - generic [ref=e341]:
+        - generic [ref=e344]:
+          - heading [level=3]
+          - paragraph [ref=e345]:
+            - generic [ref=e346]: ·
+            - img [ref=e347]
+            - text: Invalid Date
+        - generic [ref=e350]:
+          - generic [ref=e351]:
+            - generic [ref=e352]:
+              - generic [ref=e353]: "8"
+              - generic [ref=e354]: x1
+            - button "Hoàn tất" [ref=e355]:
+              - img [ref=e356]
+              - text: Hoàn tất
+          - generic [ref=e359]:
+            - generic [ref=e360]:
+              - generic [ref=e361]: FDD76BE992
+              - generic [ref=e362]: x1
+            - button "Hoàn tất" [ref=e363]:
+              - img [ref=e364]
+              - text: Hoàn tất
+      - generic [ref=e370]:
+        - heading [level=3]
+        - paragraph [ref=e371]:
+          - generic [ref=e372]: ·
+          - img [ref=e373]
+          - text: Invalid Date
+      - generic [ref=e380]:
+        - heading [level=3]
+        - paragraph [ref=e381]:
+          - generic [ref=e382]: ·
+          - img [ref=e383]
+          - text: Invalid Date
+      - generic [ref=e390]:
+        - heading [level=3]
+        - paragraph [ref=e391]:
+          - generic [ref=e392]: ·
+          - img [ref=e393]
+          - text: Invalid Date
+      - generic [ref=e397]:
+        - generic [ref=e400]:
+          - heading [level=3]
+          - paragraph [ref=e401]:
+            - generic [ref=e402]: ·
+            - img [ref=e403]
+            - text: Invalid Date
+        - generic [ref=e407]:
+          - generic [ref=e408]:
+            - generic [ref=e409]: "1"
+            - generic [ref=e410]: x2
+          - button "Hoàn tất" [ref=e411]:
+            - img [ref=e412]
+            - text: Hoàn tất
+      - generic [ref=e415]:
+        - generic [ref=e418]:
+          - heading [level=3]
+          - paragraph [ref=e419]:
+            - generic [ref=e420]: ·
+            - img [ref=e421]
+            - text: Invalid Date
+        - generic [ref=e424]:
+          - generic [ref=e425]:
+            - generic [ref=e426]:
+              - generic [ref=e427]: "1"
+              - generic [ref=e428]: x1
+            - button "Hoàn tất" [ref=e429]:
+              - img [ref=e430]
+              - text: Hoàn tất
+          - generic [ref=e433]:
+            - generic [ref=e434]:
+              - generic [ref=e435]: "10"
+              - generic [ref=e436]: x1
+            - button "Hoàn tất" [ref=e437]:
+              - img [ref=e438]
+              - text: Hoàn tất
+          - generic [ref=e441]:
+            - generic [ref=e442]:
+              - generic [ref=e443]: "11"
+              - generic [ref=e444]: x1
+            - button "Hoàn tất" [ref=e445]:
+              - img [ref=e446]
+              - text: Hoàn tất
+      - generic [ref=e449]:
+        - generic [ref=e452]:
+          - heading [level=3]
+          - paragraph [ref=e453]:
+            - generic [ref=e454]: ·
+            - img [ref=e455]
+            - text: Invalid Date
+        - generic [ref=e458]:
+          - generic [ref=e459]:
+            - generic [ref=e460]:
+              - generic [ref=e461]: "10"
+              - generic [ref=e462]: x1
+            - button "Hoàn tất" [ref=e463]:
+              - img [ref=e464]
+              - text: Hoàn tất
+          - generic [ref=e467]:
+            - generic [ref=e468]:
+              - generic [ref=e469]: "19"
+              - generic [ref=e470]: x1
+            - button "Hoàn tất" [ref=e471]:
+              - img [ref=e472]
+              - text: Hoàn tất
+      - generic [ref=e475]:
+        - generic [ref=e478]:
+          - heading [level=3]
+          - paragraph [ref=e479]:
+            - generic [ref=e480]: ·
+            - img [ref=e481]
+            - text: Invalid Date
+        - generic [ref=e484]:
+          - generic [ref=e485]:
+            - generic [ref=e486]:
+              - generic [ref=e487]: "1"
+              - generic [ref=e488]: x1
+            - button "Hoàn tất" [ref=e489]:
+              - img [ref=e490]
+              - text: Hoàn tất
+          - generic [ref=e493]:
+            - generic [ref=e494]:
+              - generic [ref=e495]: "17"
+              - generic [ref=e496]: x1
+            - button "Hoàn tất" [ref=e497]:
+              - img [ref=e498]
+              - text: Hoàn tất
+      - generic [ref=e501]:
+        - generic [ref=e504]:
+          - heading [level=3]
+          - paragraph [ref=e505]:
+            - generic [ref=e506]: ·
+            - img [ref=e507]
+            - text: Invalid Date
+        - generic [ref=e510]:
+          - generic [ref=e511]:
+            - generic [ref=e512]:
+              - generic [ref=e513]: "1"
+              - generic [ref=e514]: x1
+            - button "Hoàn tất" [ref=e515]:
+              - img [ref=e516]
+              - text: Hoàn tất
+          - generic [ref=e519]:
+            - generic [ref=e520]:
+              - generic [ref=e521]: "10"
+              - generic [ref=e522]: x1
+            - button "Hoàn tất" [ref=e523]:
+              - img [ref=e524]
+              - text: Hoàn tất
+          - generic [ref=e527]:
+            - generic [ref=e528]:
+              - generic [ref=e529]: "11"
+              - generic [ref=e530]: x1
+            - button "Hoàn tất" [ref=e531]:
+              - img [ref=e532]
+              - text: Hoàn tất
+      - generic [ref=e538]:
+        - heading [level=3]
+        - paragraph [ref=e539]:
+          - generic [ref=e540]: ·
+          - img [ref=e541]
+          - text: Invalid Date
+      - generic [ref=e548]:
+        - heading [level=3]
+        - paragraph [ref=e549]:
+          - generic [ref=e550]: ·
+          - img [ref=e551]
+          - text: Invalid Date
+      - generic [ref=e555]:
+        - generic [ref=e558]:
+          - heading [level=3]
+          - paragraph [ref=e559]:
+            - generic [ref=e560]: ·
+            - img [ref=e561]
+            - text: Invalid Date
+        - generic [ref=e564]:
+          - generic [ref=e565]:
+            - generic [ref=e566]:
+              - generic [ref=e567]: "16"
+              - generic [ref=e568]: x1
+            - button "Hoàn tất" [ref=e569]:
+              - img [ref=e570]
+              - text: Hoàn tất
+          - generic [ref=e573]:
+            - generic [ref=e574]:
+              - generic [ref=e575]: "17"
+              - generic [ref=e576]: x3
+            - button "Hoàn tất" [ref=e577]:
+              - img [ref=e578]
+              - text: Hoàn tất
+      - generic [ref=e584]:
+        - heading [level=3]
+        - paragraph [ref=e585]:
+          - generic [ref=e586]: ·
+          - img [ref=e587]
+          - text: Invalid Date
+      - generic [ref=e591]:
+        - generic [ref=e594]:
+          - heading [level=3]
+          - paragraph [ref=e595]:
+            - generic [ref=e596]: ·
+            - img [ref=e597]
+            - text: Invalid Date
+        - generic [ref=e601]:
+          - generic [ref=e602]:
+            - generic [ref=e603]: FDD76BE992
+            - generic [ref=e604]: x1
+          - button "Hoàn tất" [ref=e605]:
+            - img [ref=e606]
+            - text: Hoàn tất
+      - generic [ref=e609]:
+        - generic [ref=e612]:
+          - heading [level=3]
+          - paragraph [ref=e613]:
+            - generic [ref=e614]: ·
+            - img [ref=e615]
+            - text: Invalid Date
+        - generic [ref=e619]:
+          - generic [ref=e620]:
+            - generic [ref=e621]: FDA6342E37
+            - generic [ref=e622]: x1
+          - button "Hoàn tất" [ref=e623]:
+            - img [ref=e624]
+            - text: Hoàn tất
+      - generic [ref=e627]:
+        - generic [ref=e630]:
+          - heading [level=3]
+          - paragraph [ref=e631]:
+            - generic [ref=e632]: ·
+            - img [ref=e633]
+            - text: Invalid Date
+        - generic [ref=e637]:
+          - generic [ref=e638]:
+            - generic [ref=e639]: "1"
+            - generic [ref=e640]: x1
+          - button "Hoàn tất" [ref=e641]:
+            - img [ref=e642]
+            - text: Hoàn tất
+      - generic [ref=e645]:
+        - generic [ref=e648]:
+          - heading [level=3]
+          - paragraph [ref=e649]:
+            - generic [ref=e650]: ·
+            - img [ref=e651]
+            - text: Invalid Date
+        - generic [ref=e655]:
+          - generic [ref=e656]:
+            - generic [ref=e657]: "1"
+            - generic [ref=e658]: x1
+          - button "Hoàn tất" [ref=e659]:
+            - img [ref=e660]
+            - text: Hoàn tất
+      - generic [ref=e663]:
+        - generic [ref=e666]:
+          - heading [level=3]
+          - paragraph [ref=e667]:
+            - generic [ref=e668]: ·
+            - img [ref=e669]
+            - text: Invalid Date
+        - generic [ref=e673]:
+          - generic [ref=e674]:
+            - generic [ref=e675]: "1"
+            - generic [ref=e676]: x1
+          - button "Hoàn tất" [ref=e677]:
+            - img [ref=e678]
+            - text: Hoàn tất
+      - generic [ref=e684]:
+        - heading [level=3]
+        - paragraph [ref=e685]:
+          - generic [ref=e686]: ·
+          - img [ref=e687]
+          - text: Invalid Date
+      - generic [ref=e691]:
+        - generic [ref=e694]:
+          - heading [level=3]
+          - paragraph [ref=e695]:
+            - generic [ref=e696]: ·
+            - img [ref=e697]
+            - text: Invalid Date
+        - generic [ref=e700]:
+          - generic [ref=e701]:
+            - generic [ref=e702]:
+              - generic [ref=e703]: "1"
+              - generic [ref=e704]: x1
+            - button "Hoàn tất" [ref=e705]:
+              - img [ref=e706]
+              - text: Hoàn tất
+          - generic [ref=e709]:
+            - generic [ref=e710]:
+              - generic [ref=e711]: "10"
+              - generic [ref=e712]: x1
+            - button "Hoàn tất" [ref=e713]:
+              - img [ref=e714]
+              - text: Hoàn tất
+      - generic [ref=e717]:
+        - generic [ref=e720]:
+          - heading [level=3]
+          - paragraph [ref=e721]:
+            - generic [ref=e722]: ·
+            - img [ref=e723]
+            - text: Invalid Date
+        - generic [ref=e727]:
+          - generic [ref=e728]:
+            - generic [ref=e729]: "1"
+            - generic [ref=e730]: x2
+          - button "Hoàn tất" [ref=e731]:
+            - img [ref=e732]
+            - text: Hoàn tất
+      - generic [ref=e735]:
+        - generic [ref=e738]:
+          - heading [level=3]
+          - paragraph [ref=e739]:
+            - generic [ref=e740]: ·
+            - img [ref=e741]
+            - text: Invalid Date
+        - generic [ref=e745]:
+          - generic [ref=e746]:
+            - generic [ref=e747]: "1"
+            - generic [ref=e748]: x1
+          - button "Hoàn tất" [ref=e749]:
+            - img [ref=e750]
+            - text: Hoàn tất
+      - generic [ref=e753]:
+        - generic [ref=e756]:
+          - heading [level=3]
+          - paragraph [ref=e757]:
+            - generic [ref=e758]: ·
+            - img [ref=e759]
+            - text: Invalid Date
+        - generic [ref=e763]:
+          - generic [ref=e764]:
+            - generic [ref=e765]: "10"
+            - generic [ref=e766]: x1
+          - button "Hoàn tất" [ref=e767]:
+            - img [ref=e768]
+            - text: Hoàn tất
+      - generic [ref=e771]:
+        - generic [ref=e774]:
+          - heading [level=3]
+          - paragraph [ref=e775]:
+            - generic [ref=e776]: ·
+            - img [ref=e777]
+            - text: Invalid Date
+        - generic [ref=e780]:
+          - generic [ref=e781]:
+            - generic [ref=e782]:
+              - generic [ref=e783]: "1"
+              - generic [ref=e784]: x1
+            - button "Hoàn tất" [ref=e785]:
+              - img [ref=e786]
+              - text: Hoàn tất
+          - generic [ref=e789]:
+            - generic [ref=e790]:
+              - generic [ref=e791]: "10"
+              - generic [ref=e792]: x1
+            - button "Hoàn tất" [ref=e793]:
+              - img [ref=e794]
+              - text: Hoàn tất
+          - generic [ref=e797]:
+            - generic [ref=e798]:
+              - generic [ref=e799]: "11"
+              - generic [ref=e800]: x1
+            - button "Hoàn tất" [ref=e801]:
+              - img [ref=e802]
+              - text: Hoàn tất
+      - generic [ref=e805]:
+        - generic [ref=e808]:
+          - heading [level=3]
+          - paragraph [ref=e809]:
+            - generic [ref=e810]: ·
+            - img [ref=e811]
+            - text: Invalid Date
+        - generic [ref=e815]:
+          - generic [ref=e816]:
+            - generic [ref=e817]: "1"
+            - generic [ref=e818]: x2
+          - button "Hoàn tất" [ref=e819]:
+            - img [ref=e820]
+            - text: Hoàn tất
+      - generic [ref=e823]:
+        - generic [ref=e826]:
+          - heading [level=3]
+          - paragraph [ref=e827]:
+            - generic [ref=e828]: ·
+            - img [ref=e829]
+            - text: Invalid Date
+        - generic [ref=e832]:
+          - generic [ref=e833]:
+            - generic [ref=e834]:
+              - generic [ref=e835]: "1"
+              - generic [ref=e836]: x1
+            - button "Hoàn tất" [ref=e837]:
+              - img [ref=e838]
+              - text: Hoàn tất
+          - generic [ref=e841]:
+            - generic [ref=e842]:
+              - generic [ref=e843]: "11"
+              - generic [ref=e844]: x1
+            - button "Hoàn tất" [ref=e845]:
+              - img [ref=e846]
+              - text: Hoàn tất
+          - generic [ref=e849]:
+            - generic [ref=e850]:
+              - generic [ref=e851]: "17"
+              - generic [ref=e852]: x1
+            - button "Hoàn tất" [ref=e853]:
+              - img [ref=e854]
+              - text: Hoàn tất
+          - generic [ref=e857]:
+            - generic [ref=e858]:
+              - generic [ref=e859]: "18"
+              - generic [ref=e860]: x1
+            - button "Hoàn tất" [ref=e861]:
+              - img [ref=e862]
+              - text: Hoàn tất
+      - generic [ref=e865]:
+        - generic [ref=e868]:
+          - heading [level=3]
+          - paragraph [ref=e869]:
+            - generic [ref=e870]: ·
+            - img [ref=e871]
+            - text: Invalid Date
+        - generic [ref=e874]:
+          - generic [ref=e875]:
+            - generic [ref=e876]:
+              - generic [ref=e877]: "1"
+              - generic [ref=e878]: x1
+            - button "Hoàn tất" [ref=e879]:
+              - img [ref=e880]
+              - text: Hoàn tất
+          - generic [ref=e883]:
+            - generic [ref=e884]:
+              - generic [ref=e885]: "11"
+              - generic [ref=e886]: x1
+            - button "Hoàn tất" [ref=e887]:
+              - img [ref=e888]
+              - text: Hoàn tất
+          - generic [ref=e891]:
+            - generic [ref=e892]:
+              - generic [ref=e893]: "13"
+              - generic [ref=e894]: x1
+            - button "Hoàn tất" [ref=e895]:
+              - img [ref=e896]
+              - text: Hoàn tất
+      - generic [ref=e902]:
+        - heading [level=3]
+        - paragraph [ref=e903]:
+          - generic [ref=e904]: ·
+          - img [ref=e905]
+          - text: Invalid Date
+      - generic [ref=e909]:
+        - generic [ref=e912]:
+          - heading [level=3]
+          - paragraph [ref=e913]:
+            - generic [ref=e914]: ·
+            - img [ref=e915]
+            - text: Invalid Date
+        - generic [ref=e919]:
+          - generic [ref=e920]:
+            - generic [ref=e921]: "1"
+            - generic [ref=e922]: x1
+          - button "Hoàn tất" [ref=e923]:
+            - img [ref=e924]
+            - text: Hoàn tất
+      - generic [ref=e930]:
+        - heading [level=3]
+        - paragraph [ref=e931]:
+          - generic [ref=e932]: ·
+          - img [ref=e933]
+          - text: Invalid Date
+      - generic [ref=e937]:
+        - generic [ref=e940]:
+          - heading [level=3]
+          - paragraph [ref=e941]:
+            - generic [ref=e942]: ·
+            - img [ref=e943]
+            - text: Invalid Date
+        - generic [ref=e947]:
+          - generic [ref=e948]:
+            - generic [ref=e949]: "1"
+            - generic [ref=e950]: x1
+          - button "Hoàn tất" [ref=e951]:
+            - img [ref=e952]
+            - text: Hoàn tất
+      - generic [ref=e958]:
+        - heading [level=3]
+        - paragraph [ref=e959]:
+          - generic [ref=e960]: ·
+          - img [ref=e961]
+          - text: Invalid Date
+      - generic [ref=e965]:
+        - generic [ref=e968]:
+          - heading [level=3]
+          - paragraph [ref=e969]:
+            - generic [ref=e970]: ·
+            - img [ref=e971]
+            - text: Invalid Date
+        - generic [ref=e975]:
+          - generic [ref=e976]:
+            - generic [ref=e977]: "1"
+            - generic [ref=e978]: x1
+          - button "Hoàn tất" [ref=e979]:
+            - img [ref=e980]
+            - text: Hoàn tất
+      - generic [ref=e983]:
+        - generic [ref=e986]:
+          - heading [level=3]
+          - paragraph [ref=e987]:
+            - generic [ref=e988]: ·
+            - img [ref=e989]
+            - text: Invalid Date
+        - generic [ref=e992]:
+          - generic [ref=e993]:
+            - generic [ref=e994]:
+              - generic [ref=e995]: "1"
+              - generic [ref=e996]: x1
+            - button "Hoàn tất" [ref=e997]:
+              - img [ref=e998]
+              - text: Hoàn tất
+          - generic [ref=e1001]:
+            - generic [ref=e1002]:
+              - generic [ref=e1003]: "2"
+              - generic [ref=e1004]: x1
+            - button "Hoàn tất" [ref=e1005]:
+              - img [ref=e1006]
+              - text: Hoàn tất
+          - generic [ref=e1009]:
+            - generic [ref=e1010]:
+              - generic [ref=e1011]: "3"
+              - generic [ref=e1012]: x1
+            - button "Hoàn tất" [ref=e1013]:
+              - img [ref=e1014]
+              - text: Hoàn tất
+      - generic [ref=e1020]:
+        - heading [level=3]
+        - paragraph [ref=e1021]:
+          - generic [ref=e1022]: ·
+          - img [ref=e1023]
+          - text: Invalid Date
+      - generic [ref=e1030]:
+        - heading [level=3]
+        - paragraph [ref=e1031]:
+          - generic [ref=e1032]: ·
+          - img [ref=e1033]
+          - text: Invalid Date
+      - generic [ref=e1037]:
+        - generic [ref=e1040]:
+          - heading [level=3]
+          - paragraph [ref=e1041]:
+            - generic [ref=e1042]: ·
+            - img [ref=e1043]
+            - text: Invalid Date
+        - generic [ref=e1047]:
+          - generic [ref=e1048]:
+            - generic [ref=e1049]: "1"
+            - generic [ref=e1050]: x1
+          - button "Hoàn tất" [ref=e1051]:
+            - img [ref=e1052]
+            - text: Hoàn tất
+      - generic [ref=e1058]:
+        - heading [level=3]
+        - paragraph [ref=e1059]:
+          - generic [ref=e1060]: ·
+          - img [ref=e1061]
+          - text: Invalid Date
+      - generic [ref=e1068]:
+        - heading [level=3]
+        - paragraph [ref=e1069]:
+          - generic [ref=e1070]: ·
+          - img [ref=e1071]
+          - text: Invalid Date
+      - generic [ref=e1078]:
+        - heading [level=3]
+        - paragraph [ref=e1079]:
+          - generic [ref=e1080]: ·
+          - img [ref=e1081]
+          - text: Invalid Date
+      - generic [ref=e1088]:
+        - heading [level=3]
+        - paragraph [ref=e1089]:
+          - generic [ref=e1090]: ·
+          - img [ref=e1091]
+          - text: Invalid Date
+      - generic [ref=e1095]:
+        - generic [ref=e1098]:
+          - heading [level=3]
+          - paragraph [ref=e1099]:
+            - generic [ref=e1100]: ·
+            - img [ref=e1101]
+            - text: Invalid Date
+        - generic [ref=e1105]:
+          - generic [ref=e1106]:
+            - generic [ref=e1107]: "1"
+            - generic [ref=e1108]: x1
+          - button "Hoàn tất" [ref=e1109]:
+            - img [ref=e1110]
+            - text: Hoàn tất
+      - generic [ref=e1113]:
+        - generic [ref=e1116]:
+          - heading [level=3]
+          - paragraph [ref=e1117]:
+            - generic [ref=e1118]: ·
+            - img [ref=e1119]
+            - text: Invalid Date
+        - generic [ref=e1123]:
+          - generic [ref=e1124]:
+            - generic [ref=e1125]: "1"
+            - generic [ref=e1126]: x1
+          - button "Hoàn tất" [ref=e1127]:
+            - img [ref=e1128]
+            - text: Hoàn tất
+      - generic [ref=e1131]:
+        - generic [ref=e1134]:
+          - heading [level=3]
+          - paragraph [ref=e1135]:
+            - generic [ref=e1136]: ·
+            - img [ref=e1137]
+            - text: Invalid Date
+        - generic [ref=e1141]:
+          - generic [ref=e1142]:
+            - generic [ref=e1143]: "1"
+            - generic [ref=e1144]: x1
+          - button "Hoàn tất" [ref=e1145]:
+            - img [ref=e1146]
+            - text: Hoàn tất
+      - generic [ref=e1149]:
+        - generic [ref=e1152]:
+          - heading [level=3]
+          - paragraph [ref=e1153]:
+            - generic [ref=e1154]: ·
+            - img [ref=e1155]
+            - text: Invalid Date
+        - generic [ref=e1158]:
+          - generic [ref=e1159]:
+            - generic [ref=e1160]:
+              - generic [ref=e1161]: "1"
+              - generic [ref=e1162]: x1
+            - button "Hoàn tất" [ref=e1163]:
+              - img [ref=e1164]
+              - text: Hoàn tất
+          - generic [ref=e1167]:
+            - generic [ref=e1168]:
+              - generic [ref=e1169]: "10"
+              - generic [ref=e1170]: x1
+            - button "Hoàn tất" [ref=e1171]:
+              - img [ref=e1172]
+              - text: Hoàn tất
+      - generic [ref=e1178]:
+        - heading [level=3]
+        - paragraph [ref=e1179]:
+          - generic [ref=e1180]: ·
+          - img [ref=e1181]
+          - text: Invalid Date
+      - generic [ref=e1188]:
+        - heading [level=3]
+        - paragraph [ref=e1189]:
+          - generic [ref=e1190]: ·
+          - img [ref=e1191]
+          - text: Invalid Date
+      - generic [ref=e1198]:
+        - heading [level=3]
+        - paragraph [ref=e1199]:
+          - generic [ref=e1200]: ·
+          - img [ref=e1201]
+          - text: Invalid Date
+    - contentinfo [ref=e1205]:
+      - generic [ref=e1207]:
+        - generic [ref=e1208]:
+          - generic [ref=e1209]:
+            - generic [ref=e1210]:
+              - generic [ref=e1212]: R
+              - generic [ref=e1213]:
+                - heading "RMS" [level=3] [ref=e1214]
+                - paragraph [ref=e1215]: Quản Lý Nhà Hàng
+            - paragraph [ref=e1216]: Nhà hàng yêu thích của bạn, được giao hàng nhanh chóng. Đặt món trực tuyến và tận hưởng món ngon tại nhà.
+            - generic [ref=e1217]:
+              - link "f" [ref=e1218] [cursor=pointer]:
+                - /url: "#"
+                - generic [ref=e1219]: f
+              - link "i" [ref=e1220] [cursor=pointer]:
+                - /url: "#"
+                - generic [ref=e1221]: i
+              - link "t" [ref=e1222] [cursor=pointer]:
+                - /url: "#"
+                - generic [ref=e1223]: t
+          - generic [ref=e1224]:
+            - heading "Liên kết nhanh" [level=4] [ref=e1225]
+            - list [ref=e1226]:
+              - listitem [ref=e1227]:
+                - link "Về chúng tôi" [ref=e1228] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e1229]:
+                - link "Thực đơn" [ref=e1230] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e1231]:
+                - link "Liên hệ" [ref=e1232] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e1233]:
+                - link "Blog" [ref=e1234] [cursor=pointer]:
+                  - /url: "#"
+          - generic [ref=e1235]:
+            - heading "Hỗ trợ" [level=4] [ref=e1236]
+            - list [ref=e1237]:
+              - listitem [ref=e1238]:
+                - link "Trung tâm trợ giúp" [ref=e1239] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e1240]:
+                - link "An toàn" [ref=e1241] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e1242]:
+                - link "Điều khoản dịch vụ" [ref=e1243] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e1244]:
+                - link "Chính sách riêng tư" [ref=e1245] [cursor=pointer]:
+                  - /url: "#"
+          - generic [ref=e1246]:
+            - heading "Liên hệ" [level=4] [ref=e1247]
+            - list [ref=e1248]:
+              - listitem [ref=e1249]:
+                - img [ref=e1251]
+                - generic [ref=e1253]: +84 123 456 789
+              - listitem [ref=e1254]:
+                - img [ref=e1256]
+                - generic [ref=e1258]: support@rms.com
+              - listitem [ref=e1259]:
+                - img [ref=e1261]
+                - generic [ref=e1264]: 123 Lê Lợi, Quận 1, TP.HCM
+        - generic [ref=e1265]:
+          - paragraph [ref=e1266]: © 2026 RMS - Hệ Thống Quản Lý Nhà Hàng. Tất cả quyền được bảo lưu.
+          - generic [ref=e1267]:
+            - link "Chính sách" [ref=e1268] [cursor=pointer]:
+              - /url: "#"
+            - generic [ref=e1269]: ·
+            - link "Điều khoản" [ref=e1270] [cursor=pointer]:
+              - /url: "#"
+            - generic [ref=e1271]: ·
+            - link "Cookie" [ref=e1272] [cursor=pointer]:
+              - /url: "#"
+  - alert [ref=e1273]
