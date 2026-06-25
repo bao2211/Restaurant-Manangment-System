@@ -1,4 +1,0 @@
-[     737ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/Content/img/com-chay-kho-quet.jpg:0
-[    1236ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://poseidon-web.s3.zsoft.solutions/app/media/Nau-an/04.2023/2342024-cach-lam-tra-vai-nhiet-doi-buffet-poseidon-1.jpg:0
-[   27506ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://localhost:3000/:0
-[   82917ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/_next/static/chunks/3661pdxfk28oy.js:0
