@@ -11,7 +11,7 @@ namespace RMS_APIServer.Models
         public string? Note { get; set; }
         public decimal? Discount { get; set; }
         public string? ReservationId { get; set; }
-        // Add other properties you want to expose
+        public string? PaymentStatus { get; set; }
         public List<OrderDetailDto> OrderDetails { get; set; } = new List<OrderDetailDto>();
     }
 
@@ -27,7 +27,7 @@ namespace RMS_APIServer.Models
 
     public class CreateOrderDto
     {
-        public string? OrderId { get; set; } // Optional for auto-generation
+        public string? OrderId { get; set; }
         public string? TableId { get; set; }
         public string? UserId { get; set; }
         public string? Status { get; set; }
@@ -35,6 +35,7 @@ namespace RMS_APIServer.Models
         public string? Note { get; set; }
         public decimal? Discount { get; set; }
         public string? ReservationId { get; set; }
+        public string? PaymentStatus { get; set; }
     }
 
     public class CreateOrderDetailDto

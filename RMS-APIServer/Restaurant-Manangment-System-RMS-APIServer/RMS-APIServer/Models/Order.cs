@@ -23,6 +23,8 @@ public partial class Order
 
     public string? UserId { get; set; }
 
+    public string? PaymentStatus { get; set; }
+
     public virtual ICollection<BillDetail> BillDetails { get; set; } = new List<BillDetail>();
 
     public virtual ICollection<Bill> Bills { get; set; } = new List<Bill>();

@@ -34,6 +34,7 @@ namespace RMS_APIServer.Controllers
                     Note = o.Note,
                     Discount = o.Discount,
                     ReservationId = o.ReservationId,
+                    PaymentStatus = o.PaymentStatus,
                     OrderDetails = o.OrderDetails.Select(od => new OrderDetailDto
                     {
                         OrderId = od.OrderId,
@@ -154,6 +155,7 @@ namespace RMS_APIServer.Controllers
                 note = order.Note,
                 discount = order.Discount,
                 reservationId = order.ReservationId,
+                paymentStatus = order.PaymentStatus,
                 orderDetails = order.OrderDetails?.Select(od => new
                 {
                     foodId = od.FoodId,
@@ -192,6 +194,7 @@ namespace RMS_APIServer.Controllers
                 note = order.Note,
                 discount = order.Discount,
                 reservationId = order.ReservationId,
+                paymentStatus = order.PaymentStatus,
                 orderDetails = order.OrderDetails?.Select(od => new
                 {
                     foodId = od.FoodId,
@@ -255,6 +258,7 @@ namespace RMS_APIServer.Controllers
                 Note = orderDto.Note,
                 Discount = orderDto.Discount ?? 0,
                 ReservationId = orderDto.ReservationId,
+                PaymentStatus = orderDto.PaymentStatus ?? "Chưa thanh toán",
                 CreatedTime = DateTime.Now
             };
 
@@ -284,8 +288,9 @@ namespace RMS_APIServer.Controllers
                     status = order.Status,
                     total = order.Total,
                     note = order.Note,
-                    discount = order.Discount,
-                    reservationId = order.ReservationId,
+                discount = order.Discount,
+                reservationId = order.ReservationId,
+                paymentStatus = order.PaymentStatus,
                     message = "Order created successfully"
                 };
 
