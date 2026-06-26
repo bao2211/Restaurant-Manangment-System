@@ -29383,3 +29383,5 @@ node_modules
 
 /RMSMobile/Restaurant-Manangment-System-RMSMobile-Testing
 /.vscode
+# web-portal build artifacts
+web-portal/.next/
