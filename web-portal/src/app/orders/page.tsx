@@ -23,6 +23,7 @@ interface Order {
   note?: string;
   tableId?: string;
   tableName?: string;
+  paymentStatus?: string;
   orderDetails?: OrderDetail[];
 }
 
@@ -53,9 +54,9 @@ function getGroup(status: string): string {
   return "Cần xử lý";
 }
 
-function isPaid(status: string): boolean {
-  const s = (status || "").toLowerCase();
-  return s === "đã thanh toán" || s === "đã tính tiền" || s === "đã tạo bill";
+function isPaid(paymentStatus?: string, status?: string): boolean {
+  const s = (paymentStatus || status || "").toLowerCase();
+  return s === "đã thanh toán" || s === "paid" || s === "completed" || s === "đã tính tiền" || s === "đã tạo bill";
 }
 
 function isOrderDone(orderStatus: string): boolean {
@@ -78,9 +79,9 @@ function getProgressTag(orderDetails?: OrderDetail[], orderStatus?: string): { l
   return { label: "Chưa hoàn tất", color: "bg-orange-100 text-orange-600" };
 }
 
-function getPaymentTag(status: string): { label: string; color: string } {
-  const s = (status || "").toLowerCase();
-  if (s === "đã thanh toán" || s === "đã tính tiền" || s === "đã tạo bill" || s === "completed" || s === "hoàn tất")
+function getPaymentTag(order?: Order): { label: string; color: string } {
+  const s = (order?.paymentStatus || order?.status || "").toLowerCase();
+  if (s === "đã thanh toán" || s === "paid" || s === "completed" || s === "đã tính tiền" || s === "đã tạo bill")
     return { label: "Đã thanh toán", color: "bg-blue-100 text-blue-600" };
   return { label: "Chưa thanh toán", color: "bg-red-100 text-red-500" };
 }
@@ -115,7 +116,7 @@ export default function OrdersPage() {
   const formatDate = (d: string) => new Date(d).toLocaleDateString("vi-VN");
   const tabs = ["Tất cả", "Cần xử lý", "Hoàn tất", "Đã thanh toán", "Chưa thanh toán"];
 
-  let filtered = activeTab === "Tất cả" ? orders : activeTab === "Chưa thanh toán" ? orders.filter((o) => !isPaid(o.status)) : orders.filter((o) => getGroup(o.status) === activeTab);
+  let filtered = activeTab === "Tất cả" ? orders : activeTab === "Chưa thanh toán" ? orders.filter((o) => !isPaid(o.paymentStatus, o.status)) : orders.filter((o) => getGroup(o.status) === activeTab);
 
   if (searchQuery.trim()) {
     const q = searchQuery.toLowerCase().trim();
@@ -227,7 +228,7 @@ export default function OrdersPage() {
                               <h3 className="font-bold text-gray-900">{order.orderId}</h3>
                               {(() => {
                                 const prog = getProgressTag(order.orderDetails, order.status);
-                                const pay = getPaymentTag(order.status);
+                                const pay = getPaymentTag(order);
                                 return (
                                   <>
                                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${prog.color}`}>{prog.label}</span>

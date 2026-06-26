@@ -29383,5 +29383,11 @@ node_modules
 
 /RMSMobile/Restaurant-Manangment-System-RMSMobile-Testing
 /.vscode
+<<<<<<< HEAD
 # web-portal build artifacts
 web-portal/.next/
+=======
+# Next.js build output
+web-portal/.next/
+web-portal/out/
+>>>>>>> road-marionberry

@@ -266,22 +266,27 @@ export default function KitchenPage() {
       if (res.ok) {
         showToast(`${detail.foodName || detail.foodId} - Xong`);
 
-        setOrders((prev) => {
-          const updated = prev.map((o) => o.orderId === orderId
-            ? { ...o, orderDetails: o.orderDetails.map((d) => d.foodId === detail.foodId ? { ...d, status: "Hoàn tất" } : d) }
-            : o
-          );
+        const updated = orders.map((o) => o.orderId === orderId
+          ? { ...o, orderDetails: o.orderDetails.map((d) => d.foodId === detail.foodId ? { ...d, status: "Hoàn tất" } : d) }
+          : o
+        );
+        setOrders(updated);
 
-          const order = updated.find((o) => o.orderId === orderId);
-          if (order) {
-            const allDone = order.orderDetails.every((d) => (d.status || "") === "Hoàn tất");
-            if (allDone) {
-              showToast(`Đơn ${orderId} - Tất cả món đã hoàn tất!`);
-              return updated.filter((o) => o.orderId !== orderId);
-            }
+        const order = updated.find((o) => o.orderId === orderId);
+        if (order) {
+          const allDone = order.orderDetails.every((d) => (d.status || "") === "Hoàn tất");
+          if (allDone) {
+            showToast(`Đơn ${orderId} - Tất cả món đã hoàn tất!`);
+            try {
+              await fetch(`${API_BASE}/api/Order/${orderId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ orderId, status: "Hoàn tất" }),
+              });
+            } catch {}
+            setOrders((prev) => prev.filter((o) => o.orderId !== orderId));
           }
-          return updated;
-        });
+        }
       } else showToast("Cập nhật thất bại");
     } catch {}
   };

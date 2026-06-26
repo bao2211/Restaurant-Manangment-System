@@ -119,7 +119,8 @@ function PayOSModal({ open, onClose, orderId, orderCode, qrCode, checkoutUrl, am
           const data = await res.json();
           if (data.status === "PAID") {
             setStatus("paid");
-            try { await fetch(`${API_BASE}/api/PayOS/confirm/${orderCode}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderId }) }); } catch {}
+            try { await fetch(`${API_BASE}/api/PayOS/confirm/${orderCode}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderId }) }); } catch {};
+            try { const ord = await fetch(`${API_BASE}/api/Order/${orderId}`); if (ord.ok) { const o = await ord.json(); const putBody = { orderId: o.orderId || orderId, tableId: o.tableId, userId: o.userId, status: o.status, total: o.total, note: o.note, discount: o.discount || 0, reservationId: o.reservationId || null, paymentStatus: "Đã thanh toán" }; await fetch(`${API_BASE}/api/Order/${orderId}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(putBody) }); } } catch {}
             showToast("Thanh toán thành công!");
             clearInterval(poll);
             clearInterval(timer);
@@ -229,7 +230,7 @@ function CartSidebar({ open, onClose }: { open: boolean; onClose: () => void }) 
         body: JSON.stringify({
           userId: user.userId,
           tableId: selectedTable,
-          status: "Pending",
+          status: "Chưa làm",
           total: totalPrice,
           discount: 0,
           note: `Thanh toán: ${selectedPayment}`,
@@ -273,6 +274,18 @@ function CartSidebar({ open, onClose }: { open: boolean; onClose: () => void }) 
             onClose();
             return;
           }
+        } catch {}
+      } else {
+        try {
+          await fetch(`${API_BASE}/api/Order/${orderId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              orderId,
+              status: "Chưa làm",
+              paymentStatus: "Đã thanh toán",
+            }),
+          });
         } catch {}
       }
 
