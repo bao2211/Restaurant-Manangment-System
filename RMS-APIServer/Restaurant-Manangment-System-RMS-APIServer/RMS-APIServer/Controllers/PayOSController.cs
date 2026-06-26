@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RMS_APIServer.Models;
 using RMS_APIServer.Services;
@@ -39,7 +39,7 @@ namespace RMS_APIServer.Controllers
 
                 var items = orderDetails.Select(od => new PayOSItem
                 {
-                    Name = od.Food?.FoodName ?? "Món ăn",
+                    Name = od.Food?.FoodName ?? "MÃ³n Äƒn",
                     Quantity = od.Quantity ?? 1,
                     Price = (int)(od.UnitPrice ?? 0)
                 }).ToList();
@@ -179,9 +179,9 @@ namespace RMS_APIServer.Controllers
                         }
 
                         var order = await _context.Orders.FindAsync(orderId);
-                        if (order != null && order.Status != "Hoàn tất")
+                        if (order != null && order.PaymentStatus != "Đã thanh toán")
                         {
-                            order.Status = "Hoàn tất";
+                            order.PaymentStatus = "Đã thanh toán";
                         }
 
                         await _context.SaveChangesAsync();

@@ -117,7 +117,7 @@ function MainAppStack({ openSidebar }) {
             <MaterialCommunityIcons name="menu" size={24} color="white" />
           </TouchableOpacity>
         ),
-      })}
+      }}
     >
       <Stack.Screen 
         name="Home" 
