@@ -98,6 +98,9 @@ namespace RMS_APIServer.Controllers
             if (!string.IsNullOrWhiteSpace(user.Email))
                 existingUser.Email = user.Email;
 
+            if (!string.IsNullOrWhiteSpace(user.Address))
+                existingUser.Address = user.Address;
+
             if (!string.IsNullOrWhiteSpace(user.Right))
                 existingUser.Right = user.Right;
 

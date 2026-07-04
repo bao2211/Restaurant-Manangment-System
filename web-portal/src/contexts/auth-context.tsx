@@ -9,13 +9,15 @@ export interface UserInfo {
   email?: string;
   role?: string;
   phone?: number;
+  address?: string;
 }
 
 interface AuthContextType {
   user: UserInfo | null;
   loading: boolean;
   login: (username: string, password: string) => Promise<boolean>;
-  register: (username: string, password: string, fullName: string, email?: string, phone?: string) => Promise<boolean>;
+  register: (username: string, password: string, fullName: string, email?: string, phone?: string, address?: string) => Promise<boolean>;
+  updateUser: (updates: Partial<UserInfo>) => void;
   logout: () => void;
 }
 
@@ -61,6 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         email: data.email,
         role: data.role,
         phone: data.phone,
+        address: data.address,
       };
       setUser(u);
       return true;
@@ -72,7 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const register = useCallback(async (
-    username: string, password: string, fullName: string, email?: string, phone?: string
+    username: string, password: string, fullName: string, email?: string, phone?: string, address?: string
   ): Promise<boolean> => {
     setLoading(true);
     try {
@@ -86,6 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           fullName,
           email: email || "",
           phone: phone ? parseInt(phone) : null,
+          address: address || "",
           role: "Customer",
         }),
       });
@@ -98,6 +102,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         email: data.email,
         role: data.role,
         phone: data.phone,
+        address: data.address,
       };
       setUser(u);
       return true;
@@ -110,8 +115,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(() => setUser(null), []);
 
+  const updateUser = useCallback((updates: Partial<UserInfo>) => {
+    setUser((prev) => prev ? { ...prev, ...updates } : null);
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, updateUser, logout }}>
       {children}
     </AuthContext.Provider>
   );

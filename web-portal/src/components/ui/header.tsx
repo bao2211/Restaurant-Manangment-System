@@ -120,7 +120,7 @@ function PayOSModal({ open, onClose, orderId, orderCode, qrCode, checkoutUrl, am
           if (data.status === "PAID") {
             setStatus("paid");
             try { await fetch(`${API_BASE}/api/PayOS/confirm/${orderCode}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderId }) }); } catch {};
-            try { const ord = await fetch(`${API_BASE}/api/Order/${orderId}`); if (ord.ok) { const o = await ord.json(); const putBody = { orderId: o.orderId || orderId, tableId: o.tableId, userId: o.userId, status: o.status, total: o.total, note: o.note, discount: o.discount || 0, reservationId: o.reservationId || null, paymentStatus: "Đã thanh toán" }; await fetch(`${API_BASE}/api/Order/${orderId}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(putBody) }); } } catch {}
+            try { await fetch(`${API_BASE}/api/Order/${orderId}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderId, paymentStatus: "Đã thanh toán" }) }); } catch {}
             showToast("Thanh toán thành công!");
             clearInterval(poll);
             clearInterval(timer);
@@ -234,6 +234,7 @@ function CartSidebar({ open, onClose }: { open: boolean; onClose: () => void }) 
           total: totalPrice,
           discount: 0,
           note: `Thanh toán: ${selectedPayment}`,
+          paymentStatus: "Chưa thanh toán",
         }),
       });
       if (!orderRes.ok) throw new Error("Failed to create order");
@@ -282,7 +283,6 @@ function CartSidebar({ open, onClose }: { open: boolean; onClose: () => void }) 
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               orderId,
-              status: "Chưa làm",
               paymentStatus: "Đã thanh toán",
             }),
           });
@@ -423,6 +423,7 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
 
   const handleSubmit = async () => {
     if (!username || !password) { showToast("Vui lòng điền đầy đủ thông tin"); return; }
@@ -433,8 +434,9 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
       else showToast("Sai tên đăng nhập hoặc mật khẩu");
     } else {
       if (!fullName) { showToast("Vui lòng nhập họ tên"); return; }
-      success = await register(username, password, fullName, email);
-      if (success) { showToast("Đăng ký thành công"); onClose(); setMode("login"); setUsername(""); setPassword(""); }
+      if (!address) { showToast("Vui lòng nhập địa chỉ"); return; }
+      success = await register(username, password, fullName, email, undefined, address);
+      if (success) { showToast("Đăng ký thành công"); onClose(); setMode("login"); setUsername(""); setPassword(""); setFullName(""); setEmail(""); setAddress(""); }
       else showToast("Đăng ký thất bại, tên đăng nhập có thể đã tồn tại");
     }
   };
@@ -486,6 +488,13 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
                 className="w-full px-4 py-3 rounded-2xl border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:border-[#EE4D2D]/40 focus:bg-white transition-all"
               />
             )}
+            {mode === "register" && (
+              <input
+                type="text" placeholder="Địa chỉ" value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                className="w-full px-4 py-3 rounded-2xl border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:border-[#EE4D2D]/40 focus:bg-white transition-all"
+              />
+            )}
             <button
               onClick={handleSubmit} disabled={loading}
               className="w-full bg-gradient-to-r from-[#EE4D2D] to-[#FF6633] text-white font-bold py-3 rounded-2xl hover:shadow-lg hover:shadow-[#EE4D2D]/30 transition-all duration-300 disabled:opacity-50 flex items-center justify-center gap-2"
@@ -526,9 +535,12 @@ export default function Header({ onSearch, foodItems = [], onSearchSelect }: Hea
   const [cartOpen, setCartOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { totalItems } = useCart();
   const { user, logout } = useAuth();
   const pathname = usePathname();
+
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -599,19 +611,19 @@ export default function Header({ onSearch, foodItems = [], onSearchSelect }: Hea
                 )}
               </button>
 
-              {user ? (
+              {mounted && user ? (
                 <div className="hidden md:flex items-center gap-2">
-                  <span className="text-sm font-semibold text-gray-700 px-3 py-2">{user.fullName || user.userName}</span>
+                  <Link href="/profile" className="text-sm font-semibold text-gray-700 px-3 py-2 hover:text-[#EE4D2D] transition-colors">{user.fullName || user.userName}</Link>
                   <button onClick={logout} className="p-2 text-gray-400 hover:text-red-500 transition-colors rounded-xl hover:bg-gray-100" title="Đăng xuất">
                     <LogOut className="w-4 h-4" />
                   </button>
                 </div>
-              ) : (
+              ) : mounted ? (
                 <button onClick={() => setLoginOpen(true)} className="hidden md:flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm text-gray-600 hover:text-[#EE4D2D] hover:bg-[#EE4D2D]/5 transition-all duration-300">
                   <User className="w-5 h-5" />
                   <span className="hidden lg:inline font-medium">Đăng nhập</span>
                 </button>
-              )}
+              ) : null}
 
               <button className="md:hidden p-2 text-gray-600 hover:text-[#EE4D2D] transition-colors" onClick={() => setMenuOpen(!menuOpen)}>
                 {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -628,9 +640,9 @@ export default function Header({ onSearch, foodItems = [], onSearchSelect }: Hea
                 { href: "/menu", label: "Thực đơn", icon: "🍽️" },
                 { href: "/orders", label: "Đơn hàng", icon: "📋" },
                 { href: "/reservations", label: "Đặt bàn", icon: "📅" },
-                ...(user?.role === "Admin" ? [{ href: "/table", label: "Bàn", icon: "🪑" }] : []),
-                ...(user?.role === "Admin" || user?.role === "Bep" ? [{ href: "/kitchen", label: "Bếp", icon: "👨‍🍳" }] : []),
-                ...(user?.role === "Admin" ? [{ href: "/account", label: "Quản lý", icon: "⚙️" }] : []),
+                ...(mounted && user?.role === "Admin" ? [{ href: "/table", label: "Bàn", icon: "🪑" }] : []),
+                ...(mounted && (user?.role === "Admin" || user?.role === "Bep") ? [{ href: "/kitchen", label: "Bếp", icon: "👨‍🍳" }] : []),
+                ...(mounted && user?.role === "Admin" ? [{ href: "/account", label: "Quản lý", icon: "⚙️" }] : []),
               ].map((nav) => {
                 const isActive = pathname === nav.href || (nav.href !== "/" && pathname.startsWith(nav.href));
                 return (
@@ -656,9 +668,9 @@ export default function Header({ onSearch, foodItems = [], onSearchSelect }: Hea
                   { href: "/menu", label: "Thực đơn", icon: "🍽️" },
                   { href: "/orders", label: "Đơn hàng", icon: "📋" },
                   { href: "/reservations", label: "Đặt bàn", icon: "📅" },
-                  ...(user?.role === "Admin" ? [{ href: "/table", label: "Bàn", icon: "🪑" }] : []),
-                  ...(user?.role === "Admin" || user?.role === "Bep" ? [{ href: "/kitchen", label: "Bếp", icon: "👨‍🍳" }] : []),
-                  ...(user?.role === "Admin" ? [{ href: "/account", label: "Quản lý", icon: "⚙️" }] : []),
+                  ...(mounted && user?.role === "Admin" ? [{ href: "/table", label: "Bàn", icon: "🪑" }] : []),
+                  ...(mounted && (user?.role === "Admin" || user?.role === "Bep") ? [{ href: "/kitchen", label: "Bếp", icon: "👨‍🍳" }] : []),
+                  ...(mounted && user?.role === "Admin" ? [{ href: "/account", label: "Quản lý", icon: "⚙️" }] : []),
                 ].map((nav) => (
                   <Link key={nav.href} href={nav.href} onClick={() => setMenuOpen(false)}
                     className={`flex items-center gap-3 text-sm py-3 px-3 rounded-xl transition-colors ${
@@ -674,15 +686,15 @@ export default function Header({ onSearch, foodItems = [], onSearchSelect }: Hea
                     <ShoppingCart className="w-4 h-4" /> Giỏ hàng
                     {totalItems > 0 && <span className="bg-[#EE4D2D] text-white text-[10px] font-bold rounded-full px-2 py-0.5 ml-auto">{totalItems}</span>}
                   </button>
-                  {user ? (
+                  {mounted && user ? (
                     <button onClick={() => { logout(); setMenuOpen(false); }} className="flex items-center gap-3 text-sm text-red-500 py-3 px-3 rounded-xl hover:bg-red-50 transition-colors w-full text-left">
                       <LogOut className="w-4 h-4" /> Đăng xuất
                     </button>
-                  ) : (
+                  ) : mounted ? (
                     <button onClick={() => { setLoginOpen(true); setMenuOpen(false); }} className="flex items-center gap-3 text-sm text-gray-600 py-3 px-3 rounded-xl hover:bg-gray-50 transition-colors w-full text-left">
                       <User className="w-4 h-4" /> Đăng nhập / Đăng ký
                     </button>
-                  )}
+                  ) : null}
                 </div>
               </div>
             </motion.div>

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Table2, Utensils, ClipboardList, ChefHat, ShoppingBag } from "lucide-react";
+import { Table2, Utensils, ClipboardList, ChefHat, ShoppingBag, User } from "lucide-react";
 import Header from "@/components/ui/header";
 import Footer from "@/components/ui/footer";
 import { useAuth } from "@/contexts/auth-context";
@@ -23,6 +23,7 @@ export default function AccountPage() {
   ];
 
   const userLinks = [
+    { href: "/profile", label: "Hồ sơ cá nhân", icon: User, desc: "Chỉnh sửa thông tin tài khoản", color: "from-gray-500 to-gray-600" },
     { href: "/orders", label: "Đơn hàng của tôi", icon: ShoppingBag, desc: "Lịch sử đặt món", color: "from-[#EE4D2D] to-[#FF6633]" },
     { href: "/reservations", label: "Đặt bàn", icon: CalendarDays, desc: "Đặt bàn trước", color: "from-[#7B2FF7] to-[#9B59F7]" },
   ];

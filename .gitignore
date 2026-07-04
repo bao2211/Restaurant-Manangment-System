@@ -29391,3 +29391,11 @@ web-portal/.next/
 web-portal/.next/
 web-portal/out/
 >>>>>>> road-marionberry
+.aider*
+
+/RMS-APIServer/Restaurant-Manangment-System-RMS-APIServer/RMS-APIServer/bin/Debug
+/RMS-APIServer/Restaurant-Manangment-System-RMS-APIServer/RMS-APIServer/obj/Debug
+RMS-APIServer/Restaurant-Manangment-System-RMS-APIServer/RMS-APIServer/bin/Debug/net8.0/RMS-APIServer.deps.json
+RMS-APIServer/Restaurant-Manangment-System-RMS-APIServer/RMS-APIServer/bin/Debug/net8.0/RMS-APIServer.dll
+RMS-APIServer/Restaurant-Manangment-System-RMS-APIServer/RMS-APIServer/bin/Debug/net8.0/RMS-APIServer.exe
+RMS-APIServer/Restaurant-Manangment-System-RMS-APIServer/RMS-APIServer/bin/Debug/net8.0/RMS-APIServer.pdb

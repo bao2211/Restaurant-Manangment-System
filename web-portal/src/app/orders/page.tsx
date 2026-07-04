@@ -35,33 +35,26 @@ const statusColors: Record<string, string> = {
   pending: "bg-orange-100 text-orange-600",
   "Hoàn tất": "bg-green-100 text-green-600",
   completed: "bg-green-100 text-green-600",
-  "Đã thanh toán": "bg-blue-100 text-blue-600",
-  "Đã tính tiền": "bg-blue-100 text-blue-600",
-  "Đã tạo bill": "bg-purple-100 text-purple-600",
 };
 
 const statusLabels: Record<string, string> = {
   "Chưa làm": "Chưa làm", Pending: "Chưa làm", pending: "Chưa làm",
   "Hoàn tất": "Hoàn tất", completed: "Hoàn tất",
-  "Đã thanh toán": "Đã thanh toán",
-  "Đã tính tiền": "Đã tính tiền",
-  "Đã tạo bill": "Đã tạo bill",
 };
 
 function getGroup(status: string): string {
   if (status === "Hoàn tất" || status === "completed") return "Hoàn tất";
-  if (status === "Đã thanh toán" || status === "Đã tính tiền" || status === "Đã tạo bill") return "Đã thanh toán";
-  return "Cần xử lý";
+  return "Chưa làm";
 }
 
-function isPaid(paymentStatus?: string, status?: string): boolean {
-  const s = (paymentStatus || status || "").toLowerCase();
-  return s === "đã thanh toán" || s === "paid" || s === "completed" || s === "đã tính tiền" || s === "đã tạo bill";
+function isPaid(paymentStatus?: string): boolean {
+  const s = (paymentStatus || "").toLowerCase();
+  return s === "đã thanh toán" || s === "paid";
 }
 
 function isOrderDone(orderStatus: string): boolean {
   const s = (orderStatus || "").toLowerCase();
-  return s === "hoàn tất" || s === "completed"  || s === "đã tính tiền" || s === "đã tạo bill";
+  return s === "hoàn tất" || s === "completed";
 }
 
 function getProgressTag(orderDetails?: OrderDetail[], orderStatus?: string): { label: string; color: string } {
@@ -80,8 +73,8 @@ function getProgressTag(orderDetails?: OrderDetail[], orderStatus?: string): { l
 }
 
 function getPaymentTag(order?: Order): { label: string; color: string } {
-  const s = (order?.paymentStatus || order?.status || "").toLowerCase();
-  if (s === "đã thanh toán" || s === "paid" || s === "completed" || s === "đã tính tiền" || s === "đã tạo bill")
+  const s = (order?.paymentStatus || "").toLowerCase();
+  if (s === "đã thanh toán" || s === "paid")
     return { label: "Đã thanh toán", color: "bg-blue-100 text-blue-600" };
   return { label: "Chưa thanh toán", color: "bg-red-100 text-red-500" };
 }
@@ -114,9 +107,12 @@ export default function OrdersPage() {
 
   const formatPrice = (price: number) => new Intl.NumberFormat("vi-VN").format(price) + "₫";
   const formatDate = (d: string) => new Date(d).toLocaleDateString("vi-VN");
-  const tabs = ["Tất cả", "Cần xử lý", "Hoàn tất", "Đã thanh toán", "Chưa thanh toán"];
+  const tabs = ["Tất cả", "Chưa làm", "Hoàn tất", "Đã thanh toán", "Chưa thanh toán"];
 
-  let filtered = activeTab === "Tất cả" ? orders : activeTab === "Chưa thanh toán" ? orders.filter((o) => !isPaid(o.paymentStatus, o.status)) : orders.filter((o) => getGroup(o.status) === activeTab);
+  let filtered = activeTab === "Tất cả" ? orders 
+    : activeTab === "Chưa thanh toán" ? orders.filter((o) => !isPaid(o.paymentStatus))
+    : activeTab === "Đã thanh toán" ? orders.filter((o) => isPaid(o.paymentStatus))
+    : orders.filter((o) => getGroup(o.status) === activeTab);
 
   if (searchQuery.trim()) {
     const q = searchQuery.toLowerCase().trim();
