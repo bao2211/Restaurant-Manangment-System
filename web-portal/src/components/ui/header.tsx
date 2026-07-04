@@ -85,219 +85,11 @@ function SearchDropdown({ query, items, onSelect, onClose }: {
   );
 }
 
-interface TableInfo {
-  tableId: string;
-  tableName: string;
-  numOfSeats?: number;
-  status?: string;
-}
-
-function PayOSModal({ open, onClose, orderId, orderCode, qrCode, checkoutUrl, amount }: {
-  open: boolean;
-  onClose: () => void;
-  orderId: string;
-  orderCode: number;
-  qrCode: string;
-  checkoutUrl: string;
-  amount: number;
-}) {
-  const { showToast } = useToast();
-  const [status, setStatus] = useState<"waiting" | "paid" | "cancelled">("waiting");
-  const [elapsed, setElapsed] = useState(0);
-  const formatPrice = (p: number) => new Intl.NumberFormat("vi-VN").format(p) + "đ";
-
-  useEffect(() => {
-    if (!open) return;
-    setStatus("waiting");
-    setElapsed(0);
-    const start = Date.now();
-    const timer = setInterval(() => setElapsed(Math.floor((Date.now() - start) / 1000)), 1000);
-    const poll = setInterval(async () => {
-      try {
-        const res = await fetch(`${API_BASE}/api/PayOS/status/${orderCode}`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.status === "PAID") {
-            setStatus("paid");
-            try { await fetch(`${API_BASE}/api/PayOS/confirm/${orderCode}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderId }) }); } catch {};
-            try { await fetch(`${API_BASE}/api/Order/${orderId}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderId, paymentStatus: "Đã thanh toán" }) }); } catch {}
-            showToast("Thanh toán thành công!");
-            clearInterval(poll);
-            clearInterval(timer);
-          } else if (data.status === "CANCELLED" || data.status === "EXPIRED") {
-            setStatus("cancelled");
-            clearInterval(poll);
-            clearInterval(timer);
-          }
-        }
-      } catch {}
-    }, 5000);
-    return () => { clearInterval(poll); clearInterval(timer); };
-  }, [open, orderCode, orderId, showToast]);
-
-  if (!open) return null;
-  const fmt = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, "0")}`;
-
-  return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-black/50" onClick={onClose}>
-      <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-6 relative">
-        <button onClick={onClose} className="absolute top-4 right-4 p-1 rounded-lg hover:bg-gray-100"><X className="w-5 h-5 text-gray-400" /></button>
-
-        {status === "waiting" && (
-          <div className="text-center">
-            <p className="text-sm font-bold text-gray-900 mb-1">Quét mã QR để thanh toán</p>
-            <p className="text-xs text-gray-400 mb-4">{fmt(elapsed)}</p>
-            <div className="w-56 h-56 mx-auto rounded-2xl border border-gray-100 bg-white flex items-center justify-center overflow-hidden">
-              {(qrCode || checkoutUrl) && (
-                <img src={`https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qrCode || checkoutUrl)}&size=224x224&margin=10`} alt="PayOS QR" className="w-full h-full object-contain" />
-              )}
-            </div>
-            <p className="text-[10px] text-gray-400 mt-2">Quét bằng app ngân hàng hoặc ví điện tử</p>
-            <div className="mt-4 bg-gray-50 rounded-xl p-3 space-y-1.5 text-left">
-              <div className="flex justify-between text-xs"><span className="text-gray-400">Đơn hàng</span><span className="font-mono font-semibold text-gray-700">{orderId}</span></div>
-              <div className="flex justify-between text-xs"><span className="text-gray-400">Số tiền</span><span className="font-bold text-[#EE4D2D]">{formatPrice(amount)}</span></div>
-            </div>
-            {checkoutUrl && (
-              <a href={checkoutUrl} target="_blank" rel="noopener noreferrer"
-                className="mt-4 block w-full py-3 rounded-xl bg-[#EE4D2D] text-white text-sm font-bold hover:bg-[#D73211] transition-colors text-center">
-                Mở trang thanh toán
-              </a>
-            )}
-            <p className="text-[10px] text-gray-300 mt-3">Tự động kiểm tra sau mỗi 5 giây</p>
-          </div>
-        )}
-
-        {status === "paid" && (
-          <div className="text-center py-6">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3"><CheckCircle className="w-8 h-8 text-green-500" /></div>
-            <p className="text-lg font-black text-gray-900">Thanh toán thành công!</p>
-            <p className="text-sm text-gray-400 mt-1">Đơn hàng {orderId}</p>
-            <button onClick={onClose} className="mt-6 w-full py-3 rounded-xl bg-green-500 text-white font-bold hover:bg-green-600 transition-colors">Đóng</button>
-          </div>
-        )}
-
-        {status === "cancelled" && (
-          <div className="text-center py-6">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3"><X className="w-8 h-8 text-red-500" /></div>
-            <p className="text-lg font-black text-gray-900">Thanh toán thất bại</p>
-            <p className="text-sm text-gray-400 mt-1">Vui lòng thử lại</p>
-            <button onClick={onClose} className="mt-6 w-full py-3 rounded-xl bg-gray-200 text-gray-600 font-bold hover:bg-gray-300 transition-colors">Đóng</button>
-          </div>
-        )}
-      </motion.div>
-    </motion.div>
-  );
-}
-
-function CartSidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const { items, addItem, updateQuantity, removeItem, totalPrice, totalItems, clearCart } = useCart();
+function CartSidebar({ open, onClose, onLoginOpen }: { open: boolean; onClose: () => void; onLoginOpen: () => void }) {
+  const { items, addItem, updateQuantity, removeItem, totalPrice, totalItems } = useCart();
   const { showToast } = useToast();
   const { user } = useAuth();
-  const [checkingOut, setCheckingOut] = useState(false);
-  const [tables, setTables] = useState<TableInfo[]>([]);
-  const [selectedTable, setSelectedTable] = useState("");
-  const [selectedPayment, setSelectedPayment] = useState("Tiền mặt");
-  const [payosData, setPayosData] = useState<{ orderId: string; orderCode: number; qrCode: string; checkoutUrl: string; amount: number } | null>(null);
   const formatPrice = (price: number) => new Intl.NumberFormat("vi-VN").format(price) + "₫";
-
-  const paymentMethods = [
-    { value: "Tiền mặt", label: "Tiền mặt", icon: "💵" },
-    { value: "Chuyển khoản", label: "Chuyển khoản", icon: "🏦" },
-    { value: "Thẻ tín dụng", label: "Thẻ tín dụng", icon: "💳" },
-    { value: "Ví điện tử", label: "Ví điện tử", icon: "📱" },
-    { value: "PayOS - Online", label: "PayOS Online", icon: "🌐" },
-  ];
-
-  useEffect(() => {
-    if (open) {
-      fetch(`${API_BASE}/api/Table`)
-        .then((r) => r.ok ? r.json() : [])
-        .then((data) => { setTables(data || []); if (data?.length) setSelectedTable(data[0].tableId); })
-        .catch(() => {});
-    }
-  }, [open]);
-
-  const handleCheckout = async () => {
-    if (!user) { showToast("Vui lòng đăng nhập để thanh toán"); return; }
-    if (!selectedTable) { showToast("Vui lòng chọn bàn"); return; }
-    if (!selectedPayment) { showToast("Vui lòng chọn phương thức thanh toán"); return; }
-    setCheckingOut(true);
-    try {
-      const orderRes = await fetch(`${API_BASE}/api/Order`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: user.userId,
-          tableId: selectedTable,
-          status: "Chưa làm",
-          total: totalPrice,
-          discount: 0,
-          note: `Thanh toán: ${selectedPayment}`,
-          paymentStatus: "Chưa thanh toán",
-        }),
-      });
-      if (!orderRes.ok) throw new Error("Failed to create order");
-      const order = await orderRes.json();
-      const orderId = order.orderId;
-
-      for (const item of items) {
-        await fetch(`${API_BASE}/api/OrderDetail`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            orderId,
-            foodId: item.foodId,
-            quantity: item.quantity,
-            unitPrice: item.unitPrice,
-          }),
-        });
-      }
-
-      if (selectedPayment === "PayOS - Online") {
-        try {
-          const payRes = await fetch(`${API_BASE}/api/PayOS/create-payment`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              orderId,
-              buyerName: user.fullName || user.userName,
-              buyerPhone: user.phone?.toString() || "",
-              buyerEmail: user.email || "",
-              returnUrl: window.location.origin,
-              cancelUrl: window.location.origin,
-            }),
-          });
-          if (payRes.ok) {
-            const payData = await payRes.json();
-            setPayosData({ orderId, orderCode: payData.orderCode, qrCode: payData.qrCode, checkoutUrl: payData.checkoutUrl, amount: payData.amount });
-            clearCart();
-            onClose();
-            return;
-          }
-        } catch {}
-      } else {
-        try {
-          await fetch(`${API_BASE}/api/Order/${orderId}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              orderId,
-              paymentStatus: "Đã thanh toán",
-            }),
-          });
-        } catch {}
-      }
-
-      showToast(`Đặt hàng thành công! Mã: ${orderId} - ${tables.find(t => t.tableId === selectedTable)?.tableName}`);
-      clearCart();
-      onClose();
-    } catch {
-      showToast("Đặt hàng thất bại, vui lòng thử lại");
-    } finally {
-      setCheckingOut(false);
-    }
-  };
 
   return (
     <>
@@ -361,56 +153,32 @@ function CartSidebar({ open, onClose }: { open: boolean; onClose: () => void }) 
 
             {items.length > 0 && (
               <div className="border-t border-gray-100 p-5 space-y-3">
-                <div className="flex items-center gap-3">
-                  <span className="text-xs font-semibold text-gray-500 shrink-0">Chọn bàn</span>
-                  <select
-                    value={selectedTable}
-                    onChange={(e) => setSelectedTable(e.target.value)}
-                    className="flex-1 px-3 py-2 rounded-xl border border-gray-200 bg-gray-50 text-sm font-medium text-gray-700 focus:outline-none focus:border-[#EE4D2D]/40 transition-all"
-                  >
-                    {tables.filter((t) => t.status === "Available").map((t) => (
-                      <option key={t.tableId} value={t.tableId}>{t.tableName} ({t.numOfSeats || "?"} khách)</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-gray-500 mb-2">Phương thức thanh toán</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    {paymentMethods.map((pm) => (
-                      <button
-                        key={pm.value}
-                        onClick={() => setSelectedPayment(pm.value)}
-                        className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all border ${
-                          selectedPayment === pm.value
-                            ? "border-[#EE4D2D] bg-[#EE4D2D]/5 text-[#EE4D2D] shadow-sm"
-                            : "border-gray-200 bg-gray-50 text-gray-600 hover:border-gray-300"
-                        }`}
-                      >
-                        <span className="text-base">{pm.icon}</span>
-                        {pm.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-500">Tạm tính</span>
                   <span className="text-lg font-black text-gray-900">{formatPrice(totalPrice)}</span>
                 </div>
-                <button
-                  onClick={handleCheckout}
-                  disabled={checkingOut}
-                  className="w-full bg-gradient-to-r from-[#EE4D2D] to-[#FF6633] text-white font-bold py-3.5 rounded-2xl hover:shadow-lg hover:shadow-[#EE4D2D]/30 transition-all duration-300 disabled:opacity-50 flex items-center justify-center gap-2"
-                >
-                  {checkingOut ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                  {checkingOut ? "Đang xử lý..." : user ? "Thanh toán" : "Đăng nhập để thanh toán"}
-                </button>
+                {user ? (
+                  <Link
+                    href="/checkout"
+                    onClick={onClose}
+                    className="w-full bg-gradient-to-r from-[#EE4D2D] to-[#FF6633] text-white font-bold py-3.5 rounded-2xl hover:shadow-lg hover:shadow-[#EE4D2D]/30 transition-all duration-300 flex items-center justify-center gap-2"
+                  >
+                    Thanh toán
+                  </Link>
+                ) : (
+                  <button
+                    onClick={() => { onClose(); onLoginOpen(); }}
+                    className="w-full bg-gradient-to-r from-[#EE4D2D] to-[#FF6633] text-white font-bold py-3.5 rounded-2xl hover:shadow-lg hover:shadow-[#EE4D2D]/30 transition-all duration-300 flex items-center justify-center gap-2"
+                  >
+                    Đăng nhập để thanh toán
+                  </button>
+                )}
               </div>
             )}
           </motion.div>
         </>
       )}
     </AnimatePresence>
-    {payosData && <PayOSModal open onClose={() => setPayosData(null)} {...payosData} />}
     </>
   );
 }
@@ -702,7 +470,7 @@ export default function Header({ onSearch, foodItems = [], onSearchSelect }: Hea
         </AnimatePresence>
       </header>
 
-      <CartSidebar open={cartOpen} onClose={() => setCartOpen(false)} />
+      <CartSidebar open={cartOpen} onClose={() => setCartOpen(false)} onLoginOpen={() => setLoginOpen(true)} />
       <LoginModal open={loginOpen} onClose={() => setLoginOpen(false)} />
     </>
   );

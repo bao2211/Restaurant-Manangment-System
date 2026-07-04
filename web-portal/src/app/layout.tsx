@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import "leaflet/dist/leaflet.css";
 import "./globals.css";
 import { CartProvider } from "@/contexts/cart-context";
 import { ToastProvider } from "@/contexts/toast-context";
