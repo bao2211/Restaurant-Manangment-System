@@ -1,25 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "D:\\School\\CNPMNC\\RMS\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj": {}
+    "C:\\Study\\QLQA\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj": {}
   },
   "projects": {
-    "D:\\School\\CNPMNC\\RMS\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj": {
+    "C:\\Study\\QLQA\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\School\\CNPMNC\\RMS\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj",
+        "projectUniqueName": "C:\\Study\\QLQA\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj",
         "projectName": "RMS-APIServer",
-        "projectPath": "D:\\School\\CNPMNC\\RMS\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj",
-        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "D:\\School\\CNPMNC\\RMS\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\obj\\",
+        "projectPath": "C:\\Study\\QLQA\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj",
+        "packagesPath": "C:\\Users\\Phuc Khang\\.nuget\\packages\\",
+        "outputPath": "C:\\Study\\QLQA\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Phuc Khang\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -80,24 +86,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.28, 8.0.28]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.linux-x64",
-              "version": "[8.0.28, 8.0.28]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.28, 8.0.28]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.28, 8.0.28]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -107,11 +95,6 @@
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json"
-        }
-      },
-      "runtimes": {
-        "linux-x64": {
-          "#import": []
         }
       }
     }
