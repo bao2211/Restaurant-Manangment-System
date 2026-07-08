@@ -94,14 +94,23 @@ namespace RMS_APIServer.Controllers
 
         // PUT: api/OrderDetail/food/5/order/10
         [HttpPut("food/{foodId}/order/{orderId}")]
-        public async Task<IActionResult> PutOrderDetail(string foodId, string orderId, OrderDetail orderDetail)
+        public async Task<IActionResult> PutOrderDetail(string foodId, string orderId, CreateOrderDetailDto orderDetailDto)
         {
-            if (foodId != orderDetail.FoodId || orderId != orderDetail.OrderId)
+            // Trim IDs to handle any whitespace
+            foodId = foodId?.Trim() ?? string.Empty;
+            orderId = orderId?.Trim() ?? string.Empty;
+
+            // Fetch existing entity first (partial update pattern)
+            var existingOrderDetail = await _context.OrderDetails.FindAsync(foodId, orderId);
+            if (existingOrderDetail == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(orderDetail).State = EntityState.Modified;
+            // Patch only non-null fields
+            if (orderDetailDto.Quantity != null) existingOrderDetail.Quantity = orderDetailDto.Quantity;
+            if (orderDetailDto.UnitPrice != null) existingOrderDetail.UnitPrice = orderDetailDto.UnitPrice;
+            if (orderDetailDto.Status != null) existingOrderDetail.Status = orderDetailDto.Status;
 
             try
             {

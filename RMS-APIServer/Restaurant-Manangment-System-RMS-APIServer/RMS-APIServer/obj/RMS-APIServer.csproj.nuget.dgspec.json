@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Admin\\Documents\\School\\CNPMNC\\RMS\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj": {}
+    "D:\\School\\CNPMNC\\RMS\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Admin\\Documents\\School\\CNPMNC\\RMS\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj": {
+    "D:\\School\\CNPMNC\\RMS\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Admin\\Documents\\School\\CNPMNC\\RMS\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj",
+        "projectUniqueName": "D:\\School\\CNPMNC\\RMS\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj",
         "projectName": "RMS-APIServer",
-        "projectPath": "C:\\Users\\Admin\\Documents\\School\\CNPMNC\\RMS\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj",
+        "projectPath": "D:\\School\\CNPMNC\\RMS\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\RMS-APIServer.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Admin\\Documents\\School\\CNPMNC\\RMS\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\obj\\",
+        "outputPath": "D:\\School\\CNPMNC\\RMS\\Restaurant-Manangment-System\\RMS-APIServer\\Restaurant-Manangment-System-RMS-APIServer\\RMS-APIServer\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -60,6 +60,10 @@
               "target": "Package",
               "version": "[1.22.1, )"
             },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.6.2, )"
@@ -82,7 +86,7 @@
               "version": "[8.0.28, 8.0.28]"
             },
             {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "name": "Microsoft.NETCore.App.Host.linux-x64",
               "version": "[8.0.28, 8.0.28]"
             },
             {
@@ -103,6 +107,11 @@
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "linux-x64": {
+          "#import": []
         }
       }
     }

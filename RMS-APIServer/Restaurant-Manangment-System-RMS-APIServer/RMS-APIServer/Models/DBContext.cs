@@ -51,7 +51,7 @@ public partial class DBContext : DbContext
         {
             entity.HasKey(e => e.BillId).HasName("PK_Bill");
 
-            entity.ToTable("[Bill]");
+            entity.ToTable("Bill");
 
             entity.Property(e => e.BillId)
                 .HasMaxLength(10)
@@ -87,7 +87,7 @@ public partial class DBContext : DbContext
         {
             entity.HasKey(e => new { e.OrderId, e.BillId }).HasName("PK_Bill_Detail");
 
-            entity.ToTable("[Bill_Detail]");
+            entity.ToTable("Bill_Detail");
 
             entity.Property(e => e.OrderId)
                 .HasMaxLength(10)
@@ -116,7 +116,7 @@ public partial class DBContext : DbContext
         {
             entity.HasKey(e => e.CateId).HasName("PK_Category");
 
-            entity.ToTable("[Category]");
+            entity.ToTable("Category");
 
             entity.HasIndex(e => e.CateName, "IX_Category").IsUnique();
 
@@ -133,7 +133,7 @@ public partial class DBContext : DbContext
         {
             entity.HasKey(e => e.FoodId).HasName("PK_Food_Info");
 
-            entity.ToTable("[Food_Info]");
+            entity.ToTable("Food_Info");
 
             entity.HasIndex(e => e.FoodName, "IX_Food_Info").IsUnique();
 
@@ -161,7 +161,7 @@ public partial class DBContext : DbContext
         {
             entity.HasKey(e => e.IngreId).HasName("PK_Ingredient");
 
-            entity.ToTable("[Ingredient]");
+            entity.ToTable("Ingredient");
 
             entity.HasIndex(e => e.IngreName, "IX_Ingredient").IsUnique();
 
@@ -178,7 +178,7 @@ public partial class DBContext : DbContext
         {
             entity.HasKey(e => e.OrderId).HasName("PK_Order");
 
-            entity.ToTable("[Order]");
+            entity.ToTable("Order");
 
             entity.Property(e => e.OrderId)
                 .HasMaxLength(10)
@@ -205,6 +205,27 @@ public partial class DBContext : DbContext
                 .IsUnicode(false)
                 .IsFixedLength()
                 .HasColumnName("UserID");
+            entity.Property(e => e.PaymentStatus)
+                .HasMaxLength(50)
+                .HasColumnName("PaymentStatus");
+            entity.Property(e => e.OrderType)
+                .HasMaxLength(20)
+                .HasColumnName("OrderType");
+            entity.Property(e => e.DeliveryAddress)
+                .HasMaxLength(500)
+                .HasColumnName("DeliveryAddress");
+            entity.Property(e => e.DeliveryPhone)
+                .HasMaxLength(20)
+                .HasColumnName("DeliveryPhone");
+            entity.Property(e => e.DeliveryFee)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("DeliveryFee");
+            entity.Property(e => e.GhtkTrackingId)
+                .HasMaxLength(50)
+                .HasColumnName("GhtkTrackingId");
+            entity.Property(e => e.DeliveryStatus)
+                .HasMaxLength(20)
+                .HasColumnName("DeliveryStatus");
 
             entity.HasOne(d => d.Table).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.TableId)
@@ -219,7 +240,7 @@ public partial class DBContext : DbContext
         {
             entity.HasKey(e => new { e.FoodId, e.OrderId }).HasName("PK_Order_Detail_1");
 
-            entity.ToTable("[Order_Detail]", tb => tb.HasTrigger("TR_C_Order_Detail_UpdateStatus"));
+            entity.ToTable("Order_Detail", tb => tb.HasTrigger("TR_C_Order_Detail_UpdateStatus"));
 
             entity.Property(e => e.FoodId)
                 .HasMaxLength(10)
@@ -249,7 +270,7 @@ public partial class DBContext : DbContext
         {
             entity.HasKey(e => e.RecipeId).HasName("PK_Recipe");
 
-            entity.ToTable("[Recipe]");
+            entity.ToTable("Recipe");
 
             entity.Property(e => e.RecipeId)
                 .HasMaxLength(10)
@@ -272,7 +293,7 @@ public partial class DBContext : DbContext
         {
             entity.HasKey(e => new { e.RecipeId, e.IngreId }).HasName("PK_Recipe_Detail");
 
-            entity.ToTable("[Recipe_Detail]");
+            entity.ToTable("Recipe_Detail");
 
             entity.Property(e => e.RecipeId)
                 .HasMaxLength(10)
@@ -301,7 +322,7 @@ public partial class DBContext : DbContext
         {
             entity.HasKey(e => e.TableId).HasName("PK_Table");
 
-            entity.ToTable("[Table]");
+            entity.ToTable("Table");
 
             entity.HasIndex(e => e.TableName, "IX_Table").IsUnique();
 
@@ -318,7 +339,7 @@ public partial class DBContext : DbContext
         {
             entity.HasKey(e => e.UserId).HasName("PK_User");
 
-            entity.ToTable("[User]");
+            entity.ToTable("User");
 
             entity.HasIndex(e => e.UserName, "IX_User").IsUnique();
 

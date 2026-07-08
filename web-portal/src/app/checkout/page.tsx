@@ -272,6 +272,10 @@ export default function CheckoutPage() {
           discount: 0,
           note: noteParts.join(" | "),
           paymentStatus: selectedPayment === "PayOS - Online" ? "Chưa thanh toán" : "Đã thanh toán",
+          orderType: isDelivery ? "delivery" : "dine-in",
+          deliveryAddress: isDelivery ? (searchQuery || address.address) : null,
+          deliveryPhone: isDelivery ? address.phone : null,
+          deliveryFee: isDelivery ? (shippingFee || 0) : 0,
         }),
       });
       if (!orderRes.ok) throw new Error("Failed to create order");

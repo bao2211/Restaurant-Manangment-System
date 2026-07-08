@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import React, { createContext, useContext, useState, useCallback, useRef, ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle, X } from "lucide-react";
 
@@ -17,9 +17,10 @@ const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const toastIdRef = useRef(0);
 
   const showToast = useCallback((message: string) => {
-    const id = Date.now();
+    const id = Date.now() * 1000 + (toastIdRef.current++ % 1000);
     setToasts((prev) => [...prev, { id, message }]);
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));

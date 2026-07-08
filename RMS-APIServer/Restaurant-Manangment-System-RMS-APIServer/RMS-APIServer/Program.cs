@@ -4,9 +4,16 @@ using RMS_APIServer.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Build MySQL connection string from environment variables (Docker) or appsettings
+var dbHost = Environment.GetEnvironmentVariable("DB__HOST") ?? "192.168.192.85";
+var dbName = Environment.GetEnvironmentVariable("DB__DATABASE") ?? "webQLQuanAn";
+var dbUser = Environment.GetEnvironmentVariable("DB__USER") ?? "root";
+var dbPassword = Environment.GetEnvironmentVariable("DB__PASSWORD") ?? "CaoBao2211";
+var connectionString = $"Server={dbHost};Port=3306;Database={dbName};User={dbUser};Password={dbPassword};";
+
 // Add services to the container.
 builder.Services.AddDbContext<DBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

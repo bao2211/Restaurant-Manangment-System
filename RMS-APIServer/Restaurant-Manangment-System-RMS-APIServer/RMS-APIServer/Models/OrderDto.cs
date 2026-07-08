@@ -36,6 +36,10 @@ namespace RMS_APIServer.Models
         public decimal? Discount { get; set; }
         public string? ReservationId { get; set; }
         public string? PaymentStatus { get; set; }
+        public string? OrderType { get; set; }
+        public string? DeliveryAddress { get; set; }
+        public string? DeliveryPhone { get; set; }
+        public decimal? DeliveryFee { get; set; }
     }
 
     public class CreateOrderDetailDto

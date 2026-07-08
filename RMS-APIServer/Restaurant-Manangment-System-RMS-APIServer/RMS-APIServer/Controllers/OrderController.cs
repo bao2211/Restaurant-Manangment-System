@@ -216,7 +216,27 @@ namespace RMS_APIServer.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(order).State = EntityState.Modified;
+            // Partial update: fetch existing and patch only non-null fields
+            var existingOrder = await _context.Orders.FindAsync(id);
+            if (existingOrder == null)
+            {
+                return NotFound();
+            }
+
+            if (order.Status != null) existingOrder.Status = order.Status;
+            if (order.PaymentStatus != null) existingOrder.PaymentStatus = order.PaymentStatus;
+            if (order.Total != null) existingOrder.Total = order.Total;
+            if (order.Note != null) existingOrder.Note = order.Note;
+            if (order.Discount != null) existingOrder.Discount = order.Discount;
+            if (order.TableId != null) existingOrder.TableId = order.TableId;
+            if (order.UserId != null) existingOrder.UserId = order.UserId;
+            if (order.ReservationId != null) existingOrder.ReservationId = order.ReservationId;
+            if (order.OrderType != null) existingOrder.OrderType = order.OrderType;
+            if (order.DeliveryAddress != null) existingOrder.DeliveryAddress = order.DeliveryAddress;
+            if (order.DeliveryPhone != null) existingOrder.DeliveryPhone = order.DeliveryPhone;
+            if (order.DeliveryFee != null) existingOrder.DeliveryFee = order.DeliveryFee;
+            if (order.GhtkTrackingId != null) existingOrder.GhtkTrackingId = order.GhtkTrackingId;
+            if (order.DeliveryStatus != null) existingOrder.DeliveryStatus = order.DeliveryStatus;
 
             try
             {
@@ -259,6 +279,11 @@ namespace RMS_APIServer.Controllers
                 Discount = orderDto.Discount ?? 0,
                 ReservationId = orderDto.ReservationId,
                 PaymentStatus = orderDto.PaymentStatus ?? "Chưa thanh toán",
+                OrderType = orderDto.OrderType ?? "dine-in",
+                DeliveryAddress = orderDto.DeliveryAddress,
+                DeliveryPhone = orderDto.DeliveryPhone,
+                DeliveryFee = orderDto.DeliveryFee ?? 0,
+                DeliveryStatus = "pending",
                 CreatedTime = DateTime.Now
             };
 

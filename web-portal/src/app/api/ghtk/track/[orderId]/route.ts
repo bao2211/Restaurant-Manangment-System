@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const GHTK_TOKEN = process.env.GHTK_TOKEN || "4AOoFQtg7ATfwWu7sGYz5D8ICC1jCussWrBt6KS";
-const GHTK_BASE = "https://services.giaohangtietkiem.vn/services/v4";
+const GHTK_TOKEN = process.env.GHTK_TOKEN || "DGJX3w5h4wbFRsqnHEYbzUK8XHKBJnZJyQNFfm";
+const GHTK_BASE = "https://services-staging.ghtklab.com/services";
 
 function mockTracking(orderId: string) {
   const statuses = [
@@ -25,7 +25,7 @@ export async function GET(
   const { orderId } = await params;
 
   try {
-    const res = await fetch(`${GHTK_BASE}/order/${orderId}/get-order-info`, {
+    const res = await fetch(`${GHTK_BASE}/shipment/v2/${orderId}`, {
       headers: { Token: GHTK_TOKEN },
     });
 

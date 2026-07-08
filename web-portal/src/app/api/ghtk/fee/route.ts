@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const GHTK_TOKEN = process.env.GHTK_TOKEN || "4AOoFQtg7ATfwWu7sGYz5D8ICC1jCussWrBt6KS";
-const GHTK_BASE = "https://services.giaohangtietkiem.vn/services/v4";
+const GHTK_TOKEN = process.env.GHTK_TOKEN || "DGJX3w5h4wbFRsqnHEYbzUK8XHKBJnZJyQNFfm";
+const GHTK_BASE = "https://services-staging.ghtklab.com/services";
 
 function mockFee(province: string) {
   const isSameProvince = province === "Hồ Chí Minh";
