@@ -2,8 +2,6 @@
 
 Hệ thống quản lý nhà hàng toàn diện — hỗ trợ đặt món online, quản lý bếp, thanh toán, giao hàng và quản trị nhà hàng.
 
-**Sinh viên:** Cao Thiện Bảo — MSSV: 23DH114212
-
 ---
 
 ## 📚 Tổng Quan Công Nghệ (Tech Stack)
@@ -79,15 +77,6 @@ erDiagram
 | **TableReservationHistory** | Lịch sử đặt bàn | — |
 
 > ⚠️ **Lưu ý:** Database không có ràng buộc khóa ngoại (Foreign Key) vật lý — tất cả quan hệ được quản lý qua EF Core trong code.
-
-### 🔄 Hai Trạng Thái Đơn Hàng Độc Lập
-
-Đơn hàng có **2 trạng thái riêng biệt, không ảnh hưởng lẫn nhau**:
-
-| Track | Trường | Giá trị | Kích hoạt bởi |
-|-------|--------|---------|--------------|
-| 🍳 **Nấu ăn** | `Order.Status` | `"Chưa làm"` → `"Hoàn tất"` | Bếp đánh dấu hoàn thành món |
-| 💳 **Thanh toán** | `Order.PaymentStatus` | `"Chưa thanh toán"` → `"Đã thanh toán"` | Khách thanh toán (COD/PayOS) |
 
 ---
 
@@ -353,15 +342,3 @@ flowchart TB
     WEB -->|API Proxy| GHTK
     WEB -->|API Proxy| OSM
 ```
-
----
-
-## ⚠️ Known Issues
-
-1. **🔀 Hai trạng thái độc lập** — `Status` (nấu ăn) và `PaymentStatus` (thanh toán) không ảnh hưởng lẫn nhau
-2. **📝 PUT partial update** — Chỉ `OrderController` và `OrderDetailController` dùng fetch-then-patch; các controller khác (FoodInfo, Category, Table...) dùng `EntityState.Modified` — **sẽ xóa dữ liệu thành null** nếu gửi thiếu field
-3. **🔄 Field naming inconsistency** — `GET /api/Order` trả về `id`, `GET /api/Order/{id}` trả về `orderId`
-4. **🗃️ Dữ liệu legacy** — Status từ SQL Server cũ không đồng nhất: "Chưa làm", "chưa làm", "pending", "completed", encoding lỗi "Ho?n t?t"
-5. **📦 Hai DbContext** — `DBContext` (đang dùng) và `WebQlquanAnContext` (legacy)
-6. **🍃 Leaflet CSS** — Phải dùng CDN `<link>` trong layout do Turbopack không resolve được npm import
-7. **📁 Hai bản sao project** — Worktree (`.kilo/worktrees/road-marionberry/`) và bản gốc (`Restaurant-Manangment-System/`) — thay đổi một bên không ảnh hưởng bên kia
