@@ -1,0 +1,1597 @@
+import React, { useState, useEffect, useCallback, useContext } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  RefreshControl,
+  ActivityIndicator,
+  Alert,
+  Modal,
+  ScrollView,
+  TextInput,
+  Platform,
+} from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
+import { apiService, formatPrice } from '../services/apiService';
+import { AuthContext } from '../context/AuthContext';
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
+
+export default function BillManagerScreen() {
+  const { user } = useContext(AuthContext);
+  const [completedOrders, setCompletedOrders] = useState([]);
+  const [bills, setBills] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedBill, setSelectedBill] = useState(null);
+  const [creating, setCreating] = useState(false);
+  const [updating, setUpdating] = useState(false);
+  const [activeTab, setActiveTab] = useState('orders'); // 'orders' or 'bills'
+  const [sortBy, setSortBy] = useState('date'); // 'date', 'amount', 'payment'
+  const [sortDirection, setSortDirection] = useState('desc'); // 'asc', 'desc'
+  const [filterPayment, setFilterPayment] = useState('all'); // 'all', 'cash', 'card', 'transfer', 'wallet', 'unpaid'
+  const [showSortModal, setShowSortModal] = useState(false);
+  const [filteredBills, setFilteredBills] = useState([]);
+
+  // Bill form state
+  const [billForm, setBillForm] = useState({
+    discount: 0,
+    payment: 'Tiền mặt',
+  });
+
+  const paymentMethods = [
+    { value: 'Tiền mặt', label: 'Cash', icon: 'cash' },
+    { value: 'Thẻ tín dụng', label: 'Credit Card', icon: 'credit-card' },
+    { value: 'Chuyển khoản', label: 'Bank Transfer', icon: 'bank-transfer' },
+    { value: 'Ví điện tử', label: 'E-Wallet', icon: 'wallet' },
+    { value: 'Chưa thanh toán', label: 'Unpaid', icon: 'clock-outline' },
+  ];
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [])
+  );
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      await Promise.all([fetchCompletedOrders(), fetchBills()]);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      Alert.alert('Error', 'Failed to load data. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCompletedOrders = async () => {
+    try {
+      const ordersData = await apiService.getAllOrders();
+      console.log('Fetching completed orders...');
+      console.log('Total orders:', ordersData?.length || 0);
+      
+      // Filter orders that are completed but don't have bills yet
+      const existingBills = await apiService.getAllBills();
+      const billOrderIds = new Set(existingBills.map(bill => bill.orderId?.trim()));
+      
+      const completed = ordersData.filter(order => {
+        const status = (order.status || '').toLowerCase().trim();
+        const orderId = (order.id || order.orderId)?.trim();
+        const isCompleted = status === 'hoàn tất' || status === 'complete' || status === 'completed';
+        const hasNoBill = !billOrderIds.has(orderId);
+        return isCompleted && hasNoBill;
+      });
+      
+      console.log('Completed orders without bills:', completed.length);
+      
+      // Calculate totals for each order
+      const ordersWithTotals = await Promise.all(
+        completed.map(async order => {
+          const orderId = order.id || order.orderId;
+          const total = await calculateOrderTotal(orderId);
+          return { ...order, totalAmount: total };
+        })
+      );
+      
+      setCompletedOrders(ordersWithTotals);
+    } catch (error) {
+      console.error('Error fetching completed orders:', error);
+      throw error;
+    }
+  };
+
+  const fetchBills = async () => {
+    try {
+      const billsData = await apiService.getAllBills();
+      console.log('Fetched bills:', billsData);
+      setBills(billsData || []);
+      setFilteredBills(billsData || []);
+    } catch (error) {
+      console.error('Error fetching bills:', error);
+      throw error;
+    }
+  };
+
+  // Sort and filter bills
+  useEffect(() => {
+    if (bills.length === 0) {
+      setFilteredBills([]);
+      return;
+    }
+
+    let result = [...bills];
+
+    // Apply payment filter
+    if (filterPayment !== 'all') {
+      result = result.filter(bill => {
+        const payment = (bill.payment || '').toLowerCase();
+        switch (filterPayment) {
+          case 'cash':
+            return payment.includes('cash') || payment.includes('tiền mặt');
+          case 'card':
+            return payment.includes('card') || payment.includes('thẻ');
+          case 'transfer':
+            return payment.includes('transfer') || payment.includes('chuyển khoản');
+          case 'wallet':
+            return payment.includes('wallet') || payment.includes('ví');
+          case 'unpaid':
+            return payment.includes('chưa thanh toán') || payment.includes('unpaid');
+          default:
+            return true;
+        }
+      });
+    }
+
+    // Apply sorting
+    result.sort((a, b) => {
+      let aValue, bValue;
+
+      switch (sortBy) {
+        case 'date':
+          aValue = new Date(a.createdTime || 0).getTime();
+          bValue = new Date(b.createdTime || 0).getTime();
+          break;
+        case 'amount':
+          aValue = parseFloat(a.totalFinal || a.total || 0);
+          bValue = parseFloat(b.totalFinal || b.total || 0);
+          break;
+        case 'payment':
+          aValue = (a.payment || '').toLowerCase();
+          bValue = (b.payment || '').toLowerCase();
+          return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+        default:
+          return 0;
+      }
+
+      return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+    });
+
+    setFilteredBills(result);
+  }, [bills, sortBy, sortDirection, filterPayment]);
+
+  const calculateOrderTotal = async (orderId) => {
+    try {
+      const orderDetails = await apiService.getOrderDetails(orderId);
+      if (!Array.isArray(orderDetails) || orderDetails.length === 0) {
+        return 0;
+      }
+      return orderDetails.reduce((sum, detail) => {
+        const quantity = detail.quantity || 1;
+        const unitPrice = detail.price || detail.unitPrice || 0;
+        return sum + (quantity * unitPrice);
+      }, 0);
+    } catch (error) {
+      console.error(`Error calculating total for order ${orderId}:`, error);
+      return 0;
+    }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchData();
+    setRefreshing(false);
+  };
+
+  const handleCreateBill = async () => {
+    if (!selectedOrder) return;
+
+    try {
+      setCreating(true);
+      
+      const total = selectedOrder.totalAmount || 0;
+      const discount = parseFloat(billForm.discount) || 0;
+      const totalFinal = Math.max(0, total - discount);
+
+      // Generate unique bill ID (10 characters like existing bills: 63fb378e3c)
+      const billId = Math.random().toString(36).substr(2, 10);
+
+      const orderId = selectedOrder.id || selectedOrder.orderId;
+
+      const billData = {
+        billId: billId,
+        orderId: orderId,
+        userId: (user?.userId || selectedOrder.userId)?.toString().trim(),
+        userName: user?.fullName || user?.userName || 'Admin',
+        total: total,
+        discount: discount,
+        totalFinal: totalFinal,
+        payment: billForm.payment,
+        createdTime: new Date().toISOString(),
+      };
+
+      console.log('Creating bill:', billData);
+      await apiService.createBill(billData);
+
+      // Note: Bill details are not created separately as the API requires 
+      // navigation properties (Bill and Order objects) which causes validation errors.
+      // The bill total is already calculated from order details.
+
+      // Update order status to indicate bill created
+      // Must match Order model property names: OrderId, CreatedTime (not id, orderDate)
+      const orderUpdateData = {
+        orderId: orderId,
+        tableId: selectedOrder.tableId,
+        userId: selectedOrder.userId,
+        createdTime: selectedOrder.orderDate, // API uses CreatedTime not OrderDate
+        status: 'Đã tạo bill',
+        total: selectedOrder.total,
+        discount: selectedOrder.discount || 0,
+        note: selectedOrder.note || null,
+        reservationId: selectedOrder.reservationId || null
+      };
+      await apiService.updateOrder(orderId, orderUpdateData);
+
+      Alert.alert('Success', 'Bill created successfully!');
+      setShowCreateModal(false);
+      setSelectedOrder(null);
+      setBillForm({ discount: 0, payment: 'Tiền mặt' });
+      // Refresh data to update both lists
+      await fetchData();
+    } catch (error) {
+      console.error('Error creating bill:', error);
+      Alert.alert('Error', 'Failed to create bill. Please try again.');
+    } finally {
+      setCreating(false);
+    }
+  };
+
+  const handleUpdateBillStatus = async () => {
+    if (!selectedBill) return;
+
+    try {
+      setUpdating(true);
+
+      const updatedBillData = {
+        ...selectedBill,
+        payment: billForm.payment,
+        discount: parseFloat(billForm.discount) || selectedBill.discount || 0,
+        totalFinal: (selectedBill.total || 0) - (parseFloat(billForm.discount) || selectedBill.discount || 0),
+      };
+
+      console.log('Updating bill:', updatedBillData);
+      await apiService.updateBill(selectedBill.billId, updatedBillData);
+
+      Alert.alert('Success', 'Bill updated successfully!');
+      setShowEditModal(false);
+      setSelectedBill(null);
+      setBillForm({ discount: 0, payment: 'Tiền mặt' });
+      await fetchData();
+    } catch (error) {
+      console.error('Error updating bill:', error);
+      Alert.alert('Error', 'Failed to update bill. Please try again.');
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const handlePrintBill = async (bill) => {
+    try {
+      console.log('Printing bill:', bill.billId, 'Order:', bill.orderId);
+      
+      // Get order details directly (bill details are linked through order)
+      const orderDetails = await apiService.getOrderDetails(bill.orderId);
+      console.log('Order details for printing:', orderDetails);
+      
+      // Format order details for printing
+      const detailsForPrint = orderDetails.map(detail => ({
+        foodName: detail.foodName || 'Unknown Item',
+        quantity: detail.quantity || 0,
+        unitPrice: detail.unitPrice || 0,
+        total: (detail.quantity || 0) * (detail.unitPrice || 0)
+      }));
+
+      console.log('Formatted details for print:', detailsForPrint);
+
+      const html = generateBillHTML(bill, detailsForPrint);
+      
+      if (Platform.OS === 'web') {
+        // For web, open in new window
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(html);
+        printWindow.document.close();
+        printWindow.print();
+      } else {
+        // For mobile, use expo-print
+        const { uri } = await Print.printToFileAsync({ html });
+        
+        if (await Sharing.isAvailableAsync()) {
+          await Sharing.shareAsync(uri);
+        } else {
+          Alert.alert('Success', 'Bill saved successfully!');
+        }
+      }
+    } catch (error) {
+      console.error('Error printing bill:', error);
+      Alert.alert('Error', 'Failed to print bill. Please try again.');
+    }
+  };
+
+  const generateBillHTML = (bill, details) => {
+    const date = new Date(bill.createdTime).toLocaleString('vi-VN');
+    
+    console.log('generateBillHTML - Bill:', bill);
+    console.log('generateBillHTML - Details:', details);
+    console.log('generateBillHTML - Details is array:', Array.isArray(details));
+    console.log('generateBillHTML - Details length:', details?.length);
+    
+    // Ensure details is an array
+    const detailsArray = Array.isArray(details) ? details : [];
+    
+    return `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Bill #${bill.billId}</title>
+        <style>
+          body {
+            font-family: 'Courier New', monospace;
+            max-width: 80mm;
+            margin: 0 auto;
+            padding: 20px;
+          }
+          .header {
+            text-align: center;
+            border-bottom: 2px dashed #000;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+          }
+          .header h1 {
+            margin: 0;
+            font-size: 24px;
+          }
+          .header p {
+            margin: 5px 0;
+            font-size: 12px;
+          }
+          .info {
+            margin: 15px 0;
+            font-size: 12px;
+          }
+          .info div {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 12px;
+          }
+          th {
+            text-align: left;
+            border-bottom: 1px solid #000;
+            padding: 5px 0;
+          }
+          td {
+            padding: 5px 0;
+          }
+          .right {
+            text-align: right;
+          }
+          .totals {
+            border-top: 1px solid #000;
+            margin-top: 10px;
+            padding-top: 10px;
+          }
+          .totals div {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            font-size: 13px;
+          }
+          .final-total {
+            font-size: 16px;
+            font-weight: bold;
+            border-top: 2px solid #000;
+            padding-top: 10px;
+            margin-top: 10px;
+          }
+          .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 2px dashed #000;
+            font-size: 12px;
+          }
+          @media print {
+            body {
+              padding: 10px;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>DELICIOUS BITES</h1>
+          <p>Restaurant Management System</p>
+          <p>Phone: +84 123 456 789</p>
+        </div>
+        
+        <div class="info">
+          <div><span>Bill ID:</span><strong>${bill.billId}</strong></div>
+          <div><span>Order ID:</span><span>${bill.orderId}</span></div>
+          <div><span>Date:</span><span>${date}</span></div>
+          <div><span>Payment:</span><span>${bill.payment}</span></div>
+        </div>
+        
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th class="right">Qty</th>
+              <th class="right">Price</th>
+              <th class="right">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${detailsArray.length > 0 ? detailsArray.map(detail => `
+              <tr>
+                <td>${detail.foodName || 'Unknown'}</td>
+                <td class="right">${detail.quantity || 0}</td>
+                <td class="right">${formatPrice(detail.unitPrice || 0)}</td>
+                <td class="right">${formatPrice((detail.quantity || 0) * (detail.unitPrice || 0))}</td>
+              </tr>
+            `).join('') : '<tr><td colspan="4" style="text-align: center;">No items found</td></tr>'}
+          </tbody>
+        </table>
+        
+        <div class="totals">
+          <div><span>Subtotal:</span><strong>${formatPrice(bill.total)}</strong></div>
+          ${bill.discount > 0 ? `<div><span>Discount:</span><strong>-${formatPrice(bill.discount)}</strong></div>` : ''}
+          <div class="final-total">
+            <span>TOTAL:</span>
+            <strong>${formatPrice(bill.totalFinal || bill.total)}</strong>
+          </div>
+        </div>
+        
+        <div class="footer">
+          <p>Thank you for your visit!</p>
+          <p>Please come again</p>
+        </div>
+      </body>
+      </html>
+    `;
+  };
+
+  const openCreateModal = (order) => {
+    setSelectedOrder(order);
+    setBillForm({ discount: 0, payment: 'Tiền mặt' });
+    setShowCreateModal(true);
+  };
+
+  const openEditModal = (bill) => {
+    setSelectedBill(bill);
+    setBillForm({
+      discount: bill.discount || 0,
+      payment: bill.payment || 'Tiền mặt',
+    });
+    setShowEditModal(true);
+  };
+
+  const renderOrderItem = ({ item }) => (
+    <View style={styles.card}>
+      <View style={styles.cardHeader}>
+        <View style={styles.orderIdContainer}>
+          <MaterialCommunityIcons name="receipt" size={20} color="#3498DB" />
+          <Text style={styles.orderId}>#{(item.id || item.orderId)?.substring(0, 10)}</Text>
+        </View>
+        <View style={styles.statusBadge}>
+          <MaterialCommunityIcons name="check-circle" size={16} color="#27AE60" />
+          <Text style={styles.statusText}>{item.status}</Text>
+        </View>
+      </View>
+
+      <View style={styles.cardBody}>
+        <View style={styles.infoRow}>
+          <MaterialCommunityIcons name="table-furniture" size={16} color="#7F8C8D" />
+          <Text style={styles.infoText}>Table: {item.tableId}</Text>
+        </View>
+        <View style={styles.infoRow}>
+          <MaterialCommunityIcons name="clock-outline" size={16} color="#7F8C8D" />
+          <Text style={styles.infoText}>
+            {new Date(item.orderDate || item.createDate || item.createdTime).toLocaleString('vi-VN')}
+          </Text>
+        </View>
+        <View style={styles.totalRow}>
+          <Text style={styles.totalLabel}>Total Amount:</Text>
+          <Text style={styles.totalValue}>{formatPrice(item.totalAmount || 0)}</Text>
+        </View>
+      </View>
+
+      <TouchableOpacity
+        style={styles.createButton}
+        onPress={() => openCreateModal(item)}
+      >
+        <MaterialCommunityIcons name="plus-circle" size={20} color="#FFFFFF" />
+        <Text style={styles.createButtonText}>Create Bill</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  const renderBillItem = ({ item }) => (
+    <View style={styles.card}>
+      <View style={styles.cardHeader}>
+        <View style={styles.orderIdContainer}>
+          <MaterialCommunityIcons name="file-document" size={20} color="#E74C3C" />
+          <Text style={styles.orderId}>#{item.billId?.substring(0, 10)}</Text>
+        </View>
+        <View style={[styles.paymentBadge, getPaymentBadgeStyle(item.payment)]}>
+          <MaterialCommunityIcons 
+            name={getPaymentIcon(item.payment)} 
+            size={14} 
+            color="#FFFFFF" 
+          />
+          <Text style={styles.paymentText}>{item.payment}</Text>
+        </View>
+      </View>
+
+      <View style={styles.cardBody}>
+        <View style={styles.infoRow}>
+          <MaterialCommunityIcons name="receipt" size={16} color="#7F8C8D" />
+          <Text style={styles.infoText}>Order: {item.orderId?.substring(0, 10)}</Text>
+        </View>
+        <View style={styles.infoRow}>
+          <MaterialCommunityIcons name="clock-outline" size={16} color="#7F8C8D" />
+          <Text style={styles.infoText}>
+            {new Date(item.createdTime).toLocaleString('vi-VN')}
+          </Text>
+        </View>
+        
+        <View style={styles.amountSection}>
+          <View style={styles.amountRow}>
+            <Text style={styles.amountLabel}>Subtotal:</Text>
+            <Text style={styles.amountValue}>{formatPrice(item.total || 0)}</Text>
+          </View>
+          {item.discount > 0 && (
+            <View style={styles.amountRow}>
+              <Text style={styles.discountLabel}>Discount:</Text>
+              <Text style={styles.discountValue}>-{formatPrice(item.discount)}</Text>
+            </View>
+          )}
+          <View style={styles.totalRow}>
+            <Text style={styles.totalLabel}>Final Total:</Text>
+            <Text style={styles.totalValue}>{formatPrice(item.totalFinal || item.total)}</Text>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.actionButtons}>
+        <TouchableOpacity
+          style={[styles.actionButton, styles.editButton]}
+          onPress={() => openEditModal(item)}
+        >
+          <MaterialCommunityIcons name="pencil" size={18} color="#FFFFFF" />
+          <Text style={styles.actionButtonText}>Edit</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.actionButton, styles.printButton]}
+          onPress={() => handlePrintBill(item)}
+        >
+          <MaterialCommunityIcons name="printer" size={18} color="#FFFFFF" />
+          <Text style={styles.actionButtonText}>Print</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
+  const getPaymentIcon = (payment) => {
+    const method = payment?.toLowerCase() || '';
+    if (method.includes('cash') || method.includes('tiền mặt')) return 'cash';
+    if (method.includes('card') || method.includes('thẻ')) return 'credit-card';
+    if (method.includes('transfer') || method.includes('chuyển khoản')) return 'bank-transfer';
+    if (method.includes('wallet') || method.includes('ví')) return 'wallet';
+    return 'clock-outline';
+  };
+
+  const getPaymentBadgeStyle = (payment) => {
+    const method = payment?.toLowerCase() || '';
+    if (method.includes('chưa thanh toán') || method.includes('unpaid')) {
+      return { backgroundColor: '#E74C3C' };
+    }
+    return { backgroundColor: '#27AE60' };
+  };
+
+  const handleSort = (criteria) => {
+    if (sortBy === criteria) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortBy(criteria);
+      setSortDirection('desc');
+    }
+    setShowSortModal(false);
+  };
+
+  const getSortIcon = (criteria) => {
+    if (sortBy !== criteria) return 'sort';
+    return sortDirection === 'asc' ? 'sort-ascending' : 'sort-descending';
+  };
+
+  const renderSortModal = () => (
+    <Modal
+      visible={showSortModal}
+      transparent={true}
+      animationType="fade"
+      onRequestClose={() => setShowSortModal(false)}
+    >
+      <TouchableOpacity
+        style={styles.sortModalOverlay}
+        activeOpacity={1}
+        onPress={() => setShowSortModal(false)}
+      >
+        <View style={styles.sortModalContent}>
+          <Text style={styles.sortModalTitle}>Sort Bills</Text>
+
+          <TouchableOpacity
+            style={styles.sortOption}
+            onPress={() => handleSort('date')}
+          >
+            <MaterialCommunityIcons
+              name="calendar"
+              size={20}
+              color={sortBy === 'date' ? '#3498DB' : '#7F8C8D'}
+            />
+            <Text style={[styles.sortOptionText, sortBy === 'date' && styles.activeSortOption]}>
+              Date Created
+            </Text>
+            <MaterialCommunityIcons
+              name={getSortIcon('date')}
+              size={20}
+              color={sortBy === 'date' ? '#3498DB' : '#7F8C8D'}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.sortOption}
+            onPress={() => handleSort('amount')}
+          >
+            <MaterialCommunityIcons
+              name="currency-usd"
+              size={20}
+              color={sortBy === 'amount' ? '#3498DB' : '#7F8C8D'}
+            />
+            <Text style={[styles.sortOptionText, sortBy === 'amount' && styles.activeSortOption]}>
+              Amount
+            </Text>
+            <MaterialCommunityIcons
+              name={getSortIcon('amount')}
+              size={20}
+              color={sortBy === 'amount' ? '#3498DB' : '#7F8C8D'}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.sortOption}
+            onPress={() => handleSort('payment')}
+          >
+            <MaterialCommunityIcons
+              name="credit-card"
+              size={20}
+              color={sortBy === 'payment' ? '#3498DB' : '#7F8C8D'}
+            />
+            <Text style={[styles.sortOptionText, sortBy === 'payment' && styles.activeSortOption]}>
+              Payment Method
+            </Text>
+            <MaterialCommunityIcons
+              name={getSortIcon('payment')}
+              size={20}
+              color={sortBy === 'payment' ? '#3498DB' : '#7F8C8D'}
+            />
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
+    </Modal>
+  );
+
+  const renderFilterBar = () => (
+    <View style={styles.filterBar}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterScrollContainer}>
+        <TouchableOpacity
+          style={[styles.filterChip, filterPayment === 'all' && styles.activeFilterChip]}
+          onPress={() => setFilterPayment('all')}
+        >
+          <Text style={[styles.filterChipText, filterPayment === 'all' && styles.activeFilterChipText]}>
+            All
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.filterChip, filterPayment === 'cash' && styles.activeFilterChip]}
+          onPress={() => setFilterPayment('cash')}
+        >
+          <MaterialCommunityIcons name="cash" size={16} color={filterPayment === 'cash' ? '#FFFFFF' : '#7F8C8D'} />
+          <Text style={[styles.filterChipText, filterPayment === 'cash' && styles.activeFilterChipText]}>
+            Cash
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.filterChip, filterPayment === 'card' && styles.activeFilterChip]}
+          onPress={() => setFilterPayment('card')}
+        >
+          <MaterialCommunityIcons name="credit-card" size={16} color={filterPayment === 'card' ? '#FFFFFF' : '#7F8C8D'} />
+          <Text style={[styles.filterChipText, filterPayment === 'card' && styles.activeFilterChipText]}>
+            Card
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.filterChip, filterPayment === 'transfer' && styles.activeFilterChip]}
+          onPress={() => setFilterPayment('transfer')}
+        >
+          <MaterialCommunityIcons name="bank-transfer" size={16} color={filterPayment === 'transfer' ? '#FFFFFF' : '#7F8C8D'} />
+          <Text style={[styles.filterChipText, filterPayment === 'transfer' && styles.activeFilterChipText]}>
+            Transfer
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.filterChip, filterPayment === 'wallet' && styles.activeFilterChip]}
+          onPress={() => setFilterPayment('wallet')}
+        >
+          <MaterialCommunityIcons name="wallet" size={16} color={filterPayment === 'wallet' ? '#FFFFFF' : '#7F8C8D'} />
+          <Text style={[styles.filterChipText, filterPayment === 'wallet' && styles.activeFilterChipText]}>
+            Wallet
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.filterChip, filterPayment === 'unpaid' && styles.activeFilterChip]}
+          onPress={() => setFilterPayment('unpaid')}
+        >
+          <MaterialCommunityIcons name="clock-outline" size={16} color={filterPayment === 'unpaid' ? '#FFFFFF' : '#7F8C8D'} />
+          <Text style={[styles.filterChipText, filterPayment === 'unpaid' && styles.activeFilterChipText]}>
+            Unpaid
+          </Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </View>
+  );
+
+  const renderCreateModal = () => (
+    <Modal
+      visible={showCreateModal}
+      transparent={true}
+      animationType="slide"
+      onRequestClose={() => setShowCreateModal(false)}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Create Bill</Text>
+            <TouchableOpacity onPress={() => setShowCreateModal(false)}>
+              <MaterialCommunityIcons name="close" size={24} color="#2C3E50" />
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView style={styles.modalBody}>
+            {selectedOrder && (
+              <>
+                <View style={styles.modalSection}>
+                  <Text style={styles.modalLabel}>Order Information</Text>
+                  <View style={styles.modalInfo}>
+                    <Text style={styles.modalInfoText}>Order ID: {selectedOrder.id || selectedOrder.orderId}</Text>
+                    <Text style={styles.modalInfoText}>Table: {selectedOrder.tableId}</Text>
+                    <Text style={styles.modalInfoText}>
+                      Amount: {formatPrice(selectedOrder.totalAmount || 0)}
+                    </Text>
+                  </View>
+                </View>
+
+                <View style={styles.modalSection}>
+                  <Text style={styles.modalLabel}>Discount Amount</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter discount amount"
+                    keyboardType="numeric"
+                    value={billForm.discount.toString()}
+                    onChangeText={(text) => setBillForm({ ...billForm, discount: text })}
+                  />
+                </View>
+
+                <View style={styles.modalSection}>
+                  <Text style={styles.modalLabel}>Payment Method</Text>
+                  <View style={styles.paymentMethodsGrid}>
+                    {paymentMethods.map((method) => (
+                      <TouchableOpacity
+                        key={method.value}
+                        style={[
+                          styles.paymentMethodButton,
+                          billForm.payment === method.value && styles.paymentMethodSelected,
+                        ]}
+                        onPress={() => setBillForm({ ...billForm, payment: method.value })}
+                      >
+                        <MaterialCommunityIcons
+                          name={method.icon}
+                          size={24}
+                          color={billForm.payment === method.value ? '#FFFFFF' : '#7F8C8D'}
+                        />
+                        <Text
+                          style={[
+                            styles.paymentMethodText,
+                            billForm.payment === method.value && styles.paymentMethodTextSelected,
+                          ]}
+                        >
+                          {method.label}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View>
+
+                <View style={styles.modalSection}>
+                  <Text style={styles.modalLabel}>Summary</Text>
+                  <View style={styles.summaryBox}>
+                    <View style={styles.summaryRow}>
+                      <Text style={styles.summaryLabel}>Subtotal:</Text>
+                      <Text style={styles.summaryValue}>
+                        {formatPrice(selectedOrder.totalAmount || 0)}
+                      </Text>
+                    </View>
+                    <View style={styles.summaryRow}>
+                      <Text style={styles.summaryLabel}>Discount:</Text>
+                      <Text style={styles.summaryValue}>
+                        -{formatPrice(parseFloat(billForm.discount) || 0)}
+                      </Text>
+                    </View>
+                    <View style={[styles.summaryRow, styles.summaryTotal]}>
+                      <Text style={styles.summaryTotalLabel}>Final Total:</Text>
+                      <Text style={styles.summaryTotalValue}>
+                        {formatPrice(
+                          Math.max(0, (selectedOrder.totalAmount || 0) - (parseFloat(billForm.discount) || 0))
+                        )}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              </>
+            )}
+          </ScrollView>
+
+          <View style={styles.modalFooter}>
+            <TouchableOpacity
+              style={[styles.modalButton, styles.cancelButton]}
+              onPress={() => setShowCreateModal(false)}
+            >
+              <Text style={styles.cancelButtonText}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.modalButton, styles.confirmButton]}
+              onPress={handleCreateBill}
+              disabled={creating}
+            >
+              {creating ? (
+                <ActivityIndicator color="#FFFFFF" />
+              ) : (
+                <Text style={styles.confirmButtonText}>Create Bill</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+
+  const renderEditModal = () => (
+    <Modal
+      visible={showEditModal}
+      transparent={true}
+      animationType="slide"
+      onRequestClose={() => setShowEditModal(false)}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Edit Bill</Text>
+            <TouchableOpacity onPress={() => setShowEditModal(false)}>
+              <MaterialCommunityIcons name="close" size={24} color="#2C3E50" />
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView style={styles.modalBody}>
+            {selectedBill && (
+              <>
+                <View style={styles.modalSection}>
+                  <Text style={styles.modalLabel}>Bill Information</Text>
+                  <View style={styles.modalInfo}>
+                    <Text style={styles.modalInfoText}>Bill ID: {selectedBill.billId}</Text>
+                    <Text style={styles.modalInfoText}>Order ID: {selectedBill.orderId}</Text>
+                  </View>
+                </View>
+
+                <View style={styles.modalSection}>
+                  <Text style={styles.modalLabel}>Discount Amount</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter discount amount"
+                    keyboardType="numeric"
+                    value={billForm.discount.toString()}
+                    onChangeText={(text) => setBillForm({ ...billForm, discount: text })}
+                  />
+                </View>
+
+                <View style={styles.modalSection}>
+                  <Text style={styles.modalLabel}>Payment Method</Text>
+                  <View style={styles.paymentMethodsGrid}>
+                    {paymentMethods.map((method) => (
+                      <TouchableOpacity
+                        key={method.value}
+                        style={[
+                          styles.paymentMethodButton,
+                          billForm.payment === method.value && styles.paymentMethodSelected,
+                        ]}
+                        onPress={() => setBillForm({ ...billForm, payment: method.value })}
+                      >
+                        <MaterialCommunityIcons
+                          name={method.icon}
+                          size={24}
+                          color={billForm.payment === method.value ? '#FFFFFF' : '#7F8C8D'}
+                        />
+                        <Text
+                          style={[
+                            styles.paymentMethodText,
+                            billForm.payment === method.value && styles.paymentMethodTextSelected,
+                          ]}
+                        >
+                          {method.label}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View>
+
+                <View style={styles.modalSection}>
+                  <Text style={styles.modalLabel}>Summary</Text>
+                  <View style={styles.summaryBox}>
+                    <View style={styles.summaryRow}>
+                      <Text style={styles.summaryLabel}>Subtotal:</Text>
+                      <Text style={styles.summaryValue}>{formatPrice(selectedBill.total || 0)}</Text>
+                    </View>
+                    <View style={styles.summaryRow}>
+                      <Text style={styles.summaryLabel}>Discount:</Text>
+                      <Text style={styles.summaryValue}>
+                        -{formatPrice(parseFloat(billForm.discount) || 0)}
+                      </Text>
+                    </View>
+                    <View style={[styles.summaryRow, styles.summaryTotal]}>
+                      <Text style={styles.summaryTotalLabel}>Final Total:</Text>
+                      <Text style={styles.summaryTotalValue}>
+                        {formatPrice(
+                          Math.max(0, (selectedBill.total || 0) - (parseFloat(billForm.discount) || 0))
+                        )}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              </>
+            )}
+          </ScrollView>
+
+          <View style={styles.modalFooter}>
+            <TouchableOpacity
+              style={[styles.modalButton, styles.cancelButton]}
+              onPress={() => setShowEditModal(false)}
+            >
+              <Text style={styles.cancelButtonText}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.modalButton, styles.confirmButton]}
+              onPress={handleUpdateBillStatus}
+              disabled={updating}
+            >
+              {updating ? (
+                <ActivityIndicator color="#FFFFFF" />
+              ) : (
+                <Text style={styles.confirmButtonText}>Update Bill</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#3498DB" />
+        <Text style={styles.loadingText}>Loading data...</Text>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.tabBar}>
+        <TouchableOpacity
+          style={[styles.tab, activeTab === 'orders' && styles.activeTab]}
+          onPress={() => setActiveTab('orders')}
+        >
+          <MaterialCommunityIcons
+            name="clipboard-list"
+            size={20}
+            color={activeTab === 'orders' ? '#3498DB' : '#7F8C8D'}
+          />
+          <Text style={[styles.tabText, activeTab === 'orders' && styles.activeTabText]}>
+            Completed Orders ({completedOrders.length})
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tab, activeTab === 'bills' && styles.activeTab]}
+          onPress={() => setActiveTab('bills')}
+        >
+          <MaterialCommunityIcons
+            name="file-document"
+            size={20}
+            color={activeTab === 'bills' ? '#3498DB' : '#7F8C8D'}
+          />
+          <Text style={[styles.tabText, activeTab === 'bills' && styles.activeTabText]}>
+            Bills ({filteredBills.length}/{bills.length})
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {activeTab === 'orders' ? (
+        <FlatList
+          data={completedOrders}
+          renderItem={renderOrderItem}
+          keyExtractor={(item) => item.id || item.orderId}
+          contentContainerStyle={styles.listContainer}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          ListEmptyComponent={
+            <View style={styles.emptyState}>
+              <MaterialCommunityIcons name="clipboard-check-outline" size={80} color="#BDC3C7" />
+              <Text style={styles.emptyTitle}>No Completed Orders</Text>
+              <Text style={styles.emptySubtitle}>
+                Completed orders ready for billing will appear here
+              </Text>
+            </View>
+          }
+        />
+      ) : (
+        <>
+          <View style={styles.billsHeader}>
+            {renderFilterBar()}
+            <TouchableOpacity
+              style={styles.sortButton}
+              onPress={() => setShowSortModal(true)}
+            >
+              <MaterialCommunityIcons name="sort" size={20} color="#3498DB" />
+              <Text style={styles.sortButtonText}>Sort</Text>
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            data={filteredBills}
+            renderItem={renderBillItem}
+            keyExtractor={(item) => item.billId}
+            contentContainerStyle={styles.listContainer}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            ListEmptyComponent={
+              <View style={styles.emptyState}>
+                <MaterialCommunityIcons name="file-document-outline" size={80} color="#BDC3C7" />
+                <Text style={styles.emptyTitle}>No Bills Found</Text>
+                <Text style={styles.emptySubtitle}>
+                  {filterPayment !== 'all'
+                    ? `No bills found with ${filterPayment} payment method`
+                    : 'Created bills will appear here'}
+                </Text>
+              </View>
+            }
+          />
+        </>
+      )}
+
+      {renderCreateModal()}
+      {renderEditModal()}
+      {renderSortModal()}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#7F8C8D',
+  },
+  tabBar: {
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E8E8E8',
+  },
+  tab: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    gap: 8,
+  },
+  activeTab: {
+    borderBottomWidth: 3,
+    borderBottomColor: '#3498DB',
+  },
+  tabText: {
+    fontSize: 14,
+    color: '#7F8C8D',
+    fontWeight: '500',
+  },
+  activeTabText: {
+    color: '#3498DB',
+    fontWeight: '600',
+  },
+  listContainer: {
+    padding: 16,
+  },
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  orderIdContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  orderId: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#2C3E50',
+  },
+  statusBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#E8F8F5',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  statusText: {
+    fontSize: 12,
+    color: '#27AE60',
+    fontWeight: '600',
+  },
+  paymentBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  paymentText: {
+    fontSize: 11,
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  cardBody: {
+    gap: 8,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  infoText: {
+    fontSize: 13,
+    color: '#7F8C8D',
+  },
+  amountSection: {
+    marginTop: 8,
+    gap: 4,
+  },
+  amountRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  amountLabel: {
+    fontSize: 13,
+    color: '#7F8C8D',
+  },
+  amountValue: {
+    fontSize: 13,
+    color: '#2C3E50',
+    fontWeight: '500',
+  },
+  discountLabel: {
+    fontSize: 13,
+    color: '#E74C3C',
+  },
+  discountValue: {
+    fontSize: 13,
+    color: '#E74C3C',
+    fontWeight: '500',
+  },
+  totalRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#F0F0F0',
+  },
+  totalLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#2C3E50',
+  },
+  totalValue: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#27AE60',
+  },
+  createButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: '#3498DB',
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginTop: 12,
+  },
+  createButtonText: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 12,
+  },
+  actionButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  editButton: {
+    backgroundColor: '#F39C12',
+  },
+  printButton: {
+    backgroundColor: '#8E44AD',
+  },
+  actionButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: 60,
+  },
+  emptyTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  emptySubtitle: {
+    fontSize: 14,
+    color: '#7F8C8D',
+    textAlign: 'center',
+    maxWidth: 250,
+    lineHeight: 20,
+  },
+  // Modal Styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: '90%',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E8E8E8',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+  },
+  modalBody: {
+    padding: 20,
+  },
+  modalSection: {
+    marginBottom: 24,
+  },
+  modalLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#2C3E50',
+    marginBottom: 12,
+  },
+  modalInfo: {
+    backgroundColor: '#F8F9FA',
+    padding: 12,
+    borderRadius: 8,
+    gap: 6,
+  },
+  modalInfoText: {
+    fontSize: 13,
+    color: '#7F8C8D',
+  },
+  input: {
+    backgroundColor: '#F8F9FA',
+    borderWidth: 1,
+    borderColor: '#E8E8E8',
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 15,
+    color: '#2C3E50',
+  },
+  paymentMethodsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  paymentMethodButton: {
+    flex: 1,
+    minWidth: '45%',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    padding: 16,
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: '#E8E8E8',
+    backgroundColor: '#FFFFFF',
+  },
+  paymentMethodSelected: {
+    borderColor: '#3498DB',
+    backgroundColor: '#3498DB',
+  },
+  paymentMethodText: {
+    fontSize: 12,
+    color: '#7F8C8D',
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+  paymentMethodTextSelected: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  summaryBox: {
+    backgroundColor: '#F8F9FA',
+    padding: 16,
+    borderRadius: 8,
+    gap: 8,
+  },
+  summaryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  summaryLabel: {
+    fontSize: 14,
+    color: '#7F8C8D',
+  },
+  summaryValue: {
+    fontSize: 14,
+    color: '#2C3E50',
+    fontWeight: '500',
+  },
+  summaryTotal: {
+    marginTop: 8,
+    paddingTop: 12,
+    borderTopWidth: 2,
+    borderTopColor: '#E8E8E8',
+  },
+  summaryTotalLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#2C3E50',
+  },
+  summaryTotalValue: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#27AE60',
+  },
+  modalFooter: {
+    flexDirection: 'row',
+    gap: 12,
+    padding: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#E8E8E8',
+  },
+  modalButton: {
+    flex: 1,
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cancelButton: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E8E8E8',
+  },
+  cancelButtonText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#7F8C8D',
+  },
+  confirmButton: {
+    backgroundColor: '#3498DB',
+  },
+  confirmButtonText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  // Bills Header Styles
+  billsHeader: {
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E8E8E8',
+  },
+  sortButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: '#F8F9FA',
+    marginHorizontal: 16,
+    marginBottom: 8,
+    borderRadius: 8,
+  },
+  sortButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#3498DB',
+  },
+  // Sort Modal Styles
+  sortModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  sortModalContent: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 20,
+    margin: 20,
+    minWidth: 280,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  sortModalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  sortOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  sortOptionText: {
+    flex: 1,
+    fontSize: 16,
+    color: '#2C3E50',
+    marginLeft: 12,
+  },
+  activeSortOption: {
+    color: '#3498DB',
+    fontWeight: '600',
+  },
+  // Filter Bar Styles
+  filterBar: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  filterScrollContainer: {
+    paddingRight: 16,
+  },
+  filterChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    marginRight: 8,
+    borderRadius: 16,
+    backgroundColor: '#F8F9FA',
+    borderWidth: 1,
+    borderColor: '#E8E8E8',
+  },
+  activeFilterChip: {
+    backgroundColor: '#3498DB',
+    borderColor: '#3498DB',
+  },
+  filterChipText: {
+    fontSize: 14,
+    color: '#7F8C8D',
+    marginLeft: 4,
+  },
+  activeFilterChipText: {
+    color: '#FFFFFF',
+    fontWeight: '500',
+  },
+});
