@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Build outputs
+build/
+dist/
+bin/
+obj/
+
+# IDE / Editor
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Environment
+.env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Web portal build cache
+web-portal/.next/
+web-portal/node_modules/
+
+# Mobile
+RMSMobile/Restaurant-Manangment-System-RMSMobile-Testing/node_modules/
+RMSMobile/Restaurant-Manangment-System-RMSMobile-Testing/.expo/
+
+# Docker
+rms-api-build.tar
