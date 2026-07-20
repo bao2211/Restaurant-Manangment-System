@@ -3,9 +3,10 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Search, CreditCard, Truck, CheckCircle, Loader2, Navigation, X, Package } from "lucide-react";
+import { MapPin, Search, CreditCard, Truck, CheckCircle, Loader2, Navigation, X, Package, Utensils } from "lucide-react";
 import Header from "@/components/ui/header";
 import Footer from "@/components/ui/footer";
+import PayOSModal from "@/components/ui/payos-modal";
 import { useAuth } from "@/contexts/auth-context";
 import { useCart } from "@/contexts/cart-context";
 import { useToast } from "@/contexts/toast-context";
@@ -61,12 +62,20 @@ export default function CheckoutPage() {
   });
   const [tables, setTables] = useState<{ tableId: string; tableName: string }[]>([]);
   const [selectedTable, setSelectedTable] = useState("");
-  const [isDelivery, setIsDelivery] = useState(true);
+  const [orderMode, setOrderMode] = useState<"delivery" | "takeaway" | "dine-in">("delivery");
   const [placing, setPlacing] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [shippingFee, setShippingFee] = useState<number | null>(null);
   const [shippingLoading, setShippingLoading] = useState(false);
   const [shippingError, setShippingError] = useState("");
+  const [payosOpen, setPayosOpen] = useState(false);
+  const [payosData, setPayosData] = useState({
+    qrCode: "",
+    checkoutUrl: "",
+    orderCode: 0,
+    amount: 0,
+    orderId: "",
+  });
 
   const mapRef = useRef<HTMLDivElement>(null);
   const leafletMap = useRef<L.Map | null>(null);
@@ -250,32 +259,34 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     if (!user) { showToast("Vui lòng đăng nhập"); return; }
-    if (!isDelivery && !selectedTable) { showToast("Vui lòng chọn bàn"); return; }
-    if (isDelivery && !address.address) { showToast("Vui lòng chọn địa chỉ giao hàng"); return; }
+    if (orderMode !== "delivery" && !selectedTable) { showToast("Vui lòng chọn bàn"); return; }
+    if (orderMode === "delivery" && !address.address) { showToast("Vui lòng chọn địa chỉ giao hàng"); return; }
     setPlacing(true);
     try {
       const noteParts = [`Thanh toán: ${selectedPayment}`];
-      if (isDelivery) {
+      if (orderMode === "delivery") {
         noteParts.push(`Giao đến: ${searchQuery || address.address}`);
         noteParts.push(`${address.fullName} ${address.phone}`);
+      } else if (orderMode === "dine-in") {
+        noteParts.push(`Ăn tại quán - Bàn: ${selectedTable}`);
       } else {
-        noteParts.push(`Bàn: ${selectedTable}`);
+        noteParts.push(`Tự đến lấy - Bàn: ${selectedTable}`);
       }
       const orderRes = await fetch(`${API_BASE}/api/Order`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           userId: user.userId,
-          tableId: isDelivery ? "GIAO_HANG" : selectedTable,
+          tableId: orderMode === "delivery" ? "GIAO_HANG" : selectedTable,
           status: "Chưa làm",
-          total: totalPrice + (isDelivery && shippingFee ? shippingFee : 0),
+          total: totalPrice + (orderMode === "delivery" && shippingFee ? shippingFee : 0),
           discount: 0,
           note: noteParts.join(" | "),
           paymentStatus: selectedPayment === "PayOS - Online" ? "Chưa thanh toán" : "Đã thanh toán",
-          orderType: isDelivery ? "delivery" : "dine-in",
-          deliveryAddress: isDelivery ? (searchQuery || address.address) : null,
-          deliveryPhone: isDelivery ? address.phone : null,
-          deliveryFee: isDelivery ? (shippingFee || 0) : 0,
+          orderType: orderMode,
+          deliveryAddress: orderMode === "delivery" ? (searchQuery || address.address) : null,
+          deliveryPhone: orderMode === "delivery" ? address.phone : null,
+          deliveryFee: orderMode === "delivery" ? (shippingFee || 0) : 0,
         }),
       });
       if (!orderRes.ok) throw new Error("Failed to create order");
@@ -307,7 +318,15 @@ export default function CheckoutPage() {
           const payData = await payRes.json();
           if (payData.checkoutUrl) {
             clearCart();
-            window.location.href = payData.checkoutUrl;
+            setPayosData({
+              qrCode: payData.qrCode || "",
+              checkoutUrl: payData.checkoutUrl,
+              orderCode: payData.orderCode || 0,
+              amount: payData.amount || totalPrice,
+              orderId,
+            });
+            setPayosOpen(true);
+            setPlacing(false);
             return;
           }
         }
@@ -360,16 +379,19 @@ export default function CheckoutPage() {
             <motion.div key="s1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
               <h2 className="text-lg font-bold text-gray-900 mb-4">Địa chỉ giao hàng</h2>
 
-              <div className="flex gap-3 mb-4">
-                <button onClick={() => { setIsDelivery(true); }} className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${isDelivery ? "bg-[#EE4D2D] text-white" : "bg-white border border-gray-200 text-gray-600"}`}>
+              <div className="grid grid-cols-3 gap-3 mb-4">
+                <button onClick={() => setOrderMode("delivery")} className={`py-3 rounded-xl text-sm font-bold transition-all ${orderMode === "delivery" ? "bg-[#EE4D2D] text-white" : "bg-white border border-gray-200 text-gray-600"}`}>
                   <Truck className="w-4 h-4 inline mr-2" />Giao tận nơi
                 </button>
-                <button onClick={() => { setIsDelivery(false); setShippingFee(null); setShippingError(""); }} className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${!isDelivery ? "bg-[#EE4D2D] text-white" : "bg-white border border-gray-200 text-gray-600"}`}>
+                <button onClick={() => { setOrderMode("dine-in"); setShippingFee(null); setShippingError(""); }} className={`py-3 rounded-xl text-sm font-bold transition-all ${orderMode === "dine-in" ? "bg-[#EE4D2D] text-white" : "bg-white border border-gray-200 text-gray-600"}`}>
+                  <Utensils className="w-4 h-4 inline mr-2" />Ăn tại quán
+                </button>
+                <button onClick={() => { setOrderMode("takeaway"); setShippingFee(null); setShippingError(""); }} className={`py-3 rounded-xl text-sm font-bold transition-all ${orderMode === "takeaway" ? "bg-[#EE4D2D] text-white" : "bg-white border border-gray-200 text-gray-600"}`}>
                   <Package className="w-4 h-4 inline mr-2" />Tự đến lấy
                 </button>
               </div>
 
-              {isDelivery ? (
+              {orderMode === "delivery" ? (
                 <>
                   <div className="grid grid-cols-2 gap-3 mb-3">
                     <input type="text" placeholder="Họ tên" value={address.fullName} onChange={(e) => setAddress({ ...address, fullName: e.target.value })}
@@ -421,7 +443,7 @@ export default function CheckoutPage() {
                 </div>
               )}
 
-              <button onClick={() => setStep(2)} disabled={isDelivery ? !address.address : !selectedTable}
+              <button onClick={() => setStep(2)} disabled={orderMode === "delivery" ? !address.address : !selectedTable}
                 className="w-full py-3 rounded-xl bg-[#EE4D2D] text-white font-bold text-sm hover:bg-[#D64018] disabled:opacity-50 disabled:cursor-not-allowed transition-all">
                 Tiếp tục
               </button>
@@ -461,7 +483,7 @@ export default function CheckoutPage() {
 
               <div className="bg-white rounded-xl border border-gray-100 p-4 mb-4">
                 <p className="text-xs font-semibold text-gray-400 uppercase mb-2">Địa chỉ</p>
-                {isDelivery ? (
+                {orderMode === "delivery" ? (
                   <div className="flex items-start gap-2">
                     <MapPin className="w-4 h-4 text-[#EE4D2D] mt-0.5" />
                     <div>
@@ -470,7 +492,11 @@ export default function CheckoutPage() {
                     </div>
                   </div>
                 ) : (
-                  <p className="text-sm text-gray-700">Tự đến lấy tại quán</p>
+                  <div className="flex items-center gap-2">
+                    <Utensils className="w-4 h-4 text-[#EE4D2D]" />
+                    <span className="text-sm font-semibold text-gray-900">{orderMode === "dine-in" ? "Ăn tại quán" : "Tự đến lấy"}</span>
+                    <span className="text-xs text-gray-500">· {tables.find((t) => t.tableId === selectedTable)?.tableName || selectedTable}</span>
+                  </div>
                 )}
               </div>
 
@@ -493,7 +519,7 @@ export default function CheckoutPage() {
                     <span className="text-sm font-semibold text-gray-900">{new Intl.NumberFormat("vi-VN").format(item.unitPrice * item.quantity)}₫</span>
                   </div>
                 ))}
-                {isDelivery && (
+                {orderMode === "delivery" && (
                   <div className="flex justify-between py-2 border-b border-gray-50">
                     <div className="flex items-center gap-2">
                       <Truck className="w-4 h-4 text-gray-400" />
@@ -508,12 +534,12 @@ export default function CheckoutPage() {
                     )}
                   </div>
                 )}
-                {shippingError && isDelivery && (
+                {shippingError && orderMode === "delivery" && (
                   <p className="text-xs text-amber-600 mt-2">{shippingError}</p>
                 )}
                 <div className="flex justify-between pt-3 mt-1 border-t border-gray-100">
                   <span className="font-bold text-gray-900">Tổng cộng</span>
-                  <span className="font-black text-lg text-[#EE4D2D]">{new Intl.NumberFormat("vi-VN").format(totalPrice + (isDelivery && shippingFee ? shippingFee : 0))}₫</span>
+                  <span className="font-black text-lg text-[#EE4D2D]">{new Intl.NumberFormat("vi-VN").format(totalPrice + (orderMode === "delivery" && shippingFee ? shippingFee : 0))}₫</span>
                 </div>
               </div>
 
@@ -531,6 +557,22 @@ export default function CheckoutPage() {
         </AnimatePresence>
       </div>
       <Footer />
+
+      <PayOSModal
+        open={payosOpen}
+        onClose={() => setPayosOpen(false)}
+        onSuccess={(id) => {
+          setPayosOpen(false);
+          showToast("Thanh toán thành công!");
+          router.push(`/tracking/${id}`);
+        }}
+        qrCode={payosData.qrCode}
+        checkoutUrl={payosData.checkoutUrl}
+        orderCode={payosData.orderCode}
+        amount={payosData.amount}
+        orderId={payosData.orderId}
+        apiBase={API_BASE}
+      />
     </div>
   );
 }
