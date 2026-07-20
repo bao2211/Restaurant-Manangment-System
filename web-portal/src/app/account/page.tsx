@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Table2, Utensils, ClipboardList, ChefHat, ShoppingBag, User } from "lucide-react";
+import { Table2, Utensils, ClipboardList, ChefHat, ShoppingBag, User, Receipt } from "lucide-react";
 import Header from "@/components/ui/header";
 import Footer from "@/components/ui/footer";
 import { useAuth } from "@/contexts/auth-context";
@@ -17,6 +17,7 @@ export default function AccountPage() {
   const adminLinks = [
     { href: "/admin/tables", label: "Quản lý bàn", icon: Table2, desc: "Thêm, sửa, xóa bàn", color: "from-green-500 to-emerald-500" },
     { href: "/admin/menu", label: "Quản lý thực đơn", icon: Utensils, desc: "Thêm, sửa, xóa món ăn", color: "from-orange-500 to-red-500" },
+    { href: "/admin/bills", label: "Quản lý hóa đơn", icon: Receipt, desc: "Xem và quản lý hóa đơn", color: "from-teal-500 to-cyan-500" },
     { href: "/orders", label: "Tất cả đơn hàng", icon: ClipboardList, desc: "Xem toàn bộ đơn hàng", color: "from-blue-500 to-cyan-500" },
     { href: "/table", label: "Sơ đồ bàn", icon: Table2, desc: "Xem tình trạng bàn", color: "from-purple-500 to-pink-500" },
     { href: "/kitchen", label: "Quản lý bếp", icon: ChefHat, desc: "Cập nhật trạng thái món", color: "from-amber-500 to-yellow-500" },
