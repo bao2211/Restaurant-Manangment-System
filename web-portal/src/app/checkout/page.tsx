@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Search, CreditCard, Truck, CheckCircle, Loader2, Navigation, X, Package, Utensils } from "lucide-react";
+import { MapPin, Search, CreditCard, Truck, CheckCircle, Loader2, Navigation, X, Package, Utensils, Banknote } from "lucide-react";
 import Header from "@/components/ui/header";
 import Footer from "@/components/ui/footer";
 import PayOSModal from "@/components/ui/payos-modal";
@@ -76,6 +76,7 @@ export default function CheckoutPage() {
     amount: 0,
     orderId: "",
   });
+  const [customerMoney, setCustomerMoney] = useState("");
 
   const mapRef = useRef<HTMLDivElement>(null);
   const leafletMap = useRef<L.Map | null>(null);
@@ -479,79 +480,176 @@ export default function CheckoutPage() {
 
           {step === 3 && (
             <motion.div key="s3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-              <h2 className="text-lg font-bold text-gray-900 mb-4">Xác nhận đơn hàng</h2>
+              {orderMode !== "delivery" && selectedPayment === "Tiền mặt" ? (
+                /* ===== CASH PAYMENT FORM ===== */
+                <>
+                  <h2 className="text-lg font-bold text-gray-900 mb-4">Thanh toán tiền mặt</h2>
 
-              <div className="bg-white rounded-xl border border-gray-100 p-4 mb-4">
-                <p className="text-xs font-semibold text-gray-400 uppercase mb-2">Địa chỉ</p>
-                {orderMode === "delivery" ? (
-                  <div className="flex items-start gap-2">
-                    <MapPin className="w-4 h-4 text-[#EE4D2D] mt-0.5" />
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900">{address.fullName} · {address.phone}</p>
-                      <p className="text-xs text-gray-500">{searchQuery || address.address}</p>
+                  {/* Order info */}
+                  <div className="bg-white rounded-xl border border-gray-100 p-4 mb-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Utensils className="w-4 h-4 text-[#EE4D2D]" />
+                      <span className="text-sm font-semibold text-gray-900">{orderMode === "dine-in" ? "Ăn tại quán" : "Tự đến lấy"}</span>
+                      <span className="text-xs text-gray-500">· {tables.find((t) => t.tableId === selectedTable)?.tableName || selectedTable}</span>
+                    </div>
+                    <div className="border-t border-gray-100 pt-3 space-y-1">
+                      {items.map((item) => (
+                        <div key={item.foodId} className="flex items-center justify-between py-1">
+                          <span className="text-sm text-gray-600">{item.foodName} <span className="text-xs text-gray-400">x{item.quantity}</span></span>
+                          <span className="text-sm text-gray-700">{new Intl.NumberFormat("vi-VN").format(item.unitPrice * item.quantity)}₫</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <Utensils className="w-4 h-4 text-[#EE4D2D]" />
-                    <span className="text-sm font-semibold text-gray-900">{orderMode === "dine-in" ? "Ăn tại quán" : "Tự đến lấy"}</span>
-                    <span className="text-xs text-gray-500">· {tables.find((t) => t.tableId === selectedTable)?.tableName || selectedTable}</span>
-                  </div>
-                )}
-              </div>
 
-              <div className="bg-white rounded-xl border border-gray-100 p-4 mb-4">
-                <p className="text-xs font-semibold text-gray-400 uppercase mb-2">Thanh toán</p>
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">{paymentMethods.find((p) => p.value === selectedPayment)?.icon}</span>
-                  <span className="text-sm font-semibold text-gray-900">{selectedPayment}</span>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-xl border border-gray-100 p-4 mb-4">
-                <p className="text-xs font-semibold text-gray-400 uppercase mb-3">Món đã chọn ({items.length})</p>
-                {items.map((item) => (
-                  <div key={item.foodId} className="flex justify-between py-2 border-b border-gray-50 last:border-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-white bg-[#EE4D2D] w-5 h-5 rounded flex items-center justify-center">{item.quantity}</span>
-                      <span className="text-sm text-gray-700">{item.foodName}</span>
-                    </div>
-                    <span className="text-sm font-semibold text-gray-900">{new Intl.NumberFormat("vi-VN").format(item.unitPrice * item.quantity)}₫</span>
+                  {/* Total */}
+                  <div className="bg-gradient-to-br from-[#EE4D2D] via-[#FF6633] to-[#FF8C42] rounded-xl p-5 mb-4 text-center">
+                    <p className="text-white/80 text-xs font-semibold uppercase tracking-wider">Tổng tiền đơn hàng</p>
+                    <p className="text-white text-3xl font-black mt-2">
+                      {new Intl.NumberFormat("vi-VN").format(totalPrice)}₫
+                    </p>
                   </div>
-                ))}
-                {orderMode === "delivery" && (
-                  <div className="flex justify-between py-2 border-b border-gray-50">
-                    <div className="flex items-center gap-2">
-                      <Truck className="w-4 h-4 text-gray-400" />
-                      <span className="text-sm text-gray-700">Phí giao hàng (GHTK)</span>
+
+                  {/* Customer money input */}
+                  <div className="bg-white rounded-xl border border-gray-100 p-5 mb-4">
+                    <label className="block text-sm font-semibold text-gray-700 mb-3">
+                      <Banknote className="w-4 h-4 inline mr-1" />
+                      Tiền khách đưa
+                    </label>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      placeholder="Nhập số tiền..."
+                      value={customerMoney}
+                      onChange={(e) => {
+                        const raw = e.target.value.replace(/[^0-9]/g, "");
+                        setCustomerMoney(raw);
+                      }}
+                      className="w-full px-4 py-4 rounded-xl border-2 border-gray-200 bg-gray-50 text-2xl font-black text-center text-gray-900 focus:outline-none focus:border-[#EE4D2D]/40 focus:bg-white transition-all"
+                      autoFocus
+                    />
+                    {/* Quick amount buttons */}
+                    <div className="grid grid-cols-3 gap-2 mt-3">
+                      {[totalPrice, totalPrice * 2, totalPrice * 5].map((amt) => (
+                        <button
+                          key={amt}
+                          onClick={() => setCustomerMoney(String(amt))}
+                          className="py-2 rounded-lg border border-gray-200 text-xs font-semibold text-gray-600 hover:bg-orange-50 hover:border-[#EE4D2D]/30 transition-all"
+                        >
+                          {new Intl.NumberFormat("vi-VN").format(amt)}₫
+                        </button>
+                      ))}
                     </div>
-                    {shippingLoading ? (
-                      <Loader2 className="w-4 h-4 animate-spin text-gray-400" />
-                    ) : shippingFee !== null ? (
-                      <span className="text-sm font-semibold text-gray-900">{new Intl.NumberFormat("vi-VN").format(shippingFee)}₫</span>
+                  </div>
+
+                  {/* Change */}
+                  {customerMoney && Number(customerMoney) > 0 && (
+                    <div className={`rounded-xl p-4 mb-4 border ${Number(customerMoney) >= totalPrice ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"}`}>
+                      <div className="flex items-center justify-between">
+                        <span className={`text-sm font-semibold ${Number(customerMoney) >= totalPrice ? "text-green-700" : "text-red-700"}`}>
+                          {Number(customerMoney) >= totalPrice ? "✓ Tiền thối" : "✗ Chưa đủ tiền"}
+                        </span>
+                        <span className={`text-2xl font-black ${Number(customerMoney) >= totalPrice ? "text-green-600" : "text-red-600"}`}>
+                          {Number(customerMoney) >= totalPrice
+                            ? new Intl.NumberFormat("vi-VN").format(Number(customerMoney) - totalPrice) + "₫"
+                            : "Thiếu " + new Intl.NumberFormat("vi-VN").format(totalPrice - Number(customerMoney)) + "₫"
+                          }
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex gap-3">
+                    <button onClick={() => setStep(2)} className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition-all">
+                      Quay lại
+                    </button>
+                    <button
+                      onClick={handlePlaceOrder}
+                      disabled={placing || !customerMoney || Number(customerMoney) < totalPrice}
+                      className="flex-1 py-3 rounded-xl bg-[#EE4D2D] text-white font-bold text-sm hover:bg-[#D64018] disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                    >
+                      {placing ? <><Loader2 className="w-4 h-4 animate-spin" /> Đang xử lý...</> : <>Xác nhận thanh toán</>}
+                    </button>
+                  </div>
+                </>
+              ) : (
+                /* ===== STANDARD CONFIRMATION (non-cash or delivery) ===== */
+                <>
+                  <h2 className="text-lg font-bold text-gray-900 mb-4">Xác nhận đơn hàng</h2>
+
+                  <div className="bg-white rounded-xl border border-gray-100 p-4 mb-4">
+                    <p className="text-xs font-semibold text-gray-400 uppercase mb-2">Địa chỉ</p>
+                    {orderMode === "delivery" ? (
+                      <div className="flex items-start gap-2">
+                        <MapPin className="w-4 h-4 text-[#EE4D2D] mt-0.5" />
+                        <div>
+                          <p className="text-sm font-semibold text-gray-900">{address.fullName} · {address.phone}</p>
+                          <p className="text-xs text-gray-500">{searchQuery || address.address}</p>
+                        </div>
+                      </div>
                     ) : (
-                      <span className="text-xs text-gray-400">Chưa tính</span>
+                      <div className="flex items-center gap-2">
+                        <Utensils className="w-4 h-4 text-[#EE4D2D]" />
+                        <span className="text-sm font-semibold text-gray-900">{orderMode === "dine-in" ? "Ăn tại quán" : "Tự đến lấy"}</span>
+                        <span className="text-xs text-gray-500">· {tables.find((t) => t.tableId === selectedTable)?.tableName || selectedTable}</span>
+                      </div>
                     )}
                   </div>
-                )}
-                {shippingError && orderMode === "delivery" && (
-                  <p className="text-xs text-amber-600 mt-2">{shippingError}</p>
-                )}
-                <div className="flex justify-between pt-3 mt-1 border-t border-gray-100">
-                  <span className="font-bold text-gray-900">Tổng cộng</span>
-                  <span className="font-black text-lg text-[#EE4D2D]">{new Intl.NumberFormat("vi-VN").format(totalPrice + (orderMode === "delivery" && shippingFee ? shippingFee : 0))}₫</span>
-                </div>
-              </div>
 
-              <div className="flex gap-3">
-                <button onClick={() => setStep(2)} className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition-all">
-                  Quay lại
-                </button>
-                <button onClick={handlePlaceOrder} disabled={placing}
-                  className="flex-1 py-3 rounded-xl bg-[#EE4D2D] text-white font-bold text-sm hover:bg-[#D64018] disabled:opacity-50 transition-all flex items-center justify-center gap-2">
-                  {placing ? <><Loader2 className="w-4 h-4 animate-spin" /> Đang xử lý...</> : <>Đặt hàng</>}
-                </button>
-              </div>
+                  <div className="bg-white rounded-xl border border-gray-100 p-4 mb-4">
+                    <p className="text-xs font-semibold text-gray-400 uppercase mb-2">Thanh toán</p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">{paymentMethods.find((p) => p.value === selectedPayment)?.icon}</span>
+                      <span className="text-sm font-semibold text-gray-900">{selectedPayment}</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-white rounded-xl border border-gray-100 p-4 mb-4">
+                    <p className="text-xs font-semibold text-gray-400 uppercase mb-3">Món đã chọn ({items.length})</p>
+                    {items.map((item) => (
+                      <div key={item.foodId} className="flex justify-between py-2 border-b border-gray-50 last:border-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-white bg-[#EE4D2D] w-5 h-5 rounded flex items-center justify-center">{item.quantity}</span>
+                          <span className="text-sm text-gray-700">{item.foodName}</span>
+                        </div>
+                        <span className="text-sm font-semibold text-gray-900">{new Intl.NumberFormat("vi-VN").format(item.unitPrice * item.quantity)}₫</span>
+                      </div>
+                    ))}
+                    {orderMode === "delivery" && (
+                      <div className="flex justify-between py-2 border-b border-gray-50">
+                        <div className="flex items-center gap-2">
+                          <Truck className="w-4 h-4 text-gray-400" />
+                          <span className="text-sm text-gray-700">Phí giao hàng (GHTK)</span>
+                        </div>
+                        {shippingLoading ? (
+                          <Loader2 className="w-4 h-4 animate-spin text-gray-400" />
+                        ) : shippingFee !== null ? (
+                          <span className="text-sm font-semibold text-gray-900">{new Intl.NumberFormat("vi-VN").format(shippingFee)}₫</span>
+                        ) : (
+                          <span className="text-xs text-gray-400">Chưa tính</span>
+                        )}
+                      </div>
+                    )}
+                    {shippingError && orderMode === "delivery" && (
+                      <p className="text-xs text-amber-600 mt-2">{shippingError}</p>
+                    )}
+                    <div className="flex justify-between pt-3 mt-1 border-t border-gray-100">
+                      <span className="font-bold text-gray-900">Tổng cộng</span>
+                      <span className="font-black text-lg text-[#EE4D2D]">{new Intl.NumberFormat("vi-VN").format(totalPrice + (orderMode === "delivery" && shippingFee ? shippingFee : 0))}₫</span>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <button onClick={() => setStep(2)} className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-50 transition-all">
+                      Quay lại
+                    </button>
+                    <button onClick={handlePlaceOrder} disabled={placing}
+                      className="flex-1 py-3 rounded-xl bg-[#EE4D2D] text-white font-bold text-sm hover:bg-[#D64018] disabled:opacity-50 transition-all flex items-center justify-center gap-2">
+                      {placing ? <><Loader2 className="w-4 h-4 animate-spin" /> Đang xử lý...</> : <>Đặt hàng</>}
+                    </button>
+                  </div>
+                </>
+              )}
             </motion.div>
           )}
         </AnimatePresence>

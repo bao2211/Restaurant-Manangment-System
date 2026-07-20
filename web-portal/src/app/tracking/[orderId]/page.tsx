@@ -25,12 +25,18 @@ interface OrderDetail {
   orderDetails?: { orderDetailId: string; foodId: string; quantity: number; unitPrice: number; foodName?: string }[];
 }
 
-const statusSteps = [
+const deliveryStatusSteps = [
   { key: "Chưa làm", label: "Đã nhận đơn", icon: Clock },
   { key: "Đang làm", label: "Đang chế biến", icon: Package },
   { key: "Hoàn tất", label: "Hoàn tất", icon: CheckCircle },
   { key: "Giao hàng", label: "Đang giao", icon: Truck },
   { key: "Đã giao", label: "Đã giao", icon: MapPin },
+];
+
+const dineinStatusSteps = [
+  { key: "Chưa làm", label: "Đã nhận đơn", icon: Clock },
+  { key: "Đang làm", label: "Đang chế biến", icon: Package },
+  { key: "Hoàn tất", label: "Hoàn tất", icon: CheckCircle },
 ];
 
 export default function TrackingPage() {
@@ -102,7 +108,10 @@ export default function TrackingPage() {
     );
   }
 
-  const currentStepIndex = order ? statusSteps.findIndex((s) => s.key === order.status) : -1;
+  const isDelivery = order?.note?.includes("Giao đến") || order?.tableId === "GIAO_HANG";
+  const isCashDineIn = !isDelivery && (order?.note?.includes("Tiền mặt") || order?.note?.includes("Tự đến lấy"));
+  const activeStatusSteps = isDelivery ? deliveryStatusSteps : dineinStatusSteps;
+  const currentStepIndex = order ? activeStatusSteps.findIndex((s) => s.key === order.status) : -1;
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -123,7 +132,7 @@ export default function TrackingPage() {
             <div className="bg-white rounded-xl border border-gray-100 p-4 mb-4">
               <p className="text-xs font-semibold text-gray-400 uppercase mb-3">Trạng thái</p>
               <div className="flex items-center justify-between">
-                {statusSteps.map((step, i) => {
+                {activeStatusSteps.map((step, i) => {
                   const Icon = step.icon;
                   const isActive = i <= currentStepIndex;
                   return (
@@ -134,7 +143,7 @@ export default function TrackingPage() {
                         </div>
                         <span className={`text-[10px] font-medium ${isActive ? "text-[#EE4D2D]" : "text-gray-400"}`}>{step.label}</span>
                       </div>
-                      {i < statusSteps.length - 1 && <div className={`flex-1 h-0.5 mx-1 ${i < currentStepIndex ? "bg-[#EE4D2D]" : "bg-gray-200"}`} />}
+                      {i < activeStatusSteps.length - 1 && <div className={`flex-1 h-0.5 mx-1 ${i < currentStepIndex ? "bg-[#EE4D2D]" : "bg-gray-200"}`} />}
                     </React.Fragment>
                   );
                 })}
@@ -145,15 +154,17 @@ export default function TrackingPage() {
               <p className="text-xs font-semibold text-gray-400 uppercase mb-2">Thông tin</p>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between"><span className="text-gray-500">Tổng cộng</span><span className="font-bold text-[#EE4D2D]">{new Intl.NumberFormat("vi-VN").format(order.total)}₫</span></div>
-                <div className="flex justify-between"><span className="text-gray-500">Thanh toán</span><span className={`font-semibold ${order.paymentStatus === "Đã thanh toán" ? "text-green-600" : "text-amber-600"}`}>{order.paymentStatus || "Chưa thanh toán"}</span></div>
+                <div className="flex justify-between"><span className="text-gray-500">Thanh toán</span><span className={`font-semibold ${order.paymentStatus === "Đã thanh toán" ? "text-green-600" : "text-amber-600"}`}>{isCashDineIn ? "Tiền mặt tại quán" : (order.paymentStatus || "Chưa thanh toán")}</span></div>
                 {order.note && <div className="flex justify-between"><span className="text-gray-500">Ghi chú</span><span className="text-gray-700 text-right max-w-[60%]">{order.note}</span></div>}
               </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-gray-100 p-4 mb-4">
-              <p className="text-xs font-semibold text-gray-400 uppercase mb-2">Bản đồ</p>
-              <div ref={mapRef} className="w-full h-64 rounded-xl overflow-hidden border border-gray-200" />
-            </div>
+            {isDelivery && (
+              <div className="bg-white rounded-xl border border-gray-100 p-4 mb-4">
+                <p className="text-xs font-semibold text-gray-400 uppercase mb-2">Bản đồ</p>
+                <div ref={mapRef} className="w-full h-64 rounded-xl overflow-hidden border border-gray-200" />
+              </div>
+            )}
 
             {trackingEvents.length > 0 && (
               <div className="bg-white rounded-xl border border-gray-100 p-4 mb-4">
