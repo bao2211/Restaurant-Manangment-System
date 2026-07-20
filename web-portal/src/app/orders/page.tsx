@@ -2,10 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ClipboardList, Clock, ChevronDown, ShoppingBag, Loader2, Search, ArrowUpDown } from "lucide-react";
+import { ClipboardList, Clock, ChevronDown, ShoppingBag, Loader2, Search, ArrowUpDown, CreditCard } from "lucide-react";
 import Header from "@/components/ui/header";
 import Footer from "@/components/ui/footer";
+import PayOSModal from "@/components/ui/payos-modal";
 import { useAuth } from "@/contexts/auth-context";
+import { useToast } from "@/contexts/toast-context";
 
 interface OrderDetail {
   foodId: string;
@@ -89,6 +91,17 @@ export default function OrdersPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("date-desc");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [payosOpen, setPayosOpen] = useState(false);
+  const [payosData, setPayosData] = useState({
+    qrCode: "",
+    checkoutUrl: "",
+    orderCode: 0,
+    amount: 0,
+    orderId: "",
+  });
+  const [payingOrderId, setPayingOrderId] = useState<string | null>(null);
+
+  const { showToast } = useToast();
 
   useEffect(() => {
     if (!user) return;
@@ -289,6 +302,58 @@ export default function OrdersPage() {
                             <span className="text-sm font-semibold text-gray-500">Tổng cộng</span>
                             <span className="text-lg font-black text-[#EE4D2D]">{formatPrice(order.total || 0)}</span>
                           </div>
+
+                          {isOrderDone(order.status) && !isPaid(order.paymentStatus) && (
+                            <button
+                              onClick={async (e) => {
+                                e.stopPropagation();
+                                setPayingOrderId(order.orderId);
+                                try {
+                                  const payRes = await fetch(`${API_BASE}/api/PayOS/create-payment`, {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({
+                                      orderId: order.orderId,
+                                      buyerName: user?.userName || "",
+                                      buyerPhone: "",
+                                      buyerEmail: user?.email || "",
+                                      returnUrl: window.location.origin,
+                                      cancelUrl: window.location.origin,
+                                    }),
+                                  });
+                                  if (payRes.ok) {
+                                    const payData = await payRes.json();
+                                    if (payData.checkoutUrl) {
+                                      setPayosData({
+                                        qrCode: payData.qrCode || "",
+                                        checkoutUrl: payData.checkoutUrl,
+                                        orderCode: payData.orderCode || 0,
+                                        amount: payData.amount || order.total,
+                                        orderId: order.orderId,
+                                      });
+                                      setPayosOpen(true);
+                                    } else {
+                                      showToast("Không thể tạo liên kết thanh toán");
+                                    }
+                                  } else {
+                                    showToast("Lỗi tạo thanh toán PayOS");
+                                  }
+                                } catch {
+                                    showToast("Không thể kết nối PayOS");
+                                } finally {
+                                    setPayingOrderId(null);
+                                }
+                              }}
+                              disabled={payingOrderId === order.orderId}
+                              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#EE4D2D] text-white font-bold text-sm hover:bg-[#D64018] disabled:opacity-50 transition-all mt-2"
+                            >
+                              {payingOrderId === order.orderId ? (
+                                <><Loader2 className="w-4 h-4 animate-spin" /> Đang xử lý...</>
+                              ) : (
+                                <><CreditCard className="w-4 h-4" /> Tiếp tục thanh toán</>
+                              )}
+                            </button>
+                          )}
                         </div>
                       </motion.div>
                     )}
@@ -301,6 +366,27 @@ export default function OrdersPage() {
       </div>
 
       <Footer />
+
+      <PayOSModal
+        open={payosOpen}
+        onClose={() => setPayosOpen(false)}
+        onSuccess={(id) => {
+          setPayosOpen(false);
+          showToast("Thanh toán thành công!");
+          // Refresh orders list
+          setOrders((prev) =>
+            prev.map((o) =>
+              o.orderId === id ? { ...o, paymentStatus: "Đã thanh toán" } : o
+            )
+          );
+        }}
+        qrCode={payosData.qrCode}
+        checkoutUrl={payosData.checkoutUrl}
+        orderCode={payosData.orderCode}
+        amount={payosData.amount}
+        orderId={payosData.orderId}
+        apiBase={API_BASE}
+      />
     </div>
   );
 }
