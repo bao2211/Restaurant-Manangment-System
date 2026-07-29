@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .expo/devices.json
 .expo/README.md
 .expo/web/cache/production/images/favicon/favicon-24272cdaeff82cc5facdaccd982a6f05b60c4504704bbf94c19a6388659880bb-contain-transparent/favicon-48.png
@@ -29598,3 +29599,46 @@ RMS-APIServer/Restaurant-Manangment-System-RMS-APIServer/RMS-APIServer/obj/Debug
 RMS-APIServer/Restaurant-Manangment-System-RMS-APIServer/RMS-APIServer/obj/Debug/net8.0/RMS-APIServer.pdb
 RMS-APIServer/Restaurant-Manangment-System-RMS-APIServer/RMS-APIServer/obj/Debug/net8.0/RMS-APIServer.sourcelink.json
 RMS-APIServer/Restaurant-Manangment-System-RMS-APIServer/RMS-APIServer/obj/Debug/net8.0/rpswa.dswa.cache.json
+=======
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Build outputs
+build/
+dist/
+bin/
+obj/
+
+# IDE / Editor
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Environment
+.env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Web portal build cache
+web-portal/.next/
+web-portal/node_modules/
+
+# Mobile
+RMSMobile/Restaurant-Manangment-System-RMSMobile-Testing/node_modules/
+RMSMobile/Restaurant-Manangment-System-RMSMobile-Testing/.expo/
+
+# Docker
+rms-api-build.tar
+>>>>>>> origin/my-local-branch

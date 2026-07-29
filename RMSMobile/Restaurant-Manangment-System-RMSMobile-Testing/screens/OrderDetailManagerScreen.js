@@ -76,6 +76,7 @@ export default function OrderDetailManagerScreen() {
       });
     }
     
+<<<<<<< HEAD
     // Apply sorting
     result.sort((a, b) => {
       let orderComparison;
@@ -85,6 +86,21 @@ export default function OrderDetailManagerScreen() {
         orderComparison = (a.orderId || '').localeCompare(b.orderId || '');
       }
       return orderComparison;
+=======
+    // Apply sorting by creation time (like OrdersScreen)
+    result.sort((a, b) => {
+      if (sortOrder === 'newest') {
+        // Most recent first
+        const dateA = new Date(b.createDate || b.createdTime || b.createdAt || b.orderDate || 0);
+        const dateB = new Date(a.createDate || a.createdTime || a.createdAt || a.orderDate || 0);
+        return dateA - dateB;
+      } else {
+        // Oldest first
+        const dateA = new Date(a.createDate || a.createdTime || a.createdAt || a.orderDate || 0);
+        const dateB = new Date(b.createDate || b.createdTime || b.createdAt || b.orderDate || 0);
+        return dateA - dateB;
+      }
+>>>>>>> origin/my-local-branch
     });
     
     console.log('Filtered and sorted orders:', result.length, 'of', orders.length);
@@ -204,6 +220,7 @@ export default function OrderDetailManagerScreen() {
         })
       );
 
+<<<<<<< HEAD
       // Sort orders by ID considering sort order
       const sortedOrders = enrichedOrders.sort((a, b) => {
         const aId = a.id || a.orderId || a.OrderId || '';
@@ -212,6 +229,20 @@ export default function OrderDetailManagerScreen() {
           return bId.localeCompare(aId);
         } else {
           return aId.localeCompare(bId);
+=======
+      // Sort orders by creation time (matching OrdersScreen logic)
+      const sortedOrders = enrichedOrders.sort((a, b) => {
+        if (sortOrder === 'newest') {
+          // Most recent first (like OrdersScreen default)
+          const dateA = new Date(b.createDate || b.createdTime || b.createdAt || b.orderDate || 0);
+          const dateB = new Date(a.createDate || a.createdTime || a.createdAt || a.orderDate || 0);
+          return dateA - dateB;
+        } else {
+          // Oldest first
+          const dateA = new Date(a.createDate || a.createdTime || a.createdAt || a.orderDate || 0);
+          const dateB = new Date(b.createDate || b.createdTime || b.createdAt || b.orderDate || 0);
+          return dateA - dateB;
+>>>>>>> origin/my-local-branch
         }
       });
 

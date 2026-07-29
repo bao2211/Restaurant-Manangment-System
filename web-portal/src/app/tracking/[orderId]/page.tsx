@@ -17,6 +17,7 @@ interface TrackingEvent {
 interface OrderDetail {
   orderId: string;
   userId: string;
+<<<<<<< HEAD
   userName?: string;
   tableId: string;
   tableName?: string;
@@ -27,14 +28,27 @@ interface OrderDetail {
   ghtkTrackingId?: string;
   note?: string;
   orderDetails?: { orderDetailId: string; foodId: string; quantity: number; unitPrice: number; foodName?: string; foodImage?: string; status?: string }[];
+=======
+  tableId: string;
+  status: string;
+  total: number;
+  paymentStatus: string;
+  note?: string;
+  orderDetails?: { orderDetailId: string; foodId: string; quantity: number; unitPrice: number; foodName?: string }[];
+>>>>>>> origin/my-local-branch
 }
 
 const statusSteps = [
   { key: "Chưa làm", label: "Đã nhận đơn", icon: Clock },
   { key: "Đang làm", label: "Đang chế biến", icon: Package },
   { key: "Hoàn tất", label: "Hoàn tất", icon: CheckCircle },
+<<<<<<< HEAD
   { key: "delivering", label: "Đang giao", icon: Truck },
   { key: "delivered", label: "Đã giao", icon: MapPin },
+=======
+  { key: "Giao hàng", label: "Đang giao", icon: Truck },
+  { key: "Đã giao", label: "Đã giao", icon: MapPin },
+>>>>>>> origin/my-local-branch
 ];
 
 export default function TrackingPage() {
@@ -60,9 +74,12 @@ export default function TrackingPage() {
       setLoading(false);
     };
     fetchOrder();
+<<<<<<< HEAD
     // Poll for real-time status updates every 10 seconds
     const interval = setInterval(fetchOrder, 10000);
     return () => clearInterval(interval);
+=======
+>>>>>>> origin/my-local-branch
   }, [orderId]);
 
   useEffect(() => {
@@ -109,6 +126,7 @@ export default function TrackingPage() {
     );
   }
 
+<<<<<<< HEAD
   // Determine current step based on order details and deliveryStatus
   const currentStepIndex = (() => {
     if (!order) return -1;
@@ -140,6 +158,9 @@ export default function TrackingPage() {
       return stepIndex >= 0 ? stepIndex : 0;
     }
   })();
+=======
+  const currentStepIndex = order ? statusSteps.findIndex((s) => s.key === order.status) : -1;
+>>>>>>> origin/my-local-branch
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -181,6 +202,7 @@ export default function TrackingPage() {
             <div className="bg-white rounded-xl border border-gray-100 p-4 mb-4">
               <p className="text-xs font-semibold text-gray-400 uppercase mb-2">Thông tin</p>
               <div className="space-y-2 text-sm">
+<<<<<<< HEAD
                 <div className="flex justify-between"><span className="text-gray-500">Mã đơn hàng</span><span className="font-bold text-gray-900 font-mono">{orderId}</span></div>
                 {order.ghtkTrackingId && (
                   <div className="flex justify-between">
@@ -188,12 +210,15 @@ export default function TrackingPage() {
                     <span className="font-bold text-blue-600 font-mono">{order.ghtkTrackingId}</span>
                   </div>
                 )}
+=======
+>>>>>>> origin/my-local-branch
                 <div className="flex justify-between"><span className="text-gray-500">Tổng cộng</span><span className="font-bold text-[#EE4D2D]">{new Intl.NumberFormat("vi-VN").format(order.total)}₫</span></div>
                 <div className="flex justify-between"><span className="text-gray-500">Thanh toán</span><span className={`font-semibold ${order.paymentStatus === "Đã thanh toán" ? "text-green-600" : "text-amber-600"}`}>{order.paymentStatus || "Chưa thanh toán"}</span></div>
                 {order.note && <div className="flex justify-between"><span className="text-gray-500">Ghi chú</span><span className="text-gray-700 text-right max-w-[60%]">{order.note}</span></div>}
               </div>
             </div>
 
+<<<<<<< HEAD
             {/* Order Items */}
             {order.orderDetails && order.orderDetails.length > 0 && (
               <div className="bg-white rounded-xl border border-gray-100 p-4 mb-4">
@@ -248,6 +273,8 @@ export default function TrackingPage() {
               </div>
             )}
 
+=======
+>>>>>>> origin/my-local-branch
             <div className="bg-white rounded-xl border border-gray-100 p-4 mb-4">
               <p className="text-xs font-semibold text-gray-400 uppercase mb-2">Bản đồ</p>
               <div ref={mapRef} className="w-full h-64 rounded-xl overflow-hidden border border-gray-200" />

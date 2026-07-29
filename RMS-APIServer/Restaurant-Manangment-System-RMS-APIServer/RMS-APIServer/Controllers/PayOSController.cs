@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RMS_APIServer.Models;
 using RMS_APIServer.Services;
@@ -25,14 +25,9 @@ namespace RMS_APIServer.Controllers
         {
             try
             {
-                _logger.LogInformation("Creating PayOS payment for order {OrderId}", request.OrderId);
-                
                 var order = await _context.Orders.FindAsync(request.OrderId);
                 if (order == null)
-                {
-                    _logger.LogWarning("Order {OrderId} not found", request.OrderId);
                     return NotFound(new { message = "Order not found" });
-                }
 
                 var orderDetails = await _context.OrderDetails
                     .Include(od => od.Food)
@@ -40,10 +35,7 @@ namespace RMS_APIServer.Controllers
                     .ToListAsync();
 
                 if (!orderDetails.Any())
-                {
-                    _logger.LogWarning("Order {OrderId} has no items", request.OrderId);
                     return BadRequest(new { message = "Order has no items" });
-                }
 
                 var items = orderDetails.Select(od => new PayOSItem
                 {
@@ -59,12 +51,9 @@ namespace RMS_APIServer.Controllers
                 }
                 if (totalAmount <= 0)
                 {
-                    _logger.LogWarning("Order {OrderId} total amount is 0", request.OrderId);
                     return BadRequest(new { message = "Order total amount must be greater than 0" });
                 }
-                
                 var orderCode = GenerateOrderCode();
-                _logger.LogInformation("Generated orderCode: {OrderCode}", orderCode);
 
                 var description = $"DH {request.OrderId}";
                 if (description.Length > 25) description = description.Substring(0, 25);
@@ -80,16 +69,13 @@ namespace RMS_APIServer.Controllers
                     OrderCode = orderCode,
                     Amount = totalAmount,
                     Description = description,
-                    BuyerName = request.BuyerName ?? "Guest",
-                    BuyerPhone = request.BuyerPhone ?? "",
+                    BuyerName = request.BuyerName,
+                    BuyerPhone = request.BuyerPhone,
                     BuyerEmail = buyerEmail,
                     CancelUrl = request.CancelUrl ?? "https://payos.vn",
                     ReturnUrl = request.ReturnUrl ?? "https://payos.vn",
                     Items = items
                 };
-
-                _logger.LogInformation("Calling PayOS API with orderCode={OrderCode}, amount={Amount}, description={Description}",
-                    orderCode, totalAmount, description);
 
                 var result = await _payOSService.CreatePaymentLink(paymentRequest);
 
@@ -128,122 +114,6 @@ namespace RMS_APIServer.Controllers
             }
         }
 
-        // POST: api/PayOS/simulate-payment/{orderCode}
-        // Test endpoint to simulate successful payment (test mode only)
-        [HttpPost("simulate-payment/{orderCode}")]
-        public async Task<ActionResult> SimulatePayment(long orderCode, [FromQuery] string orderId)
-        {
-            try
-            {
-                if (!_payOSService.IsTestMode)
-                {
-                    return BadRequest(new { message = "Simulate payment only available in test mode" });
-                }
-
-                _payOSService.SimulatePaymentSuccess(orderCode);
-                
-                // Update order status
-                var order = await _context.Orders.FindAsync(orderId);
-                if (order != null && order.PaymentStatus != "Đã thanh toán")
-                {
-                    order.PaymentStatus = "Đã thanh toán";
-                    order.Status = "Chưa làm";
-                    
-                    var bill = await _context.Bills.FirstOrDefaultAsync(b => b.OrderId == orderId);
-                    if (bill != null)
-                    {
-                        bill.Payment = "PayOS - Online";
-                    }
-                    
-                    await _context.SaveChangesAsync();
-                }
-
-                return Ok(new { success = true, message = "Payment simulated successfully" });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error simulating PayOS payment for orderCode {OrderCode}", orderCode);
-                return StatusCode(500, new { message = "Error simulating payment", error = ex.Message });
-            }
-        }
-
-        // POST: api/PayOS/verify-payment
-        // Called by frontend to verify and update payment status
-        // POST: api/PayOS/confirm-payment
-        // Called by frontend to confirm payment after returning from PayOS
-        [HttpPost("confirm-payment")]
-        public async Task<ActionResult> ConfirmPayment([FromBody] ConfirmPaymentFrontendRequest request)
-        {
-            try
-            {
-                _logger.LogInformation("Confirming PayOS payment for order {OrderId}", request.OrderId);
-
-                // Get current order status
-                var order = await _context.Orders.FindAsync(request.OrderId);
-                if (order == null)
-                {
-                    return NotFound(new { message = "Order not found" });
-                }
-
-                // If already paid, just return success
-                if (order.PaymentStatus == "Đã thanh toán")
-                {
-                    return Ok(new { success = true, message = "Payment already confirmed" });
-                }
-
-                // Try to verify with PayOS if orderCode provided
-                if (request.OrderCode.HasValue)
-                {
-                    try
-                    {
-                        var paymentInfo = await _payOSService.GetPaymentInfo(request.OrderCode.Value);
-                        if (paymentInfo.Status == "PAID")
-                        {
-                            // Update order status
-                            order.PaymentStatus = "Đã thanh toán";
-                            order.Status = "Chưa làm";
-                            
-                            // Update bill if exists
-                            var bill = await _context.Bills.FirstOrDefaultAsync(b => b.OrderId == request.OrderId);
-                            if (bill != null)
-                            {
-                                bill.Payment = "PayOS - Online";
-                            }
-                            
-                            await _context.SaveChangesAsync();
-                            _logger.LogInformation("Updated order {OrderId} to paid status via confirm-payment", request.OrderId);
-                            
-                            return Ok(new { success = true, message = "Payment confirmed" });
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogWarning(ex, "Could not verify payment with PayOS, assuming success");
-                    }
-                }
-
-                // If verification failed or no orderCode, still update to paid (user returned from PayOS)
-                order.PaymentStatus = "Đã thanh toán";
-                order.Status = "Chưa làm";
-                
-                var orderBill = await _context.Bills.FirstOrDefaultAsync(b => b.OrderId == request.OrderId);
-                if (orderBill != null)
-                {
-                    orderBill.Payment = "PayOS - Online";
-                }
-                
-                await _context.SaveChangesAsync();
-                _logger.LogInformation("Updated order {OrderId} to paid status (assumed)", request.OrderId);
-                
-                return Ok(new { success = true, message = "Payment confirmed" });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error confirming PayOS payment");
-                return StatusCode(500, new { message = "Error confirming payment", error = ex.Message });
-            }
-        }
-
         [HttpPost("cancel/{orderCode}")]
         public async Task<ActionResult> CancelPayment(long orderCode, [FromBody] CancelPaymentRequest? request = null)
         {
@@ -256,36 +126,6 @@ namespace RMS_APIServer.Controllers
             {
                 _logger.LogError(ex, "Error canceling PayOS payment for orderCode {OrderCode}", orderCode);
                 return StatusCode(500, new { message = "Error canceling payment", error = ex.Message });
-            }
-        }
-
-        // GET: api/PayOS/return?orderCode=123&status=PAID
-        // This endpoint is called when PayOS redirects back after payment
-        [HttpGet("return")]
-        public async Task<ActionResult> Return([FromQuery] long orderCode, [FromQuery] string status)
-        {
-            try
-            {
-                _logger.LogInformation("PayOS return callback received: orderCode={OrderCode}, status={Status}", orderCode, status);
-
-                // Get payment info from PayOS to verify
-                var paymentInfo = await _payOSService.GetPaymentInfo(orderCode);
-                
-                if (paymentInfo.Status == "PAID" || status?.ToUpper() == "PAID")
-                {
-                    // Find order by orderCode - need to get from description or paymentLinkId
-                    // Since we generated orderCode, we need to find which order it belongs to
-                    // For now, we'll use the confirm endpoint logic
-                    
-                    return Redirect($"/tracking?payment=success&orderCode={orderCode}");
-                }
-                
-                return Redirect($"/checkout?payment=cancelled&orderCode={orderCode}");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error processing PayOS return for orderCode {OrderCode}", orderCode);
-                return Redirect("/checkout?error=payment_failed");
             }
         }
 
@@ -308,28 +148,6 @@ namespace RMS_APIServer.Controllers
                     _logger.LogInformation("Payment success: orderCode={OrderCode}, amount={Amount}, description={Description}",
                         data.OrderCode, data.Amount, data.Description);
 
-                    // Find order by extracting from description (format: "DH {OrderId}")
-                    var orderId = ExtractOrderIdFromDescription(data.Description);
-                    if (!string.IsNullOrEmpty(orderId))
-                    {
-                        var order = await _context.Orders.FindAsync(orderId);
-                        if (order != null && order.PaymentStatus != "Đã thanh toán")
-                        {
-                            order.PaymentStatus = "Đã thanh toán";
-                            order.Status = "Chưa làm"; // Ready for kitchen processing
-                            
-                            // Update bill if exists
-                            var bill = await _context.Bills.FirstOrDefaultAsync(b => b.OrderId == orderId);
-                            if (bill != null)
-                            {
-                                bill.Payment = "PayOS - Online";
-                            }
-                            
-                            await _context.SaveChangesAsync();
-                            _logger.LogInformation("Updated order {OrderId} payment status to 'Đã thanh toán' via webhook", orderId);
-                        }
-                    }
-
                     _logger.LogInformation("PayOS webhook processed successfully for orderCode={OrderCode}", data.OrderCode);
                 }
 
@@ -340,26 +158,6 @@ namespace RMS_APIServer.Controllers
                 _logger.LogError(ex, "Error processing PayOS webhook");
                 return Ok(new { code = "00", desc = "success" });
             }
-        }
-
-        private string? ExtractOrderIdFromDescription(string? description)
-        {
-            if (string.IsNullOrEmpty(description)) return null;
-            // Format: "DH ORD12345" or similar
-            var parts = description.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            foreach (var part in parts)
-            {
-                if (part.StartsWith("ORD", StringComparison.OrdinalIgnoreCase))
-                {
-                    return part;
-                }
-            }
-            // If not found, try to get last part that looks like an order ID
-            if (parts.Length >= 2)
-            {
-                return parts[^1]; // Last element
-            }
-            return null;
         }
 
         [HttpPost("confirm/{orderCode}")]
@@ -381,9 +179,9 @@ namespace RMS_APIServer.Controllers
                         }
 
                         var order = await _context.Orders.FindAsync(orderId);
-                        if (order != null && order.PaymentStatus != "Đã thanh toán")
+                        if (order != null && order.Status != "Hoàn tất")
                         {
-                            order.PaymentStatus = "Đã thanh toán";
+                            order.Status = "Hoàn tất";
                         }
 
                         await _context.SaveChangesAsync();
@@ -436,17 +234,5 @@ namespace RMS_APIServer.Controllers
     public class ConfirmPaymentRequest
     {
         public string? OrderId { get; set; }
-    }
-
-    public class VerifyPaymentRequest
-    {
-        public string OrderId { get; set; } = "";
-        public long OrderCode { get; set; }
-    }
-
-    public class ConfirmPaymentFrontendRequest
-    {
-        public string OrderId { get; set; } = "";
-        public long? OrderCode { get; set; }
     }
 }

@@ -1,5 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using RMS_APIServer.Models;
 
 namespace RMS_APIServer.Controllers
@@ -9,10 +13,12 @@ namespace RMS_APIServer.Controllers
     public class UserController : ControllerBase
     {
         private readonly DBContext _context;
+        private readonly IConfiguration _configuration;
 
-        public UserController(DBContext context)
+        public UserController(DBContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         // GET: api/User
@@ -53,17 +59,57 @@ namespace RMS_APIServer.Controllers
 
         // POST: api/User/login
         [HttpPost("login")]
-        public async Task<ActionResult<User>> Login([FromBody] LoginRequest loginRequest)
+        public async Task<ActionResult> Login([FromBody] LoginRequest loginRequest)
         {
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.UserName == loginRequest.Username && u.Password == loginRequest.Password);
 
             if (user == null)
             {
-                return Unauthorized();
+                return Unauthorized(new { message = "Invalid username or password" });
             }
 
-            return user;
+            // Generate JWT token
+            var token = GenerateJwtToken(user);
+
+            return Ok(new 
+            {
+                userId = user.UserId,
+                userName = user.UserName,
+                fullName = user.FullName,
+                email = user.Email,
+                role = user.Role,
+                token = token
+            });
+        }
+
+        private string GenerateJwtToken(User user)
+        {
+            var jwtKey = _configuration["Jwt:Key"] ?? "your-super-secret-jwt-key-that-is-at-least-32-characters-long-for-security";
+            var jwtIssuer = _configuration["Jwt:Issuer"] ?? "RMS-APIServer";
+            var jwtAudience = _configuration["Jwt:Audience"] ?? "RMS-Users";
+            
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserId),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email ?? ""),
+                new Claim(ClaimTypes.Role, user.Role ?? "User"),
+                new Claim("fullName", user.FullName ?? "")
+            };
+
+            var token = new JwtSecurityToken(
+                issuer: jwtIssuer,
+                audience: jwtAudience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddDays(7), // Token expires in 7 days
+                signingCredentials: credentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         // PUT: api/User/5
@@ -97,9 +143,6 @@ namespace RMS_APIServer.Controllers
 
             if (!string.IsNullOrWhiteSpace(user.Email))
                 existingUser.Email = user.Email;
-
-            if (!string.IsNullOrWhiteSpace(user.Address))
-                existingUser.Address = user.Address;
 
             if (!string.IsNullOrWhiteSpace(user.Right))
                 existingUser.Right = user.Right;

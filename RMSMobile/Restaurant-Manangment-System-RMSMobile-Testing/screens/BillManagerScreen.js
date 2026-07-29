@@ -14,14 +14,23 @@ import {
   Platform,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+<<<<<<< HEAD
 import { useFocusEffect } from '@react-navigation/native';
 import { apiService, formatPrice } from '../services/apiService';
+=======
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { apiService, formatPrice, API_BASE_URL } from '../services/apiService';
+>>>>>>> origin/my-local-branch
 import { AuthContext } from '../context/AuthContext';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 
 export default function BillManagerScreen() {
   const { user } = useContext(AuthContext);
+<<<<<<< HEAD
+=======
+  const navigation = useNavigation();
+>>>>>>> origin/my-local-branch
   const [completedOrders, setCompletedOrders] = useState([]);
   const [bills, setBills] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,6 +47,10 @@ export default function BillManagerScreen() {
   const [filterPayment, setFilterPayment] = useState('all'); // 'all', 'cash', 'card', 'transfer', 'wallet', 'unpaid'
   const [showSortModal, setShowSortModal] = useState(false);
   const [filteredBills, setFilteredBills] = useState([]);
+<<<<<<< HEAD
+=======
+  const [sortOrder, setSortOrder] = useState('newest'); // 'newest' or 'oldest'
+>>>>>>> origin/my-local-branch
 
   // Bill form state
   const [billForm, setBillForm] = useState({
@@ -50,13 +63,21 @@ export default function BillManagerScreen() {
     { value: 'Thẻ tín dụng', label: 'Credit Card', icon: 'credit-card' },
     { value: 'Chuyển khoản', label: 'Bank Transfer', icon: 'bank-transfer' },
     { value: 'Ví điện tử', label: 'E-Wallet', icon: 'wallet' },
+<<<<<<< HEAD
+=======
+    { value: 'PayOS - Online', label: 'PayOS Online', icon: 'qrcode-scan' },
+>>>>>>> origin/my-local-branch
     { value: 'Chưa thanh toán', label: 'Unpaid', icon: 'clock-outline' },
   ];
 
   useFocusEffect(
     useCallback(() => {
       fetchData();
+<<<<<<< HEAD
     }, [])
+=======
+    }, [sortOrder])
+>>>>>>> origin/my-local-branch
   );
 
   const fetchData = async () => {
@@ -71,6 +92,79 @@ export default function BillManagerScreen() {
     }
   };
 
+<<<<<<< HEAD
+=======
+  // Extract payment method from order note
+  const extractPaymentMethodFromNote = (note) => {
+    if (!note) return null;
+    
+    // Look for "Thanh toán: [Method]" pattern in the note
+    const paymentRegex = /Thanh toán:\s*(.+?)(?:\n|$)/i;
+    const match = note.match(paymentRegex);
+    
+    if (match && match[1]) {
+      const payment = match[1].trim();
+      console.log('Extracted payment method:', payment);
+      return payment;
+    }
+    
+    return null;
+  };
+
+  // Auto-create bill for completed orders with payment method in note
+  const autoCreateBillIfNeeded = async (order) => {
+    try {
+      const paymentMethod = extractPaymentMethodFromNote(order.note);
+      
+      if (!paymentMethod) {
+        console.log(`Order ${order.id || order.orderId} has no payment method in note, skipping auto-bill`);
+        return false;
+      }
+      
+      console.log(`Auto-creating bill for order ${order.id || order.orderId} with payment: ${paymentMethod}`);
+      
+      const orderId = order.id || order.orderId;
+      const total = await calculateOrderTotal(orderId);
+      const billId = Math.random().toString(36).substr(2, 10);
+      
+      const billData = {
+        billId: billId,
+        orderId: orderId,
+        userId: (order.userId || user?.userId)?.toString().trim(),
+        userName: order.userName || user?.fullName || user?.userName || 'System',
+        total: total,
+        discount: 0,
+        totalFinal: total,
+        payment: paymentMethod,
+        createdTime: new Date().toISOString(),
+      };
+      
+      console.log('Auto-creating bill:', billData);
+      await apiService.createBill(billData);
+      
+      // Update order status to indicate bill created
+      const orderUpdateData = {
+        orderId: orderId,
+        tableId: order.tableId,
+        userId: order.userId,
+        createdTime: order.createDate || order.orderDate || order.createdTime,
+        status: 'Đã tạo bill',
+        total: order.total,
+        discount: order.discount || 0,
+        note: order.note || null,
+        reservationId: order.reservationId || null
+      };
+      await apiService.updateOrder(orderId, orderUpdateData);
+      
+      console.log(`✓ Auto-created bill ${billId} for order ${orderId}`);
+      return true;
+    } catch (error) {
+      console.error('Error auto-creating bill:', error);
+      return false;
+    }
+  };
+
+>>>>>>> origin/my-local-branch
   const fetchCompletedOrders = async () => {
     try {
       const ordersData = await apiService.getAllOrders();
@@ -91,16 +185,54 @@ export default function BillManagerScreen() {
       
       console.log('Completed orders without bills:', completed.length);
       
+<<<<<<< HEAD
       // Calculate totals for each order
       const ordersWithTotals = await Promise.all(
         completed.map(async order => {
+=======
+      // Auto-create bills for orders with payment method in note
+      console.log('=== AUTO-CREATING BILLS FOR ORDERS WITH PAYMENT METHOD ===');
+      for (const order of completed) {
+        await autoCreateBillIfNeeded(order);
+      }
+      
+      // Re-fetch to get updated list after auto-bill creation
+      const updatedOrdersData = await apiService.getAllOrders();
+      const updatedBills = await apiService.getAllBills();
+      const updatedBillOrderIds = new Set(updatedBills.map(bill => bill.orderId?.trim()));
+      
+      const remainingCompleted = updatedOrdersData.filter(order => {
+        const status = (order.status || '').toLowerCase().trim();
+        const orderId = (order.id || order.orderId)?.trim();
+        const isCompleted = status === 'hoàn tất' || status === 'complete' || status === 'completed';
+        const hasNoBill = !updatedBillOrderIds.has(orderId);
+        return isCompleted && hasNoBill;
+      });
+      
+      console.log('Remaining completed orders without bills:', remainingCompleted.length);
+      
+      // Calculate totals for remaining orders
+      const ordersWithTotals = await Promise.all(
+        remainingCompleted.map(async order => {
+>>>>>>> origin/my-local-branch
           const orderId = order.id || order.orderId;
           const total = await calculateOrderTotal(orderId);
           return { ...order, totalAmount: total };
         })
       );
       
+<<<<<<< HEAD
       setCompletedOrders(ordersWithTotals);
+=======
+      // Sort orders by date like OrdersScreen
+      const sortedOrders = ordersWithTotals.sort((a, b) => {
+        const dateA = new Date(a.createDate || a.createdTime || a.createdAt || a.orderDate || 0);
+        const dateB = new Date(b.createDate || b.createdTime || b.createdAt || b.orderDate || 0);
+        return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+      });
+      
+      setCompletedOrders(sortedOrders);
+>>>>>>> origin/my-local-branch
     } catch (error) {
       console.error('Error fetching completed orders:', error);
       throw error;
@@ -111,8 +243,31 @@ export default function BillManagerScreen() {
     try {
       const billsData = await apiService.getAllBills();
       console.log('Fetched bills:', billsData);
+<<<<<<< HEAD
       setBills(billsData || []);
       setFilteredBills(billsData || []);
+=======
+      
+      // Enrich bills with order information to determine online/dine-in
+      const enrichedBills = await Promise.all(
+        (billsData || []).map(async bill => {
+          try {
+            const orders = await apiService.getAllOrders();
+            const order = orders.find(o => (o.id || o.orderId)?.trim() === bill.orderId?.trim());
+            return {
+              ...bill,
+              tableId: order?.tableId || 'N/A'
+            };
+          } catch (error) {
+            console.error(`Error fetching order ${bill.orderId}:`, error);
+            return { ...bill, tableId: 'N/A' };
+          }
+        })
+      );
+      
+      setBills(enrichedBills);
+      setFilteredBills(enrichedBills);
+>>>>>>> origin/my-local-branch
     } catch (error) {
       console.error('Error fetching bills:', error);
       throw error;
@@ -202,6 +357,7 @@ export default function BillManagerScreen() {
   const handleCreateBill = async () => {
     if (!selectedOrder) return;
 
+<<<<<<< HEAD
     try {
       setCreating(true);
       
@@ -214,6 +370,20 @@ export default function BillManagerScreen() {
 
       const orderId = selectedOrder.id || selectedOrder.orderId;
 
+=======
+    const orderId = selectedOrder.id || selectedOrder.orderId;
+    const total = selectedOrder.totalAmount || 0;
+    const discount = parseFloat(billForm.discount) || 0;
+    const totalFinal = Math.max(0, total - discount);
+    const isPayOS = billForm.payment === 'PayOS - Online';
+
+    try {
+      setCreating(true);
+      console.log('[PayOS] Starting bill creation. isPayOS:', isPayOS, 'orderId:', orderId, 'totalFinal:', totalFinal);
+
+      // Step 1: Create bill
+      const billId = Math.random().toString(36).substr(2, 10);
+>>>>>>> origin/my-local-branch
       const billData = {
         billId: billId,
         orderId: orderId,
@@ -226,6 +396,7 @@ export default function BillManagerScreen() {
         createdTime: new Date().toISOString(),
       };
 
+<<<<<<< HEAD
       console.log('Creating bill:', billData);
       await apiService.createBill(billData);
 
@@ -235,11 +406,23 @@ export default function BillManagerScreen() {
 
       // Update order status to indicate bill created
       // Must match Order model property names: OrderId, CreatedTime (not id, orderDate)
+=======
+      console.log('[PayOS] Step 1: Creating bill...');
+      await apiService.createBill(billData);
+      console.log('[PayOS] Step 1 DONE: Bill created with ID:', billId);
+
+      // Step 2: Update order status
+      console.log('[PayOS] Step 2: Updating order status...');
+>>>>>>> origin/my-local-branch
       const orderUpdateData = {
         orderId: orderId,
         tableId: selectedOrder.tableId,
         userId: selectedOrder.userId,
+<<<<<<< HEAD
         createdTime: selectedOrder.orderDate, // API uses CreatedTime not OrderDate
+=======
+        createdTime: selectedOrder.orderDate,
+>>>>>>> origin/my-local-branch
         status: 'Đã tạo bill',
         total: selectedOrder.total,
         discount: selectedOrder.discount || 0,
@@ -247,6 +430,7 @@ export default function BillManagerScreen() {
         reservationId: selectedOrder.reservationId || null
       };
       await apiService.updateOrder(orderId, orderUpdateData);
+<<<<<<< HEAD
 
       Alert.alert('Success', 'Bill created successfully!');
       setShowCreateModal(false);
@@ -257,6 +441,83 @@ export default function BillManagerScreen() {
     } catch (error) {
       console.error('Error creating bill:', error);
       Alert.alert('Error', 'Failed to create bill. Please try again.');
+=======
+      console.log('[PayOS] Step 2 DONE: Order status updated');
+
+      // Step 3: If PayOS, create payment link
+      if (isPayOS) {
+        console.log('[PayOS] Step 3: Creating PayOS payment link...');
+        const buyerEmail = user?.email || user?.userName + '@payos.vn' || 'guest@payos.vn';
+        const paymentData = {
+          orderId: orderId,
+          buyerName: user?.fullName || user?.userName || 'Guest',
+          buyerEmail: buyerEmail,
+          buyerPhone: user?.phone?.toString() || '0000000000',
+          cancelUrl: 'https://payos.vn',
+          returnUrl: 'https://payos.vn',
+        };
+
+        console.log('[PayOS] Step 3: Sending request with data:', JSON.stringify(paymentData));
+        const payOSResult = await apiService.createPayOSPayment(paymentData);
+        console.log('[PayOS] Step 3 DONE: PayOS result:', JSON.stringify(payOSResult));
+
+        if (!payOSResult || !payOSResult.checkoutUrl) {
+          throw new Error('PayOS did not return a checkout URL');
+        }
+
+        // Close modal and navigate
+        setShowCreateModal(false);
+        setSelectedOrder(null);
+        setBillForm({ discount: 0, payment: 'Tiền mặt' });
+        setCreating(false);
+
+        console.log('[PayOS] Step 4: Navigating to PayOSCheckout...');
+        navigation.navigate('PayOSCheckout', {
+          orderId: orderId,
+          checkoutUrl: payOSResult.checkoutUrl,
+          orderCode: payOSResult.orderCode,
+          amount: totalFinal,
+          buyerName: user?.fullName || user?.userName || '',
+          onSuccess: async (orderCode) => {
+            console.log('[PayOS] Payment success for orderCode:', orderCode);
+            await fetchData();
+          },
+          onCancel: (status) => {
+            console.log('[PayOS] Payment cancelled:', status);
+            fetchData();
+          }
+        });
+        return; // Exit early, don't run cleanup below
+      } else {
+        // Non-PayOS: show success
+        setShowCreateModal(false);
+        Alert.alert('Thành công', 'Tạo hóa đơn thành công!');
+      }
+
+      // Cleanup for non-PayOS
+      setSelectedOrder(null);
+      setBillForm({ discount: 0, payment: 'Tiền mặt' });
+      await fetchData();
+    } catch (error) {
+      console.error('[PayOS] ERROR at some step:', error);
+      console.error('[PayOS] Error message:', error.message);
+      console.error('[PayOS] Error response:', error.response?.data);
+
+      let errorMsg = 'Không xác định';
+      if (error.response?.data?.message) {
+        errorMsg = error.response.data.message;
+      } else if (error.response?.data?.error) {
+        errorMsg = error.response.data.error;
+      } else if (error.message) {
+        errorMsg = error.message;
+      }
+
+      Alert.alert(
+        'Lỗi tạo hóa đơn',
+        `Chi tiết: ${errorMsg}`,
+        [{ text: 'OK' }]
+      );
+>>>>>>> origin/my-local-branch
     } finally {
       setCreating(false);
     }
@@ -498,6 +759,7 @@ export default function BillManagerScreen() {
     setShowEditModal(true);
   };
 
+<<<<<<< HEAD
   const renderOrderItem = ({ item }) => (
     <View style={styles.card}>
       <View style={styles.cardHeader}>
@@ -516,6 +778,42 @@ export default function BillManagerScreen() {
           <MaterialCommunityIcons name="table-furniture" size={16} color="#7F8C8D" />
           <Text style={styles.infoText}>Table: {item.tableId}</Text>
         </View>
+=======
+  const renderOrderItem = ({ item }) => {
+    const isOnline = item.tableId?.toString().trim() === '8';
+    
+    return (
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <View style={styles.orderIdContainer}>
+            <MaterialCommunityIcons name="receipt" size={20} color="#3498DB" />
+            <Text style={styles.orderId}>#{(item.id || item.orderId)?.substring(0, 10)}</Text>
+          </View>
+          <View style={styles.headerBadges}>
+            {isOnline ? (
+              <View style={styles.orderTypeBadge}>
+                <MaterialCommunityIcons name="truck-delivery" size={14} color="#FF6B35" />
+                <Text style={styles.orderTypeText}>Online</Text>
+              </View>
+            ) : (
+              <View style={[styles.orderTypeBadge, styles.dineInBadge]}>
+                <MaterialCommunityIcons name="silverware-fork-knife" size={14} color="#10B981" />
+                <Text style={[styles.orderTypeText, styles.dineInText]}>Dine-in</Text>
+              </View>
+            )}
+            <View style={styles.statusBadge}>
+              <MaterialCommunityIcons name="check-circle" size={16} color="#27AE60" />
+              <Text style={styles.statusText}>{item.status}</Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.cardBody}>
+          <View style={styles.infoRow}>
+            <MaterialCommunityIcons name="table-furniture" size={16} color="#7F8C8D" />
+            <Text style={styles.infoText}>Table: {item.tableId}</Text>
+          </View>
+>>>>>>> origin/my-local-branch
         <View style={styles.infoRow}>
           <MaterialCommunityIcons name="clock-outline" size={16} color="#7F8C8D" />
           <Text style={styles.infoText}>
@@ -536,6 +834,7 @@ export default function BillManagerScreen() {
         <Text style={styles.createButtonText}>Create Bill</Text>
       </TouchableOpacity>
     </View>
+<<<<<<< HEAD
   );
 
   const renderBillItem = ({ item }) => (
@@ -560,6 +859,49 @@ export default function BillManagerScreen() {
           <MaterialCommunityIcons name="receipt" size={16} color="#7F8C8D" />
           <Text style={styles.infoText}>Order: {item.orderId?.substring(0, 10)}</Text>
         </View>
+=======
+    );
+  };
+
+  const renderBillItem = ({ item }) => {
+    const isOnline = item.tableId?.toString().trim() === '8';
+    
+    return (
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <View style={styles.orderIdContainer}>
+            <MaterialCommunityIcons name="file-document" size={20} color="#E74C3C" />
+            <Text style={styles.orderId}>#{item.billId?.substring(0, 10)}</Text>
+          </View>
+          <View style={styles.headerBadges}>
+            {isOnline ? (
+              <View style={styles.orderTypeBadge}>
+                <MaterialCommunityIcons name="truck-delivery" size={14} color="#FF6B35" />
+                <Text style={styles.orderTypeText}>Online</Text>
+              </View>
+            ) : (
+              <View style={[styles.orderTypeBadge, styles.dineInBadge]}>
+                <MaterialCommunityIcons name="silverware-fork-knife" size={14} color="#10B981" />
+                <Text style={[styles.orderTypeText, styles.dineInText]}>Dine-in</Text>
+              </View>
+            )}
+            <View style={[styles.paymentBadge, getPaymentBadgeStyle(item.payment)]}>
+              <MaterialCommunityIcons 
+                name={getPaymentIcon(item.payment)} 
+                size={14} 
+                color="#FFFFFF" 
+              />
+              <Text style={styles.paymentText}>{item.payment}</Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.cardBody}>
+          <View style={styles.infoRow}>
+            <MaterialCommunityIcons name="receipt" size={16} color="#7F8C8D" />
+            <Text style={styles.infoText}>Order: {item.orderId?.substring(0, 10)}</Text>
+          </View>
+>>>>>>> origin/my-local-branch
         <View style={styles.infoRow}>
           <MaterialCommunityIcons name="clock-outline" size={16} color="#7F8C8D" />
           <Text style={styles.infoText}>
@@ -602,7 +944,12 @@ export default function BillManagerScreen() {
         </TouchableOpacity>
       </View>
     </View>
+<<<<<<< HEAD
   );
+=======
+    );
+  };
+>>>>>>> origin/my-local-branch
 
   const getPaymentIcon = (payment) => {
     const method = payment?.toLowerCase() || '';
@@ -1029,8 +1376,74 @@ export default function BillManagerScreen() {
     );
   }
 
+<<<<<<< HEAD
   return (
     <View style={styles.container}>
+=======
+  const testPayOS = async () => {
+    try {
+      Alert.alert('Test PayOS', 'Đang tạo link thanh toán PayOS...');
+      console.log('[PayOS Test] Starting...');
+      
+      // Get a real order from the database
+      const orders = await apiService.getAllOrders();
+      const completedOrder = orders.find(o => {
+        const status = (o.status || '').toLowerCase();
+        return status === 'hoàn tất' || status === 'completed' || status === 'complete';
+      });
+      
+      if (!completedOrder) {
+        Alert.alert('Lỗi', 'Không tìm thấy đơn hàng hoàn tất để test. Vui lòng tạo đơn hàng trước.');
+        return;
+      }
+      
+      const orderId = completedOrder.id || completedOrder.orderId;
+      const total = completedOrder.totalAmount || completedOrder.total || 10000;
+      
+      console.log('[PayOS Test] Using order:', orderId, 'total:', total);
+      
+      const testData = {
+        orderId: orderId,
+        buyerName: 'Test User',
+        buyerEmail: 'test@test.com',
+        buyerPhone: '0123456789',
+        cancelUrl: 'https://payos.vn',
+        returnUrl: 'https://payos.vn',
+      };
+      
+      console.log('[PayOS Test] Sending request:', JSON.stringify(testData));
+      const result = await apiService.createPayOSPayment(testData);
+      console.log('[PayOS Test] Result:', JSON.stringify(result));
+      
+      if (result && result.checkoutUrl) {
+        Alert.alert('Thành công!', `Checkout URL: ${result.checkoutUrl.substring(0, 50)}...`);
+        navigation.navigate('PayOSCheckout', {
+          orderId: orderId,
+          checkoutUrl: result.checkoutUrl,
+          orderCode: result.orderCode,
+          amount: total,
+          buyerName: 'Test User',
+        });
+      } else {
+        Alert.alert('Lỗi', 'Không nhận được checkout URL');
+      }
+    } catch (error) {
+      console.error('[PayOS Test] Error:', error);
+      Alert.alert('Lỗi Test PayOS', error.message || 'Unknown error');
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <TouchableOpacity
+        style={{ backgroundColor: '#FF6B35', padding: 12, margin: 8, borderRadius: 8, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
+        onPress={testPayOS}
+      >
+        <MaterialCommunityIcons name="qrcode-scan" size={20} color="#fff" />
+        <Text style={{ color: '#fff', fontWeight: 'bold', marginLeft: 8 }}>TEST PAYOS</Text>
+      </TouchableOpacity>
+
+>>>>>>> origin/my-local-branch
       <View style={styles.tabBar}>
         <TouchableOpacity
           style={[styles.tab, activeTab === 'orders' && styles.activeTab]}
@@ -1061,6 +1474,7 @@ export default function BillManagerScreen() {
       </View>
 
       {activeTab === 'orders' ? (
+<<<<<<< HEAD
         <FlatList
           data={completedOrders}
           renderItem={renderOrderItem}
@@ -1077,6 +1491,56 @@ export default function BillManagerScreen() {
             </View>
           }
         />
+=======
+        <>
+          <View style={styles.ordersHeader}>
+            <View style={styles.sortOrderButtons}>
+              <TouchableOpacity
+                style={[styles.sortOrderButton, sortOrder === 'newest' && styles.sortOrderButtonActive]}
+                onPress={() => setSortOrder('newest')}
+              >
+                <MaterialCommunityIcons 
+                  name="sort-clock-descending" 
+                  size={18} 
+                  color={sortOrder === 'newest' ? '#FFFFFF' : '#3498DB'} 
+                />
+                <Text style={[styles.sortOrderButtonText, sortOrder === 'newest' && styles.sortOrderButtonTextActive]}>
+                  Newest First
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.sortOrderButton, sortOrder === 'oldest' && styles.sortOrderButtonActive]}
+                onPress={() => setSortOrder('oldest')}
+              >
+                <MaterialCommunityIcons 
+                  name="sort-clock-ascending" 
+                  size={18} 
+                  color={sortOrder === 'oldest' ? '#FFFFFF' : '#3498DB'} 
+                />
+                <Text style={[styles.sortOrderButtonText, sortOrder === 'oldest' && styles.sortOrderButtonTextActive]}>
+                  Oldest First
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <FlatList
+            data={completedOrders}
+            renderItem={renderOrderItem}
+            keyExtractor={(item) => item.id || item.orderId}
+            contentContainerStyle={styles.listContainer}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            ListEmptyComponent={
+              <View style={styles.emptyState}>
+                <MaterialCommunityIcons name="clipboard-check-outline" size={80} color="#BDC3C7" />
+                <Text style={styles.emptyTitle}>No Completed Orders</Text>
+                <Text style={styles.emptySubtitle}>
+                  Completed orders ready for billing will appear here
+                </Text>
+              </View>
+            }
+          />
+        </>
+>>>>>>> origin/my-local-branch
       ) : (
         <>
           <View style={styles.billsHeader}>
@@ -1120,40 +1584,73 @@ export default function BillManagerScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+<<<<<<< HEAD
     backgroundColor: '#F5F5F5',
+=======
+    backgroundColor: '#F8F9FA',
+>>>>>>> origin/my-local-branch
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+<<<<<<< HEAD
     backgroundColor: '#F5F5F5',
   },
   loadingText: {
     marginTop: 10,
     fontSize: 16,
     color: '#7F8C8D',
+=======
+    backgroundColor: '#F8F9FA',
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 16,
+    color: '#636E72',
+    fontWeight: '500',
+>>>>>>> origin/my-local-branch
   },
   tabBar: {
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
+<<<<<<< HEAD
     borderBottomWidth: 1,
     borderBottomColor: '#E8E8E8',
+=======
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 4,
+>>>>>>> origin/my-local-branch
   },
   tab: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+<<<<<<< HEAD
     paddingVertical: 16,
     gap: 8,
   },
   activeTab: {
     borderBottomWidth: 3,
     borderBottomColor: '#3498DB',
+=======
+    paddingVertical: 18,
+    gap: 10,
+  },
+  activeTab: {
+    borderBottomWidth: 4,
+    borderBottomColor: '#3498DB',
+    backgroundColor: 'rgba(52, 152, 219, 0.04)',
+>>>>>>> origin/my-local-branch
   },
   tabText: {
     fontSize: 14,
     color: '#7F8C8D',
+<<<<<<< HEAD
     fontWeight: '500',
   },
   activeTabText: {
@@ -1173,29 +1670,71 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+=======
+    fontWeight: '600',
+  },
+  activeTabText: {
+    color: '#3498DB',
+    fontWeight: '700',
+  },
+  listContainer: {
+    padding: 16,
+    paddingBottom: 30,
+  },
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 18,
+    shadowColor: '#3498DB',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(52, 152, 219, 0.08)',
+>>>>>>> origin/my-local-branch
   },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+<<<<<<< HEAD
     marginBottom: 12,
     paddingBottom: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#F0F0F0',
+=======
+    marginBottom: 16,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(52, 152, 219, 0.1)',
+>>>>>>> origin/my-local-branch
   },
   orderIdContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+<<<<<<< HEAD
     gap: 8,
   },
   orderId: {
     fontSize: 16,
     fontWeight: '600',
     color: '#2C3E50',
+=======
+    gap: 10,
+  },
+  orderId: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#2C3E50',
+    letterSpacing: 0.3,
+>>>>>>> origin/my-local-branch
   },
   statusBadge: {
     flexDirection: 'row',
     alignItems: 'center',
+<<<<<<< HEAD
     gap: 4,
     backgroundColor: '#E8F8F5',
     paddingHorizontal: 10,
@@ -1206,26 +1745,63 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#27AE60',
     fontWeight: '600',
+=======
+    gap: 5,
+    backgroundColor: '#D5F5E3',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 14,
+    shadowColor: '#27AE60',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  statusText: {
+    fontSize: 12,
+    color: '#1E8449',
+    fontWeight: '700',
+>>>>>>> origin/my-local-branch
   },
   paymentBadge: {
     flexDirection: 'row',
     alignItems: 'center',
+<<<<<<< HEAD
     gap: 4,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
+=======
+    gap: 5,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 14,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 2,
+>>>>>>> origin/my-local-branch
   },
   paymentText: {
     fontSize: 11,
     color: '#FFFFFF',
+<<<<<<< HEAD
     fontWeight: '600',
   },
   cardBody: {
     gap: 8,
+=======
+    fontWeight: '700',
+  },
+  cardBody: {
+    gap: 12,
+>>>>>>> origin/my-local-branch
   },
   infoRow: {
     flexDirection: 'row',
     alignItems: 'center',
+<<<<<<< HEAD
     gap: 8,
   },
   infoText: {
@@ -1235,6 +1811,27 @@ const styles = StyleSheet.create({
   amountSection: {
     marginTop: 8,
     gap: 4,
+=======
+    gap: 10,
+    backgroundColor: 'rgba(52, 152, 219, 0.04)',
+    padding: 10,
+    borderRadius: 10,
+  },
+  infoText: {
+    fontSize: 13,
+    color: '#2C3E50',
+    fontWeight: '500',
+    flex: 1,
+  },
+  amountSection: {
+    marginTop: 12,
+    gap: 10,
+    backgroundColor: 'rgba(52, 152, 219, 0.05)',
+    padding: 14,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(52, 152, 219, 0.12)',
+>>>>>>> origin/my-local-branch
   },
   amountRow: {
     flexDirection: 'row',
@@ -1242,6 +1839,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   amountLabel: {
+<<<<<<< HEAD
     fontSize: 13,
     color: '#7F8C8D',
   },
@@ -1258,11 +1856,32 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#E74C3C',
     fontWeight: '500',
+=======
+    fontSize: 14,
+    color: '#636E72',
+    fontWeight: '500',
+  },
+  amountValue: {
+    fontSize: 15,
+    color: '#2C3E50',
+    fontWeight: '700',
+  },
+  discountLabel: {
+    fontSize: 14,
+    color: '#E74C3C',
+    fontWeight: '600',
+  },
+  discountValue: {
+    fontSize: 15,
+    color: '#E74C3C',
+    fontWeight: '700',
+>>>>>>> origin/my-local-branch
   },
   totalRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+<<<<<<< HEAD
     marginTop: 8,
     paddingTop: 8,
     borderTopWidth: 1,
@@ -1276,36 +1895,83 @@ const styles = StyleSheet.create({
   totalValue: {
     fontSize: 16,
     fontWeight: 'bold',
+=======
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: 2,
+    borderTopColor: 'rgba(52, 152, 219, 0.2)',
+  },
+  totalLabel: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#3498DB',
+  },
+  totalValue: {
+    fontSize: 20,
+    fontWeight: '800',
+>>>>>>> origin/my-local-branch
     color: '#27AE60',
   },
   createButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+<<<<<<< HEAD
     gap: 8,
     backgroundColor: '#3498DB',
     paddingVertical: 12,
     borderRadius: 8,
     marginTop: 12,
+=======
+    gap: 10,
+    backgroundColor: '#3498DB',
+    paddingVertical: 14,
+    borderRadius: 12,
+    marginTop: 14,
+    shadowColor: '#3498DB',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+>>>>>>> origin/my-local-branch
   },
   createButtonText: {
     color: '#FFFFFF',
     fontSize: 15,
+<<<<<<< HEAD
     fontWeight: '600',
+=======
+    fontWeight: '700',
+>>>>>>> origin/my-local-branch
   },
   actionButtons: {
     flexDirection: 'row',
     gap: 12,
+<<<<<<< HEAD
     marginTop: 12,
+=======
+    marginTop: 14,
+>>>>>>> origin/my-local-branch
   },
   actionButton: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+<<<<<<< HEAD
     gap: 6,
     paddingVertical: 10,
     borderRadius: 8,
+=======
+    gap: 8,
+    paddingVertical: 12,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 4,
+>>>>>>> origin/my-local-branch
   },
   editButton: {
     backgroundColor: '#F39C12',
@@ -1316,6 +1982,7 @@ const styles = StyleSheet.create({
   actionButtonText: {
     color: '#FFFFFF',
     fontSize: 14,
+<<<<<<< HEAD
     fontWeight: '600',
   },
   emptyState: {
@@ -1335,23 +2002,60 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     maxWidth: 250,
     lineHeight: 20,
+=======
+    fontWeight: '700',
+  },
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: 80,
+  },
+  emptyTitle: {
+    fontSize: 24,
+    fontWeight: '800',
+    color: '#2C3E50',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  emptySubtitle: {
+    fontSize: 15,
+    color: '#636E72',
+    textAlign: 'center',
+    maxWidth: 280,
+    lineHeight: 22,
+>>>>>>> origin/my-local-branch
   },
   // Modal Styles
   modalOverlay: {
     flex: 1,
+<<<<<<< HEAD
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+=======
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+>>>>>>> origin/my-local-branch
     justifyContent: 'flex-end',
   },
   modalContent: {
     backgroundColor: '#FFFFFF',
+<<<<<<< HEAD
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     maxHeight: '90%',
+=======
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    maxHeight: '90%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 20,
+>>>>>>> origin/my-local-branch
   },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+<<<<<<< HEAD
     padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#E8E8E8',
@@ -1359,6 +2063,15 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
+=======
+    padding: 24,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(52, 152, 219, 0.1)',
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: '800',
+>>>>>>> origin/my-local-branch
     color: '#2C3E50',
   },
   modalBody: {
@@ -1384,6 +2097,7 @@ const styles = StyleSheet.create({
     color: '#7F8C8D',
   },
   input: {
+<<<<<<< HEAD
     backgroundColor: '#F8F9FA',
     borderWidth: 1,
     borderColor: '#E8E8E8',
@@ -1391,6 +2105,16 @@ const styles = StyleSheet.create({
     padding: 12,
     fontSize: 15,
     color: '#2C3E50',
+=======
+    backgroundColor: '#FFFFFF',
+    borderWidth: 2,
+    borderColor: 'rgba(52, 152, 219, 0.2)',
+    borderRadius: 12,
+    padding: 14,
+    fontSize: 15,
+    color: '#2C3E50',
+    fontWeight: '500',
+>>>>>>> origin/my-local-branch
   },
   paymentMethodsGrid: {
     flexDirection: 'row',
@@ -1403,25 +2127,48 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+<<<<<<< HEAD
     gap: 8,
     padding: 16,
     borderRadius: 8,
     borderWidth: 2,
     borderColor: '#E8E8E8',
     backgroundColor: '#FFFFFF',
+=======
+    gap: 10,
+    padding: 18,
+    borderRadius: 16,
+    borderWidth: 2,
+    borderColor: 'rgba(52, 152, 219, 0.15)',
+    backgroundColor: '#F8F9FA',
+>>>>>>> origin/my-local-branch
   },
   paymentMethodSelected: {
     borderColor: '#3498DB',
     backgroundColor: '#3498DB',
+<<<<<<< HEAD
   },
   paymentMethodText: {
     fontSize: 12,
     color: '#7F8C8D',
     fontWeight: '500',
+=======
+    shadowColor: '#3498DB',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  paymentMethodText: {
+    fontSize: 12,
+    color: '#636E72',
+    fontWeight: '600',
+>>>>>>> origin/my-local-branch
     textAlign: 'center',
   },
   paymentMethodTextSelected: {
     color: '#FFFFFF',
+<<<<<<< HEAD
     fontWeight: '600',
   },
   summaryBox: {
@@ -1429,6 +2176,17 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 8,
     gap: 8,
+=======
+    fontWeight: '700',
+  },
+  summaryBox: {
+    backgroundColor: 'rgba(52, 152, 219, 0.05)',
+    padding: 18,
+    borderRadius: 16,
+    gap: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(52, 152, 219, 0.15)',
+>>>>>>> origin/my-local-branch
   },
   summaryRow: {
     flexDirection: 'row',
@@ -1437,6 +2195,7 @@ const styles = StyleSheet.create({
   },
   summaryLabel: {
     fontSize: 14,
+<<<<<<< HEAD
     color: '#7F8C8D',
   },
   summaryValue: {
@@ -1458,6 +2217,30 @@ const styles = StyleSheet.create({
   summaryTotalValue: {
     fontSize: 18,
     fontWeight: 'bold',
+=======
+    color: '#636E72',
+    fontWeight: '500',
+  },
+  summaryValue: {
+    fontSize: 15,
+    color: '#2C3E50',
+    fontWeight: '600',
+  },
+  summaryTotal: {
+    marginTop: 10,
+    paddingTop: 14,
+    borderTopWidth: 2,
+    borderTopColor: 'rgba(52, 152, 219, 0.25)',
+  },
+  summaryTotalLabel: {
+    fontSize: 17,
+    fontWeight: '800',
+    color: '#3498DB',
+  },
+  summaryTotalValue: {
+    fontSize: 22,
+    fontWeight: '900',
+>>>>>>> origin/my-local-branch
     color: '#27AE60',
   },
   modalFooter: {
@@ -1465,16 +2248,26 @@ const styles = StyleSheet.create({
     gap: 12,
     padding: 20,
     borderTopWidth: 1,
+<<<<<<< HEAD
     borderTopColor: '#E8E8E8',
   },
   modalButton: {
     flex: 1,
     paddingVertical: 14,
     borderRadius: 8,
+=======
+    borderTopColor: 'rgba(52, 152, 219, 0.1)',
+  },
+  modalButton: {
+    flex: 1,
+    paddingVertical: 16,
+    borderRadius: 14,
+>>>>>>> origin/my-local-branch
     alignItems: 'center',
     justifyContent: 'center',
   },
   cancelButton: {
+<<<<<<< HEAD
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#E8E8E8',
@@ -1490,6 +2283,28 @@ const styles = StyleSheet.create({
   confirmButtonText: {
     fontSize: 15,
     fontWeight: '600',
+=======
+    backgroundColor: '#F8F9FA',
+    borderWidth: 2,
+    borderColor: 'rgba(52, 152, 219, 0.2)',
+  },
+  cancelButtonText: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#636E72',
+  },
+  confirmButton: {
+    backgroundColor: '#3498DB',
+    shadowColor: '#3498DB',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  confirmButtonText: {
+    fontSize: 15,
+    fontWeight: '700',
+>>>>>>> origin/my-local-branch
     color: '#FFFFFF',
   },
   // Bills Header Styles
@@ -1502,6 +2317,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+<<<<<<< HEAD
     gap: 6,
     paddingVertical: 12,
     paddingHorizontal: 16,
@@ -1513,6 +2329,26 @@ const styles = StyleSheet.create({
   sortButtonText: {
     fontSize: 14,
     fontWeight: '600',
+=======
+    gap: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 16,
+    marginBottom: 10,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#3498DB',
+    shadowColor: '#3498DB',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  sortButtonText: {
+    fontSize: 14,
+    fontWeight: '700',
+>>>>>>> origin/my-local-branch
     color: '#3498DB',
   },
   // Sort Modal Styles
@@ -1564,7 +2400,11 @@ const styles = StyleSheet.create({
   },
   // Filter Bar Styles
   filterBar: {
+<<<<<<< HEAD
     paddingVertical: 12,
+=======
+    paddingVertical: 14,
+>>>>>>> origin/my-local-branch
     paddingHorizontal: 16,
   },
   filterScrollContainer: {
@@ -1573,6 +2413,7 @@ const styles = StyleSheet.create({
   filterChip: {
     flexDirection: 'row',
     alignItems: 'center',
+<<<<<<< HEAD
     paddingHorizontal: 12,
     paddingVertical: 6,
     marginRight: 8,
@@ -1580,10 +2421,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8F9FA',
     borderWidth: 1,
     borderColor: '#E8E8E8',
+=======
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    marginRight: 10,
+    borderRadius: 20,
+    backgroundColor: '#F8F9FA',
+    borderWidth: 2,
+    borderColor: 'rgba(52, 152, 219, 0.15)',
+>>>>>>> origin/my-local-branch
   },
   activeFilterChip: {
     backgroundColor: '#3498DB',
     borderColor: '#3498DB',
+<<<<<<< HEAD
   },
   filterChipText: {
     fontSize: 14,
@@ -1593,5 +2444,92 @@ const styles = StyleSheet.create({
   activeFilterChipText: {
     color: '#FFFFFF',
     fontWeight: '500',
+=======
+    shadowColor: '#3498DB',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  filterChipText: {
+    fontSize: 13,
+    color: '#636E72',
+    marginLeft: 6,
+    fontWeight: '600',
+  },
+  activeFilterChipText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+  },
+  // Order Type Badge Styles
+  headerBadges: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  orderTypeBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 107, 53, 0.1)',
+    borderWidth: 1,
+    borderColor: '#FF6B35',
+  },
+  dineInBadge: {
+    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+    borderColor: '#10B981',
+  },
+  orderTypeText: {
+    fontSize: 11,
+    color: '#FF6B35',
+    fontWeight: '700',
+  },
+  dineInText: {
+    color: '#10B981',
+  },
+  // Orders Header Styles
+  ordersHeader: {
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E8E8E8',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  sortOrderButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  sortOrderButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#3498DB',
+    backgroundColor: '#FFFFFF',
+  },
+  sortOrderButtonActive: {
+    backgroundColor: '#3498DB',
+    shadowColor: '#3498DB',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  sortOrderButtonText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#3498DB',
+  },
+  sortOrderButtonTextActive: {
+    color: '#FFFFFF',
+>>>>>>> origin/my-local-branch
   },
 });

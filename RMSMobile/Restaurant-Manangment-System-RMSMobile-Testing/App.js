@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useState, useContext } from "react";
+=======
+import React, { useState, useContext, useEffect } from "react";
+>>>>>>> origin/my-local-branch
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
@@ -11,6 +15,10 @@ import {
   Modal, 
   Animated, 
   Dimensions,
+<<<<<<< HEAD
+=======
+  Platform,
+>>>>>>> origin/my-local-branch
   TouchableWithoutFeedback,
   ScrollView 
 } from "react-native";
@@ -19,25 +27,43 @@ import {
 import HomeScreen from "./screens/HomeScreen";
 import MenuScreen from "./screens/MenuScreen";
 import OrdersScreen from "./screens/OrdersScreen";
+<<<<<<< HEAD
+=======
+import OrderDetailScreen from "./screens/OrderDetailScreen";
+>>>>>>> origin/my-local-branch
 import ProfileScreen from "./screens/ProfileScreen";
 import LoginScreen from "./screens/LoginScreen";
 import ChangePasswordScreen from "./screens/ChangePasswordScreen";
 import UpdateInformationScreen from "./screens/UpdateInformationScreen";
 import RegisterScreen from "./screens/RegisterScreen";
+<<<<<<< HEAD
+=======
+import FavoritesScreen from "./screens/FavoritesScreen";
+import CartScreen from "./screens/CartScreen";
+>>>>>>> origin/my-local-branch
 
 // context
 import { AuthProvider, AuthContext } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
+<<<<<<< HEAD
 import TableScreen from './screens/TableScreen';
 import BillScreen from './screens/BillScreen';
+=======
+import { CartProvider, useCart } from "./context/CartContext";
+import TableScreen from './screens/TableScreen';
+>>>>>>> origin/my-local-branch
 import BillManagerScreen from './screens/BillManagerScreen';
 import ReportScreen from './screens/ReportScreen';
 import MenuManagerScreen from './screens/MenuManagerScreen';
 import OrderDetailManagerScreen from './screens/OrderDetailManagerScreen';
 import IngredientManagerScreen from './screens/IngredientManagerScreen';
 import UserManagementScreen from './screens/UserManagementScreen';
+<<<<<<< HEAD
 import SettingsScreen from './screens/SettingsScreen';
 import SettingsScreen from './screens/SettingsScreen';
+=======
+import PayOSCheckoutScreen from './screens/PayOSCheckoutScreen';
+>>>>>>> origin/my-local-branch
 
 
 const Stack = createStackNavigator();
@@ -96,13 +122,46 @@ function ProtectedScreen({ children, screenName, fallbackScreen = 'Home' }) {
   return children;
 }
 
+<<<<<<< HEAD
 
+=======
+// Cart Header Button Component
+function CartHeaderButton({ navigation }) {
+  const { getTotalItems } = useCart();
+  const { getUserRole } = useContext(AuthContext);
+  const totalItems = getTotalItems();
+  const userRole = getUserRole();
+
+  // Don't show cart button for Admin users
+  if (userRole === 'Admin' || userRole === 'admin' || userRole === 'ADMIN') {
+    return null;
+  }
+
+  return (
+    <TouchableOpacity
+      style={styles.cartButton}
+      onPress={() => navigation.navigate('Cart')}
+    >
+      <MaterialCommunityIcons name="cart" size={24} color="white" />
+      {totalItems > 0 && (
+        <View style={styles.cartBadge}>
+          <Text style={styles.cartBadgeText}>{totalItems}</Text>
+        </View>
+      )}
+    </TouchableOpacity>
+  );
+}
+>>>>>>> origin/my-local-branch
 
 // Main App Stack with Hamburger Menu
 function MainAppStack({ openSidebar }) {
   return (
     <Stack.Navigator
+<<<<<<< HEAD
       screenOptions={{
+=======
+      screenOptions={({ navigation }) => ({
+>>>>>>> origin/my-local-branch
         headerStyle: {
           backgroundColor: '#2C3E50',
         },
@@ -119,7 +178,11 @@ function MainAppStack({ openSidebar }) {
             <MaterialCommunityIcons name="menu" size={24} color="white" />
           </TouchableOpacity>
         ),
+<<<<<<< HEAD
       }}
+=======
+      })}
+>>>>>>> origin/my-local-branch
     >
       <Stack.Screen 
         name="Home" 
@@ -165,6 +228,7 @@ function MainAppStack({ openSidebar }) {
         )}
       </Stack.Screen>
       <Stack.Screen 
+<<<<<<< HEAD
         name="Bill" 
         options={{ 
           headerTitle: 'Our Bill',
@@ -177,6 +241,8 @@ function MainAppStack({ openSidebar }) {
         )}
       </Stack.Screen>
       <Stack.Screen 
+=======
+>>>>>>> origin/my-local-branch
         name="BillManager" 
         options={{ 
           headerTitle: 'Bill Management',
@@ -189,6 +255,15 @@ function MainAppStack({ openSidebar }) {
         )}
       </Stack.Screen>
       <Stack.Screen 
+<<<<<<< HEAD
+=======
+        name="PayOSCheckout" 
+        options={{ headerShown: false }}
+      >
+        {(props) => <PayOSCheckoutScreen {...props} />}
+      </Stack.Screen>
+      <Stack.Screen 
+>>>>>>> origin/my-local-branch
         name="Report" 
         options={{ 
           headerTitle: 'Our Report',
@@ -208,6 +283,34 @@ function MainAppStack({ openSidebar }) {
         }}
       />
       <Stack.Screen 
+<<<<<<< HEAD
+=======
+        name="Favorites" 
+        options={{ 
+          headerTitle: 'Yêu Thích',
+        }}
+      >
+        {(props) => (
+          <ProtectedScreen screenName="Favorites">
+            <FavoritesScreen {...props} />
+          </ProtectedScreen>
+        )}
+      </Stack.Screen>
+      <Stack.Screen 
+        name="Cart" 
+        options={({ navigation }) => ({ 
+          headerTitle: 'Giỏ Hàng',
+          headerRight: () => <CartHeaderButton navigation={navigation} />,
+        })}
+      >
+        {(props) => (
+          <ProtectedScreen screenName="Cart">
+            <CartScreen {...props} />
+          </ProtectedScreen>
+        )}
+      </Stack.Screen>
+      <Stack.Screen 
+>>>>>>> origin/my-local-branch
         name="OrderDetail" 
         options={{ 
           headerTitle: 'Order Details',
@@ -267,6 +370,7 @@ function MainAppStack({ openSidebar }) {
           </ProtectedScreen>
         )}
       </Stack.Screen>
+<<<<<<< HEAD
       <Stack.Screen 
         name="Settings" 
         options={{ 
@@ -279,6 +383,8 @@ function MainAppStack({ openSidebar }) {
           </ProtectedScreen>
         )}
       </Stack.Screen>
+=======
+>>>>>>> origin/my-local-branch
       <Stack.Screen
         name="Login"
         component={LoginScreen}
@@ -338,17 +444,32 @@ function CustomSidebarMenu({ visible, onClose }) {
   const menuItems = [
     { name: 'Home', icon: 'home', title: 'Home', screen: 'Home' },
     { name: 'Menu', icon: 'food', title: 'Our Menu', screen: 'Menu' },
+<<<<<<< HEAD
     { name: 'Orders', icon: 'clipboard-list', title: 'My Orders', screen: 'Orders' },
     { name: 'OrderDetail', icon: 'clipboard-text', title: 'Order Details', screen: 'OrderDetail' },
     { name: 'Table', icon: 'table-chair', title: 'Our Table', screen: 'Table' },
     { name: 'Bill', icon: 'file-document', title: 'Our Bill', screen: 'Bill' },
+=======
+    { name: 'Favorites', icon: 'heart', title: 'Yêu Thích', screen: 'Favorites' },
+    { name: 'Cart', icon: 'cart', title: 'Giỏ Hàng', screen: 'Cart' },
+    { name: 'Orders', icon: 'clipboard-list', title: 'My Orders', screen: 'Orders' },
+    { name: 'OrderDetail', icon: 'clipboard-text', title: 'Order Details', screen: 'OrderDetail' },
+    { name: 'Table', icon: 'table-chair', title: 'Our Table', screen: 'Table' },
+    { name: 'BillManager', icon: 'receipt', title: 'Bill Management', screen: 'BillManager' },
+>>>>>>> origin/my-local-branch
     { name: 'Report', icon: 'file-chart', title: 'Our Report', screen: 'Report' },
     { name: 'Profile', icon: 'account', title: 'My Profile', screen: 'Profile' },
   ];
 
   const managementItems = [
     { name: 'MenuManager', icon: 'silverware-fork-knife', title: 'Quản Lý Món Ăn', screen: 'MenuManager' },
+<<<<<<< HEAD
     { name: 'OrderDetailManager', icon: 'food-fork-drink', title: 'Trạng Thái Món Ăn', screen: 'OrderDetailManager' },
+=======
+    { name: 'IngredientManager', icon: 'food-apple', title: 'Quản Lý Nguyên Liệu', screen: 'IngredientManager' },
+    { name: 'OrderDetailManager', icon: 'food-fork-drink', title: 'Trạng Thái Món Ăn', screen: 'OrderDetailManager' },
+    { name: 'UserManagement', icon: 'account-group', title: 'Quản Lý Người Dùng', screen: 'UserManagement' },
+>>>>>>> origin/my-local-branch
   ];
 
   const { mainMenu, managementMenu } = getAccessibleMenuItems();
@@ -603,6 +724,7 @@ function AppContainer() {
 }
 
 export default function App() {
+<<<<<<< HEAD
   return (
     <AuthProvider>
       <ToastProvider>
@@ -611,6 +733,82 @@ export default function App() {
           <AppContainer />
         </NavigationContainer>
       </ToastProvider>
+=======
+  useEffect(() => {
+    if (Platform.OS !== 'web' || typeof document === 'undefined') {
+      return undefined;
+    }
+
+    const { documentElement, body } = document;
+    const root = document.getElementById('root');
+
+    const previous = {
+      htmlOverflow: documentElement.style.overflow,
+      htmlHeight: documentElement.style.height,
+      bodyOverflow: body.style.overflow,
+      bodyHeight: body.style.height,
+      bodyMinHeight: body.style.minHeight,
+      bodyTouchAction: body.style.touchAction,
+      rootMinHeight: root ? root.style.minHeight : '',
+      rootHeight: root ? root.style.height : ''
+    };
+
+    documentElement.style.overflow = 'auto';
+    documentElement.style.height = 'auto';
+    body.style.overflow = 'auto';
+    body.style.height = 'auto';
+    body.style.minHeight = '100vh';
+    body.style.touchAction = 'pan-y';
+
+    if (root) {
+      root.style.minHeight = '100vh';
+      root.style.height = '100vh';
+    }
+
+    let current = root ? root.firstElementChild : null;
+    let depth = 0;
+    while (current && depth < 6) {
+      current.style.minHeight = '100vh';
+      current.style.height = '100vh';
+      current = current.firstElementChild;
+      depth += 1;
+    }
+
+    return () => {
+      documentElement.style.overflow = previous.htmlOverflow;
+      documentElement.style.height = previous.htmlHeight;
+      body.style.overflow = previous.bodyOverflow;
+      body.style.height = previous.bodyHeight;
+      body.style.minHeight = previous.bodyMinHeight;
+      body.style.touchAction = previous.bodyTouchAction;
+
+      if (root) {
+        root.style.minHeight = previous.rootMinHeight;
+        root.style.height = previous.rootHeight;
+      }
+
+      current = root ? root.firstElementChild : null;
+      depth = 0;
+      while (current && depth < 6) {
+        current.style.minHeight = '';
+        current.style.height = '';
+        current = current.firstElementChild;
+        depth += 1;
+      }
+    };
+  }, []);
+
+  return (
+    <AuthProvider>
+      <CartProvider>
+        <ToastProvider>
+          <NavigationContainer>
+            <StatusBar style="auto" />
+            <AppContainer />
+          </NavigationContainer>
+        </ToastProvider>
+      </CartProvider>
+>>>>>>> origin/my-local-branch
     </AuthProvider>
   );
 }

@@ -2,7 +2,11 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+<<<<<<< HEAD
 import { Table2, Utensils, ClipboardList, ChefHat, ShoppingBag, User, Settings, Database, CalendarDays } from "lucide-react";
+=======
+import { Table2, Utensils, ClipboardList, ChefHat, ShoppingBag, User } from "lucide-react";
+>>>>>>> origin/my-local-branch
 import Header from "@/components/ui/header";
 import Footer from "@/components/ui/footer";
 import { useAuth } from "@/contexts/auth-context";
@@ -20,7 +24,10 @@ export default function AccountPage() {
     { href: "/orders", label: "Tất cả đơn hàng", icon: ClipboardList, desc: "Xem toàn bộ đơn hàng", color: "from-blue-500 to-cyan-500" },
     { href: "/table", label: "Sơ đồ bàn", icon: Table2, desc: "Xem tình trạng bàn", color: "from-purple-500 to-pink-500" },
     { href: "/kitchen", label: "Quản lý bếp", icon: ChefHat, desc: "Cập nhật trạng thái món", color: "from-amber-500 to-yellow-500" },
+<<<<<<< HEAD
     { href: "/config", label: "Cấu hình hệ thống", icon: Settings, desc: "Database & API settings", color: "from-slate-500 to-slate-700" },
+=======
+>>>>>>> origin/my-local-branch
   ];
 
   const userLinks = [
@@ -120,3 +127,7 @@ export default function AccountPage() {
   );
 }
 
+<<<<<<< HEAD
+=======
+function CalendarDays(props: React.SVGProps<SVGSVGElement>) { return <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg> }
+>>>>>>> origin/my-local-branch

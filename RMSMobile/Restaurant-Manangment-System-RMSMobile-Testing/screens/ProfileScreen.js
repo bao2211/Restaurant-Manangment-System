@@ -2,6 +2,10 @@ import { useFocusEffect } from '@react-navigation/native';
 import React, { useContext, useCallback, useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+<<<<<<< HEAD
+=======
+import { LinearGradient } from 'expo-linear-gradient';
+>>>>>>> origin/my-local-branch
 import { AuthContext } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 
@@ -26,17 +30,37 @@ export default function ProfileScreen({ navigation }) {
     return (
       <ScrollView style={styles.container}>
         {/* Header Section */}
+<<<<<<< HEAD
         <View style={styles.headerSection}>
           <Image 
             source={require('../assets/RMSIcon.png')} 
             style={styles.logoImage}
             resizeMode="contain"
           />
+=======
+        <LinearGradient
+          colors={['#2c3e50', '#3498db', '#9b59b6']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.headerSection}
+        >
+        <View style={styles.headerContent}>
+          <View style={styles.logoContainer}>
+            <MaterialCommunityIcons name="account-circle" size={60} color="white" />
+          </View>
+>>>>>>> origin/my-local-branch
           <View style={styles.headerTextContainer}>
             <Text style={styles.headerText}>Profile</Text>
             <Text style={styles.headerSubText}>Please log in to continue</Text>
           </View>
+<<<<<<< HEAD
         </View>
+=======
+        </View>          {/* Decorative elements */}
+          <View style={styles.decorativeCircle1} />
+          <View style={styles.decorativeCircle2} />
+        </LinearGradient>
+>>>>>>> origin/my-local-branch
 
         {/* Login Prompt Section */}
         <View style={styles.loginPromptSection}>
@@ -93,6 +117,7 @@ export default function ProfileScreen({ navigation }) {
   return (
     <ScrollView style={styles.container}>
       {/* Header Section */}
+<<<<<<< HEAD
       <View style={styles.headerSection}>
         <Image 
           source={require('../assets/RMSIcon.png')} 
@@ -104,6 +129,26 @@ export default function ProfileScreen({ navigation }) {
           <Text style={styles.headerSubText}>Manage your account</Text>
         </View>
       </View>
+=======
+      <LinearGradient
+        colors={['#2c3e50', '#3498db', '#9b59b6']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.headerSection}
+      >
+      <View style={styles.headerContent}>
+        <View style={styles.logoContainer}>
+          <MaterialCommunityIcons name="account-circle" size={60} color="white" />
+        </View>
+        <View style={styles.headerTextContainer}>
+          <Text style={styles.headerText}>Profile</Text>
+          <Text style={styles.headerSubText}>Quản lý tài khoản của bạn</Text>
+        </View>
+      </View>        {/* Decorative elements */}
+        <View style={styles.decorativeCircle1} />
+        <View style={styles.decorativeCircle2} />
+      </LinearGradient>
+>>>>>>> origin/my-local-branch
 
       {/* Profile Info Section */}
       <View style={styles.profileSection}>
@@ -188,6 +233,7 @@ const styles = StyleSheet.create({
   },
   // Header Section Styles
   headerSection: {
+<<<<<<< HEAD
     backgroundColor: '#2C3E50',
     padding: 30,
     alignItems: 'center',
@@ -197,12 +243,33 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     marginRight: 20,
+=======
+    paddingTop: 60,
+    paddingBottom: 40,
+    paddingHorizontal: 30,
+    alignItems: 'center',
+    flexDirection: 'row',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  logoContainer: {
+    marginRight: 20,
+    padding: 10,
+    borderRadius: 40,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    shadowColor: '#FF6B35',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 15,
+    elevation: 10,
+>>>>>>> origin/my-local-branch
   },
   headerTextContainer: {
     flex: 1,
   },
   headerText: {
     fontSize: 28,
+<<<<<<< HEAD
     fontWeight: 'bold',
     color: 'white',
     textAlign: 'left',
@@ -212,6 +279,21 @@ const styles = StyleSheet.create({
     color: '#BDC3C7',
     textAlign: 'left',
     marginTop: 5,
+=======
+    fontWeight: '800',
+    color: 'white',
+    textAlign: 'left',
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+  headerSubText: {
+    fontSize: 16,
+    color: 'rgba(255,255,255,0.9)',
+    textAlign: 'left',
+    marginTop: 5,
+    lineHeight: 22,
+>>>>>>> origin/my-local-branch
   },
   // Login Prompt Styles (when not logged in)
   loginPromptSection: {
@@ -432,4 +514,31 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 8,
   },
+<<<<<<< HEAD
+=======
+  // Header decorative styles
+  headerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    zIndex: 2,
+  },
+  decorativeCircle1: {
+    position: 'absolute',
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    top: -50,
+    right: -50,
+  },
+  decorativeCircle2: {
+    position: 'absolute',
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    backgroundColor: 'rgba(255,255,255,0.03)',
+    bottom: -30,
+    left: -30,
+  },
+>>>>>>> origin/my-local-branch
 });

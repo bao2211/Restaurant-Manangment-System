@@ -1,9 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
+<<<<<<< HEAD
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl, TextInput, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { apiService, formatPrice } from '../services/apiService';
 import ScreenHeader from '../components/ScreenHeader';
+=======
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl, TextInput, TouchableOpacity, Image } from 'react-native';
+import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { apiService, formatPrice } from '../services/apiService';
+>>>>>>> origin/my-local-branch
 
 export default function OrdersScreen() {
   const [orders, setOrders] = useState([]);
@@ -222,6 +230,22 @@ export default function OrdersScreen() {
 
   return (
     <View style={styles.container}>
+<<<<<<< HEAD
+=======
+      {/* Background Image */}
+      <View style={styles.backgroundContainer}>
+        <View style={styles.backgroundImageContainer}>
+          <Image 
+            source={{
+              uri: 'https://gaophuongnam.vn/upload/ckfinder/images/%E1%BA%A3nh%20tin%20t%E1%BB%A9c/320211736-689662439425355-4861645986957870390-n-853.jpeg'
+            }}
+            style={[styles.backgroundImage, { opacity: 0.3 }]}
+            resizeMode="cover"
+          />
+        </View>
+      </View>
+
+>>>>>>> origin/my-local-branch
       {loading ? (
         <ActivityIndicator size="large" color="#2C3E50" style={styles.loader} />
       ) : orders.length === 0 ? (
@@ -234,11 +258,47 @@ export default function OrdersScreen() {
         </View>
       ) : (
         <View style={styles.content}>
+<<<<<<< HEAD
           <ScreenHeader
             title="Your Orders"
             onRefresh={onRefresh}
             refreshing={refreshing}
           />
+=======
+          {/* Welcome Section with Logo */}
+          <LinearGradient
+            colors={['#4A90E2', '#357ABD', '#2E5F8C']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.welcomeSection}
+          >
+            <View style={styles.decorativeCircle1} />
+            <View style={styles.decorativeCircle2} />
+            <View style={styles.welcomeContent}>
+              <View style={styles.logoContainer}>
+                <MaterialCommunityIcons name="clipboard-text" size={32} color="white" />
+              </View>
+              <View style={styles.welcomeTextContainer}>
+                <Text style={styles.welcomeTitle}>My Orders</Text>
+                <Text style={styles.welcomeSubtitle}>
+                  Theo dõi và quản lý đơn hàng của bạn
+                </Text>
+              </View>
+              <TouchableOpacity 
+                style={styles.refreshButtonHeader}
+                onPress={onRefresh}
+                disabled={refreshing}
+              >
+                {refreshing ? (
+                  <ActivityIndicator size="small" color="white" />
+                ) : (
+                  <Ionicons name="refresh" size={20} color="white" />
+                )}
+              </TouchableOpacity>
+            </View>
+          </LinearGradient>
+
+>>>>>>> origin/my-local-branch
           {renderSearchBar()}
           <FlatList
             data={filteredOrders}
@@ -362,6 +422,21 @@ const OrderItem = ({ order }) => {
         <View style={styles.orderIdContainer}>
           <MaterialCommunityIcons name="receipt" size={20} color="#2C3E50" />
           <Text style={styles.orderId}>Order #{order.orderId}</Text>
+<<<<<<< HEAD
+=======
+          {/* Online/Dine-in Indicator */}
+          {order.tableId && order.tableId.toString().trim() === '8' ? (
+            <View style={styles.orderTypeBadge}>
+              <MaterialCommunityIcons name="truck-delivery" size={14} color="#FF6B35" />
+              <Text style={styles.orderTypeText}>Online</Text>
+            </View>
+          ) : (
+            <View style={[styles.orderTypeBadge, styles.dineInBadge]}>
+              <MaterialCommunityIcons name="silverware-fork-knife" size={14} color="#10B981" />
+              <Text style={[styles.orderTypeText, styles.dineInText]}>Dine-in</Text>
+            </View>
+          )}
+>>>>>>> origin/my-local-branch
         </View>
         <Text style={[styles.orderStatus, { 
           color: getStatusColor(order.status),
@@ -543,20 +618,130 @@ const OrderDetailItem = ({ detail, index }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+<<<<<<< HEAD
     backgroundColor: '#F5F5F5',
+=======
+    backgroundColor: '#2C3E50',
+  },
+  backgroundContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 0,
+  },
+  backgroundImageContainer: {
+    flex: 1,
+    position: 'relative',
+  },
+  backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
+  },
+  welcomeSection: {
+    paddingTop: 60,
+    paddingBottom: 30,
+    paddingHorizontal: 20,
+    position: 'relative',
+    overflow: 'hidden',
+    zIndex: 1,
+  },
+  welcomeContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    zIndex: 2,
+  },
+  logoContainer: {
+    marginRight: 16,
+    padding: 10,
+    borderRadius: 40,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    shadowColor: '#fff',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 8,
+  },
+  welcomeTextContainer: {
+    flex: 1,
+  },
+  welcomeTitle: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: 'white',
+    marginBottom: 6,
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+  welcomeSubtitle: {
+    fontSize: 15,
+    color: 'rgba(255,255,255,0.9)',
+    lineHeight: 20,
+    fontWeight: '400',
+  },
+  refreshButtonHeader: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#fff',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  decorativeCircle1: {
+    position: 'absolute',
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    top: -50,
+    right: -50,
+  },
+  decorativeCircle2: {
+    position: 'absolute',
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    backgroundColor: 'rgba(255,255,255,0.03)',
+    bottom: -30,
+    left: -30,
+>>>>>>> origin/my-local-branch
   },
   content: {
     flex: 1,
     width: '100%',
+<<<<<<< HEAD
   },
   searchContainer: {
     paddingHorizontal: 16,
     paddingBottom: 8,
     backgroundColor: '#F5F5F5',
+=======
+    zIndex: 1,
+  },
+  searchContainer: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 12,
+    backgroundColor: 'transparent',
+    zIndex: 1,
+>>>>>>> origin/my-local-branch
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
+<<<<<<< HEAD
     backgroundColor: 'white',
     borderRadius: 8,
     paddingHorizontal: 12,
@@ -567,6 +752,18 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
+=======
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginBottom: 10,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+>>>>>>> origin/my-local-branch
   },
   searchInput: {
     flex: 1,
@@ -586,6 +783,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
+<<<<<<< HEAD
     backgroundColor: '#ECF0F1',
     marginHorizontal: 4,
   },
@@ -599,6 +797,32 @@ const styles = StyleSheet.create({
   },
   filterButtonTextActive: {
     color: 'white',
+=======
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    marginHorizontal: 4,
+    borderWidth: 2,
+    borderColor: '#4A90E2',
+    elevation: 3,
+    shadowColor: '#4A90E2',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  filterButtonActive: {
+    backgroundColor: '#4A90E2',
+    borderColor: '#4A90E2',
+    elevation: 6,
+    shadowOpacity: 0.4,
+  },
+  filterButtonText: {
+    fontSize: 14,
+    color: '#4A90E2',
+    fontWeight: '600',
+  },
+  filterButtonTextActive: {
+    color: 'white',
+    fontWeight: 'bold',
+>>>>>>> origin/my-local-branch
   },
   loader: {
     flex: 1,
@@ -630,6 +854,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   orderCard: {
+<<<<<<< HEAD
     backgroundColor: 'white',
     marginHorizontal: 16,
     marginVertical: 8,
@@ -640,19 +865,42 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
+=======
+    backgroundColor: 'rgba(255, 255, 255, 0.98)',
+    marginHorizontal: 16,
+    marginVertical: 8,
+    borderRadius: 20,
+    overflow: 'hidden',
+    elevation: 8,
+    shadowColor: '#4A90E2',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(74, 144, 226, 0.1)',
+>>>>>>> origin/my-local-branch
   },
   orderHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+<<<<<<< HEAD
     marginBottom: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#F5F5F5',
     paddingBottom: 12,
+=======
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    backgroundColor: 'rgba(74, 144, 226, 0.05)',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(74, 144, 226, 0.1)',
+>>>>>>> origin/my-local-branch
   },
   orderIdContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+<<<<<<< HEAD
     gap: 8,
   },
   orderId: {
@@ -672,10 +920,65 @@ const styles = StyleSheet.create({
   },
   detailSection: {
     marginBottom: 8,
+=======
+    gap: 10,
+    flex: 1,
+    flexWrap: 'wrap',
+  },
+  orderId: {
+    fontSize: 17,
+    fontWeight: '800',
+    color: '#2E5F8C',
+    letterSpacing: 0.5,
+  },
+  orderTypeBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 107, 53, 0.1)',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#FF6B35',
+    gap: 4,
+  },
+  dineInBadge: {
+    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+    borderColor: '#10B981',
+  },
+  orderTypeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#FF6B35',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  dineInText: {
+    color: '#10B981',
+  },
+  orderStatus: {
+    fontSize: 13,
+    fontWeight: '700',
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 20,
+    overflow: 'hidden',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  orderDetails: {
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    backgroundColor: 'white',
+  },
+  detailSection: {
+    marginBottom: 10,
+>>>>>>> origin/my-local-branch
   },
   detailRow: {
     flexDirection: 'row',
     alignItems: 'center',
+<<<<<<< HEAD
     marginVertical: 4,
   },
   detailText: {
@@ -693,10 +996,34 @@ const styles = StyleSheet.create({
   footerContent: {
     flexDirection: 'column',
     paddingVertical: 8,
+=======
+    marginVertical: 6,
+    paddingVertical: 4,
+  },
+  detailText: {
+    fontSize: 14,
+    color: '#5A6C7D',
+    marginLeft: 10,
+    flex: 1,
+    fontWeight: '500',
+  },
+  orderFooter: {
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    backgroundColor: 'rgba(74, 144, 226, 0.03)',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(74, 144, 226, 0.1)',
+  },
+  footerContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+>>>>>>> origin/my-local-branch
   },
   amountRow: {
     flexDirection: 'row',
     alignItems: 'center',
+<<<<<<< HEAD
     marginBottom: 4,
   },
   footerLabel: {
@@ -711,6 +1038,20 @@ const styles = StyleSheet.create({
     color: '#27AE60',
     marginTop: 4,
     textAlign: 'right',
+=======
+  },
+  footerLabel: {
+    fontSize: 15,
+    color: '#5A6C7D',
+    marginLeft: 8,
+    fontWeight: '600',
+  },
+  totalAmount: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#27AE60',
+    letterSpacing: 0.5,
+>>>>>>> origin/my-local-branch
   },
   calculatingText: {
     fontSize: 14,
@@ -720,6 +1061,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   highlightText: {
+<<<<<<< HEAD
     color: '#3498DB',
     fontWeight: '500',
   },
@@ -727,12 +1069,23 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#95A5A6',
     marginLeft: 8,
+=======
+    color: '#4A90E2',
+    fontWeight: '700',
+  },
+  staffId: {
+    fontSize: 11,
+    color: '#95A5A6',
+    marginLeft: 8,
+    fontStyle: 'italic',
+>>>>>>> origin/my-local-branch
   },
   // Order Details Dropdown Styles
   expandButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+<<<<<<< HEAD
     paddingVertical: 10,
     marginTop: 8,
     backgroundColor: '#F8F9FA',
@@ -751,42 +1104,99 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#F5F5F5',
     paddingTop: 12,
+=======
+    paddingVertical: 12,
+    marginHorizontal: 16,
+    marginTop: 8,
+    marginBottom: 8,
+    backgroundColor: 'rgba(74, 144, 226, 0.08)',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(74, 144, 226, 0.2)',
+  },
+  expandButtonText: {
+    fontSize: 14,
+    color: '#4A90E2',
+    fontWeight: '700',
+    marginRight: 8,
+  },
+  orderDetailsList: {
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+    backgroundColor: 'rgba(74, 144, 226, 0.02)',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(74, 144, 226, 0.1)',
+>>>>>>> origin/my-local-branch
   },
   detailsLoader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+<<<<<<< HEAD
     padding: 16,
   },
   loadingDetailsText: {
     marginLeft: 8,
     fontSize: 14,
     color: '#7F8C8D',
+=======
+    padding: 20,
+  },
+  loadingDetailsText: {
+    marginLeft: 10,
+    fontSize: 14,
+    color: '#4A90E2',
+    fontWeight: '500',
+>>>>>>> origin/my-local-branch
   },
   orderDetailItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+<<<<<<< HEAD
     paddingVertical: 10,
     paddingHorizontal: 8,
     backgroundColor: '#F8F9FA',
     borderRadius: 8,
     marginBottom: 8,
+=======
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    backgroundColor: 'white',
+    borderRadius: 12,
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(74, 144, 226, 0.1)',
+    elevation: 2,
+    shadowColor: '#4A90E2',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+>>>>>>> origin/my-local-branch
   },
   orderDetailInfo: {
     flex: 1,
     marginRight: 12,
   },
   dishName: {
+<<<<<<< HEAD
     fontSize: 14,
     color: '#2C3E50',
     fontWeight: '500',
     marginBottom: 4,
+=======
+    fontSize: 15,
+    color: '#2C3E50',
+    fontWeight: '700',
+    marginBottom: 6,
+    letterSpacing: 0.2,
+>>>>>>> origin/my-local-branch
   },
   priceContainer: {
     marginTop: 4,
   },
   dishPrice: {
+<<<<<<< HEAD
     fontSize: 12,
     color: '#FF6B35',
     fontWeight: '600',
@@ -796,11 +1206,23 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#27AE60',
     fontWeight: 'bold',
+=======
+    fontSize: 13,
+    color: '#FF6B35',
+    fontWeight: '600',
+    marginBottom: 3,
+  },
+  totalPrice: {
+    fontSize: 14,
+    color: '#27AE60',
+    fontWeight: '700',
+>>>>>>> origin/my-local-branch
   },
   foodIdText: {
     fontSize: 11,
     color: '#95A5A6',
     fontStyle: 'italic',
+<<<<<<< HEAD
     marginTop: 2,
   },
   loadingPriceText: {
@@ -821,12 +1243,41 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#27AE60',
     fontWeight: '600',
+=======
+    marginTop: 3,
+  },
+  loadingPriceText: {
+    fontSize: 11,
+    color: '#4A90E2',
+    fontStyle: 'italic',
+    marginTop: 3,
+  },
+  quantityBadge: {
+    backgroundColor: '#E8F5E9',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: '#27AE60',
+    minWidth: 50,
+    alignItems: 'center',
+  },
+  quantityText: {
+    fontSize: 15,
+    color: '#27AE60',
+    fontWeight: '800',
+    letterSpacing: 0.5,
+>>>>>>> origin/my-local-branch
   },
   noDetailsText: {
     textAlign: 'center',
     color: '#95A5A6',
     fontStyle: 'italic',
+<<<<<<< HEAD
     padding: 16,
+=======
+    padding: 20,
+>>>>>>> origin/my-local-branch
     fontSize: 14,
   },
 });

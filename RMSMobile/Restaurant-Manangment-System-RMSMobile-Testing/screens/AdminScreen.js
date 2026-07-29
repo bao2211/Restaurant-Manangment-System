@@ -48,6 +48,7 @@ export default function AdminScreen({ navigation }) {
           <Text style={styles.menuText}>Quản Lý Tài Khoản</Text>
           <MaterialCommunityIcons name="chevron-right" size={24} color="#BDC3C7" />
         </TouchableOpacity>
+<<<<<<< HEAD
 
         <TouchableOpacity 
           style={styles.menuItem}
@@ -57,6 +58,8 @@ export default function AdminScreen({ navigation }) {
           <Text style={styles.menuText}>Cấu Hình Database</Text>
           <MaterialCommunityIcons name="chevron-right" size={24} color="#BDC3C7" />
         </TouchableOpacity>
+=======
+>>>>>>> origin/my-local-branch
       </View>
 
       <View style={styles.section}>
