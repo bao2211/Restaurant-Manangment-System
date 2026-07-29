@@ -84,7 +84,6 @@ export default function MenuPage() {
       <Header foodItems={foodItems} onSearch={setSearchQuery} onSearchSelect={(id) => setHighlightedId(id)} />
 
       {/* Page header */}
-<<<<<<< HEAD
       <section className="bg-[#F5EDE4]">
         <div className="container mx-auto px-4 py-8">
           <motion.div
@@ -140,17 +139,6 @@ export default function MenuPage() {
                 </motion.div>
               ))}
             </motion.div>
-=======
-      <section className="bg-gradient-to-br from-[#EE4D2D] via-[#FF6633] to-[#FF8C42]">
-        <div className="container mx-auto px-4 py-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-white"
-          >
-            <h1 className="text-3xl md:text-4xl font-black tracking-tight">Thực đơn</h1>
-            <p className="text-white/70 mt-2 text-sm">Khám phá tất cả món ngon tại nhà hàng</p>
->>>>>>> origin/my-local-branch
           </motion.div>
         </div>
       </section>

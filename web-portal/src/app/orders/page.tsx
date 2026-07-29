@@ -2,18 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-<<<<<<< HEAD
 import { ClipboardList, Clock, ChevronDown, ShoppingBag, Loader2, Search, ArrowUpDown, MapPin, CreditCard } from "lucide-react";
 import Header from "@/components/ui/header";
 import Footer from "@/components/ui/footer";
 import { useAuth } from "@/contexts/auth-context";
 import Link from "next/link";
-=======
-import { ClipboardList, Clock, ChevronDown, ShoppingBag, Loader2, Search, ArrowUpDown } from "lucide-react";
-import Header from "@/components/ui/header";
-import Footer from "@/components/ui/footer";
-import { useAuth } from "@/contexts/auth-context";
->>>>>>> origin/my-local-branch
 
 interface OrderDetail {
   foodId: string;
@@ -31,11 +24,8 @@ interface Order {
   note?: string;
   tableId?: string;
   tableName?: string;
-<<<<<<< HEAD
   userId?: string;
   userName?: string;
-=======
->>>>>>> origin/my-local-branch
   paymentStatus?: string;
   orderDetails?: OrderDetail[];
 }
@@ -133,10 +123,7 @@ export default function OrdersPage() {
       (o) =>
         o.orderId.toLowerCase().includes(q) ||
         (o.note && o.note.toLowerCase().includes(q)) ||
-<<<<<<< HEAD
         (o.userName && o.userName.toLowerCase().includes(q)) ||
-=======
->>>>>>> origin/my-local-branch
         statusLabels[o.status]?.toLowerCase().includes(q)
     );
   }
@@ -170,11 +157,7 @@ export default function OrdersPage() {
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
-<<<<<<< HEAD
                 type="text" placeholder="Tìm theo mã đơn, tên tài khoản, ghi chú..."
-=======
-                type="text" placeholder="Tìm theo mã đơn, ghi chú..."
->>>>>>> origin/my-local-branch
                 value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-3 py-2 rounded-xl border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:border-[#EE4D2D]/40 focus:bg-white transition-all"
               />
@@ -306,7 +289,6 @@ export default function OrdersPage() {
                               <p className="text-sm text-gray-600 mt-0.5">{order.note}</p>
                             </div>
                           )}
-<<<<<<< HEAD
                           <div className="flex items-center justify-between pt-3 border-t border-gray-50">
                             <span className="text-sm font-semibold text-gray-500">Tổng cộng</span>
                             <span className="text-lg font-black text-[#EE4D2D]">{formatPrice(order.total || 0)}</span>
@@ -330,12 +312,6 @@ export default function OrdersPage() {
                               Theo dõi đơn hàng
                             </Link>
                           )}
-=======
-                          <div className="flex items-center justify-between pt-2 border-t border-gray-50">
-                            <span className="text-sm font-semibold text-gray-500">Tổng cộng</span>
-                            <span className="text-lg font-black text-[#EE4D2D]">{formatPrice(order.total || 0)}</span>
-                          </div>
->>>>>>> origin/my-local-branch
                         </div>
                       </motion.div>
                     )}
