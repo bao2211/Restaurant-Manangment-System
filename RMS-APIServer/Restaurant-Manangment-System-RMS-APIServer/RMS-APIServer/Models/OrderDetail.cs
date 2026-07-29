@@ -15,9 +15,7 @@ public partial class OrderDetail
 
     public int? Quantity { get; set; }
 
-    [System.Text.Json.Serialization.JsonIgnore]
-    public virtual FoodInfo? Food { get; set; }
+    public virtual FoodInfo Food { get; set; } = null!;
 
-    [System.Text.Json.Serialization.JsonIgnore]
-    public virtual Order? Order { get; set; }
+    public virtual Order Order { get; set; } = null!;
 }

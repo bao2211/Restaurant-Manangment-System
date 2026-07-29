@@ -76,15 +76,19 @@ export default function OrderDetailManagerScreen() {
       });
     }
     
-    // Apply sorting
+    // Apply sorting by creation time (like OrdersScreen)
     result.sort((a, b) => {
-      let orderComparison;
       if (sortOrder === 'newest') {
-        orderComparison = (b.orderId || '').localeCompare(a.orderId || '');
+        // Most recent first
+        const dateA = new Date(b.createDate || b.createdTime || b.createdAt || b.orderDate || 0);
+        const dateB = new Date(a.createDate || a.createdTime || a.createdAt || a.orderDate || 0);
+        return dateA - dateB;
       } else {
-        orderComparison = (a.orderId || '').localeCompare(b.orderId || '');
+        // Oldest first
+        const dateA = new Date(a.createDate || a.createdTime || a.createdAt || a.orderDate || 0);
+        const dateB = new Date(b.createDate || b.createdTime || b.createdAt || b.orderDate || 0);
+        return dateA - dateB;
       }
-      return orderComparison;
     });
     
     console.log('Filtered and sorted orders:', result.length, 'of', orders.length);
@@ -204,14 +208,18 @@ export default function OrderDetailManagerScreen() {
         })
       );
 
-      // Sort orders by ID considering sort order
+      // Sort orders by creation time (matching OrdersScreen logic)
       const sortedOrders = enrichedOrders.sort((a, b) => {
-        const aId = a.id || a.orderId || a.OrderId || '';
-        const bId = b.id || b.orderId || b.OrderId || '';
         if (sortOrder === 'newest') {
-          return bId.localeCompare(aId);
+          // Most recent first (like OrdersScreen default)
+          const dateA = new Date(b.createDate || b.createdTime || b.createdAt || b.orderDate || 0);
+          const dateB = new Date(a.createDate || a.createdTime || a.createdAt || a.orderDate || 0);
+          return dateA - dateB;
         } else {
-          return aId.localeCompare(bId);
+          // Oldest first
+          const dateA = new Date(a.createDate || a.createdTime || a.createdAt || a.orderDate || 0);
+          const dateB = new Date(b.createDate || b.createdTime || b.createdAt || b.orderDate || 0);
+          return dateA - dateB;
         }
       });
 

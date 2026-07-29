@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
@@ -11,6 +11,7 @@ import {
   Modal, 
   Animated, 
   Dimensions,
+  Platform,
   TouchableWithoutFeedback,
   ScrollView 
 } from "react-native";
@@ -19,25 +20,27 @@ import {
 import HomeScreen from "./screens/HomeScreen";
 import MenuScreen from "./screens/MenuScreen";
 import OrdersScreen from "./screens/OrdersScreen";
+import OrderDetailScreen from "./screens/OrderDetailScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import LoginScreen from "./screens/LoginScreen";
 import ChangePasswordScreen from "./screens/ChangePasswordScreen";
 import UpdateInformationScreen from "./screens/UpdateInformationScreen";
 import RegisterScreen from "./screens/RegisterScreen";
+import FavoritesScreen from "./screens/FavoritesScreen";
+import CartScreen from "./screens/CartScreen";
 
 // context
 import { AuthProvider, AuthContext } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
+import { CartProvider, useCart } from "./context/CartContext";
 import TableScreen from './screens/TableScreen';
-import BillScreen from './screens/BillScreen';
 import BillManagerScreen from './screens/BillManagerScreen';
 import ReportScreen from './screens/ReportScreen';
 import MenuManagerScreen from './screens/MenuManagerScreen';
 import OrderDetailManagerScreen from './screens/OrderDetailManagerScreen';
 import IngredientManagerScreen from './screens/IngredientManagerScreen';
 import UserManagementScreen from './screens/UserManagementScreen';
-import SettingsScreen from './screens/SettingsScreen';
-import SettingsScreen from './screens/SettingsScreen';
+import PayOSCheckoutScreen from './screens/PayOSCheckoutScreen';
 
 
 const Stack = createStackNavigator();
@@ -96,13 +99,38 @@ function ProtectedScreen({ children, screenName, fallbackScreen = 'Home' }) {
   return children;
 }
 
+// Cart Header Button Component
+function CartHeaderButton({ navigation }) {
+  const { getTotalItems } = useCart();
+  const { getUserRole } = useContext(AuthContext);
+  const totalItems = getTotalItems();
+  const userRole = getUserRole();
 
+  // Don't show cart button for Admin users
+  if (userRole === 'Admin' || userRole === 'admin' || userRole === 'ADMIN') {
+    return null;
+  }
+
+  return (
+    <TouchableOpacity
+      style={styles.cartButton}
+      onPress={() => navigation.navigate('Cart')}
+    >
+      <MaterialCommunityIcons name="cart" size={24} color="white" />
+      {totalItems > 0 && (
+        <View style={styles.cartBadge}>
+          <Text style={styles.cartBadgeText}>{totalItems}</Text>
+        </View>
+      )}
+    </TouchableOpacity>
+  );
+}
 
 // Main App Stack with Hamburger Menu
 function MainAppStack({ openSidebar }) {
   return (
     <Stack.Navigator
-      screenOptions={{
+      screenOptions={({ navigation }) => ({
         headerStyle: {
           backgroundColor: '#2C3E50',
         },
@@ -119,7 +147,7 @@ function MainAppStack({ openSidebar }) {
             <MaterialCommunityIcons name="menu" size={24} color="white" />
           </TouchableOpacity>
         ),
-      }}
+      })}
     >
       <Stack.Screen 
         name="Home" 
@@ -165,18 +193,6 @@ function MainAppStack({ openSidebar }) {
         )}
       </Stack.Screen>
       <Stack.Screen 
-        name="Bill" 
-        options={{ 
-          headerTitle: 'Our Bill',
-        }}
-      >
-        {(props) => (
-          <ProtectedScreen screenName="Bill">
-            <BillScreen {...props} />
-          </ProtectedScreen>
-        )}
-      </Stack.Screen>
-      <Stack.Screen 
         name="BillManager" 
         options={{ 
           headerTitle: 'Bill Management',
@@ -187,6 +203,12 @@ function MainAppStack({ openSidebar }) {
             <BillManagerScreen {...props} />
           </ProtectedScreen>
         )}
+      </Stack.Screen>
+      <Stack.Screen 
+        name="PayOSCheckout" 
+        options={{ headerShown: false }}
+      >
+        {(props) => <PayOSCheckoutScreen {...props} />}
       </Stack.Screen>
       <Stack.Screen 
         name="Report" 
@@ -207,6 +229,31 @@ function MainAppStack({ openSidebar }) {
           headerTitle: 'My Profile',
         }}
       />
+      <Stack.Screen 
+        name="Favorites" 
+        options={{ 
+          headerTitle: 'Yêu Thích',
+        }}
+      >
+        {(props) => (
+          <ProtectedScreen screenName="Favorites">
+            <FavoritesScreen {...props} />
+          </ProtectedScreen>
+        )}
+      </Stack.Screen>
+      <Stack.Screen 
+        name="Cart" 
+        options={({ navigation }) => ({ 
+          headerTitle: 'Giỏ Hàng',
+          headerRight: () => <CartHeaderButton navigation={navigation} />,
+        })}
+      >
+        {(props) => (
+          <ProtectedScreen screenName="Cart">
+            <CartScreen {...props} />
+          </ProtectedScreen>
+        )}
+      </Stack.Screen>
       <Stack.Screen 
         name="OrderDetail" 
         options={{ 
@@ -264,18 +311,6 @@ function MainAppStack({ openSidebar }) {
         {(props) => (
           <ProtectedScreen screenName="UserManagement">
             <UserManagementScreen {...props} />
-          </ProtectedScreen>
-        )}
-      </Stack.Screen>
-      <Stack.Screen 
-        name="Settings" 
-        options={{ 
-          headerTitle: 'Cấu Hình Database',
-        }}
-      >
-        {(props) => (
-          <ProtectedScreen screenName="Settings">
-            <SettingsScreen {...props} />
           </ProtectedScreen>
         )}
       </Stack.Screen>
@@ -338,17 +373,21 @@ function CustomSidebarMenu({ visible, onClose }) {
   const menuItems = [
     { name: 'Home', icon: 'home', title: 'Home', screen: 'Home' },
     { name: 'Menu', icon: 'food', title: 'Our Menu', screen: 'Menu' },
+    { name: 'Favorites', icon: 'heart', title: 'Yêu Thích', screen: 'Favorites' },
+    { name: 'Cart', icon: 'cart', title: 'Giỏ Hàng', screen: 'Cart' },
     { name: 'Orders', icon: 'clipboard-list', title: 'My Orders', screen: 'Orders' },
     { name: 'OrderDetail', icon: 'clipboard-text', title: 'Order Details', screen: 'OrderDetail' },
     { name: 'Table', icon: 'table-chair', title: 'Our Table', screen: 'Table' },
-    { name: 'Bill', icon: 'file-document', title: 'Our Bill', screen: 'Bill' },
+    { name: 'BillManager', icon: 'receipt', title: 'Bill Management', screen: 'BillManager' },
     { name: 'Report', icon: 'file-chart', title: 'Our Report', screen: 'Report' },
     { name: 'Profile', icon: 'account', title: 'My Profile', screen: 'Profile' },
   ];
 
   const managementItems = [
     { name: 'MenuManager', icon: 'silverware-fork-knife', title: 'Quản Lý Món Ăn', screen: 'MenuManager' },
+    { name: 'IngredientManager', icon: 'food-apple', title: 'Quản Lý Nguyên Liệu', screen: 'IngredientManager' },
     { name: 'OrderDetailManager', icon: 'food-fork-drink', title: 'Trạng Thái Món Ăn', screen: 'OrderDetailManager' },
+    { name: 'UserManagement', icon: 'account-group', title: 'Quản Lý Người Dùng', screen: 'UserManagement' },
   ];
 
   const { mainMenu, managementMenu } = getAccessibleMenuItems();
@@ -603,14 +642,80 @@ function AppContainer() {
 }
 
 export default function App() {
+  useEffect(() => {
+    if (Platform.OS !== 'web' || typeof document === 'undefined') {
+      return undefined;
+    }
+
+    const { documentElement, body } = document;
+    const root = document.getElementById('root');
+
+    const previous = {
+      htmlOverflow: documentElement.style.overflow,
+      htmlHeight: documentElement.style.height,
+      bodyOverflow: body.style.overflow,
+      bodyHeight: body.style.height,
+      bodyMinHeight: body.style.minHeight,
+      bodyTouchAction: body.style.touchAction,
+      rootMinHeight: root ? root.style.minHeight : '',
+      rootHeight: root ? root.style.height : ''
+    };
+
+    documentElement.style.overflow = 'auto';
+    documentElement.style.height = 'auto';
+    body.style.overflow = 'auto';
+    body.style.height = 'auto';
+    body.style.minHeight = '100vh';
+    body.style.touchAction = 'pan-y';
+
+    if (root) {
+      root.style.minHeight = '100vh';
+      root.style.height = '100vh';
+    }
+
+    let current = root ? root.firstElementChild : null;
+    let depth = 0;
+    while (current && depth < 6) {
+      current.style.minHeight = '100vh';
+      current.style.height = '100vh';
+      current = current.firstElementChild;
+      depth += 1;
+    }
+
+    return () => {
+      documentElement.style.overflow = previous.htmlOverflow;
+      documentElement.style.height = previous.htmlHeight;
+      body.style.overflow = previous.bodyOverflow;
+      body.style.height = previous.bodyHeight;
+      body.style.minHeight = previous.bodyMinHeight;
+      body.style.touchAction = previous.bodyTouchAction;
+
+      if (root) {
+        root.style.minHeight = previous.rootMinHeight;
+        root.style.height = previous.rootHeight;
+      }
+
+      current = root ? root.firstElementChild : null;
+      depth = 0;
+      while (current && depth < 6) {
+        current.style.minHeight = '';
+        current.style.height = '';
+        current = current.firstElementChild;
+        depth += 1;
+      }
+    };
+  }, []);
+
   return (
     <AuthProvider>
-      <ToastProvider>
-        <NavigationContainer>
-          <StatusBar style="auto" />
-          <AppContainer />
-        </NavigationContainer>
-      </ToastProvider>
+      <CartProvider>
+        <ToastProvider>
+          <NavigationContainer>
+            <StatusBar style="auto" />
+            <AppContainer />
+          </NavigationContainer>
+        </ToastProvider>
+      </CartProvider>
     </AuthProvider>
   );
 }

@@ -17,24 +17,20 @@ interface TrackingEvent {
 interface OrderDetail {
   orderId: string;
   userId: string;
-  userName?: string;
   tableId: string;
-  tableName?: string;
   status: string;
   total: number;
   paymentStatus: string;
-  deliveryStatus?: string;
-  ghtkTrackingId?: string;
   note?: string;
-  orderDetails?: { orderDetailId: string; foodId: string; quantity: number; unitPrice: number; foodName?: string; foodImage?: string; status?: string }[];
+  orderDetails?: { orderDetailId: string; foodId: string; quantity: number; unitPrice: number; foodName?: string }[];
 }
 
 const statusSteps = [
   { key: "Chưa làm", label: "Đã nhận đơn", icon: Clock },
   { key: "Đang làm", label: "Đang chế biến", icon: Package },
   { key: "Hoàn tất", label: "Hoàn tất", icon: CheckCircle },
-  { key: "delivering", label: "Đang giao", icon: Truck },
-  { key: "delivered", label: "Đã giao", icon: MapPin },
+  { key: "Giao hàng", label: "Đang giao", icon: Truck },
+  { key: "Đã giao", label: "Đã giao", icon: MapPin },
 ];
 
 export default function TrackingPage() {
@@ -60,9 +56,6 @@ export default function TrackingPage() {
       setLoading(false);
     };
     fetchOrder();
-    // Poll for real-time status updates every 10 seconds
-    const interval = setInterval(fetchOrder, 10000);
-    return () => clearInterval(interval);
   }, [orderId]);
 
   useEffect(() => {
@@ -109,37 +102,7 @@ export default function TrackingPage() {
     );
   }
 
-  // Determine current step based on order details and deliveryStatus
-  const currentStepIndex = (() => {
-    if (!order) return -1;
-    
-    // Check delivery status first
-    if (order.deliveryStatus === "delivered") return 4; // Đã giao
-    if (order.deliveryStatus === "delivering") return 3; // Đang giao
-    
-    // Check order details completion status
-    const orderDetails = order.orderDetails || [];
-    if (orderDetails.length === 0) {
-      return statusSteps.findIndex((s) => s.key === order.status);
-    }
-    
-    const completedItems = orderDetails.filter(
-      (item) => (item.status || "").trim() === "Hoàn tất"
-    ).length;
-    const totalItems = orderDetails.length;
-    
-    if (completedItems === totalItems) {
-      // All items complete → Hoàn tất (step 2)
-      return 2;
-    } else if (completedItems > 0) {
-      // Some items complete → Đang chế biến (step 1)
-      return 1;
-    } else {
-      // No items complete → use order.status
-      const stepIndex = statusSteps.findIndex((s) => s.key === order.status);
-      return stepIndex >= 0 ? stepIndex : 0;
-    }
-  })();
+  const currentStepIndex = order ? statusSteps.findIndex((s) => s.key === order.status) : -1;
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -181,72 +144,11 @@ export default function TrackingPage() {
             <div className="bg-white rounded-xl border border-gray-100 p-4 mb-4">
               <p className="text-xs font-semibold text-gray-400 uppercase mb-2">Thông tin</p>
               <div className="space-y-2 text-sm">
-                <div className="flex justify-between"><span className="text-gray-500">Mã đơn hàng</span><span className="font-bold text-gray-900 font-mono">{orderId}</span></div>
-                {order.ghtkTrackingId && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">Mã vận chuyển</span>
-                    <span className="font-bold text-blue-600 font-mono">{order.ghtkTrackingId}</span>
-                  </div>
-                )}
                 <div className="flex justify-between"><span className="text-gray-500">Tổng cộng</span><span className="font-bold text-[#EE4D2D]">{new Intl.NumberFormat("vi-VN").format(order.total)}₫</span></div>
                 <div className="flex justify-between"><span className="text-gray-500">Thanh toán</span><span className={`font-semibold ${order.paymentStatus === "Đã thanh toán" ? "text-green-600" : "text-amber-600"}`}>{order.paymentStatus || "Chưa thanh toán"}</span></div>
                 {order.note && <div className="flex justify-between"><span className="text-gray-500">Ghi chú</span><span className="text-gray-700 text-right max-w-[60%]">{order.note}</span></div>}
               </div>
             </div>
-
-            {/* Order Items */}
-            {order.orderDetails && order.orderDetails.length > 0 && (
-              <div className="bg-white rounded-xl border border-gray-100 p-4 mb-4">
-                <p className="text-xs font-semibold text-gray-400 uppercase mb-3">Món đã đặt</p>
-                <div className="space-y-3">
-                  {order.orderDetails.map((item, i) => (
-                    <div key={i} className="flex items-center gap-3 py-2 px-3 bg-gray-50 rounded-lg">
-                      {/* Food Image */}
-                      <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-gray-200 shrink-0">
-                        {item.foodImage ? (
-                          <img 
-                            src={item.foodImage}
-                            alt={item.foodName || "Food"}
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).style.display = 'none';
-                              const parent = (e.target as HTMLImageElement).parentElement;
-                              if (parent) {
-                                parent.innerHTML = '<span class="text-2xl">🍽️</span>';
-                                parent.className += ' flex items-center justify-center';
-                              }
-                            }}
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-2xl">🍽️</div>
-                        )}
-                      </div>
-                      {/* Food Info */}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-gray-800">{item.foodName || `Món ${item.foodId}`}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-xs text-gray-500">SL: {item.quantity}</span>
-                          <span className="text-xs text-gray-400">·</span>
-                          <span className="text-xs text-gray-500">{new Intl.NumberFormat("vi-VN").format(item.unitPrice || 0)}₫</span>
-                        </div>
-                      </div>
-                      {/* Status */}
-                      <div className="flex items-center gap-2 shrink-0">
-                        {(item.status || "").trim() === "Hoàn tất" ? (
-                          <span className="flex items-center gap-1 text-xs font-semibold text-green-600">
-                            <CheckCircle className="w-4 h-4" /> Hoàn tất
-                          </span>
-                        ) : (
-                          <span className="flex items-center gap-1 text-xs font-semibold text-orange-500">
-                            <Clock className="w-4 h-4" /> Đang làm
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
             <div className="bg-white rounded-xl border border-gray-100 p-4 mb-4">
               <p className="text-xs font-semibold text-gray-400 uppercase mb-2">Bản đồ</p>

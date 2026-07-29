@@ -1,20 +1,60 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using RMS_APIServer.Models;
 using RMS_APIServer.Middleware;
-using RMS_APIServer.Services;
+using Pomelo.EntityFrameworkCore.MySql;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Build MySQL connection string from environment variables (Docker) or appsettings
-var dbHost = Environment.GetEnvironmentVariable("DB__HOST") ?? "192.168.192.85";
-var dbName = Environment.GetEnvironmentVariable("DB__DATABASE") ?? "webQLQuanAn";
-var dbUser = Environment.GetEnvironmentVariable("DB__USER") ?? "root";
-var dbPassword = Environment.GetEnvironmentVariable("DB__PASSWORD") ?? "CaoBao2211";
-var connectionString = $"Server={dbHost};Port=3306;Database={dbName};User={dbUser};Password={dbPassword};";
+// Add services to the container - MySQL via Pomelo
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var serverVersion = new MySqlServerVersion(new Version(8, 0, 36));
 
-// Add services to the container.
 builder.Services.AddDbContext<DBContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    options.UseMySql(connectionString, serverVersion));
+
+builder.Services.AddDbContext<WebQlquanAnContext>(options =>
+    options.UseMySql(connectionString, serverVersion));
+
+// Register new services for auxiliary features
+builder.Services.AddScoped<RMS_APIServer.Services.IUserFavoritesService, RMS_APIServer.Services.UserFavoritesService>();
+builder.Services.AddScoped<RMS_APIServer.Services.IOrderHistoryService, RMS_APIServer.Services.OrderHistoryService>();
+builder.Services.AddScoped<RMS_APIServer.Services.ITableReservationHistoryService, RMS_APIServer.Services.TableReservationHistoryService>();
+
+// Register PayOS service
+builder.Services.AddHttpClient<RMS_APIServer.Services.IPayOSService, RMS_APIServer.Services.PayOSService>();
+
+// Add JWT Authentication
+var jwtKey = builder.Configuration["Jwt:Key"] ?? "your-super-secret-jwt-key-that-is-at-least-32-characters-long-for-security";
+var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "RMS-APIServer";
+var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "RMS-Users";
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false; // Set to true in production with HTTPS
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtIssuer,
+        ValidAudience = jwtAudience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+        ClockSkew = TimeSpan.Zero // Remove delay of token when expire
+    };
+});
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -77,9 +117,6 @@ builder.Services.AddCors(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Register PayOS Service
-builder.Services.AddHttpClient<IPayOSService, PayOSService>();
-
 var app = builder.Build();
 
 // Configure URLs for Docker deployment - Force HTTP only in containers
@@ -116,6 +153,8 @@ app.UseCors(corsPolicy);
 
 Console.WriteLine($"🔧 CORS Policy Applied: {corsPolicy}");
 
+// Add Authentication & Authorization middleware
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

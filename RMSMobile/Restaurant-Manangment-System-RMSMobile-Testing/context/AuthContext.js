@@ -14,7 +14,15 @@ export const AuthProvider = ({ children }) => {
       try {
         const storedUser = await AsyncStorage.getItem('user');
         if (storedUser) {
-          setUser(JSON.parse(storedUser));
+          const userData = JSON.parse(storedUser);
+          
+          // Set auth token if available
+          if (userData.token) {
+            apiService.setAuthToken(userData.token);
+            console.log('🔑 JWT token restored from storage');
+          }
+          
+          setUser(userData);
         }
       } catch (error) {
         console.log('Load user error:', error);
@@ -29,6 +37,12 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await apiService.login({ username, password });
       if (response && response.userId) {
+        // Set auth token if provided
+        if (response.token) {
+          apiService.setAuthToken(response.token);
+          console.log('🔑 JWT token set for authenticated requests');
+        }
+        
         setUser(response);
         await AsyncStorage.setItem('user', JSON.stringify(response)); // Save user
         return true;
@@ -44,6 +58,10 @@ export const AuthProvider = ({ children }) => {
 
   // Logout function
   const logout = async () => {
+    // Remove auth token
+    apiService.setAuthToken(null);
+    console.log('🚪 Auth token removed on logout');
+    
     setUser(null);
     await AsyncStorage.removeItem('user'); // xóa user khi logout
   };
@@ -177,23 +195,31 @@ export const AuthProvider = ({ children }) => {
     const userRole = getUserRole();
     console.log('Checking access for role:', userRole, 'to screen:', screenName);
     
-    // Admin has access to everything
+    // Favorites and Cart require login (user must not be null)
+    if (screenName === 'Favorites' || screenName === 'Cart') {
+      if (!user) {
+        console.log(`Access denied to ${screenName}: User not logged in`);
+        return false;
+      }
+    }
+    
+    // Admin has access to everything except Favorites and Cart
     if (userRole === 'Admin' || userRole === 'admin' || userRole === 'ADMIN') {
-      return true;
+      return screenName !== 'Favorites' && screenName !== 'Cart';
     }
 
     // Define role permissions based on the requirements
     const rolePermissions = {
       'NV': ['Home', 'Table', 'Menu', 'Orders', 'OrderDetail', 'Profile'],
       'nv': ['Home', 'Table', 'Menu', 'Orders', 'OrderDetail', 'Profile'], // lowercase variant
-      'TN': ['Home', 'Orders', 'Bill', 'BillManager', 'Profile'],
-      'tn': ['Home', 'Orders', 'Bill', 'BillManager', 'Profile'], // lowercase variant
-      'Bep': ['Home', 'Menu', 'OrderDetailManager', 'Profile'],  
+      'TN': ['Home', 'Orders', 'BillManager', 'Profile'],
+      'tn': ['Home', 'Orders', 'BillManager', 'Profile'], // lowercase variant
+      'Bep': ['Home', 'Menu', 'OrderDetailManager', 'Profile'],
       'bep': ['Home', 'Menu', 'OrderDetailManager', 'Profile'], // lowercase variant
       'BEP': ['Home', 'Menu', 'OrderDetailManager', 'Profile'], // uppercase variant
-      'Customer': ['Home', 'Menu', 'Profile'],
-      'customer': ['Home', 'Menu', 'Profile'], // lowercase variant
-      'CUSTOMER': ['Home', 'Menu', 'Profile'], // uppercase variant
+      'Customer': ['Home', 'Menu', 'Favorites', 'Cart', 'Profile'],
+      'customer': ['Home', 'Menu', 'Favorites', 'Cart', 'Profile'], // lowercase variant
+      'CUSTOMER': ['Home', 'Menu', 'Favorites', 'Cart', 'Profile'], // uppercase variant
     };
 
     const allowedScreens = rolePermissions[userRole] || ['Home', 'Profile']; // Default fallback
@@ -212,10 +238,11 @@ export const AuthProvider = ({ children }) => {
     const allMenuItems = [
       { name: 'Home', icon: 'home', title: 'Home', screen: 'Home' },
       { name: 'Menu', icon: 'food', title: 'Our Menu', screen: 'Menu' },
+      { name: 'Favorites', icon: 'heart', title: 'Yêu Thích', screen: 'Favorites' },
+      { name: 'Cart', icon: 'cart', title: 'Giỏ Hàng', screen: 'Cart' },
       { name: 'Orders', icon: 'clipboard-list', title: 'My Orders', screen: 'Orders' },
       { name: 'OrderDetail', icon: 'clipboard-text', title: 'Order Details', screen: 'OrderDetail' },
       { name: 'Table', icon: 'table-chair', title: 'Our Table', screen: 'Table' },
-      { name: 'Bill', icon: 'file-document', title: 'Our Bill', screen: 'Bill' },
       { name: 'BillManager', icon: 'cash-register', title: 'Bill Management', screen: 'BillManager' },
       { name: 'Report', icon: 'file-chart', title: 'Our Report', screen: 'Report' },
       { name: 'Profile', icon: 'account', title: 'My Profile', screen: 'Profile' },
@@ -228,8 +255,13 @@ export const AuthProvider = ({ children }) => {
       { name: 'UserManagement', icon: 'account-group', title: 'Quản Lý Người Dùng', screen: 'UserManagement' },
     ];
 
-    // Filter menu items based on role permissions
-    const accessibleMainMenu = allMenuItems.filter(item => {
+    // Filter menu items based on role permissions and login status
+    // Exclude Favorites and Cart if user is not logged in
+    const mainMenuToCheck = user ? allMenuItems : allMenuItems.filter(item => 
+      item.screen !== 'Favorites' && item.screen !== 'Cart'
+    );
+    
+    const accessibleMainMenu = mainMenuToCheck.filter(item => {
       const hasAccess = hasAccessToScreen(item.screen);
       console.log(`Menu item ${item.name} (${item.screen}) - Access: ${hasAccess ? 'YES' : 'NO'}`);
       return hasAccess;

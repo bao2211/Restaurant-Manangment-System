@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Base API configuration (no trailing slash to avoid double-slash when joining paths)
-const API_BASE_URL = 'http://46.250.231.129:8080'; // Remote server URL
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || 'http://192.168.192.85:8080'; // Production server URL
 // For local testing use: 'https://localhost:7127/' or 'http://localhost:8080/'
 
 const api = axios.create({
@@ -38,13 +38,13 @@ api.interceptors.request.use(
   }
 );
 
-// Add response interceptor for CORS error handling
+// Add response interceptor for CORS error handling and token expiration
 api.interceptors.response.use(
   (response) => {
     console.log(`✅ Response received: ${response.status} ${response.statusText}`);
     return response;
   },
-  (error) => {
+  async (error) => {
     if (error.code === 'ERR_NETWORK' || error.message === 'Network Error') {
       console.error('🌐 Network/CORS Error - This might be a CORS issue');
       console.error('Error details:', {
@@ -59,6 +59,22 @@ api.interceptors.response.use(
     } else if (error.response) {
       console.error(`❌ HTTP Error: ${error.response.status} ${error.response.statusText}`);
       console.error('Response data:', error.response.data);
+      
+      // Handle 401 Unauthorized - token expired
+      if (error.response.status === 401) {
+        console.warn('🔒 Token expired or invalid - user needs to re-login');
+        // Clear stored token
+        delete api.defaults.headers.common['Authorization'];
+        
+        // Optionally clear AsyncStorage (requires import)
+        try {
+          const AsyncStorage = require('@react-native-async-storage/async-storage').default;
+          await AsyncStorage.removeItem('user');
+          console.log('🗑️ Cleared expired user session');
+        } catch (storageError) {
+          console.error('Error clearing storage:', storageError);
+        }
+      }
     } else {
       console.error('❌ Unknown error:', error.message);
     }
@@ -1700,6 +1716,223 @@ export const apiService = {
       throw error;
     }
   },
+
+  // ============= USER FAVORITES API METHODS =============
+  
+  // Get user's favorite foods
+  getFavorites: async () => {
+    try {
+      console.log('Fetching user favorites...');
+      const response = await api.get('/api/Favorites');
+      console.log('Favorites response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching favorites:', error);
+      throw error;
+    }
+  },
+
+  // Add food to favorites
+  addFavorite: async (foodId) => {
+    try {
+      console.log('Adding favorite:', foodId);
+      const response = await api.post(`/api/Favorites/${foodId}`);
+      console.log('Add favorite response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error adding favorite:', error);
+      throw error;
+    }
+  },
+
+  // Remove food from favorites
+  removeFavorite: async (foodId) => {
+    try {
+      console.log('Removing favorite:', foodId);
+      const response = await api.delete(`/api/Favorites/${foodId}`);
+      console.log('Remove favorite response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error removing favorite:', error);
+      throw error;
+    }
+  },
+
+  // Check if food is favorited
+  getFavoriteStatus: async (foodId) => {
+    try {
+      console.log('Checking favorite status:', foodId);
+      const response = await api.get(`/api/Favorites/${foodId}/status`);
+      console.log('Favorite status response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error checking favorite status:', error);
+      throw error;
+    }
+  },
+
+  // ============= ORDER HISTORY API METHODS =============
+  
+  // Get user's order history with pagination
+  getOrderHistory: async (page = 1, pageSize = 20) => {
+    try {
+      console.log('Fetching order history...', { page, pageSize });
+      const response = await api.get(`/api/OrderHistory?page=${page}&pageSize=${pageSize}`);
+      console.log('Order history response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching order history:', error);
+      throw error;
+    }
+  },
+
+  // Get specific order history by ID
+  getOrderHistoryById: async (historyId) => {
+    try {
+      console.log('Fetching order history by ID:', historyId);
+      const response = await api.get(`/api/OrderHistory/${historyId}`);
+      console.log('Order history by ID response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching order history by ID:', error);
+      throw error;
+    }
+  },
+
+  // Create order history entry
+  createOrderHistory: async (orderId) => {
+    try {
+      console.log('Creating order history entry:', orderId);
+      const response = await api.post('/api/OrderHistory', { orderId });
+      console.log('Create order history response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating order history:', error);
+      throw error;
+    }
+  },
+
+  // ============= TABLE RESERVATION HISTORY API METHODS =============
+  
+  // Get user's reservation history with pagination
+  getReservationHistory: async (page = 1, pageSize = 20) => {
+    try {
+      console.log('Fetching reservation history...', { page, pageSize });
+      const response = await api.get(`/api/ReservationHistory?page=${page}&pageSize=${pageSize}`);
+      console.log('Reservation history response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching reservation history:', error);
+      throw error;
+    }
+  },
+
+  // Get specific reservation history by ID
+  getReservationHistoryById: async (reservationId) => {
+    try {
+      console.log('Fetching reservation history by ID:', reservationId);
+      const response = await api.get(`/api/ReservationHistory/${reservationId}`);
+      console.log('Reservation history by ID response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching reservation history by ID:', error);
+      throw error;
+    }
+  },
+
+  // Create a new table reservation
+  createReservation: async (reservationData) => {
+    try {
+      console.log('Creating reservation:', reservationData);
+      const response = await api.post('/api/ReservationHistory', reservationData);
+      console.log('Create reservation response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating reservation:', error);
+      throw error;
+    }
+  },
+
+  // Cancel a reservation
+  cancelReservation: async (reservationId) => {
+    try {
+      console.log('Cancelling reservation:', reservationId);
+      const response = await api.put(`/api/ReservationHistory/${reservationId}/cancel`);
+      console.log('Cancel reservation response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error cancelling reservation:', error);
+      throw error;
+    }
+  },
+
+  // ============= AUTHENTICATION UTILITIES =============
+  
+  // Set JWT token for authenticated requests
+  setAuthToken: (token) => {
+    if (token) {
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      console.log('✅ Auth token set in API headers');
+    } else {
+      delete api.defaults.headers.common['Authorization'];
+      console.log('🚫 Auth token removed from API headers');
+    }
+  },
+
+  // Get current auth token
+  getAuthToken: () => {
+    return api.defaults.headers.common['Authorization'];
+  },
+
+  // ============= PAYOS PAYMENT =============
+
+  createPayOSPayment: async (paymentData) => {
+    try {
+      console.log('Creating PayOS payment:', paymentData);
+      const response = await api.post('/api/PayOS/create-payment', paymentData);
+      console.log('PayOS payment created:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating PayOS payment:', error);
+      throw error;
+    }
+  },
+
+  getPayOSPaymentStatus: async (orderCode) => {
+    try {
+      console.log('Getting PayOS payment status:', orderCode);
+      const response = await api.get(`/api/PayOS/status/${orderCode}`);
+      console.log('PayOS payment status:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error getting PayOS payment status:', error);
+      throw error;
+    }
+  },
+
+  confirmPayOSPayment: async (orderCode, orderId) => {
+    try {
+      console.log('Confirming PayOS payment:', { orderCode, orderId });
+      const response = await api.post(`/api/PayOS/confirm/${orderCode}`, { orderId });
+      console.log('PayOS payment confirmed:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error confirming PayOS payment:', error);
+      throw error;
+    }
+  },
+
+  cancelPayOSPayment: async (orderCode, reason) => {
+    try {
+      console.log('Canceling PayOS payment:', { orderCode, reason });
+      const response = await api.post(`/api/PayOS/cancel/${orderCode}`, { reason });
+      console.log('PayOS payment canceled:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error canceling PayOS payment:', error);
+      throw error;
+    }
+  },
 };
 
 // Helper function to generate category icons based on category name
@@ -1708,7 +1941,7 @@ export const getCategoryIcon = (categoryName) => {
   
   // Vietnamese category mappings
   if (name.includes('cơm')) { // Rice
-    return 'rice';
+    return 'bowl-mix-outline';
   } else if (name.includes('canh')) { // Soup
     return 'bowl-mix';
   } else if (name.includes('súp')) { // Soup
@@ -1730,13 +1963,13 @@ export const getCategoryIcon = (categoryName) => {
   } else if (name.includes('main') || name.includes('course') || name.includes('entree')) {
     return 'food';
   } else if (name.includes('dessert') || name.includes('sweet')) {
-    return 'cake';
+    return 'cake-variant';
   } else if (name.includes('salad')) {
-    return 'food-variant';
+    return 'salad';
   } else if (name.includes('soup')) {
     return 'bowl-mix';
   } else {
-    return 'food-fork-drink'; // Default icon
+    return 'silverware-fork-knife'; // Default icon
   }
 };
 

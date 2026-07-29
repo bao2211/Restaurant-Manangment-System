@@ -34,7 +34,6 @@ namespace RMS_APIServer.Controllers
                     Note = o.Note,
                     Discount = o.Discount,
                     ReservationId = o.ReservationId,
-                    PaymentStatus = o.PaymentStatus,
                     OrderDetails = o.OrderDetails.Select(od => new OrderDetailDto
                     {
                         OrderId = od.OrderId,
@@ -79,16 +78,12 @@ namespace RMS_APIServer.Controllers
                 note = order.Note,
                 discount = order.Discount,
                 reservationId = order.ReservationId,
-                paymentStatus = order.PaymentStatus,
-                deliveryStatus = order.DeliveryStatus,
-                ghtkTrackingId = order.GhtkTrackingId,
                 orderDetails = order.OrderDetails?.Select(od => new
                 {
                     foodId = od.FoodId,
                     foodName = od.Food?.FoodName,
                     quantity = od.Quantity,
-                    unitPrice = od.Food?.UnitPrice,
-                    status = od.Status
+                    unitPrice = od.Food?.UnitPrice
                 }).ToList()
             };
 
@@ -159,7 +154,6 @@ namespace RMS_APIServer.Controllers
                 note = order.Note,
                 discount = order.Discount,
                 reservationId = order.ReservationId,
-                paymentStatus = order.PaymentStatus,
                 orderDetails = order.OrderDetails?.Select(od => new
                 {
                     foodId = od.FoodId,
@@ -198,7 +192,6 @@ namespace RMS_APIServer.Controllers
                 note = order.Note,
                 discount = order.Discount,
                 reservationId = order.ReservationId,
-                paymentStatus = order.PaymentStatus,
                 orderDetails = order.OrderDetails?.Select(od => new
                 {
                     foodId = od.FoodId,
@@ -220,27 +213,7 @@ namespace RMS_APIServer.Controllers
                 return BadRequest();
             }
 
-            // Partial update: fetch existing and patch only non-null fields
-            var existingOrder = await _context.Orders.FindAsync(id);
-            if (existingOrder == null)
-            {
-                return NotFound();
-            }
-
-            if (order.Status != null) existingOrder.Status = order.Status;
-            if (order.PaymentStatus != null) existingOrder.PaymentStatus = order.PaymentStatus;
-            if (order.Total != null) existingOrder.Total = order.Total;
-            if (order.Note != null) existingOrder.Note = order.Note;
-            if (order.Discount != null) existingOrder.Discount = order.Discount;
-            if (order.TableId != null) existingOrder.TableId = order.TableId;
-            if (order.UserId != null) existingOrder.UserId = order.UserId;
-            if (order.ReservationId != null) existingOrder.ReservationId = order.ReservationId;
-            if (order.OrderType != null) existingOrder.OrderType = order.OrderType;
-            if (order.DeliveryAddress != null) existingOrder.DeliveryAddress = order.DeliveryAddress;
-            if (order.DeliveryPhone != null) existingOrder.DeliveryPhone = order.DeliveryPhone;
-            if (order.DeliveryFee != null) existingOrder.DeliveryFee = order.DeliveryFee;
-            if (order.GhtkTrackingId != null) existingOrder.GhtkTrackingId = order.GhtkTrackingId;
-            if (order.DeliveryStatus != null) existingOrder.DeliveryStatus = order.DeliveryStatus;
+            _context.Entry(order).State = EntityState.Modified;
 
             try
             {
@@ -282,12 +255,6 @@ namespace RMS_APIServer.Controllers
                 Note = orderDto.Note,
                 Discount = orderDto.Discount ?? 0,
                 ReservationId = orderDto.ReservationId,
-                PaymentStatus = orderDto.PaymentStatus ?? "Chưa thanh toán",
-                OrderType = orderDto.OrderType ?? "dine-in",
-                DeliveryAddress = orderDto.DeliveryAddress,
-                DeliveryPhone = orderDto.DeliveryPhone,
-                DeliveryFee = orderDto.DeliveryFee ?? 0,
-                DeliveryStatus = "pending",
                 CreatedTime = DateTime.Now
             };
 
@@ -317,9 +284,8 @@ namespace RMS_APIServer.Controllers
                     status = order.Status,
                     total = order.Total,
                     note = order.Note,
-                discount = order.Discount,
-                reservationId = order.ReservationId,
-                paymentStatus = order.PaymentStatus,
+                    discount = order.Discount,
+                    reservationId = order.ReservationId,
                     message = "Order created successfully"
                 };
 

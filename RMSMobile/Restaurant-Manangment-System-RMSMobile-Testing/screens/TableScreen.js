@@ -13,9 +13,11 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  Image
 } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { apiService } from '../services/apiService';
 import ScreenHeader from '../components/ScreenHeader';
 
@@ -309,14 +311,24 @@ export default function TableScreen({ navigation }) {
         
         if (Array.isArray(tablesData) && tablesData.length > 0) {
           console.log('✓ Setting tables from API response (array)');
+          // Filter out table ID 8 (Online orders table)
+          const filteredTables = tablesData.filter(table => {
+            const tableId = table.tableId || table.TableID;
+            return tableId && tableId.toString().trim() !== '8';
+          });
           // Update table status based on existing orders
-          const updatedTables = await updateTableStatusBasedOnOrders(tablesData);
+          const updatedTables = await updateTableStatusBasedOnOrders(filteredTables);
           setTables(updatedTables);
           return;
         } else if (tablesData && typeof tablesData === 'object' && !Array.isArray(tablesData)) {
           console.log('✓ API returned single object, converting to array');
           const singleTableArray = [tablesData];
-          const updatedTables = await updateTableStatusBasedOnOrders(singleTableArray);
+          // Filter out table ID 8 (Online orders table)
+          const filteredTables = singleTableArray.filter(table => {
+            const tableId = table.tableId || table.TableID;
+            return tableId && tableId.toString().trim() !== '8';
+          });
+          const updatedTables = await updateTableStatusBasedOnOrders(filteredTables);
           setTables(updatedTables);
           return;
         } else {
@@ -344,13 +356,18 @@ export default function TableScreen({ navigation }) {
         // Fallback to mock data
         console.log('🔄 Using mock data as fallback');
         Alert.alert('Info', 'Cannot connect to server. Showing sample data.');
+        // Filter out table ID 8 from mock data too
+        const filteredMockTables = mockTables.filter(table => {
+          const tableId = table.tableId || table.TableID;
+          return tableId && tableId.toString().trim() !== '8';
+        });
         // Try to update mock data status based on orders if possible
         try {
-          const updatedMockTables = await updateTableStatusBasedOnOrders(mockTables);
+          const updatedMockTables = await updateTableStatusBasedOnOrders(filteredMockTables);
           setTables(updatedMockTables);
         } catch (statusError) {
           console.log('Could not update mock table status:', statusError.message);
-          setTables(mockTables);
+          setTables(filteredMockTables);
         }
       }
       
@@ -461,40 +478,84 @@ export default function TableScreen({ navigation }) {
     });
   };
 
-  const renderTableItem = ({ item }) => (
-    <View style={styles.tableCard}>
-      <View style={styles.tableHeader}>
-        <View style={styles.tableInfo}>
-          <Text style={styles.tableName}>{item.tableName || `Table ${item.tableId}`}</Text>
-          <Text style={styles.tableId}>ID: {item.tableId}</Text>
-        </View>
-        <View style={[styles.statusBadge, { backgroundColor: getTableStatusColor(item.status) }]}> 
-          <MaterialCommunityIcons 
-            name={getTableStatusIcon(item.status)} 
-            size={16} 
-            color="white" 
-          />
-          <Text style={styles.statusText}>{item.status || 'Unknown'}</Text>
-        </View>
-      </View>
-      <View style={styles.tableDetails}>
-        <View style={styles.detailRow}>
-          <MaterialCommunityIcons name="account-group" size={20} color="#666" />
-          <Text style={styles.detailText}>
-            Seats: {item.numOfSeats || item.capacity || 'N/A'} people
-          </Text>
-          <View style={styles.detailRowSpacer} />
-          <TouchableOpacity
-            style={styles.createOrderButton}
-            onPress={() => handleCreateOrder(item)}
+  const renderTableItem = ({ item }) => {
+    // Function to get emoji and description based on number of seats
+    const getSeatsInfo = (numOfSeats) => {
+      if (numOfSeats <= 2) return { emoji: '👥', desc: 'Bàn đôi' };
+      if (numOfSeats <= 4) return { emoji: '👨‍👩‍👧‍👦', desc: 'Gia đình nhỏ' };
+      if (numOfSeats <= 6) return { emoji: '👨‍👩‍👧‍👦👥', desc: 'Nhóm vừa' };
+      return { emoji: '🎉👨‍👩‍👧‍👦', desc: 'Tiệc lớn' };
+    };
+
+    // Function to get table icon based on seats
+    const getTableIcon = (numOfSeats) => {
+      if (numOfSeats <= 2) return 'table-chair';
+      if (numOfSeats <= 4) return 'table-furniture';
+      return 'stadium';
+    };
+
+    const seatsInfo = getSeatsInfo(item.numOfSeats || 4);
+
+    return (
+      <View style={styles.tableCard}>
+        <View style={styles.tableIconContainer}>
+          <LinearGradient
+            colors={['#5B9BD5', '#4A7FB8']}
+            style={styles.tableIconGradient}
           >
-            <MaterialCommunityIcons name="plus-box" size={28} color="#3498DB" />
-            <Text style={styles.createOrderText}>Chọn bàn</Text>
-          </TouchableOpacity>
+            <MaterialCommunityIcons 
+              name={getTableIcon(item.numOfSeats || 4)} 
+              size={40} 
+              color="white" 
+            />
+          </LinearGradient>
+        </View>
+        
+        <View style={styles.tableContent}>
+          <View style={styles.tableHeader}>
+            <View style={styles.tableInfo}>
+              <Text style={styles.tableName}>{item.tableName || `Table ${item.tableId}`}</Text>
+              <Text style={styles.tableId}>ID: {item.tableId}</Text>
+            </View>
+            <View style={[styles.statusBadge, { backgroundColor: getTableStatusColor(item.status) }]}> 
+              <MaterialCommunityIcons 
+                name={getTableStatusIcon(item.status)} 
+                size={16} 
+                color="white" 
+              />
+              <Text style={styles.statusText}>{item.status || 'Unknown'}</Text>
+            </View>
+          </View>
+          
+          <View style={styles.tableDetails}>
+            <View style={styles.seatsContainer}>
+              <View style={styles.emojiContainer}>
+                <Text style={styles.seatsEmoji}>{seatsInfo.emoji}</Text>
+                <Text style={styles.emojiDescription}>{seatsInfo.desc}</Text>
+              </View>
+              <View style={styles.seatsInfo}>
+                <Text style={styles.seatsLabel}>Số chỗ ngồi</Text>
+                <Text style={styles.seatsNumber}>{item.numOfSeats || item.capacity || 'N/A'} người</Text>
+              </View>
+            </View>
+            
+            <TouchableOpacity
+              style={styles.createOrderButton}
+              onPress={() => handleCreateOrder(item)}
+            >
+              <LinearGradient
+                colors={['#5B9BD5', '#4A7FB8']}
+                style={styles.createOrderButtonGradient}
+              >
+                <MaterialCommunityIcons name="plus-circle" size={20} color="white" />
+                <Text style={styles.createOrderText}>Chọn bàn</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   if (loading) {
     return (
@@ -512,6 +573,19 @@ export default function TableScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
+      {/* Background Image */}
+      <View style={styles.backgroundContainer}>
+        <View style={styles.backgroundImageContainer}>
+          <Image 
+            source={{
+              uri: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=1200'
+            }}
+            style={[styles.backgroundImage, { opacity: 0.3 }]}
+            resizeMode="cover"
+          />
+        </View>
+      </View>
+
       {/* Modal thông báo bàn đã đầy */}
       <Modal
         visible={showFullTableModal}
@@ -546,41 +620,70 @@ export default function TableScreen({ navigation }) {
             style={styles.keyboardAvoidingView}
           >
             <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Add New Table</Text>
-              
-              <TextInput
-                style={styles.input}
-                placeholder="Table ID (e.g., T005)"
-                value={newTable.tableId}
-                onChangeText={(text) => setNewTable(prev => ({ ...prev, tableId: text }))}
-                autoCapitalize="characters"
-                autoCorrect={false}
-              />
-              
-              <TextInput
-                style={styles.input}
-                placeholder="Table Name"
-                value={newTable.tableName}
-                onChangeText={(text) => setNewTable(prev => ({ ...prev, tableName: text }))}
-                autoCorrect={false}
-              />
-              
-              <TextInput
-                style={styles.input}
-                placeholder="Number of seats"
-                value={newTable.numOfSeats}
-                onChangeText={(text) => setNewTable(prev => ({ ...prev, numOfSeats: text }))}
-                keyboardType="numeric"
-                autoCorrect={false}
-              />
+              {/* Modal Header with Icon */}
+              <View style={styles.modalHeader}>
+                <View style={styles.modalIconContainer}>
+                  <LinearGradient
+                    colors={['#5B9BD5', '#4A7FB8']}
+                    style={styles.modalIconGradient}
+                  >
+                    <MaterialCommunityIcons name="table-furniture" size={40} color="white" />
+                  </LinearGradient>
+                </View>
+                <Text style={styles.modalTitle}>Thêm Bàn Mới</Text>
+                <Text style={styles.modalSubtitle}>Nhập thông tin bàn ăn mới</Text>
+              </View>
 
+              {/* Input Fields */}
+              <View style={styles.inputContainer}>
+                <View style={styles.inputWrapper}>
+                  <MaterialCommunityIcons name="identifier" size={20} color="#5B9BD5" style={styles.inputIcon} />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Mã bàn (VD: T005)"
+                    placeholderTextColor="#95A5A6"
+                    value={newTable.tableId}
+                    onChangeText={(text) => setNewTable(prev => ({ ...prev, tableId: text }))}
+                    autoCapitalize="characters"
+                    autoCorrect={false}
+                  />
+                </View>
+                
+                <View style={styles.inputWrapper}>
+                  <MaterialCommunityIcons name="format-text" size={20} color="#5B9BD5" style={styles.inputIcon} />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Tên bàn (VD: Bàn VIP 1)"
+                    placeholderTextColor="#95A5A6"
+                    value={newTable.tableName}
+                    onChangeText={(text) => setNewTable(prev => ({ ...prev, tableName: text }))}
+                    autoCorrect={false}
+                  />
+                </View>
+                
+                <View style={styles.inputWrapper}>
+                  <MaterialCommunityIcons name="account-group" size={20} color="#5B9BD5" style={styles.inputIcon} />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Số chỗ ngồi (VD: 4)"
+                    placeholderTextColor="#95A5A6"
+                    value={newTable.numOfSeats}
+                    onChangeText={(text) => setNewTable(prev => ({ ...prev, numOfSeats: text }))}
+                    keyboardType="numeric"
+                    autoCorrect={false}
+                  />
+                </View>
+              </View>
+
+              {/* Action Buttons */}
               <View style={styles.modalButtons}>
                 <TouchableOpacity
                   style={[styles.modalButton, styles.cancelButton]}
                   onPress={handleCancel}
                   disabled={submitting}
                 >
-                  <Text style={styles.buttonText}>Cancel</Text>
+                  <MaterialCommunityIcons name="close-circle" size={20} color="white" />
+                  <Text style={styles.buttonText}>Hủy</Text>
                 </TouchableOpacity>
                 
                 <TouchableOpacity
@@ -591,7 +694,10 @@ export default function TableScreen({ navigation }) {
                   {submitting ? (
                     <ActivityIndicator size="small" color="white" />
                   ) : (
-                    <Text style={styles.buttonText}>Add Table</Text>
+                    <>
+                      <MaterialCommunityIcons name="check-circle" size={20} color="white" />
+                      <Text style={styles.buttonText}>Thêm Bàn</Text>
+                    </>
                   )}
                 </TouchableOpacity>
               </View>
@@ -600,28 +706,46 @@ export default function TableScreen({ navigation }) {
         </View>
       </Modal>
 
-      <ScreenHeader
-        title="Restaurant Tables"
-        onRefresh={onRefresh}
-        refreshing={refreshing}
-        rightComponent={
-          <View style={styles.headerButtons}>
+      {/* Welcome Section with Logo */}
+      <LinearGradient
+        colors={['#10B981', '#059669', '#047857']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.welcomeSection}
+      >
+        <View style={styles.decorativeCircle1} />
+        <View style={styles.decorativeCircle2} />
+        <View style={styles.welcomeContent}>
+          <View style={styles.logoContainer}>
+            <MaterialCommunityIcons name="table-furniture" size={32} color="white" />
+          </View>
+          <View style={styles.welcomeTextContainer}>
+            <Text style={styles.welcomeTitle}>Bàn Ăn</Text>
+            <Text style={styles.welcomeSubtitle}>
+              Quản lý và chọn bàn phục vụ
+            </Text>
+          </View>
+          <View style={styles.headerActions}>
             <TouchableOpacity
-              style={styles.refreshStatusButton}
+              style={styles.refreshButtonHeader}
               onPress={refreshTableStatus}
+              disabled={refreshing}
             >
-              <MaterialCommunityIcons name="refresh" size={20} color="#3498DB" />
-              <Text style={styles.refreshStatusText}>Status</Text>
+              {refreshing ? (
+                <ActivityIndicator size="small" color="#5B9BD5" />
+              ) : (
+                <Ionicons name="refresh" size={22} color="#5B9BD5" />
+              )}
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.addButton}
+              style={styles.addButtonHeader}
               onPress={openAddModal}
             >
-              <MaterialCommunityIcons name="plus" size={24} color="white" />
+              <MaterialCommunityIcons name="plus" size={24} color="#5B9BD5" />
             </TouchableOpacity>
           </View>
-        }
-      />
+        </View>
+      </LinearGradient>
 
       {(!tables || tables.length === 0) ? (
         <View style={styles.emptyState}>
@@ -653,7 +777,119 @@ export default function TableScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#2C3E50',
+  },
+  backgroundContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 0,
+  },
+  backgroundImageContainer: {
+    flex: 1,
+    position: 'relative',
+  },
+  backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
+  },
+  welcomeSection: {
+    paddingTop: 60,
+    paddingBottom: 30,
+    paddingHorizontal: 20,
+    position: 'relative',
+    overflow: 'hidden',
+    zIndex: 1,
+  },
+  welcomeContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    zIndex: 2,
+  },
+  logoContainer: {
+    marginRight: 16,
+    padding: 10,
+    borderRadius: 40,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    shadowColor: '#fff',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 8,
+  },
+  welcomeTextContainer: {
+    flex: 1,
+  },
+  welcomeTitle: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: 'white',
+    marginBottom: 6,
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+  welcomeSubtitle: {
+    fontSize: 15,
+    color: 'rgba(255,255,255,0.9)',
+    lineHeight: 20,
+    fontWeight: '400',
+  },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  refreshButtonHeader: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 8,
+  },
+  addButtonHeader: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 8,
+  },
+  decorativeCircle1: {
+    position: 'absolute',
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    top: -50,
+    right: -50,
+  },
+  decorativeCircle2: {
+    position: 'absolute',
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    backgroundColor: 'rgba(255,255,255,0.03)',
+    bottom: -30,
+    left: -30,
   },
   headerContent: {
     flexDirection: 'row',
@@ -698,7 +934,7 @@ const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     padding: 20,
   },
   keyboardAvoidingView: {
@@ -707,67 +943,116 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: 'white',
-    borderRadius: 15,
-    padding: 20,
-    elevation: 5,
+    borderRadius: 24,
+    overflow: 'hidden',
+    elevation: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.4,
+    shadowRadius: 20,
     maxHeight: '80%',
   },
+  modalHeader: {
+    padding: 24,
+    paddingTop: 32,
+    backgroundColor: '#F0F7FF',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(91, 155, 213, 0.1)',
+    alignItems: 'center',
+  },
+  modalIconContainer: {
+    marginBottom: 16,
+  },
+  modalIconGradient: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 8,
+    shadowColor: '#5B9BD5',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+  },
   modalTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#2C3E50',
-    marginBottom: 20,
+    fontSize: 26,
+    fontWeight: '800',
+    color: '#1F2937',
+    marginBottom: 8,
     textAlign: 'center',
   },
+  modalSubtitle: {
+    fontSize: 15,
+    color: '#6B7280',
+    textAlign: 'center',
+  },
+  inputContainer: {
+    padding: 24,
+    paddingTop: 20,
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F9FAFB',
+    borderRadius: 14,
+    borderWidth: 2,
+    borderColor: '#E5E7EB',
+    marginBottom: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 4,
+  },
+  inputIcon: {
+    marginRight: 12,
+  },
   input: {
-    backgroundColor: '#F8F9FA',
-    borderRadius: 8,
-    padding: 15,
-    marginBottom: 15,
-    borderWidth: 1,
-    borderColor: '#E9ECEF',
+    flex: 1,
     fontSize: 16,
-    color: '#2C3E50',
-    minHeight: 50,
+    color: '#1F2937',
+    paddingVertical: 14,
   },
   modalButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 10,
+    paddingHorizontal: 24,
+    paddingBottom: 24,
+    gap: 12,
   },
   modalButton: {
     flex: 1,
-    padding: 15,
-    borderRadius: 8,
-    justifyContent: 'center',
+    flexDirection: 'row',
     alignItems: 'center',
-    marginHorizontal: 5,
+    justifyContent: 'center',
+    paddingVertical: 16,
+    borderRadius: 14,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    gap: 8,
   },
   cancelButton: {
-    backgroundColor: '#6C757D',
+    backgroundColor: '#6B7280',
   },
   submitButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#5B9BD5',
   },
   buttonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '700',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#2C3E50',
   },
   loadingText: {
     marginTop: 10,
     fontSize: 16,
-    color: '#666',
+    color: '#fff',
   },
   header: {
     backgroundColor: '#2C3E50',
@@ -787,17 +1072,42 @@ const styles = StyleSheet.create({
   tablesList: {
     flex: 1,
     padding: 15,
+    zIndex: 1,
   },
   tableCard: {
-    backgroundColor: 'white',
-    borderRadius: 12,
+    flexDirection: 'row',
+    backgroundColor: 'rgba(255, 255, 255, 0.98)',
+    borderRadius: 20,
+    overflow: 'hidden',
+    marginBottom: 16,
+    elevation: 8,
+    shadowColor: '#5B9BD5',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(91, 155, 213, 0.15)',
+  },
+  tableIconContainer: {
+    width: 90,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  tableIconGradient: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 4,
+    shadowColor: '#5B9BD5',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  tableContent: {
+    flex: 1,
     padding: 16,
-    marginBottom: 12,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
   },
   tableHeader: {
     flexDirection: 'row',
@@ -811,12 +1121,13 @@ const styles = StyleSheet.create({
   tableName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#2C3E50',
+    color: '#2C5AA0',
     marginBottom: 4,
   },
   tableId: {
     fontSize: 14,
-    color: '#7F8C8D',
+    color: '#C0392B',
+    fontWeight: '700',
   },
   statusBadge: {
     flexDirection: 'row',
@@ -832,9 +1143,48 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   tableDetails: {
-    borderTopWidth: 1,
-    borderTopColor: '#ECF0F1',
-    paddingTop: 12,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 8,
+  },
+  seatsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(91, 155, 213, 0.08)',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 12,
+    flex: 1,
+    marginRight: 12,
+  },
+  emojiContainer: {
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  seatsEmoji: {
+    fontSize: 28,
+    marginBottom: 2,
+  },
+  emojiDescription: {
+    fontSize: 9,
+    color: '#5B9BD5',
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+  seatsInfo: {
+    flex: 1,
+  },
+  seatsLabel: {
+    fontSize: 11,
+    color: '#5B9BD5',
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  seatsNumber: {
+    fontSize: 16,
+    color: '#2C3E50',
+    fontWeight: '700',
   },
   detailRow: {
     flexDirection: 'row',
@@ -878,20 +1228,26 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   createOrderButton: {
+    borderRadius: 12,
+    overflow: 'hidden',
+    elevation: 4,
+    shadowColor: '#5B9BD5',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  createOrderButtonGradient: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#EAF6FB',
     paddingVertical: 10,
     paddingHorizontal: 16,
-    borderRadius: 8,
-    marginLeft: 'auto',
-    elevation: 2,
+    borderRadius: 12,
   },
   createOrderText: {
-    fontSize: 16,
-    color: '#3498DB',
+    fontSize: 14,
+    color: 'white',
     fontWeight: 'bold',
-    marginLeft: 8,
+    marginLeft: 6,
   },
   detailRowSpacer: {
     flex: 1,

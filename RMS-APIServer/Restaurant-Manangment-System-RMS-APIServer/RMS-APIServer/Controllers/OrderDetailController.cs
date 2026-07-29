@@ -94,27 +94,30 @@ namespace RMS_APIServer.Controllers
 
         // PUT: api/OrderDetail/food/5/order/10
         [HttpPut("food/{foodId}/order/{orderId}")]
-        public async Task<IActionResult> PutOrderDetail(string foodId, string orderId, CreateOrderDetailDto orderDetailDto)
+        public async Task<IActionResult> PutOrderDetail(string foodId, string orderId, UpdateOrderDetailDto updateDto)
         {
-            // Trim IDs to handle any whitespace
-            foodId = foodId?.Trim() ?? string.Empty;
-            orderId = orderId?.Trim() ?? string.Empty;
-
-            // Fetch existing entity first (partial update pattern)
-            var existingOrderDetail = await _context.OrderDetails.FindAsync(foodId, orderId);
-            if (existingOrderDetail == null)
+            var orderDetail = await _context.OrderDetails.FindAsync(foodId, orderId);
+            if (orderDetail == null)
             {
                 return NotFound();
             }
 
-            // Patch only non-null fields
-            if (orderDetailDto.Quantity != null) existingOrderDetail.Quantity = orderDetailDto.Quantity;
-            if (orderDetailDto.UnitPrice != null) existingOrderDetail.UnitPrice = orderDetailDto.UnitPrice;
-            if (orderDetailDto.Status != null) existingOrderDetail.Status = orderDetailDto.Status;
+            // Update properties from DTO
+            if (updateDto.Quantity.HasValue)
+                orderDetail.Quantity = updateDto.Quantity;
+            
+            if (updateDto.UnitPrice.HasValue)
+                orderDetail.UnitPrice = updateDto.UnitPrice;
+            
+            if (!string.IsNullOrEmpty(updateDto.Status))
+                orderDetail.Status = updateDto.Status;
 
             try
             {
                 await _context.SaveChangesAsync();
+
+                // Check if all order details are completed to update order status
+                await UpdateOrderStatusIfCompleted(orderId);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -253,6 +256,36 @@ namespace RMS_APIServer.Controllers
         private bool OrderDetailExists(string foodId, string orderId)
         {
             return _context.OrderDetails.Any(e => e.FoodId == foodId && e.OrderId == orderId);
+        }
+
+        private async Task UpdateOrderStatusIfCompleted(string orderId)
+        {
+            var order = await _context.Orders.FindAsync(orderId);
+            if (order == null) return;
+
+            var orderDetails = await _context.OrderDetails
+                .Where(od => od.OrderId == orderId)
+                .ToListAsync();
+
+            if (orderDetails.Count == 0) return;
+
+            // Define statuses that mean "done" for a detail (multiple variants for accent differences)
+            var completedStatuses = new[] { 
+                "Hoàn tất", "hoàn tất", "Hoan tat", "hoan tat", "HÒN TẤT", "HOÀN TẤT",
+                "Đã phục vụ", "đã phục vụ", "Da phuc vu", "da phuc vu",
+                "Hủy", "hủy", "Huy", "huy"
+            };
+            
+            // Check if all details are in a completed status
+            bool allCompleted = orderDetails.All(od => 
+                !string.IsNullOrEmpty(od.Status) && completedStatuses.Contains(od.Status));
+
+            if (allCompleted && order.Status != "completed" && order.Status != "Hoàn tất")
+            {
+                order.Status = "Hoàn tất";
+                _context.Entry(order).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

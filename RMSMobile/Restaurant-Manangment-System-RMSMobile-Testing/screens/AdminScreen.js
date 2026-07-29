@@ -48,15 +48,6 @@ export default function AdminScreen({ navigation }) {
           <Text style={styles.menuText}>Quản Lý Tài Khoản</Text>
           <MaterialCommunityIcons name="chevron-right" size={24} color="#BDC3C7" />
         </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={styles.menuItem}
-          onPress={() => navigation.navigate('Settings')}
-        >
-          <MaterialCommunityIcons name="cog" size={24} color="#2C3E50" />
-          <Text style={styles.menuText}>Cấu Hình Database</Text>
-          <MaterialCommunityIcons name="chevron-right" size={24} color="#BDC3C7" />
-        </TouchableOpacity>
       </View>
 
       <View style={styles.section}>
