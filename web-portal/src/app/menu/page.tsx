@@ -84,15 +84,61 @@ export default function MenuPage() {
       <Header foodItems={foodItems} onSearch={setSearchQuery} onSearchSelect={(id) => setHighlightedId(id)} />
 
       {/* Page header */}
-      <section className="bg-gradient-to-br from-[#EE4D2D] via-[#FF6633] to-[#FF8C42]">
-        <div className="container mx-auto px-4 py-10">
+      <section className="bg-[#F5EDE4]">
+        <div className="container mx-auto px-4 py-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-white"
+            className="text-center"
           >
-            <h1 className="text-3xl md:text-4xl font-black tracking-tight">Thực đơn</h1>
-            <p className="text-white/70 mt-2 text-sm">Khám phá tất cả món ngon tại nhà hàng</p>
+            {/* Top Label */}
+            <p className="text-gray-800 text-sm md:text-base font-medium tracking-wide mb-2">Restaurant Management System</p>
+            
+            {/* Divider Line */}
+            <div className="w-full max-w-4xl mx-auto border-b-2 border-[#E8943A] mb-6" />
+            
+            {/* Main Title */}
+            <h1 className="text-5xl md:text-7xl font-black text-gray-900 tracking-tight mb-4">
+              THỰC ĐƠN
+            </h1>
+            
+            {/* Bottom Divider Line */}
+            <div className="w-64 md:w-96 mx-auto border-b-2 border-[#E8943A] mb-8" />
+
+            {/* Food Gallery */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex flex-wrap justify-center items-center gap-3 md:gap-4 mt-6"
+            >
+              {[
+                "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&h=200&fit=crop",
+                "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=200&h=200&fit=crop",
+                "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=200&h=200&fit=crop",
+                "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=200&h=200&fit=crop",
+                "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=200&h=200&fit=crop",
+              ].map((src, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.3 + i * 0.1 }}
+                  className="relative group"
+                >
+                  <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl overflow-hidden shadow-lg transform transition-transform duration-300 group-hover:scale-105">
+                    <img
+                      src={src}
+                      alt={`Food ${i + 1}`}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&h=200&fit=crop";
+                      }}
+                    />
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
           </motion.div>
         </div>
       </section>

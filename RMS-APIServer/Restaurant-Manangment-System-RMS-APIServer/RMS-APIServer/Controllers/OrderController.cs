@@ -79,12 +79,16 @@ namespace RMS_APIServer.Controllers
                 note = order.Note,
                 discount = order.Discount,
                 reservationId = order.ReservationId,
+                paymentStatus = order.PaymentStatus,
+                deliveryStatus = order.DeliveryStatus,
+                ghtkTrackingId = order.GhtkTrackingId,
                 orderDetails = order.OrderDetails?.Select(od => new
                 {
                     foodId = od.FoodId,
                     foodName = od.Food?.FoodName,
                     quantity = od.Quantity,
-                    unitPrice = od.Food?.UnitPrice
+                    unitPrice = od.Food?.UnitPrice,
+                    status = od.Status
                 }).ToList()
             };
 

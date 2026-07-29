@@ -82,7 +82,7 @@ function FoodCard({ item, index, highlighted }: FoodCardProps) {
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
           onError={(e) => {
             (e.target as HTMLImageElement).onerror = null;
-            (e.target as HTMLImageElement).src = "https://placehold.co/400x300/f3f4f6/9ca3af?text=Không+có+ảnh";
+            (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&auto=format&fit=crop&q=80";
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

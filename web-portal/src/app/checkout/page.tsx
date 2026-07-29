@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect, useRef, useCallback, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Search, CreditCard, Truck, CheckCircle, Loader2, Navigation, X, Package } from "lucide-react";
 import Header from "@/components/ui/header";
@@ -28,26 +28,69 @@ interface DeliveryAddress {
   lon: number;
 }
 
+interface ExistingOrderDetail {
+  foodId: string;
+  foodName: string;
+  foodImage?: string;
+  quantity: number;
+  unitPrice: number;
+  status?: string;
+}
+
+interface ExistingOrder {
+  orderId: string;
+  orderDetails: ExistingOrderDetail[];
+  tableName?: string;
+  userName?: string;
+  total: number;
+  note?: string;
+  deliveryStatus?: string;
+  ghtkTrackingId?: string;
+  shippingAddress?: string;
+  shippingFee?: number;
+}
+
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://192.168.192.85:8080";
 
 const paymentMethods = [
   { value: "Tiền mặt", label: "Tiền mặt", icon: "💵", desc: "Thanh toán khi nhận hàng" },
   { value: "Chuyển khoản", label: "Chuyển khoản", icon: "🏦", desc: "Chuyển khoản ngân hàng" },
-  { value: "Thẻ tín dụng", label: "Thẻ tín dụng", icon: "💳", desc: "Visa / Mastercard" },
+  { value: "Thẻ tín dụng", label: "Thẻ tính dụng", icon: "💳", desc: "Visa / Mastercard" },
   { value: "Ví điện tử", label: "Ví điện tử", icon: "📱", desc: "MoMo / ZaloPay" },
-  { value: "PayOS - Online", label: "PayOS Online", icon: "🌐", desc: "Thanh toán qua PayOS" },
+  { value: "PayOS - Online", label: "🧪 PayOS Online (Test Mode)", icon: "✅", desc: "Thanh toán test - Click nút xanh bên dưới để xác nhận" },
 ];
 
 export default function CheckoutPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <div className="flex-1 flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-[#EE4D2D]" />
+        </div>
+        <Footer />
+      </div>
+    }>
+      <CheckoutContent />
+    </Suspense>
+  );
+}
+
+function CheckoutContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const orderIdFromUrl = searchParams.get("orderId");
   const { user } = useAuth();
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice, clearCart, addItem, clearCart: clearCartFn } = useCart();
   const { showToast } = useToast();
 
   const [step, setStep] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<GeoResult[]>([]);
   const [searching, setSearching] = useState(false);
+  const [loadingExistingOrder, setLoadingExistingOrder] = useState(false);
+  const [isExistingOrder, setIsExistingOrder] = useState(false);
+  const [existingOrderId, setExistingOrderId] = useState<string | null>(null);
   const [selectedPayment, setSelectedPayment] = useState("Tiền mặt");
   const [address, setAddress] = useState<DeliveryAddress>({
     fullName: "",
@@ -65,6 +108,10 @@ export default function CheckoutPage() {
   const [placing, setPlacing] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [shippingFee, setShippingFee] = useState<number | null>(null);
+  
+  // Store orderCode for PayOS verification
+  const currentOrderCodeRef = useRef<number | null>(null);
+  const currentOrderIdRef = useRef<string | null>(null);
   const [shippingLoading, setShippingLoading] = useState(false);
   const [shippingError, setShippingError] = useState("");
 
@@ -75,6 +122,117 @@ export default function CheckoutPage() {
   const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => { setMounted(true); }, []);
+
+  // Check for payment verification when returning from PayOS
+  const verifyPayment = searchParams.get("verifyPayment");
+  
+  useEffect(() => {
+    if (verifyPayment !== "true") return;
+    
+    const verifyAndRedirect = async () => {
+      const pendingOrderId = sessionStorage.getItem('pendingOrderId');
+      const pendingOrderCode = sessionStorage.getItem('pendingOrderCode');
+      
+      if (!pendingOrderId) {
+        showToast("Không tìm thấy thông tin đơn hàng");
+        return;
+      }
+      
+      try {
+        // Auto-confirm payment since user returned from PayOS
+        // This updates the order status to "Đã thanh toán"
+        const res = await fetch(`${API_BASE}/api/PayOS/confirm-payment`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            orderId: pendingOrderId,
+            orderCode: pendingOrderCode ? parseInt(pendingOrderCode) : null,
+          }),
+        });
+        
+        // Clear stored data regardless of result
+        sessionStorage.removeItem('pendingOrderId');
+        sessionStorage.removeItem('pendingOrderCode');
+        
+        if (res.ok) {
+          clearCart();
+          showToast("Thanh toán thành công!");
+          router.push(`/tracking/${pendingOrderId}`);
+        } else {
+          // Even if confirm fails, check current order status
+          const orderRes = await fetch(`${API_BASE}/api/Order/${pendingOrderId}`);
+          if (orderRes.ok) {
+            const orderData = await orderRes.json();
+            const paymentStatus = (orderData.paymentStatus || "").toLowerCase();
+            if (paymentStatus === "đã thanh toán" || paymentStatus === "paid") {
+              clearCart();
+              showToast("Thanh toán thành công!");
+              router.push(`/tracking/${pendingOrderId}`);
+            } else {
+              showToast("Vui lòng đợi xác nhận thanh toán");
+            }
+          }
+        }
+      } catch (e) {
+        console.error("Payment confirmation failed:", e);
+        showToast("Đã xảy ra lỗi, vui lòng kiểm tra lại đơn hàng");
+      }
+    };
+    
+    verifyAndRedirect();
+  }, [verifyPayment, router, clearCart, showToast]);
+
+  // Load existing order when orderId is in URL (for payment continuation)
+  useEffect(() => {
+    if (!orderIdFromUrl) return;
+    
+    const loadExistingOrder = async () => {
+      setLoadingExistingOrder(true);
+      try {
+        const res = await fetch(`${API_BASE}/api/Order/${orderIdFromUrl}`);
+        if (!res.ok) throw new Error("Failed to load order");
+        const orderData: ExistingOrder = await res.json();
+        
+        // Clear cart and load order items
+        clearCartFn();
+        if (orderData.orderDetails && orderData.orderDetails.length > 0) {
+          orderData.orderDetails.forEach((detail) => {
+            // Add item multiple times based on quantity (addItem handles quantity internally)
+            for (let i = 0; i < detail.quantity; i++) {
+              addItem({
+                foodId: detail.foodId,
+                foodName: detail.foodName,
+                foodImage: detail.foodImage || "",
+                unitPrice: detail.unitPrice,
+                categoryName: "",
+              });
+            }
+          });
+        }
+        
+        setIsExistingOrder(true);
+        setExistingOrderId(orderData.orderId);
+        
+        // Pre-fill address if delivery order
+        if (orderData.deliveryStatus && orderData.shippingAddress) {
+          setIsDelivery(true);
+          // Try to parse shipping address
+          const addressParts = orderData.shippingAddress.split(",");
+          setAddress((prev) => ({
+            ...prev,
+            fullName: orderData.userName || user?.fullName || "",
+          }));
+        }
+      } catch (err) {
+        showToast("Không thể tải đơn hàng");
+        console.error("Failed to load existing order:", err);
+      } finally {
+        setLoadingExistingOrder(false);
+      }
+    };
+    
+    loadExistingOrder();
+  }, [orderIdFromUrl, clearCartFn, addItem, user, showToast]);
 
   useEffect(() => {
     if (!user) return;
@@ -248,7 +406,63 @@ export default function CheckoutPage() {
     calculateShippingFee(parsed.province, parsed.district, parsed.ward, shortAddress);
   };
 
+  // Handle payment for existing unpaid order
+  const handlePayExistingOrder = async () => {
+    if (!user || !existingOrderId) { showToast("Không tìm thấy đơn hàng"); return; }
+    setPlacing(true);
+    try {
+      if (selectedPayment === "PayOS - Online") {
+        const payRes = await fetch(`${API_BASE}/api/PayOS/create-payment`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            orderId: existingOrderId,
+            buyerName: address.fullName || user.userName,
+            buyerPhone: address.phone || "",
+            buyerEmail: user.email || "",
+            returnUrl: window.location.origin,
+            cancelUrl: window.location.origin,
+          }),
+        });
+        if (payRes.ok) {
+          const payData = await payRes.json();
+          if (payData.checkoutUrl) {
+            // Redirect directly to PayOS checkout page
+            window.location.href = payData.checkoutUrl;
+            return;
+          }
+        }
+      } else {
+        // For non-online payment methods, update order status
+        const updateRes = await fetch(`${API_BASE}/api/Order/${existingOrderId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            paymentStatus: "Đã thanh toán",
+            note: `Thanh toán: ${selectedPayment}`,
+          }),
+        });
+        if (updateRes.ok) {
+          clearCart();
+          showToast("Thanh toán thành công!");
+          router.push(`/tracking/${existingOrderId}`);
+          return;
+        }
+      }
+      showToast("Thanh toán thất bại, vui lòng thử lại");
+    } catch {
+      showToast("Thanh toán thất bại, vui lòng thử lại");
+    } finally {
+      setPlacing(false);
+    }
+  };
+
   const handlePlaceOrder = async () => {
+    if (isExistingOrder) {
+      await handlePayExistingOrder();
+      return;
+    }
+    
     if (!user) { showToast("Vui lòng đăng nhập"); return; }
     if (!isDelivery && !selectedTable) { showToast("Vui lòng chọn bàn"); return; }
     if (isDelivery && !address.address) { showToast("Vui lòng chọn địa chỉ giao hàng"); return; }
@@ -299,15 +513,18 @@ export default function CheckoutPage() {
             buyerName: address.fullName || user.userName,
             buyerPhone: address.phone || "",
             buyerEmail: user.email || "",
-            returnUrl: window.location.origin,
+            returnUrl: `${window.location.origin}/checkout?verifyPayment=true&testMode=1`,
             cancelUrl: window.location.origin,
           }),
         });
         if (payRes.ok) {
           const payData = await payRes.json();
-          if (payData.checkoutUrl) {
-            clearCart();
-            window.location.href = payData.checkoutUrl;
+          if (payData.orderCode) {
+            // Save order info for test payment
+            sessionStorage.setItem('pendingOrderId', orderId);
+            sessionStorage.setItem('pendingOrderCode', payData.orderCode.toString());
+            // Redirect to local test payment page instead of PayOS
+            router.push(`/payos-test?orderId=${orderId}&orderCode=${payData.orderCode}`);
             return;
           }
         }
@@ -327,7 +544,9 @@ export default function CheckoutPage() {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
-        <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#EE4D2D]" /></div>
+        <div className="flex-1 flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-[#EE4D2D]" />
+        </div>
         <Footer />
       </div>
     );
@@ -485,12 +704,35 @@ export default function CheckoutPage() {
               <div className="bg-white rounded-xl border border-gray-100 p-4 mb-4">
                 <p className="text-xs font-semibold text-gray-400 uppercase mb-3">Món đã chọn ({items.length})</p>
                 {items.map((item) => (
-                  <div key={item.foodId} className="flex justify-between py-2 border-b border-gray-50 last:border-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-white bg-[#EE4D2D] w-5 h-5 rounded flex items-center justify-center">{item.quantity}</span>
-                      <span className="text-sm text-gray-700">{item.name}</span>
+                  <div key={item.foodId} className="flex items-center gap-3 py-2 border-b border-gray-50 last:border-0">
+                    {/* Food Image */}
+                    <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 shrink-0">
+                      {item.foodImage ? (
+                        <img 
+                          src={item.foodImage} 
+                          alt={item.foodName}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = 'https://via.placeholder.com/64?text=Food';
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+                          🍽️
+                        </div>
+                      )}
                     </div>
-                    <span className="text-sm font-semibold text-gray-900">{new Intl.NumberFormat("vi-VN").format(item.unitPrice * item.quantity)}₫</span>
+                    {/* Food Info */}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-gray-900 truncate">{item.foodName}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-xs text-gray-500">SL: {item.quantity}</span>
+                        <span className="text-xs text-gray-400">·</span>
+                        <span className="text-xs text-gray-500">{new Intl.NumberFormat("vi-VN").format(item.unitPrice)}₫</span>
+                      </div>
+                    </div>
+                    {/* Total Price */}
+                    <span className="text-sm font-bold text-gray-900 shrink-0">{new Intl.NumberFormat("vi-VN").format(item.unitPrice * item.quantity)}₫</span>
                   </div>
                 ))}
                 {isDelivery && (

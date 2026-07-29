@@ -10,6 +10,8 @@ namespace RMS_APIServer.Services
         Task<PayOSPaymentInfo> GetPaymentInfo(long orderCode);
         Task<PayOSPaymentInfo> CancelPayment(long orderCode, string? reason = null);
         bool VerifyWebhookSignature(PayOSWebhookData webhookData);
+        bool IsTestMode { get; }
+        void SimulatePaymentSuccess(long orderCode);
     }
 
     public class PayOSService : IPayOSService
@@ -18,7 +20,11 @@ namespace RMS_APIServer.Services
         private readonly string _clientId;
         private readonly string _apiKey;
         private readonly string _checksumKey;
+        private readonly bool _testMode;
         private readonly ILogger<PayOSService> _logger;
+        
+        // In-memory storage for test payments
+        private static readonly Dictionary<long, PayOSPaymentInfo> _testPayments = new();
 
         public PayOSService(IConfiguration configuration, HttpClient httpClient, ILogger<PayOSService> logger)
         {
@@ -26,12 +32,15 @@ namespace RMS_APIServer.Services
             _clientId = configuration["PayOS:ClientId"] ?? throw new ArgumentNullException("PayOS:ClientId");
             _apiKey = configuration["PayOS:ApiKey"] ?? throw new ArgumentNullException("PayOS:ApiKey");
             _checksumKey = configuration["PayOS:ChecksumKey"] ?? throw new ArgumentNullException("PayOS:ChecksumKey");
+            _testMode = configuration.GetValue<bool>("PayOS:TestMode", false);
             _logger = logger;
 
             _httpClient.BaseAddress = new Uri("https://api-merchant.payos.vn");
             _httpClient.DefaultRequestHeaders.Add("x-client-id", _clientId);
             _httpClient.DefaultRequestHeaders.Add("x-api-key", _apiKey);
         }
+        
+        public bool IsTestMode => _testMode;
 
         public async Task<PayOSPaymentResponse> CreatePaymentLink(PayOSPaymentRequest request)
         {
@@ -66,6 +75,13 @@ namespace RMS_APIServer.Services
 
         public async Task<PayOSPaymentInfo> GetPaymentInfo(long orderCode)
         {
+            // In test mode, return from in-memory storage
+            if (_testMode && _testPayments.ContainsKey(orderCode))
+            {
+                _logger.LogInformation("Test mode: Returning stored payment info for orderCode {OrderCode}", orderCode);
+                return _testPayments[orderCode];
+            }
+            
             var response = await _httpClient.GetAsync($"/v2/payment-requests/{orderCode}");
             var responseBody = await response.Content.ReadAsStringAsync();
 
@@ -122,6 +138,26 @@ namespace RMS_APIServer.Services
             var expectedSignature = CreateSignature(signatureData);
 
             return expectedSignature == webhookData.Signature;
+        }
+        
+        public void SimulatePaymentSuccess(long orderCode)
+        {
+            if (!_testMode)
+            {
+                throw new InvalidOperationException("Cannot simulate payment in production mode");
+            }
+            
+            _logger.LogInformation("Test mode: Simulating payment success for orderCode {OrderCode}", orderCode);
+            
+            _testPayments[orderCode] = new PayOSPaymentInfo
+            {
+                OrderCode = orderCode,
+                Amount = 0,
+                AmountPaid = 0,
+                AmountRemaining = 0,
+                Status = "PAID",
+                CreatedAt = DateTime.UtcNow.ToString("o")
+            };
         }
 
         private string CreateSignature(string data)

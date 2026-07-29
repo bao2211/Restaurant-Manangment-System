@@ -27,6 +27,7 @@ interface Order {
   orderDetails: OrderDetail[];
   deliveryStatus?: string;
   ghtkTrackingId?: string;
+  paymentStatus?: string;
 }
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://192.168.192.85:8080";
@@ -59,6 +60,7 @@ export default function KitchenPage() {
   const [search, setSearch] = useState("");
   const [sortNewest, setSortNewest] = useState(true);
   const [mounted, setMounted] = useState(false);
+  const [filterStatus, setFilterStatus] = useState<"all" | "pending" | "ready" | "shipped">("all");
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -74,7 +76,15 @@ export default function KitchenPage() {
       const ids: string[] = all
         .filter((o: Record<string, unknown>) => {
           const s = ((o.status as string) || "").toLowerCase();
+          const deliveryStatus = ((o.deliveryStatus as string) || "").toLowerCase();
+          
+          // Include shipped orders (delivering/delivered)
+          if (deliveryStatus && deliveryStatus !== "pending") return true;
+          
+          // Include pending/cooking orders
           if (s === "pending" || s === "chưa làm") return true;
+          
+          // Include completed orders that are delivery orders
           if (s === "hoàn tất" || s === "completed") {
             const t = ((o.tableId as string) || "").toLowerCase();
             const n = (o.note as string) || "";
@@ -91,6 +101,15 @@ export default function KitchenPage() {
             const r2 = await fetch(`${API_BASE}/api/Order/${id}`);
             if (!r2.ok) return null;
             const d = await r2.json();
+            console.log(`Order ${id} data:`, { deliveryStatus: d.deliveryStatus, status: d.status, paymentStatus: d.paymentStatus });
+            
+            // Skip orders that haven't been paid
+            const paymentStatus = (d.paymentStatus || "").toLowerCase();
+            if (paymentStatus === "chưa thanh toán" || paymentStatus === "unpaid") {
+              console.log(`Skipping unpaid order ${id}`);
+              return null;
+            }
+            
             return {
               orderId: d.orderId || d.id,
               tableName: d.tableName || d.tableId || "",
@@ -101,6 +120,7 @@ export default function KitchenPage() {
               note: d.note || "",
               deliveryStatus: d.deliveryStatus || "pending",
               ghtkTrackingId: d.ghtkTrackingId || "",
+              paymentStatus: d.paymentStatus || "",
               orderDetails: (d.orderDetails || []).map((od: Record<string, unknown>) => ({
                 foodId: od.foodId || "",
                 foodName: od.foodName || "",
@@ -112,8 +132,11 @@ export default function KitchenPage() {
           } catch { return null; }
         })
       );
+      console.log("Fetched orders:", dets.filter(Boolean).length);
       setOrders(dets.filter(Boolean) as Order[]);
-    } catch {} finally { setLoading(false); }
+    } catch (e) {
+      console.error("Fetch error:", e);
+    } finally { setLoading(false); }
   }, []);
 
   useEffect(() => { fetchOrders(); }, [fetchOrders]);
@@ -135,6 +158,25 @@ export default function KitchenPage() {
         o.orderDetails.some((d) => (d.foodName || "").toLowerCase().includes(q))
       );
     }
+    // Apply status filter
+    if (filterStatus === "pending") {
+      // Show orders that are still cooking (not all items done)
+      list = list.filter((o) => {
+        const pendingItems = o.orderDetails.filter((d) => (d.status || "") !== "Hoàn tất");
+        return pendingItems.length > 0 && (!o.deliveryStatus || o.deliveryStatus === "pending");
+      });
+    } else if (filterStatus === "ready") {
+      // Show orders that are ready to ship (all items done, not shipped yet)
+      list = list.filter((o) => {
+        const pendingItems = o.orderDetails.filter((d) => (d.status || "") !== "Hoàn tất");
+        const allDone = pendingItems.length === 0;
+        const isDelivery = o.tableName?.toLowerCase() === "giao_hang" || o.note?.toLowerCase().includes("giao đến");
+        return allDone && isDelivery && (!o.deliveryStatus || o.deliveryStatus === "pending");
+      });
+    } else if (filterStatus === "shipped") {
+      // Show orders that have been shipped
+      list = list.filter((o) => o.deliveryStatus && o.deliveryStatus !== "pending");
+    }
     // Sort: cooking first, then ready-to-ship, then shipped
     list.sort((a, b) => {
       const aDone = a.deliveryStatus && a.deliveryStatus !== "pending" ? 2 : 0;
@@ -149,7 +191,14 @@ export default function KitchenPage() {
       return sortNewest ? db - da : da - db;
     });
     return list;
-  }, [orders, search, sortNewest]);
+  }, [orders, search, sortNewest, filterStatus]);
+
+  // Debug: Log orders to console
+  useEffect(() => {
+    console.log("Total orders:", orders.length);
+    console.log("Shipped orders:", orders.filter((o) => o.deliveryStatus && o.deliveryStatus !== "pending").map(o => ({ id: o.orderId, status: o.status, deliveryStatus: o.deliveryStatus })));
+    console.log("Visible shipped:", visible.filter((o) => o.deliveryStatus && o.deliveryStatus !== "pending").map(o => o.orderId));
+  }, [orders, visible]);
 
   // Counts
   const nCook = visible.filter((o) => (o.status || "").toLowerCase() === "chưa làm" || (o.status || "").toLowerCase() === "pending").length;
@@ -184,17 +233,22 @@ export default function KitchenPage() {
 
       // After a tick, check if all done → update status
       setTimeout(() => {
-        setOrders((prev) => prev.map((o) => {
-          if (o.orderId !== orderId || o.status === "Hoàn tất" || o.status === "completed") return o;
-          if (!o.orderDetails.every((d) => (d.status || "") === "Hoàn tất")) return o;
-          showToast(`Đơn ${orderId} - Hoàn tất!`);
+        setOrders((prev) => {
+          const targetOrder = prev.find((o) => o.orderId === orderId);
+          if (!targetOrder || targetOrder.status === "Hoàn tất" || targetOrder.status === "completed") return prev;
+          if (!targetOrder.orderDetails.every((d) => (d.status || "") === "Hoàn tất")) return prev;
+          
+          // Show toast outside of state update
+          setTimeout(() => showToast(`Đơn ${orderId} - Hoàn tất!`), 0);
+          
           fetch(`${API_BASE}/api/Order/${orderId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ orderId, status: "Hoàn tất" }),
+            body: JSON.stringify({ OrderId: orderId, Status: "Hoàn tất" }),
           }).catch(() => {});
-          return { ...o, status: "Hoàn tất" };
-        }));
+          
+          return prev.map((o) => o.orderId === orderId ? { ...o, status: "Hoàn tất" } : o);
+        });
       }, 100);
     } catch {}
   }, [showToast]);
@@ -238,16 +292,37 @@ export default function KitchenPage() {
         body: JSON.stringify(payload),
       });
       const data = await r.json();
+      console.log("GHTK response:", data);
       if (!data.success) { showToast("❌ " + (data.message || "Lỗi GHTK")); return; }
       const code = data.tracking_code || data.tracking_id || "";
+      console.log("GHTK tracking code:", code, "type:", typeof code);
       showToast(`✅ Đã gửi - Mã: ${code}`);
+      
+      // Update order status in backend - use PATCH endpoint
       try {
-        await fetch(`${API_BASE}/api/Order/${order.orderId}`, {
-          method: "PUT",
+        const updatePayload = { 
+          DeliveryStatus: "delivering",
+          GhtkTrackingId: code ? String(code) : "PENDING"
+        };
+        console.log("PATCH payload:", updatePayload);
+        const updateRes = await fetch(`${API_BASE}/api/Order/${order.orderId}/delivery`, {
+          method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ orderId: order.orderId, deliveryStatus: "delivering", ghtkTrackingId: code }),
+          body: JSON.stringify(updatePayload),
         });
-      } catch {}
+        if (!updateRes.ok) {
+          const errorText = await updateRes.text();
+          console.error("Failed to update order:", updateRes.status, errorText);
+          showToast(`⚠️ GHTK OK nhưng lỗi cập nhật đơn: ${updateRes.status}`);
+        } else {
+          showToast("✅ Đã cập nhật trạng thái đơn hàng");
+        }
+      } catch (e) {
+        console.error("Error updating order:", e);
+        showToast("⚠️ GHTK OK nhưng lỗi cập nhật đơn");
+      }
+      
+      // Update local state regardless
       setOrders((prev) =>
         prev.map((o) => o.orderId === order.orderId ? { ...o, deliveryStatus: "delivering", ghtkTrackingId: code } : o)
       );
@@ -303,7 +378,8 @@ export default function KitchenPage() {
               <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
             </button>
           </div>
-          <div className="pb-3">
+          <div className="pb-3 space-y-3">
+            {/* Search bar */}
             <div className="flex items-center gap-2">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -319,6 +395,67 @@ export default function KitchenPage() {
               >
                 <ArrowUpDown className="w-3.5 h-3.5" />
                 {sortNewest ? "Mới nhất" : "Cũ nhất"}
+              </button>
+            </div>
+
+            {/* Filter bar */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
+              <button
+                onClick={() => setFilterStatus("all")}
+                className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl border text-xs font-semibold transition-all whitespace-nowrap ${
+                  filterStatus === "all"
+                    ? "border-gray-800 bg-gray-800 text-white"
+                    : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                }`}
+              >
+                <span>Tất cả</span>
+                <span className="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-md text-[10px]">{orders.length}</span>
+              </button>
+              <button
+                onClick={() => setFilterStatus("pending")}
+                className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl border text-xs font-semibold transition-all whitespace-nowrap ${
+                  filterStatus === "pending"
+                    ? "border-orange-500 bg-orange-500 text-white"
+                    : "border-gray-200 bg-white text-gray-600 hover:border-orange-300"
+                }`}
+              >
+                <Clock className="w-3.5 h-3.5" />
+                <span>Chưa hoàn tất</span>
+                <span className={`px-1.5 py-0.5 rounded-md text-[10px] ${filterStatus === "pending" ? "bg-orange-400/30 text-white" : "bg-orange-100 text-orange-600"}`}>
+                  {orders.filter((o) => o.orderDetails.some((d) => (d.status || "") !== "Hoàn tất") && (!o.deliveryStatus || o.deliveryStatus === "pending")).length}
+                </span>
+              </button>
+              <button
+                onClick={() => setFilterStatus("ready")}
+                className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl border text-xs font-semibold transition-all whitespace-nowrap ${
+                  filterStatus === "ready"
+                    ? "border-blue-500 bg-blue-500 text-white"
+                    : "border-gray-200 bg-white text-gray-600 hover:border-blue-300"
+                }`}
+              >
+                <Truck className="w-3.5 h-3.5" />
+                <span>Sẵn sàng giao</span>
+                <span className={`px-1.5 py-0.5 rounded-md text-[10px] ${filterStatus === "ready" ? "bg-blue-400/30 text-white" : "bg-blue-100 text-blue-600"}`}>
+                  {orders.filter((o) => {
+                    const allDone = o.orderDetails.every((d) => (d.status || "") === "Hoàn tất");
+                    const isDelivery = o.tableName?.toLowerCase() === "giao_hang" || o.note?.toLowerCase().includes("giao đến");
+                    return allDone && isDelivery && (!o.deliveryStatus || o.deliveryStatus === "pending");
+                  }).length}
+                </span>
+              </button>
+              <button
+                onClick={() => setFilterStatus("shipped")}
+                className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl border text-xs font-semibold transition-all whitespace-nowrap ${
+                  filterStatus === "shipped"
+                    ? "border-green-500 bg-green-500 text-white"
+                    : "border-gray-200 bg-white text-gray-600 hover:border-green-300"
+                }`}
+              >
+                <CheckCircle className="w-3.5 h-3.5" />
+                <span>Đã giao</span>
+                <span className={`px-1.5 py-0.5 rounded-md text-[10px] ${filterStatus === "shipped" ? "bg-green-400/30 text-white" : "bg-green-100 text-green-600"}`}>
+                  {orders.filter((o) => o.deliveryStatus && o.deliveryStatus !== "pending").length}
+                </span>
               </button>
             </div>
           </div>

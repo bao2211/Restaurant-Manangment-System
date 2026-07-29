@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RMS_APIServer.Models;
 using RMS_APIServer.Middleware;
+using RMS_APIServer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,6 +76,9 @@ builder.Services.AddCors(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Register PayOS Service
+builder.Services.AddHttpClient<IPayOSService, PayOSService>();
 
 var app = builder.Build();
 

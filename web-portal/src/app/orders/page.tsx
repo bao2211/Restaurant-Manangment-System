@@ -2,10 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ClipboardList, Clock, ChevronDown, ShoppingBag, Loader2, Search, ArrowUpDown } from "lucide-react";
+import { ClipboardList, Clock, ChevronDown, ShoppingBag, Loader2, Search, ArrowUpDown, MapPin, CreditCard } from "lucide-react";
 import Header from "@/components/ui/header";
 import Footer from "@/components/ui/footer";
 import { useAuth } from "@/contexts/auth-context";
+import Link from "next/link";
 
 interface OrderDetail {
   foodId: string;
@@ -23,6 +24,8 @@ interface Order {
   note?: string;
   tableId?: string;
   tableName?: string;
+  userId?: string;
+  userName?: string;
   paymentStatus?: string;
   orderDetails?: OrderDetail[];
 }
@@ -120,6 +123,7 @@ export default function OrdersPage() {
       (o) =>
         o.orderId.toLowerCase().includes(q) ||
         (o.note && o.note.toLowerCase().includes(q)) ||
+        (o.userName && o.userName.toLowerCase().includes(q)) ||
         statusLabels[o.status]?.toLowerCase().includes(q)
     );
   }
@@ -153,7 +157,7 @@ export default function OrdersPage() {
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
-                type="text" placeholder="Tìm theo mã đơn, ghi chú..."
+                type="text" placeholder="Tìm theo mã đơn, tên tài khoản, ghi chú..."
                 value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-3 py-2 rounded-xl border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:border-[#EE4D2D]/40 focus:bg-white transition-all"
               />
@@ -285,10 +289,29 @@ export default function OrdersPage() {
                               <p className="text-sm text-gray-600 mt-0.5">{order.note}</p>
                             </div>
                           )}
-                          <div className="flex items-center justify-between pt-2 border-t border-gray-50">
+                          <div className="flex items-center justify-between pt-3 border-t border-gray-50">
                             <span className="text-sm font-semibold text-gray-500">Tổng cộng</span>
                             <span className="text-lg font-black text-[#EE4D2D]">{formatPrice(order.total || 0)}</span>
                           </div>
+
+                          {/* Track order / Payment button */}
+                          {!isPaid(order.paymentStatus) ? (
+                            <Link
+                              href={`/checkout?orderId=${order.orderId}`}
+                              className="mt-3 flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold text-sm rounded-xl hover:shadow-lg hover:shadow-red-500/30 transition-all duration-300"
+                            >
+                              <CreditCard className="w-4 h-4" />
+                              Tiếp tục thanh toán
+                            </Link>
+                          ) : (
+                            <Link
+                              href={`/tracking/${order.orderId}`}
+                              className="mt-3 flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-gradient-to-r from-[#EE4D2D] to-[#FF6633] text-white font-semibold text-sm rounded-xl hover:shadow-lg hover:shadow-[#EE4D2D]/30 transition-all duration-300"
+                            >
+                              <MapPin className="w-4 h-4" />
+                              Theo dõi đơn hàng
+                            </Link>
+                          )}
                         </div>
                       </motion.div>
                     )}

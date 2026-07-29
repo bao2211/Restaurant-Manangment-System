@@ -36,6 +36,8 @@ import MenuManagerScreen from './screens/MenuManagerScreen';
 import OrderDetailManagerScreen from './screens/OrderDetailManagerScreen';
 import IngredientManagerScreen from './screens/IngredientManagerScreen';
 import UserManagementScreen from './screens/UserManagementScreen';
+import SettingsScreen from './screens/SettingsScreen';
+import SettingsScreen from './screens/SettingsScreen';
 
 
 const Stack = createStackNavigator();
@@ -262,6 +264,18 @@ function MainAppStack({ openSidebar }) {
         {(props) => (
           <ProtectedScreen screenName="UserManagement">
             <UserManagementScreen {...props} />
+          </ProtectedScreen>
+        )}
+      </Stack.Screen>
+      <Stack.Screen 
+        name="Settings" 
+        options={{ 
+          headerTitle: 'Cấu Hình Database',
+        }}
+      >
+        {(props) => (
+          <ProtectedScreen screenName="Settings">
+            <SettingsScreen {...props} />
           </ProtectedScreen>
         )}
       </Stack.Screen>
